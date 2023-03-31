@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
     if (req.body.projectId) {
       const project = await Project.findById(req.body.projectId);
       if (!project) return res.status(400).send('Invalid project.');
+
       user = new User({ 
         name: req.body.name, 
         email: req.body.email,
@@ -34,7 +35,7 @@ router.post('/', async (req, res) => {
         bio: req.body.bio,
         likedProjects: [],
         myComments: [],
-        admin: false
+        userType: req.body.userType
       });
     } else {
       user = new User({ 
@@ -47,7 +48,7 @@ router.post('/', async (req, res) => {
         bio: req.body.bio,
         likedProjects: [],
         myComments: [],
-        admin: false
+        userType: req.body.userType
       });
 
     }

@@ -20,17 +20,15 @@ router.post('/', async (req, res) => {
     let project = new Project({
         name: req.body.name,
         semester: req.body.semester,
-        year: req.body.year,
+        repoLink: req.body.repoLink,
         members: {
             _id: user._id,
             name: user.name
           },
-        content: {
-          tab: {
-            photo: "https://preview.redd.it/help-me-find-the-origin-of-this-damn-dog-ive-looked-up-like-v0-zj7m5n0a2xx91.jpg?auto=webp&s=5f8f63acf583cf94e8e558f07e0d89ef6bf3d0f6"
-          }
-        },
-        likes: 0
+        content: req.body.content,
+        likes: 0,
+        badges: req.body.badges,
+        tags: req.body.tags
     });
 
     project = await project.save();
@@ -39,9 +37,9 @@ router.post('/', async (req, res) => {
   });
 
 
+  //This put call appends a user to a project. It is not great.
+
   router.put('/:id/:userid', async (req, res) => {
-    //const { error } = validate(req.body); 
-    //if (error) return res.status(400).send(error.details[0].message);
   
     const user = await User.findById(req.params.userid);
     if (!user) return res.status(400).send('Invalid user.');

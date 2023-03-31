@@ -15,10 +15,6 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    year: {
-      type: Number,
-      required: true
-    }, 
     repoLink: {
       type: String
     }, 
@@ -38,6 +34,7 @@ const projectSchema = new mongoose.Schema({
           _id : false ,
           tab: [{
               type: new mongoose.Schema({
+                _id : false ,
                 photo: {
                   type: String
                 },
@@ -75,10 +72,13 @@ const projectSchema = new mongoose.Schema({
         maxlength: 50
       }
     },
-    badges: {
+  badges: {
       type: String,
       enum: ['clientWinner', 'clientRunner', 'peopleWinner', 'peopleRunner'],
-    }
+    },
+  tags: {
+    type: [String]
+  }
   });
 
 const Project = mongoose.model('Project', projectSchema);
@@ -86,15 +86,14 @@ const Project = mongoose.model('Project', projectSchema);
 function validateProject(project) {
     const schema = Joi.object({
       name: Joi.string().min(5).max(50).required(),
-      semester: Joi.string().min(2).max(2).required(),
+      semester: Joi.string().min(7).max(7).required(),
       userId: Joi.array().items(Joi.objectId()),
-      year: Joi.number().required(),
       repoLink: Joi.string(),
       members: Joi.array(),
       content: Joi.array(),
-      likes: Joi.number().required(),
       comments: Joi.array(),
-      badges: Joi.string()
+      badges: Joi.string(),
+      tags: Joi.array().items(Joi.string())
     });
   
     return schema.validate(project);

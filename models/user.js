@@ -63,8 +63,11 @@ const userSchema = new mongoose.Schema({
         }
     })
     }],
-    admin: {
-      type: Boolean,
+    
+    userType: {
+      type: String,
+      enum: ['visitor', 'graduate', 'admin'],
+      default: 'visitor',
       required: true
     }
 
@@ -84,7 +87,7 @@ function validateUser(User) {
       bio: Joi.string(),
       likedProjects: Joi.array(),
       myComments: Joi.array(),
-      admin: Joi.boolean().required()
+      userType: Joi.string()
     });
   
     return schema.validate(User);
