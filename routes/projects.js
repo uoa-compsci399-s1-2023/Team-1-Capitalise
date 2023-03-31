@@ -1,57 +1,39 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const {Project, validate} = require('../models/project');
-const {User} = require('../models/user');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    const projects = await Project.find().sort('name');
-    res.send(projects);
-  });
+const {
+  getAllProjects,
+  getProjectsByLikes,
+  getProjectByBadge,
+  getProject,
+  updateProjectById,
+  addNewProject,
+  addUserToProject,
+  deleteProject,
+} = require('../controllers/projectController')
 
+//Get all projects
+router.get('/', getAllProjects);
 
-router.post('/', async (req, res) => {
-    const { error } = validate(req.body); 
-    if (error) return res.status(400).send(error.details[0].message);
+//Add new project
+router.post('/', addNewProject);
 
-    const user = await User.findById(req.body.userId);
-    if (!user) return res.status(400).send('Invalid user.');
+//Need to add more projects to properly test this
+router.get('/likes', getProjectsByLikes)
   
-    let project = new Project({
-        name: req.body.name,
-        semester: req.body.semester,
-        repoLink: req.body.repoLink,
-        members: {
-            _id: user._id,
-            name: user.name
-          },
-        content: req.body.content,
-        likes: 0,
-        badges: req.body.badges,
-        tags: req.body.tags
-    });
+//Find a project by id
+router.get('/:projectId', getProject);
 
-    project = await project.save();
-    
-    res.send(project);
-  });
+//Update a project
+router.patch('/:projectId', updateProjectById)
 
+//Delete the project
+router.delete('/:projectId', deleteProject)
 
-  //This put call appends a user to a project. It is not great.
+//Get projects with :badge whatever
+router.get('/badges/:badge', getProjectByBadge);
 
-  router.put('/:id/:userid', async (req, res) => {
-  
-    const user = await User.findById(req.params.userid);
-    if (!user) return res.status(400).send('Invalid user.');
-
-    const project = await Project.findByIdAndUpdate(req.params.id,
-        { 
-            $push: {members: user}
-        }, { new: true });
-    
-      if (!project) return res.status(404).send('The project with the given ID was not found.');
-      
-      res.send(project);
-  });
+//This put call appends a user to a project. It is not great.
+router.put('/:id/:userid', addUserToProject);
   
 module.exports = router;
