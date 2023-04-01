@@ -4,13 +4,14 @@ const { User } = require('../models/user');
 
 //Get all projects
 const getAllProjects = async (req, res) => {
-    const projects = await Project.find().sort('name');
+    //Populate the project members attribute with id and names of users.
+    const projects = await Project.find().populate('members', '_id, name').sort('name');
     res.send(projects);
 }
 
 //get all projects by likes
 const getProjectsByLikes = async (req, res) => {
-    const projects = await Project.find().sort('likes');
+    const projects = await Project.find().populate('members', '_id, name').sort('likes');
     res.send(projects)
 }
 
@@ -72,10 +73,9 @@ const addNewProject = async (req, res) => {
         name: req.body.name,
         semester: req.body.semester,
         repoLink: req.body.repoLink,
-        members: {
-            _id: user._id,
-            name: user.name
-        },
+        members: [{
+            _id: user._id
+        }],
         content: req.body.content,
         likes: 0,
         badges: req.body.badges,
@@ -85,8 +85,7 @@ const addNewProject = async (req, res) => {
 
     //Add project to user's project attribute. 
     user.project = {
-        _id: project._id,
-        projectName: project.name
+        _id: project._id
     };
 
     project = await project.save();

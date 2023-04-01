@@ -7,6 +7,7 @@ const {
   getUserById,
   postUser,
   updateUserDetails,
+  comparePassWithHash,
 } = require('../controllers/userController')
 
 
@@ -17,6 +18,8 @@ router.get('/:user', getUserByName);
 router.get('/user/:id', getUserById);
 
 router.post('/', postUser);
+
+router.get('/checkPass/:username/:plaintextpass', comparePassWithHash);
 
 
   

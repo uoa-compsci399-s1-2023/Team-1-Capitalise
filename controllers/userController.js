@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt');
 
 //Gets all users and sorts by name
 const getAllUsers = async (req, res) => {
-  const users = await User.find().sort('name');
+  //Added populate method to dynamically fetch information of project document!
+  const users = await User.find().populate('project', '_id, name').sort('name');
   res.send(users);
 }
 
@@ -13,7 +14,7 @@ const getAllUsers = async (req, res) => {
 const getUserByName = async (req, res) => {
   const { user } = req.params
 
-  const username = await User.findOne({ username: user });
+  const username = await User.findOne({ username: user }).populate('project', '_id, name');
   if (!username) {
     return res.status(404).json({ fail: `no user with ${user} found` })
   }
@@ -25,7 +26,7 @@ const getUserByName = async (req, res) => {
 const getUserById = async (req, res) => {
   const { id } = req.params
 
-  const username = await User.findOne({ _id: id });
+  const username = await User.findOne({ _id: id }).populate('project', '_id, name');
   if (!username) {
     return res.status(404).json({ fail: `no user with ${id} found` })
   }
@@ -53,8 +54,7 @@ const postUser = async (req, res) => {
       github: req.body.github,
       linkedin: req.body.linkedin,
       project: {
-        _id: project._id,
-        projectName: project.name
+        _id: project._id
       },
       bio: req.body.bio,
       likedProjects: [],
@@ -94,10 +94,27 @@ const updateUserDetails = async (req, res) => {
   const { username } = req.params;
 }
 
+//Check if the user input matches the hash. Is it safe to send this as a GET request? I'm not sure...
+const comparePassWithHash = async (req, res) => {
+  //Grab user from username
+  const { user } = req.params
+
+  const username = await User.findOne({ username: req.params.username });
+  if (!username) {
+    return res.status(404).json({ fail: `no user with ${user} found` })
+  }
+
+  //
+  bcrypt.compare(req.params.plaintextpass, username.password, function(err, result) {
+    res.send(result);
+});
+}
+
 module.exports = {
   getAllUsers,
   getUserByName,
   getUserById,
   postUser,
   updateUserDetails,
+  comparePassWithHash,
 }
