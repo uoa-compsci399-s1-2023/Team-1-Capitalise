@@ -4,7 +4,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: rgba(0, 0, 0, 0.87);
   background-color: #ffffff;
 
   font-synthesis: none;
@@ -14,11 +14,39 @@
   -webkit-text-size-adjust: 100%;
 }
 
+#root{ 
+  height:100vh;
+  width:100vw;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+}
+
+* , *:before, *:after{ 
+  box-sizing:border-box; 
+  -moz-box-sizing:border-box; 
+  -webkit-box-sizing:border-box; 
+  -ms-box-sizing:border-box;
+}
+ 
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
+  color: black;
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: black;
 }
 
