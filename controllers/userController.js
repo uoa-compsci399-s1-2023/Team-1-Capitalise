@@ -1,5 +1,6 @@
 const { User, validate } = require('../models/user');
 const { Project } = require('../models/project');
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 
@@ -33,6 +34,7 @@ const getUserById = async (req, res) => {
 
   res.send(username);
 }
+
 
 
 //Adds new user
@@ -90,9 +92,63 @@ const postUser = async (req, res) => {
 }
 
 //updates the user details besides the user type
+//This method also assumes that if a user doesn't update a field
+//The front end form sent will send the user.<parameter> default value 
 const updateUserDetails = async (req, res) => {
-  const { username } = req.params;
+  const {id} = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ err: "Wrong type of id " });
 }
+
+  const user = await User.findById(id)
+  if (!user) {
+      return res.status(404).json({ err: "No user found" });
+  }
+
+  //look through request body. Also assumes frontend will only give vistor or graduate options
+  // to visitor and only admin can update a user and give them admin userType
+  //For now, no authorization
+  const {name, password, email, username, userType} = req.body;
+  const encrypted = await bcrypt.hash(password, 10);
+  var updateUser;
+  if(userType != 'admin'){
+    updateUser = await User.findByIdAndUpdate(id, {name: name, password: encrypted, email : email, username:username, userType : userType})
+  }
+
+  else{
+    updateUser = await User.findByIdAndUpdate(id, {name: name, password: encrypted, email : email, username:username})
+  }
+ 
+
+ res.send(updateUser)
+}
+
+//Need to properly test
+const deleteUserById = async (req, res) => {
+  const {id} = req.params
+  const user = await User.findById(id);
+  
+  if(user == null){
+    return res.send({noUser: `User with id ${id} not found`})
+  }
+
+  const projectId = await user.project
+  if(projectId == null){
+    return res.send({noUser: `Project with id ${id} not found`})
+  }
+
+
+  const findProject = await Project.findByIdAndUpdate(projectId, {$pull : {members : id}})
+  //delete the user
+  const removeUser = await User.findByIdAndDelete(id);
+
+  res.send(findProject)
+
+}
+
+
+
 
 //Check if the user input matches the hash. Is it safe to send this as a GET request? I'm not sure...
 const comparePassWithHash = async (req, res) => {
@@ -117,4 +173,5 @@ module.exports = {
   postUser,
   updateUserDetails,
   comparePassWithHash,
+  deleteUserById,
 }

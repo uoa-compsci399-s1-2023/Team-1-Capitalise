@@ -8,6 +8,7 @@ const {
   postUser,
   updateUserDetails,
   comparePassWithHash,
+  deleteUserById
 } = require('../controllers/userController')
 
 
@@ -15,7 +16,11 @@ router.get('/', getAllUsers);
 
 router.get('/:user', getUserByName);
 
+router.delete('/user/:id', deleteUserById);
+
 router.get('/user/:id', getUserById);
+
+router.patch('/user/:id', updateUserDetails);
 
 router.post('/', postUser);
 

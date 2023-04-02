@@ -20,8 +20,20 @@ const getProjectsByLikes = async (req, res) => {
 const getProjectByBadge = async (req, res) => {
     const { badge } = req.params;
     //need to check badge
-    res.status(200).json({ badge: `${badge}` });
+    const projects = await Project.find({badges : badge})
+    const projectBadges = ['clientWinner', 'clientRunner', 'peopleWinner', 'peopleRunner'];
+
+    if(!projectBadges.includes(badge)){
+        return res.status(200).json({noBadgeExist : `${badge} badge does not exist`})
+    }
+
+    else if(projects.length == 0){
+        return res.status(200).json({noBadgeGiven : `${badge} has not been given out`})
+    }
+    res.send(projects);
+    
 }
+
 
 
 //find project by Id
@@ -127,8 +139,7 @@ const addUserToProject = async (req, res) => {
 const deleteProject = async (req, res) => {
     const { projectId } = req.params
 
-    const project = Project.findById({ _id: projectId })
-
+    const project = await Project.findById({ _id: projectId,})
     //differenet Id type from db id 
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
         return res.status(404).json({ err: "Wrong type of id " });
@@ -137,14 +148,18 @@ const deleteProject = async (req, res) => {
     if (!project) {
         return res.status(404).json({ err: "No Project found" });
     }
+    
+    const members = await project.members   
+    members.forEach(async (id) => {
+        //Need to properly check and test this method
+        const user = await User.findByIdAndUpdate(id, {project : null})
+    })
+    const projectName = await project.name
+    const deleted = await Project.findByIdAndDelete(projectId)
 
-    /*****Find the user where projectId : projectId*****/
-    const users = await User.find()
-
-    /*****Then delete the project it self*****/
+    res.send({Success: `${projectName} deleted`})
 
 
-    res.status(200).json({ user: users, del: 'del' });
 }
 
 
