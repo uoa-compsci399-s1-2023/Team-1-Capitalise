@@ -35,7 +35,6 @@ const getProjectByBadge = async (req, res) => {
 }
 
 
-
 //find project by Id
 const getProject = async (req, res) => {
     const { projectId } = req.params;
@@ -162,6 +161,21 @@ const deleteProject = async (req, res) => {
 
 }
 
+const searchProjects = async (req, res) => { 
+    
+    //Build find query depending on the optional parameters
+    query = {};
+    (req.params.keyword != -1) ? (query.name = {$regex: req.params.keyword, $options:'i'}) : "";
+    (req.params.semester != -1 && req.params.year != -1) ? (query.semester = {$regex: `${req.params.semester} ${req.params.year}`, $options:'i'}) : "";
+    (req.params.award != -1) ? (query.badges = req.params.award) : "";
+    (req.params.tags != -1) ? (query.tags = {$in: req.params.tags.split(":")}) : "";
+
+    //Find relevant projects
+    const projects = await Project.find(query).populate('members', '_id, name').sort('name');
+
+    res.send(projects);
+}
+
 
 module.exports = {
     getAllProjects,
@@ -172,4 +186,5 @@ module.exports = {
     addNewProject,
     addUserToProject,
     deleteProject,
+    searchProjects,
 }

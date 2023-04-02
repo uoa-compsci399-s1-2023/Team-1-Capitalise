@@ -10,6 +10,7 @@ const {
   addNewProject,
   addUserToProject,
   deleteProject,
+  searchProjects
 } = require('../controllers/projectController')
 
 //Get all projects
@@ -20,6 +21,9 @@ router.post('/', addNewProject);
 
 //Need to add more projects to properly test this
 router.get('/likes', getProjectsByLikes)
+
+//Need to add more projects to properly test this
+router.get('/search/:keyword/:semester/:year/:award/:tags', searchProjects)
   
 //Find a project by id
 router.get('/:projectId', getProject);
@@ -35,5 +39,7 @@ router.get('/badges/:badge', getProjectByBadge);
 
 //This put call appends a user to a project. It is not great.
 router.put('/:id/:userid', addUserToProject);
+
+
   
 module.exports = router;
