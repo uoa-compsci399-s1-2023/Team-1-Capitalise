@@ -1,14 +1,25 @@
 import "./Home.css";
-import logo from "../assets/Logo.svg";
-import Navbar from "../components/Navbar/Navbar";
-import MyButton from "../components/MyButton";
+import Logo from "../assets/Logo.svg";
+import Navbar from "../components/Navbar";
+import { useState } from "react";
 
 function Home() {
+  const [logoVisability, setLogoVisability] = useState(false);
+
+  const handleImageClick = () => {
+    setLogoVisability(!logoVisability);
+  };
+
   return (
     <div className="home">
       <Navbar />
       <div className="content">
-        <img className="logo" src={logo} alt="logo"></img>
+        <img
+          className={logoVisability ? "logo" : "logoHide"}
+          src={Logo}
+          alt="logo"
+          onClick={handleImageClick}
+        ></img>
       </div>
     </div>
   );

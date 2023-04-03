@@ -7,10 +7,20 @@
 }
 
 .logo {
+  margin-top: 100px;
   height: 7.5em;
   justify-content: center;
   align-items: center;
   animation: logo-spin infinite 20s linear;
+}
+
+.logoHide {
+  margin-top: 100px;
+  height: 7.5em;
+  justify-content: center;
+  align-items: center;
+  animation: logo-spin infinite 20s linear;
+  opacity: 0%;
 }
 
 @keyframes logo-spin {

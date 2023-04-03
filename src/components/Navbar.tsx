@@ -1,8 +1,8 @@
 import React from "react";
-import logo from "../../assets/Logo.svg";
+import logo from "../assets/Logo.svg";
 import styles from "./Navbar.module.css";
-import MyButton from "../MyButton";
-import SearchBar from "../SearchBar";
+import MyButton from "./MyButton";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   return (
