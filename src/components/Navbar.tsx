@@ -7,12 +7,14 @@ import SearchBar from "./SearchBar";
 const Navbar = () => {
   return (
     <div className={styles.Navbar}>
-      <div className={styles.Links}>
+      <div className={styles.Navagation}>
         <a href="/">
           <img src={logo} alt="logo" />
         </a>
-        <a>Projects</a>
-        <a href="/About">About</a>
+        <div className={styles.Links}>
+          <a>Projects</a>
+          <a href="/About">About</a>
+        </div>
       </div>
       <div className={styles.InputSection}>
         <SearchBar></SearchBar>

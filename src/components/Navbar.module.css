@@ -10,6 +10,7 @@ top: 0;
 left: 0;
 box-shadow: 0px 0px 9px 3px rgba(41,41,41,.25);
 z-index: 1;
+text-align: center;
 }
 
 .InputSection{
@@ -19,19 +20,25 @@ z-index: 1;
     gap: 10px;
 }
 
-.Links {
-    display: inline;
+.Navagation {
+    display: flex;
     justify-content: center;
     align-items: center; 
-    gap: 10px; 
+    gap: 20px; 
     height: 100%;
     color: black;
+}
+
+.Links {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    gap: 15px; 
 }
 
 a{
     height: 100%;   
     vertical-align: middle;
-    padding-left: 10px;
 }
 
 img{height: 100%;;
