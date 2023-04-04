@@ -14,7 +14,7 @@ const {
 
 router.get('/', getAllUsers);
 
-router.get('/:user', getUserByName);
+router.get('/:username', getUserByName);
 
 router.delete('/user/:id', deleteUserById);
 
@@ -24,7 +24,7 @@ router.patch('/user/:id', updateUserDetails);
 
 router.post('/', postUser);
 
-router.get('/checkPass/:username/:plaintextpass', comparePassWithHash);
+router.get('/:username/:plaintextpass', comparePassWithHash);
 
 
   

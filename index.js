@@ -1,9 +1,8 @@
 //Npm packages
-const dotenv = require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-
+const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv').config();
 
 //packages within our repo
 const projects = require('./routes/projects');

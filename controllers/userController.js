@@ -1,7 +1,7 @@
 const { User, validate } = require('../models/user');
 const { Project } = require('../models/project');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 //Gets all users and sorts by name
@@ -13,14 +13,14 @@ const getAllUsers = async (req, res) => {
 
 //Get user by username
 const getUserByName = async (req, res) => {
-  const { user } = req.params
+  const { username } = req.params
 
-  const username = await User.findOne({ username: user }).populate('project', '_id, name');
-  if (!username) {
-    return res.status(404).json({ fail: `no user with ${user} found` })
+  const user = await User.findOne({ username: username }).populate('project', '_id, name');
+  if (!user) {
+    return res.status(404).json({ fail: `no user with ${username} found` })
   }
 
-  res.send(username);
+  res.send(user);
 }
 
 //Get user by Id
@@ -127,23 +127,23 @@ const updateUserDetails = async (req, res) => {
 //Need to properly test
 const deleteUserById = async (req, res) => {
   const {id} = req.params
-  const user = await User.findById(id);
+  const user = await User.findOne({_id : id});
+ 
+
   
   if(user == null){
     return res.send({noUser: `User with id ${id} not found`})
   }
-
+  const username = user.username
   const projectId = await user.project
-  if(projectId == null){
-    return res.send({noUser: `Project with id ${id} not found`})
+  
+  if(projectId != null){
+    const findProject = await Project.findByIdAndUpdate(projectId, {$pull : {members : id}})
   }
 
-
-  const findProject = await Project.findByIdAndUpdate(projectId, {$pull : {members : id}})
-  //delete the user
   const removeUser = await User.findByIdAndDelete(id);
+  res.send({removed: `${username} removed`});
 
-  res.send(findProject)
 
 }
 
@@ -153,15 +153,15 @@ const deleteUserById = async (req, res) => {
 //Check if the user input matches the hash. Is it safe to send this as a GET request? I'm not sure...
 const comparePassWithHash = async (req, res) => {
   //Grab user from username
-  const { user } = req.params
-
-  const username = await User.findOne({ username: req.params.username });
-  if (!username) {
-    return res.status(404).json({ fail: `no user with ${user} found` })
+  const { username } = req.params
+  console.log(username)
+  const user = await User.findOne({ username: username });
+  if (!user) {
+    return res.status(404).json({ fail: `no user with ${username} found` })
   }
 
   //
-  bcrypt.compare(req.params.plaintextpass, username.password, function(err, result) {
+  bcrypt.compare(req.params.plaintextpass, user.password, function(err, result) {
     res.send(result);
 });
 }
