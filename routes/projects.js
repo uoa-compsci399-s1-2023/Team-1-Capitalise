@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
 const {
   getAllProjects,
@@ -17,7 +19,7 @@ const {
 router.get('/', getAllProjects);
 
 //Add new project
-router.post('/', addNewProject);
+router.post('/', auth, addNewProject);
 
 //Need to add more projects to properly test this
 router.get('/likes', getProjectsByLikes)
@@ -29,16 +31,16 @@ router.get('/search/:keyword/:semester/:year/:award/:tags', searchProjects)
 router.get('/:projectId', getProject);
 
 //Update a project
-router.patch('/:projectId', updateProjectById)
+router.patch('/:projectId', auth, updateProjectById)
 
 //Delete the project
-router.delete('/:projectId', deleteProject)
+router.delete('/:projectId', [auth, admin], deleteProject)
 
 //Get projects with :badge whatever
 router.get('/badges/:badge', getProjectByBadge);
 
 //This put call appends a user to a project. It is not great.
-router.put('/:id/:userid', addUserToProject);
+router.put('/:id/:userid', auth, addUserToProject);
 
 
   

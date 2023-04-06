@@ -2,6 +2,8 @@ const { User, validate } = require('../models/user');
 const { Project } = require('../models/project');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv').config();
 
 
 //Gets all users and sorts by name
@@ -41,6 +43,15 @@ const getUserById = async (req, res) => {
 const postUser = async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+
+  //Check if the email already exists
+  let checkExistingEmail = await User.findOne({email: req.body.email});
+  if (checkExistingEmail) return res.status(400).send('Email already registered.');
+
+  //Check if the username already exists
+  let checkExistingUsername = await User.findOne({username: req.body.username});
+  if (checkExistingUsername) return res.status(400).send('Username already registered.');
+
   let user = "";
   let password = await bcrypt.hash(req.body.password, 10);
 
@@ -88,7 +99,9 @@ const postUser = async (req, res) => {
 
   user = await user.save();
 
-  res.send(user);
+  const token = user.generateAuthToken();
+
+  res.header('x-auth-token', token).send(user);
 }
 
 //updates the user details besides the user type
@@ -147,24 +160,12 @@ const deleteUserById = async (req, res) => {
 
 }
 
+const getCurrentUser = async (req, res) => {
+  const user = await User.findById(req.user._id).select('-password');
+  res.send(user);
 
-
-
-//Check if the user input matches the hash. Is it safe to send this as a GET request? I'm not sure...
-const comparePassWithHash = async (req, res) => {
-  //Grab user from username
-  const { username } = req.params
-  console.log(username)
-  const user = await User.findOne({ username: username });
-  if (!user) {
-    return res.status(404).json({ fail: `no user with ${username} found` })
-  }
-
-  //
-  bcrypt.compare(req.params.plaintextpass, user.password, function(err, result) {
-    res.send(result);
-});
 }
+
 
 module.exports = {
   getAllUsers,
@@ -172,6 +173,6 @@ module.exports = {
   getUserById,
   postUser,
   updateUserDetails,
-  comparePassWithHash,
   deleteUserById,
+  getCurrentUser,
 }

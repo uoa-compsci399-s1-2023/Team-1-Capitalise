@@ -11,6 +11,9 @@ const projectSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 100
   },
+  teamname: {
+    type: String
+  },
   semester: {
     type: String,
     required: true
@@ -78,6 +81,7 @@ const Project = mongoose.model('Project', projectSchema);
 function validateProject(project) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(100).required(),
+    team: Joi.string(),
     semester: Joi.string().min(7).max(7).required(),
     userId: Joi.array().items(Joi.objectId()),
     repoLink: Joi.string(),

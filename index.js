@@ -7,8 +7,9 @@ const dotenv = require('dotenv').config();
 //packages within our repo
 const projects = require('./routes/projects');
 const users = require('./routes/users');
-const {User} = require('./models/user')
-const {Project} = require('./models/project')
+const auth = require('./routes/auth');
+const {User} = require('./models/user');
+const {Project} = require('./models/project');
 
 
 const app = express();
@@ -22,6 +23,7 @@ mongoose.connect(process.env.MONGO_URL)
 app.use(express.json());
 app.use('/api/projects', projects);
 app.use('/api/users', users);
+app.use('/api/auth', auth);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
