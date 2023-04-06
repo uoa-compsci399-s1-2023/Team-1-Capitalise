@@ -2,19 +2,20 @@ import { AppBar, Box, Button, Toolbar, styled } from "@mui/material";
 import Logo from "../assets/Logo.svg";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
+import zIndex from "@mui/material/styles/zIndex";
 
 const StyledToolBar = styled(Toolbar)({
-  height: "100px",
+  height: "75px",
   width: "100vw",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  padding: "20px",
+  padding: "12px",
 });
 
 const Navbar = () => {
   return (
-    <AppBar position="static" sx={{ bgcolor: "white" }}>
+    <AppBar position="static" sx={{ bgcolor: "white", zIndex: "100" }}>
       <StyledToolBar>
         <Box height="100%" display="flex" gap="15px">
           <Link to="/">
