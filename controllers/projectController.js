@@ -20,18 +20,18 @@ const getProjectsByLikes = async (req, res) => {
 const getProjectByBadge = async (req, res) => {
     const { badge } = req.params;
     //need to check badge
-    const projects = await Project.find({badges : badge})
+    const projects = await Project.find({ badges: badge })
     const projectBadges = ['clientWinner', 'clientRunner', 'peopleWinner', 'peopleRunner'];
 
-    if(!projectBadges.includes(badge)){
-        return res.status(200).json({noBadgeExist : `${badge} badge does not exist`})
+    if (!projectBadges.includes(badge)) {
+        return res.status(200).json({ noBadgeExist: `${badge} badge does not exist` })
     }
 
-    else if(projects.length == 0){
-        return res.status(200).json({noBadgeGiven : `${badge} has not been given out`})
+    else if (projects.length == 0) {
+        return res.status(200).json({ noBadgeGiven: `${badge} has not been given out` })
     }
     res.send(projects);
-    
+
 }
 
 
@@ -138,7 +138,7 @@ const addUserToProject = async (req, res) => {
 const deleteProject = async (req, res) => {
     const { projectId } = req.params
 
-    const project = await Project.findById({ _id: projectId,})
+    const project = await Project.findById({ _id: projectId, })
     //differenet Id type from db id 
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
         return res.status(404).json({ err: "Wrong type of id " });
@@ -147,28 +147,28 @@ const deleteProject = async (req, res) => {
     if (!project) {
         return res.status(404).json({ err: "No Project found" });
     }
-    
-    const members = await project.members   
+
+    const members = await project.members
     members.forEach(async (id) => {
         //Need to properly check and test this method
-        const user = await User.findByIdAndUpdate(id, {project : null})
+        const user = await User.findByIdAndUpdate(id, { project: null })
     })
     const projectName = await project.name
     const deleted = await Project.findByIdAndDelete(projectId)
 
-    res.send({Success: `${projectName} deleted`})
+    res.send({ Success: `${projectName} deleted` })
 
 
 }
 
-const searchProjects = async (req, res) => { 
-    
+const searchProjects = async (req, res) => {
+
     //Build find query depending on the optional parameters
     query = {};
-    (req.params.keyword != -1) ? (query.name = {$regex: req.params.keyword, $options:'i'}) : "";
-    (req.params.semester != -1 && req.params.year != -1) ? (query.semester = {$regex: `${req.params.semester} ${req.params.year}`, $options:'i'}) : "";
+    (req.params.keyword != -1) ? (query.name = { $regex: req.params.keyword, $options: 'i' }) : "";
+    (req.params.semester != -1 && req.params.year != -1) ? (query.semester = { $regex: `${req.params.semester} ${req.params.year}`, $options: 'i' }) : "";
     (req.params.award != -1) ? (query.badges = req.params.award) : "";
-    (req.params.tags != -1) ? (query.tags = {$in: req.params.tags.split(":")}) : "";
+    (req.params.tags != -1) ? (query.tags = { $in: req.params.tags.split(":") }) : "";
 
     //Find relevant projects
     const projects = await Project.find(query).populate('members', '_id, name').sort('name');

@@ -67,6 +67,7 @@ const userSchema = new mongoose.Schema({
 
 });
 
+//Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user. 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({
     _id: this._id,

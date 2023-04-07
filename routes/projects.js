@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+
+//Grabs auth and admin functions from the middleware (for Authorization)
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
@@ -18,7 +20,7 @@ const {
 //Get all projects
 router.get('/', getAllProjects);
 
-//Add new project
+//Add new project. Requires authorization. 
 router.post('/', auth, addNewProject);
 
 //Need to add more projects to properly test this
@@ -33,7 +35,7 @@ router.get('/:projectId', getProject);
 //Update a project
 router.patch('/:projectId', auth, updateProjectById)
 
-//Delete the project
+//Delete the project. Will carry out general authorization first, before admin authorization. 
 router.delete('/:projectId', [auth, admin], deleteProject)
 
 //Get projects with :badge whatever

@@ -45,11 +45,11 @@ const postUser = async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   //Check if the email already exists
-  let checkExistingEmail = await User.findOne({email: req.body.email});
+  let checkExistingEmail = await User.findOne({ email: req.body.email });
   if (checkExistingEmail) return res.status(400).send('Email already registered.');
 
   //Check if the username already exists
-  let checkExistingUsername = await User.findOne({username: req.body.username});
+  let checkExistingUsername = await User.findOne({ username: req.body.username });
   if (checkExistingUsername) return res.status(400).send('Username already registered.');
 
   let user = "";
@@ -108,58 +108,59 @@ const postUser = async (req, res) => {
 //This method also assumes that if a user doesn't update a field
 //The front end form sent will send the user.<parameter> default value 
 const updateUserDetails = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ err: "Wrong type of id " });
-}
+  }
 
   const user = await User.findById(id)
   if (!user) {
-      return res.status(404).json({ err: "No user found" });
+    return res.status(404).json({ err: "No user found" });
   }
 
   //look through request body. Also assumes frontend will only give vistor or graduate options
   // to visitor and only admin can update a user and give them admin userType
   //For now, no authorization
-  const {name, password, email, username, userType} = req.body;
+  const { name, password, email, username, userType } = req.body;
   const encrypted = await bcrypt.hash(password, 10);
   var updateUser;
-  if(userType != 'admin'){
-    updateUser = await User.findByIdAndUpdate(id, {name: name, password: encrypted, email : email, username:username, userType : userType})
+  if (userType != 'admin') {
+    updateUser = await User.findByIdAndUpdate(id, { name: name, password: encrypted, email: email, username: username, userType: userType })
   }
 
-  else{
-    updateUser = await User.findByIdAndUpdate(id, {name: name, password: encrypted, email : email, username:username})
+  else {
+    updateUser = await User.findByIdAndUpdate(id, { name: name, password: encrypted, email: email, username: username })
   }
- 
 
- res.send(updateUser)
+
+  res.send(updateUser)
 }
 
 //Need to properly test
 const deleteUserById = async (req, res) => {
-  const {id} = req.params
-  const user = await User.findOne({_id : id});
- 
+  const { id } = req.params
+  const user = await User.findOne({ _id: id });
 
-  
-  if(user == null){
-    return res.send({noUser: `User with id ${id} not found`})
+
+
+  if (user == null) {
+    return res.send({ noUser: `User with id ${id} not found` })
   }
   const username = user.username
   const projectId = await user.project
-  
-  if(projectId != null){
-    const findProject = await Project.findByIdAndUpdate(projectId, {$pull : {members : id}})
+
+  if (projectId != null) {
+    const findProject = await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
   }
 
   const removeUser = await User.findByIdAndDelete(id);
-  res.send({removed: `${username} removed`});
+  res.send({ removed: `${username} removed` });
 
 
 }
 
+//users the _id attribute from the JSON web token to grab the session user. Excludes their password.
 const getCurrentUser = async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.send(user);

@@ -5,6 +5,7 @@ const {
     authenticateUser,
 } = require('../controllers/authController')
 
+//Authenticates a user. 
 router.post('/', authenticateUser);
 
 
