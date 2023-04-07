@@ -14,36 +14,21 @@ const Projects = () => {
   
   const [projects, setProjects] = useState<TProject[]>([]);
 
-  // Search filter states
-  const [keywords, setKeywords] = useState("-1");
-  const [selectedCategory, setSelectedCategory] = useState("-1");
-  const [selectedSemester, setSelectedSemester] = useState("-1");
-  const [selectedAward, setSelectedAward] = useState("-1");
-  const [sortBy, setSortBy] = useState("-1");
-
-  
-  // Props object for SearchFilters component
-  const searchFilterProps: TSearchFilterProps = {
-    keywords: keywords,
-    setKeywords: setKeywords,
-    category: selectedCategory,
-    setCategory: setSelectedCategory,
-    award: selectedAward,
-    setAward: setSelectedAward,
-    semester: selectedSemester,
-    setSemester: setSelectedSemester,
-    sortby: sortBy,
-    setSortby: setSortBy
-    } 
-
+  const [searchFilters, setSearchFilters] = useState<TSearchFilterProps>( {
+    keywords: '',
+    category: '',
+    semester: '',
+    award: '',
+    sortby: ''
+  } )
 
   useEffect(() => {
     async function fetchProjects() {
-      const newProjects = await getProjectsSearch(keywords);
+      const newProjects = await getProjectsSearch({...searchFilters});
       setProjects(newProjects);
     }
     fetchProjects();
-  }, [keywords]);
+  }, [searchFilters]);
 
   return (
     <Box bgcolor="#f9f9f9">
@@ -52,7 +37,8 @@ const Projects = () => {
         <Stack display="flex" direction="row" height="100%">
           <Box bgcolor="white" width="340px" padding="30px 40px">
             <SearchFilters 
-              {...searchFilterProps}
+              currFilters={searchFilters}
+              setFilters={setSearchFilters}
             />
           </Box>
           <Container>

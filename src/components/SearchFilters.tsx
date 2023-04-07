@@ -1,39 +1,37 @@
-import React, {SetStateAction} from 'react'
+import React, {ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction} from 'react'
 
-import { Select, FormControl, InputLabel, MenuItem, Box} from '../mui'
-import TextField from '@mui/material/TextField'
-
+import { Select, FormControl, InputLabel, MenuItem, Box, TextField, SelectChangeEvent} from '../mui'
 
 export type TSearchFilterProps = {
   keywords: string,
-  setKeywords: React.Dispatch<SetStateAction<string>>,
   category: string,
-  setCategory: React.Dispatch<SetStateAction<string>>,
   semester: string,
-  setSemester: React.Dispatch<SetStateAction<string>>,
   award: string,
-  setAward: React.Dispatch<SetStateAction<string>>,
   sortby: string,
-  setSortby: React.Dispatch<SetStateAction<string>>,
 }
 
+interface props {
+  currFilters: TSearchFilterProps,
+  setFilters: Dispatch<SetStateAction<TSearchFilterProps>>
+}
 
-export default function SearchFilters({
-  keywords, setKeywords,
-  category, setCategory,
-  semester, setSemester,
-  award, setAward,
-  sortby, setSortby
-}: TSearchFilterProps) {
+export default function SearchFilters({currFilters, setFilters}: props ) {
   
   // Need to replace these with api calls
-  const categories: string[] =  ['All (Default)', 'Web Development' , 'Data Science',  'Computer Vision', 'Mobile App']
+  const categories: string[] =  ['All (Default)', 'Web Development' , 'Data Science',  'Computer Vision', 'Mobile Development']
   const semesters: string[] =  ['All (Default)', '2022 Sem 1' , '2022 Sem 2', '2023 Sem 1']
   const awards: string[] = ['All (Default)', 'Excellence', 'Community Impact', 'People\'s choice']
   const sortbys: string[] = ['Time (newest first)', 'Time (oldest first)', 'Most liked', 'Name']
 
   const size = 'small';
   const variant = 'outlined';
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
+    setFilters({
+      ...currFilters,
+      [e.target.name]: e.target.value
+    })
+  }
 
   return (
     <Box
@@ -50,8 +48,9 @@ export default function SearchFilters({
         size = {size}
         id="keywords-textfield"
         label="Keywords"
-        value={keywords}
-        onChange={e => setKeywords(e.target.value)}
+        name='keywords'
+        value={currFilters.keywords}
+        onChange={handleChange}
         fullWidth
         variant={variant}
       />
@@ -61,9 +60,10 @@ export default function SearchFilters({
         <Select
           labelId="category-select-label"
           id="category-select"
-          value={category}
+          name="category"
+          value={currFilters.category}
           label="Category"
-          onChange={e => setCategory(e.target.value)}
+          onChange={handleChange}
         >
           {categories.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
@@ -74,9 +74,10 @@ export default function SearchFilters({
         <Select
           labelId="semester-select-label"
           id="semester-select"
-          value={semester}
+          name="semester"
+          value={currFilters.semester}
           label="Semester"
-          onChange={e => setSemester(e.target.value)}
+          onChange={handleChange}
         >
           {semesters.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
@@ -87,9 +88,10 @@ export default function SearchFilters({
         <Select
           labelId="award-select-label"
           id="award-select"
-          value={award}
+          name="award"
+          value={currFilters.award}
           label="Award"
-          onChange={e => setAward(e.target.value)}
+          onChange={handleChange}
         >
           {awards.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
@@ -100,9 +102,10 @@ export default function SearchFilters({
         <Select
           labelId="sortby-select-label"
           id="sortby-select"
-          value={sortby}
+          name="sortby"
+          value={currFilters.sortby}
           label="Sort by"
-          onChange={e => setSortby(e.target.value)}
+          onChange={handleChange}
         >
           {sortbys.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
