@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ProjectCard from "../components/ProjectCard";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { TProject, getProjects } from "../api/getProjects";
+import SearchFilters from "../components/SearchFilters";
 
 const Projects = () => {
   const [projects, setProjects] = useState<TProject[]>([]);
@@ -21,8 +22,8 @@ const Projects = () => {
       <Stack display="flex" direction="column" height="100%">
         <Navbar />
         <Stack display="flex" direction="row" height="100%">
-          <Box bgcolor="white" minWidth="220px">
-            Search :)
+          <Box bgcolor="white" width="340px" padding="30px 40px">
+            <SearchFilters />
           </Box>
           <Container>
             <Box display="flex" justifyContent="center" padding=" 30px 0px">
