@@ -1,17 +1,31 @@
-import React, {useState} from 'react'
+import React, {SetStateAction} from 'react'
 
 import { Select, FormControl, InputLabel, MenuItem, Box} from '../mui'
 import TextField from '@mui/material/TextField'
 
 
-export default function SearchFilters() {
-  
-  const [keywords, setKeywords] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [selectedAward, setSelectedAward] = useState("");
-  const [sortBy, setSortBy] = useState("");
+export type TSearchFilterProps = {
+  keywords: string,
+  setKeywords: React.Dispatch<SetStateAction<string>>,
+  category: string,
+  setCategory: React.Dispatch<SetStateAction<string>>,
+  semester: string,
+  setSemester: React.Dispatch<SetStateAction<string>>,
+  award: string,
+  setAward: React.Dispatch<SetStateAction<string>>,
+  sortby: string,
+  setSortby: React.Dispatch<SetStateAction<string>>,
+}
 
+
+export default function SearchFilters({
+  keywords, setKeywords,
+  category, setCategory,
+  semester, setSemester,
+  award, setAward,
+  sortby, setSortby
+}: TSearchFilterProps) {
+  
   // Need to replace these with api calls
   const categories: string[] =  ['All (Default)', 'Web Development' , 'Data Science',  'Computer Vision', 'Mobile App']
   const semesters: string[] =  ['All (Default)', '2022 Sem 1' , '2022 Sem 2', '2023 Sem 1']
@@ -47,9 +61,9 @@ export default function SearchFilters() {
         <Select
           labelId="category-select-label"
           id="category-select"
-          value={selectedCategory}
+          value={category}
           label="Category"
-          onChange={e => setSelectedCategory(e.target.value)}
+          onChange={e => setCategory(e.target.value)}
         >
           {categories.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
@@ -60,9 +74,9 @@ export default function SearchFilters() {
         <Select
           labelId="semester-select-label"
           id="semester-select"
-          value={selectedSemester}
+          value={semester}
           label="Semester"
-          onChange={e => setSelectedSemester(e.target.value)}
+          onChange={e => setSemester(e.target.value)}
         >
           {semesters.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
@@ -73,9 +87,9 @@ export default function SearchFilters() {
         <Select
           labelId="award-select-label"
           id="award-select"
-          value={selectedAward}
+          value={award}
           label="Award"
-          onChange={e => setSelectedAward(e.target.value)}
+          onChange={e => setAward(e.target.value)}
         >
           {awards.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
@@ -86,9 +100,9 @@ export default function SearchFilters() {
         <Select
           labelId="sortby-select-label"
           id="sortby-select"
-          value={sortBy}
+          value={sortby}
           label="Sort by"
-          onChange={e => setSortBy(e.target.value)}
+          onChange={e => setSortby(e.target.value)}
         >
           {sortbys.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
         </Select>
