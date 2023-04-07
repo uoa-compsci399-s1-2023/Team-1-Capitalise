@@ -6,6 +6,17 @@ export type TProject = {
   semester: string;
   repoLink: string;
   likes: number;
+  content: [
+    {
+      tab: [
+        {
+          photoGallery: [];
+          text: string;
+          photo: string;
+        }
+      ];
+    }
+  ];
   badges: "clientWinner" | "clientRunner" | "peopleWinner" | "peopleRunner";
 };
 

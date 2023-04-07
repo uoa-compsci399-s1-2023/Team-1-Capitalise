@@ -10,10 +10,10 @@ import { Box } from "@mui/material";
 interface Props {
   title: string;
   semester: string;
-  image?: string;
+  image: string;
 }
 
-const ProjectCard = ({ title, semester, image = "" }: Props) => {
+const ProjectCard = ({ title, semester, image }: Props) => {
   return (
     <Card sx={{ maxWidth: 320, width: 320, border: "none", boxShadow: "none" }}>
       <CardMedia component="img" alt="image" height="110" image={image} />

@@ -24,7 +24,7 @@ const Projects = () => {
           <Box bgcolor="white" minWidth="220px">
             Search :)
           </Box>
-          <Container>
+          <Container maxWidth={false}>
             <Box display="flex" justifyContent="center" padding=" 30px 0px">
               <h1>Projects</h1>
             </Box>
@@ -39,6 +39,11 @@ const Projects = () => {
                   <ProjectCard
                     title={project.name}
                     semester={project.semester}
+                    image={
+                      typeof project.content[0] != "undefined"
+                        ? project.content[0].tab[0].photo
+                        : ""
+                    }
                   ></ProjectCard>
                 </Grid2>
               ))}

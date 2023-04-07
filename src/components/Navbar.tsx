@@ -2,7 +2,6 @@ import { AppBar, Box, Button, Toolbar, styled } from "@mui/material";
 import Logo from "../assets/Logo.svg";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import zIndex from "@mui/material/styles/zIndex";
 
 const StyledToolBar = styled(Toolbar)({
   height: "75px",
