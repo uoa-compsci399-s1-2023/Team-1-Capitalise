@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const { userSchema } = require('./user');
+const { commentSchema } = require('./comment');
 
 Joi.objectId = require("joi-objectid")(Joi);
 
@@ -17,6 +18,11 @@ const projectSchema = new mongoose.Schema({
   semester: {
     type: String,
     required: true
+  },
+  category: {
+    type: String,
+    required: true,
+    enum: ['Mobile Development', 'Game Development', 'Web Development'],
   },
   repoLink: {
     type: String
@@ -53,23 +59,13 @@ const projectSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  comments: {
-    type: new mongoose.Schema({
-      _id: false,
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      userComment: {
-        type: String,
-        minlength: 1,
-        maxlength: 500
-      }
-    })
-  },
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }],
   badges: {
     type: String,
-    enum: ['clientWinner', 'clientRunner', 'peopleWinner', 'peopleRunner'],
+    enum: ['CommunityImpact', 'TopExcellence', 'PeoplesChoice'],
   },
   tags: {
     type: [String]
@@ -81,7 +77,7 @@ const Project = mongoose.model('Project', projectSchema);
 function validateProject(project) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(100).required(),
-    team: Joi.string(),
+    teamname: Joi.string(),
     semester: Joi.string().min(7).max(7).required(),
     userId: Joi.array().items(Joi.objectId()),
     repoLink: Joi.string(),
@@ -94,7 +90,8 @@ function validateProject(project) {
         video: Joi.string()
       })).required()
     })),
-    badges: Joi.string().valid('clientWinner', 'clientRunner', 'peopleWinner', 'peopleRunner'),
+    badges: Joi.string().valid('CommunityImpact', 'TopExcellence', 'PeoplesChoice'),
+    category: Joi.string().valid('Mobile Development', 'Game Development', 'Web Development').required(),
     tags: Joi.array().items(Joi.string())
   });
 

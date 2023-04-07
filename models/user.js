@@ -2,7 +2,8 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
-
+const { commentSchema } = require('./comment');
+Joi.objectId = require("joi-objectid")(Joi);
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -44,18 +45,8 @@ const userSchema = new mongoose.Schema({
     ref: 'Project'
   }],
   myComments: [{
-    type: new mongoose.Schema({
-      projectId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Project'
-      },
-      comment: {
-        type: String,
-        required: true,
-        minLength: 1,
-        maxLength: 500
-      }
-    })
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
   }],
 
   userType: {

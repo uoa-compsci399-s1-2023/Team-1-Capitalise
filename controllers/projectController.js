@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Project, validate } = require('../models/project');
 const { User } = require('../models/user');
+const { Comment, validateComment } = require('../models/comment');
 
 //Get all projects
 const getAllProjects = async (req, res) => {
@@ -72,20 +73,18 @@ const updateProjectById = async (req, res) => {
     res.status(200).json(project);
 }
 
-
 const addNewProject = async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await User.findById(req.body.userId);
-    if (!user) return res.status(400).send('Invalid user.');
-
     let project = new Project({
         name: req.body.name,
         semester: req.body.semester,
+        teamname: req.body.teamname,
+        category: req.body.category,
         repoLink: req.body.repoLink,
         members: [{
-            _id: user._id
+            _id: req.user._id
         }],
         content: req.body.content,
         likes: 0,
@@ -93,29 +92,67 @@ const addNewProject = async (req, res) => {
         tags: req.body.tags
     });
 
-
-    //Add project to user's project attribute. 
-    user.project = {
-        _id: project._id
-    };
+    const user = await User.findByIdAndUpdate(req.user._id, {
+        project: {
+            _id: project._id
+        }
+    });
 
     project = await project.save();
-    updateUser = await user.save();
 
     res.send(project);
 }
 
+const writeComment = async (req, res) => {
+    const { error } = validateComment(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
+    let comment = new Comment({
+        project: req.body.projectId,
+        user: req.user._id,
+        commentBody: req.body.commentBody
+    });
+
+    const user = await User.findByIdAndUpdate(req.user._id, {
+        //Appends
+        $push: { myComments: comment._id }
+    });
+
+    if (!user) {
+        return res.status(404).json({ err: "No user found" });
+    }
+
+    const project = await Project.findByIdAndUpdate(req.body.projectId, {
+        //Appends
+        $push: { comments: comment._id }
+    });
+
+    if (!project) {
+        return res.status(404).json({ err: "No project found" });
+    }
+
+    comment = await comment.save();
+
+    res.send(comment);
+}
+
+//Endpoint is for adding team members only!
 const addUserToProject = async (req, res) => {
 
     const myProj = await Project.findById(req.params.id);
 
+    if (!myProj.members.includes(req.user._id)) {
+        return res.status(403).send("You do not belong to the project you are appending another user to!");
+    } else if (req.user._id == req.params.userid && myProj.members.includes(req.user._id)) {
+        return res.status(400).send("Error - You already belong to the project!");
+    } else if (myProj.members.includes(req.params.userid)) {
+        return res.status(400).send("Error - This user already belongs to the project!");
+    }
 
     //Adds the project to the User.
     const user = await User.findByIdAndUpdate(req.params.userid, {
         project: {
-            _id: myProj._id,
-            projectName: myProj.name
+            _id: myProj._id
         }
     });
 
@@ -125,11 +162,10 @@ const addUserToProject = async (req, res) => {
     const project = await Project.findByIdAndUpdate(req.params.id,
         {
             //Appends
-            $push: { members: user }
-        }, { new: true });
+            $push: { members: req.params.userid }
+        });
 
     if (!project) return res.status(404).send('The project with the given ID was not found.');
-
 
     res.send(project);
 }
@@ -187,4 +223,5 @@ module.exports = {
     addUserToProject,
     deleteProject,
     searchProjects,
+    writeComment,
 }

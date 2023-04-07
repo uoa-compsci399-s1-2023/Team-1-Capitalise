@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
+const { Comment, validateComment } = require('../models/comment');
 
 
 //Gets all users and sorts by name
