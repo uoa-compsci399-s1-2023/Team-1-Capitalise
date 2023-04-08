@@ -15,7 +15,9 @@ const {
   addUserToProject,
   deleteProject,
   searchProjects,
-  writeComment
+  writeComment,
+  deleteComment,
+
 } = require('../controllers/projectController')
 
 //Get all projects
@@ -47,6 +49,9 @@ router.put('/:id/:userid', auth, addUserToProject);
 
 //Writes a comment. Appends it to the relevant user and project. 
 router.post('/comment', auth, writeComment);
+
+//Delete a comment. Removes comment from relevant user and project. 
+router.delete('/comment/:commentId', auth, deleteComment);
 
 
 
