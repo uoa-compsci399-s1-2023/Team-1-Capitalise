@@ -1,0 +1,34 @@
+import React from 'react'
+
+import { Container, Box, Grid2 } from '../mui'
+import ProjectCard from './ProjectCard'
+import { TProject } from '../api/getProjects'
+
+interface props {
+  projects: TProject[]
+}
+
+export default function ProjectsGrid({ projects }: props) {
+  return (
+    <Container>
+      <Box display="flex" justifyContent="center" padding=" 30px 0px">
+        <h1>Projects</h1>
+      </Box>
+      <Grid2
+        container
+        gap="50px"
+        justifyContent="center"
+        sx={{ margin: "px" }}
+      >
+        {projects.map((project) => (
+          <Grid2 key={project._id}>
+            <ProjectCard
+              title={project.name}
+              semester={project.semester}
+            ></ProjectCard>
+          </Grid2>
+        ))}
+      </Grid2>
+    </Container>
+  )
+}

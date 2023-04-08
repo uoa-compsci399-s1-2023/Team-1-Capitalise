@@ -5,7 +5,10 @@ import Home from "./routes/Home";
 import About from "./routes/About";
 import "./index.css";
 import "@fontsource/inter";
+import { ThemeProvider } from "./mui";
+
 import Projects from "./routes/Projects";
+import customTheme1 from "./themes/custom1"
 
 const router = createBrowserRouter([
   {
@@ -24,6 +27,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />{" "}
+    <ThemeProvider theme={customTheme1}>
+      <RouterProvider router={router} />{" "}
+    </ThemeProvider>
   </React.StrictMode>
 );

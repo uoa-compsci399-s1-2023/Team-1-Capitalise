@@ -1,6 +1,6 @@
 import React, {ChangeEvent, Dispatch, SetStateAction} from 'react'
 
-import { Select, FormControl, InputLabel, MenuItem, Box, TextField, SelectChangeEvent} from '../mui'
+import { Select, FormControl, InputLabel, MenuItem, Box, TextField, SelectChangeEvent, Typography} from '../mui'
 
 export type TSearchFilterProps = {
   keywords: string,
@@ -35,14 +35,18 @@ export default function SearchFilters({currFilters, setFilters}: props ) {
 
   return (
     <Box
-      component="form"
+      bgcolor="white" 
+      width="340px"
+      height="100%"
+      padding="30px 40px"
+      component="div"
       sx={{
         mt: 1,
       }}
     >
-      <h2>Refine search</h2>
+      <Typography variant='h5' mb={2} >Refine search</Typography>
 
-      <TextField sx={{ mt: 2, mb: 4 }}
+      <TextField sx={{ mb: 4 }}
         size = {size}
         id="keywords-textfield"
         label="Keywords"

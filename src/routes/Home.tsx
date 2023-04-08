@@ -29,14 +29,14 @@ function Home() {
   //dw about this just the spinny logo END
 
   return (
-    <Box>
+    <Box width="100%">
+      <Navbar />
       <Stack
         display="flex"
         direction="column"
         height="100%"
         alignItems="center"
       >
-        <Navbar />
         <Box flex={1} display="flex" justifyItems="center" alignItems="center">
           <AnimatedImg
             src={Logo}
