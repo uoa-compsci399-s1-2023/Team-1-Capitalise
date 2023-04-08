@@ -26,20 +26,27 @@ const settings = ["Login", "Register"];
 
 const StyledToolBar = styled(Toolbar)({
   height: "75px",
-  width: "100vw",
+  padding: '2px 10%',
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
-  padding: "12px",
+  color: "black",
+  
 });
 
 const NavButtons = styled(Button)({
-  my: 2,
   color: "black",
   display: "block",
-  fontSize: 25,
-  fontFamily: "Roboto",
+  fontSize: 20,
+  fontFamily: "Inter",
   fontWeight: 400,
+  letterSpacing: 2,
+  textTransform: "capitalize",
+  '&:hover': {
+  
+
+    
+  }
+
 });
 {/*Navigation Bar*/}
 function ResponsiveAppBar() {
@@ -72,20 +79,21 @@ function ResponsiveAppBar() {
   };
   {/*App Bar*/}
   return (
-    <AppBar position="static" sx={{ bgcolor: "white", zIndex: "100" }}>
+    <AppBar position="static" sx={{bgcolor: "white", zIndex: "100"}}>
       <Container maxWidth={false} disableGutters>
-        <StyledToolBar>
+        <StyledToolBar disableGutters>
           {/*Desktop Logo*/}
-          <Box height="100%" display="flex" gap="25px">
+          <Box display="flex" gap="25px">
             <Link to="/">
               <Box
                 component="img"
                 src={Logo}
                 alt="logo"
-                padding="5px 100px"
+                
                 sx={{
+                  width: '200px',
+                  height: 'auto',
                   flexGrow: 1,
-                  height: "100%",
                   display: { xs: "none", md: "flex" },
                 }}
               ></Box>
@@ -144,18 +152,17 @@ function ResponsiveAppBar() {
                 alt="logo"
                 sx={{
                   flexGrow: 1,
-
-                  padding:"5px 100px",
-                  height: "100%",
+                  width: '200px',
+                  height: 'auto',
                   display: { xs: "flex", md: "none" },
-                 
+                  boxSizing: "border-box"
                 }}
               ></Box>
             </Link>
 
             {/* The nav barpage links*/}
             <Box
-              gap="50px"
+              gap="15px"
               sx={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -180,8 +187,7 @@ function ResponsiveAppBar() {
           <Box
             gap="20px"
             sx={{
-              justifyContent: "right",
-              flexGrow: 1,
+
               display: { xs: "none", md: "flex" },
             }}
           >
@@ -190,7 +196,7 @@ function ResponsiveAppBar() {
             <Button variant="contained">Sign up</Button>
           </Box>
           {/*RHS for Mobile/Smaller Screens*/}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none"}, justifyContent: 'flex-end'}}>
+          <Box sx={{flexGrow: 1, display: { xs: "flex", md: "none"}, justifyContent: 'flex-end'}}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Not Logged In" src="" />
