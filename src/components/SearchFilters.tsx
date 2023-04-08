@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction} from 'react'
+import React, {ChangeEvent, Dispatch, SetStateAction} from 'react'
 
 import { Select, FormControl, InputLabel, MenuItem, Box, TextField, SelectChangeEvent} from '../mui'
 
@@ -19,7 +19,7 @@ export default function SearchFilters({currFilters, setFilters}: props ) {
   
   // Need to replace these with api calls
   const categories: string[] =  ['All (Default)', 'Web Development' , 'Data Science',  'Computer Vision', 'Mobile Development']
-  const semesters: string[] =  ['All (Default)', '2022 Sem 1' , '2022 Sem 2', '2023 Sem 1']
+  const semesters: string[] =  ['All (Default)', 'S1 2022' , 'S2 2022', 'S1 2021', 'S2 2021']
   const awards: string[] = ['All (Default)', 'Excellence', 'Community Impact', 'People\'s choice']
   const sortbys: string[] = ['Time (newest first)', 'Time (oldest first)', 'Most liked', 'Name']
 
@@ -39,8 +39,6 @@ export default function SearchFilters({currFilters, setFilters}: props ) {
       sx={{
         mt: 1,
       }}
-      noValidate
-      autoComplete="off"
     >
       <h2>Refine search</h2>
 
@@ -65,7 +63,7 @@ export default function SearchFilters({currFilters, setFilters}: props ) {
           label="Category"
           onChange={handleChange}
         >
-          {categories.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+          {categories.map((c, i) => <MenuItem key={i} value={c}>{c}</MenuItem>)}
         </Select>
       </FormControl>
 
@@ -79,7 +77,7 @@ export default function SearchFilters({currFilters, setFilters}: props ) {
           label="Semester"
           onChange={handleChange}
         >
-          {semesters.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+          {semesters.map((c, i) => <MenuItem key={i} value={c}>{c}</MenuItem>)}
         </Select>
       </FormControl>
 
@@ -93,7 +91,7 @@ export default function SearchFilters({currFilters, setFilters}: props ) {
           label="Award"
           onChange={handleChange}
         >
-          {awards.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+          {awards.map((c, i) => <MenuItem key={i} value={c}>{c}</MenuItem>)}
         </Select>
       </FormControl>
 
@@ -107,7 +105,7 @@ export default function SearchFilters({currFilters, setFilters}: props ) {
           label="Sort by"
           onChange={handleChange}
         >
-          {sortbys.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
+          {sortbys.map((c, i) => <MenuItem key={i} value={c}>{c}</MenuItem>)}
         </Select>
       </FormControl>
     </Box>
