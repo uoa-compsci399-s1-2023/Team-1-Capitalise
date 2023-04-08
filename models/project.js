@@ -2,6 +2,7 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const { userSchema } = require('./user');
 const { commentSchema } = require('./comment');
+const { tagSchema } = require('./tag');
 
 Joi.objectId = require("joi-objectid")(Joi);
 
@@ -67,9 +68,10 @@ const projectSchema = new mongoose.Schema({
     type: String,
     enum: ['CommunityImpact', 'TopExcellence', 'PeoplesChoice'],
   },
-  tags: {
-    type: [String]
-  }
+  tags: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag'
+  }],
 });
 
 const Project = mongoose.model('Project', projectSchema);
