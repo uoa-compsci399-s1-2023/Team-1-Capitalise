@@ -58,9 +58,22 @@ const getProject = async (req, res) => {
 
 
 const updateProjectById = async (req, res) => {
+    const currentId = req.user._id;
+
     const { projectId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
-        return res.status(404).json({ err: "No project found" });
+        return res.status(404).send({ err: "No project found" });
+    }
+
+    //Get members of this project
+    const projectMembers = (await Project.findById(projectId)).members;
+
+    //Check if user is part of the project
+    const userIsMember = projectMembers.includes(currentId);
+
+
+    if(!userIsMember){
+        return res.status(403).send({err: "You are not part of this project"})
     }
 
     //Changes what ever is different
@@ -70,7 +83,8 @@ const updateProjectById = async (req, res) => {
     if (!project) {
         return res.status(404).json({ err: "No Project found" });
     }
-    res.status(200).json(project);
+
+    return res.status(200).json(project);
 }
 
 const addNewProject = async (req, res) => {
@@ -177,11 +191,11 @@ const deleteProject = async (req, res) => {
     const project = await Project.findById({ _id: projectId, })
     //differenet Id type from db id 
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
-        return res.status(404).json({ err: "Wrong type of id " });
+        return res.status(404).send({ err: "No project found" });
     }
     //If no project is found
     if (!project) {
-        return res.status(404).json({ err: "No Project found" });
+        return res.status(404).send({ err: "No Project found" });
     }
 
     const members = await project.members
@@ -213,6 +227,62 @@ const searchProjects = async (req, res) => {
 }
 
 
+const likeComment = async (req, res) => {
+    const currentId = req.user._id
+    const {projectId} = req.params
+
+
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+        return res.status(404).send({ err: "No project found" });
+    }
+
+    //check if project exist
+    const project = await Project.findById(projectId);
+    if(!project){
+        return res.status(404).send({err: "project not found"})
+    }
+
+    //Get members of this project
+    const projectMembers = (await Project.findById(projectId)).members;
+
+    //Check if user is part of the project
+    const userIsMember = projectMembers.includes(currentId);
+
+    //If user is part of the project
+    if(userIsMember){
+        return res.status(403).send({err: "You are not allowed to like your own project"})
+    }
+    const usersLikedProjects = (await User.findById(currentId)).likedProjects
+
+    //Check if project Id is in the users likes attribute
+    
+    //If true
+    //Decrement likes on project
+    //Remove the liked project from users.LikedProjects
+    if(usersLikedProjects.includes(projectId)){
+        
+        const updateProject = await Project.findByIdAndUpdate(projectId, {$inc: {likes: -1}})
+        const likedProjects = usersLikedProjects.filter(project => {
+            return project._id != projectId
+        })
+        await User.findByIdAndUpdate(currentId, {likedProjects : likedProjects})
+        return res.status(200).send(updateProject)
+    }  
+
+    //If false 
+    //Add the project Id to user
+    await User.findByIdAndUpdate(currentId, {$push: {likedProjects : projectId}})
+
+    //Increment project.likes
+    const likedProject = await Project.findByIdAndUpdate(projectId, {$inc: {likes: 1}})
+
+    return res.status(200).send(likedProject)
+
+}
+
+
+
+
 module.exports = {
     getAllProjects,
     getProjectsByLikes,
@@ -224,4 +294,5 @@ module.exports = {
     deleteProject,
     searchProjects,
     writeComment,
+    likeComment
 }

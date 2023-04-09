@@ -15,7 +15,8 @@ const {
   addUserToProject,
   deleteProject,
   searchProjects,
-  writeComment
+  writeComment,
+  likeComment,
 } = require('../controllers/projectController')
 
 //Get all projects
@@ -48,6 +49,7 @@ router.put('/:id/:userid', auth, addUserToProject);
 //Writes a comment. Appends it to the relevant user and project. 
 router.post('/comment', auth, writeComment);
 
-
+//Create a route that likes or unlikes a project
+router.patch('/:projectId/like', auth, likeComment)
 
 module.exports = router;

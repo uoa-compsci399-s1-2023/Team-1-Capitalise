@@ -109,12 +109,18 @@ const postUser = async (req, res) => {
 //This method also assumes that if a user doesn't update a field
 //The front end form sent will send the user.<parameter> default value 
 const updateUserDetails = async (req, res) => {
+  
   const { id } = req.params;
+
+  //If user logged in is trying to update someone else
+  if(id != req.user._id){
+    return res.status(403).send({err: "You are trying to edit someone else"})
+  }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ err: "Wrong type of id " });
   }
-
+  
   const user = await User.findById(id)
   if (!user) {
     return res.status(404).json({ err: "No user found" });
@@ -138,16 +144,19 @@ const updateUserDetails = async (req, res) => {
   res.send(updateUser)
 }
 
-//Need to properly test
 const deleteUserById = async (req, res) => {
   const { id } = req.params
   const user = await User.findOne({ _id: id });
 
-
-
   if (user == null) {
     return res.send({ noUser: `User with id ${id} not found` })
   }
+
+  if(id != req.user._id){
+    return res.status(403).send({err : "You are trying to delete someone else!"})
+
+  }
+
   const username = user.username
   const projectId = await user.project
 
@@ -156,17 +165,78 @@ const deleteUserById = async (req, res) => {
   }
 
   const removeUser = await User.findByIdAndDelete(id);
-  res.send({ removed: `${username} removed` });
-
+  res.status(200).send({ removed: `${username} removed` });
 
 }
 
-//users the _id attribute from the JSON web token to grab the session user. Excludes their password.
+
+//Need to properly test
+const adminDeleteUserById = async (req, res) => {
+  const { id } = req.params
+  if(id == req.user._id){
+    return res.send(403).send({err: "You are not allowed to delete yourself"})
+  }
+
+  const user = await User.findOne({ _id: id });
+  if (user == null) {
+    return res.send({ noUser: `User with id ${id} not found` })
+  }
+
+  if(id != req.user._id){
+    return res.status(403).send({err : "You are trying to delete someone else!"})
+
+  }
+
+  const username = user.username
+  const projectId = await user.project
+
+  if (projectId != null) {
+    const findProject = await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
+  }
+
+  const removeUser = await User.findByIdAndDelete(id);
+  res.status(200).send({ removed: `${username} removed` });
+
+}
+
+const adminUpdateUserDetails = async (req, res) => {
+    const { id } = req.params;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ err: "Wrong type of id " });
+    }
+    
+    const user = await User.findById(id)
+    if (!user) {
+      return res.status(404).json({ err: "No user found" });
+    }
+  
+    //look through request body. Also assumes frontend will only give vistor or graduate options
+    // to visitor and only admin can update a user and give them admin userType
+    //For now, no authorization
+    const { name, password, email, username, userType } = req.body;
+    const encrypted = await bcrypt.hash(password, 10);
+
+    //Admin can make other users admin
+    updateUser = await User.findByIdAndUpdate(id, { name: name, password: encrypted, email: email, username: username, userType: userType })
+
+  
+    res.send(updateUser)
+
+}
+
+
+
+//uses the _id attribute from the JSON web token to grab the session user. Excludes their password.
 const getCurrentUser = async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.send(user);
-
 }
+
+
+
+
+
 
 
 module.exports = {
@@ -177,4 +247,6 @@ module.exports = {
   updateUserDetails,
   deleteUserById,
   getCurrentUser,
+  adminDeleteUserById,
+  adminUpdateUserDetails
 }

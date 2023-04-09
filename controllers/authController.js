@@ -9,7 +9,6 @@ const dotenv = require('dotenv').config();
 
 //Main authentication handler
 const authenticateUser = async (req, res) => {
-
     //Use Joi to validate the req.body. POST JSON object should have a username and password.
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -27,7 +26,6 @@ const authenticateUser = async (req, res) => {
             res.send(token);
         }
     });
-
 }
 
 //Creates a Joi schema which requires a JSON object containing username and password specifiied by the client.
