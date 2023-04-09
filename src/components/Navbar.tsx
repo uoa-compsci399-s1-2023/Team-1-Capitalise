@@ -1,14 +1,18 @@
 import * as React from "react";
+import AdbIcon from "@mui/icons-material/Adb";
 import {
   AppBar,
   Avatar,
   Box,
   Button,
+  Divider,
+  ListItemIcon,
   Menu,
   Toolbar,
   Tooltip,
   styled,
 } from "@mui/material";
+import LoginIcon from "@mui/icons-material/Login";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
 import { Link } from "react-router-dom";
@@ -20,37 +24,40 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import { alignProperty } from "@mui/material/styles/cssUtils";
+import {
+  PersonAdd,
+  Settings,
+  Logout,
+  Login,
+  AppRegistration,
+} from "@mui/icons-material";
 
 const pages = ["About", "Projects"];
 const settings = ["Login", "Register"];
 
 const StyledToolBar = styled(Toolbar)({
   height: "75px",
-  padding: '2px 10%',
-  display: "flex",
-  justifyContent: "space-between",
+  padding: "2px 10%",
   color: "black",
-  
 });
 
 const NavButtons = styled(Button)({
   color: "black",
   display: "block",
-  fontSize: 20,
+  fontSize: 18,
   fontFamily: "Inter",
   fontWeight: 400,
   letterSpacing: 2,
   textTransform: "capitalize",
-  '&:hover': {
-  
-
-    
-  }
-
+  "&:hover": {},
 });
-{/*Navigation Bar*/}
+{
+  /*Navigation Bar*/
+}
 function ResponsiveAppBar() {
-  {/*Functionality for opening/closing sidebar*/}
+  {
+    /*Functionality for opening/closing sidebar*/
+  }
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -72,34 +79,86 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  {/*Navigation Functionality + Routing*/}
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  {
+    /*Navigation Functionality + Routing*/
+  }
   const navigate = useNavigate();
   const goToPage = (pageName: any) => {
     navigate("/" + pageName);
   };
-  {/*App Bar*/}
+  {
+    /*App Bar*/
+  }
   return (
-    <AppBar position="static" sx={{bgcolor: "white", zIndex: "100"}}>
-      <Container maxWidth={false} disableGutters>
+    <AppBar position="static" sx={{ bgcolor: "white" }}>
+      <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
           {/*Desktop Logo*/}
-          <Box display="flex" gap="25px">
+   
             <Link to="/">
               <Box
+                padding = "0 30px"
                 component="img"
                 src={Logo}
                 alt="logo"
-                
                 sx={{
-                  width: '200px',
-                  height: 'auto',
+                  width: "200px",
+                  height: "auto",
                   flexGrow: 1,
                   display: { xs: "none", md: "flex" },
                 }}
               ></Box>
             </Link>
-            {/*This is the side bar for mobile*/}
+
+            {/* The nav barpage links*/}
             <Box
+              gap="15px"
+              sx={{
+                flexGrow: 1,
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              {pages.map((page) => (
+                <NavButtons
+                  key={page}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    goToPage(page);
+                  }}
+                >
+                  {page}
+                </NavButtons>
+              ))}
+            </Box>
+   
+          
+          {/* This is for the right hand side of the Nav Bar*/}
+          <Box
+            gap="20px"
+            sx={{
+            
+              display: { xs: "none", md: "flex" },
+            }}
+          >
+            <SearchBar />
+            <Button variant="outlined">Log in</Button>
+            <Button variant="contained">Sign up</Button>
+          </Box>
+
+          
+          {/*This is the side bar for mobile*/}
+          <Box
               gap="25px"
               sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
             >
@@ -144,59 +203,31 @@ function ResponsiveAppBar() {
                 ))}
               </Menu>
             </Box>
-            {/*Mobile Logo*/}
-            <Link to="/">
+          {/*Mobile Logo*/}
+
+          <Link to="/">
               <Box
                 component="img"
                 src={Logo}
                 alt="logo"
                 sx={{
+          
+                  width: "200px",
+                  height: "auto",
                   flexGrow: 1,
-                  width: '200px',
-                  height: 'auto',
                   display: { xs: "flex", md: "none" },
-                  boxSizing: "border-box"
+                 
                 }}
               ></Box>
             </Link>
-
-            {/* The nav barpage links*/}
-            <Box
-              gap="15px"
-              sx={{
-                justifyContent: "center",
-                alignItems: "center",
-                flexGrow: 1,
-                display: { xs: "none", md: "flex" },
-              }}
-            >
-              {pages.map((page) => (
-                <NavButtons
-                  key={page}
-                  onClick={() => {
-                    handleCloseNavMenu();
-                    goToPage(page);
-                  }}
-                >
-                  {page}
-                </NavButtons>
-              ))}
-            </Box>
-          </Box>
-          {/* This is for the right hand side of the Nav Bar*/}
+          {/*RHS for Mobile/Smaller Screens*/}
           <Box
-            gap="20px"
             sx={{
-
-              display: { xs: "none", md: "flex" },
+              flexGrow: 1,
+              display: { xs: "flex", md: "none" },
+              justifyContent: "right"
             }}
           >
-            <SearchBar />
-            <Button variant="outlined">Log in</Button>
-            <Button variant="contained">Sign up</Button>
-          </Box>
-          {/*RHS for Mobile/Smaller Screens*/}
-          <Box sx={{flexGrow: 1, display: { xs: "flex", md: "none"}, justifyContent: 'flex-end'}}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Not Logged In" src="" />
@@ -206,6 +237,33 @@ function ResponsiveAppBar() {
               sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
+              /* Adjusting the dropdown options*/
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                  mt: 1.5,
+                  "& .MuiAvatar-root": {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 2,
+                  },
+                  "&:before": {
+                    content: '""',
+                    display: "block",
+                    position: "absolute",
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: "background.paper",
+                    transform: "translateY(-50%) rotate(45deg)",
+                    zIndex: 0,
+                  },
+                },
+              }}
               anchorOrigin={{
                 vertical: "top",
                 horizontal: "right",
@@ -218,11 +276,26 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              {/*The dropdown options*/}
+              <MenuItem onClick={handleClose}>
+                <Avatar />
+                Guest
+              </MenuItem>
+
+              <Divider />
+
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <AppRegistration fontSize="small" />
+                </ListItemIcon>
+                Register
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <Login fontSize="small" />
+                </ListItemIcon>
+                Login
+              </MenuItem>
             </Menu>
           </Box>
         </StyledToolBar>
