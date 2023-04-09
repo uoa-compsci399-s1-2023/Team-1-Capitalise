@@ -18,6 +18,7 @@ const {
   writeComment,
   likeComment,
   deleteComment,
+  createParameter,
 
 } = require('../controllers/projectController')
 
@@ -53,8 +54,12 @@ router.post('/comment', auth, writeComment);
 
 //Create a route that likes or unlikes a project
 router.patch('/:projectId/like', auth, likeComment)
+
 //Delete a comment. Removes comment from relevant user and project. 
 router.delete('/comment/:commentId', auth, deleteComment);
+
+//Add new parameter.
+router.post('/parameter', createParameter);
 
 
 

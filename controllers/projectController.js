@@ -3,6 +3,7 @@ const { Project, validate } = require('../models/project');
 const { User } = require('../models/user');
 const { Comment, validateComment } = require('../models/comment');
 const { Tag, validateTag } = require('../models/tag');
+const { Parameter, validateParameter } = require('../models/parameter');
 
 //Get all projects
 const getAllProjects = async (req, res) => {
@@ -73,8 +74,8 @@ const updateProjectById = async (req, res) => {
     const userIsMember = projectMembers.includes(currentId);
 
 
-    if(!userIsMember){
-        return res.status(403).send({err: "You are not part of this project"})
+    if (!userIsMember) {
+        return res.status(403).send({ err: "You are not part of this project" })
     }
 
     //Changes what ever is different
@@ -289,7 +290,7 @@ const searchProjects = async (req, res) => {
 
 const likeComment = async (req, res) => {
     const currentId = req.user._id
-    const {projectId} = req.params
+    const { projectId } = req.params
 
 
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
@@ -298,8 +299,8 @@ const likeComment = async (req, res) => {
 
     //check if project exist
     const project = await Project.findById(projectId);
-    if(!project){
-        return res.status(404).send({err: "project not found"})
+    if (!project) {
+        return res.status(404).send({ err: "project not found" })
     }
 
     //Get members of this project
@@ -309,38 +310,59 @@ const likeComment = async (req, res) => {
     const userIsMember = projectMembers.includes(currentId);
 
     //If user is part of the project
-    if(userIsMember){
-        return res.status(403).send({err: "You are not allowed to like your own project"})
+    if (userIsMember) {
+        return res.status(403).send({ err: "You are not allowed to like your own project" })
     }
     const usersLikedProjects = (await User.findById(currentId)).likedProjects
 
     //Check if project Id is in the users likes attribute
-    
+
     //If true
     //Decrement likes on project
     //Remove the liked project from users.LikedProjects
-    if(usersLikedProjects.includes(projectId)){
-        
-        const updateProject = await Project.findByIdAndUpdate(projectId, {$inc: {likes: -1}})
+    if (usersLikedProjects.includes(projectId)) {
+
+        const updateProject = await Project.findByIdAndUpdate(projectId, { $inc: { likes: -1 } })
         const likedProjects = usersLikedProjects.filter(project => {
             return project._id != projectId
         })
-        await User.findByIdAndUpdate(currentId, {likedProjects : likedProjects})
+        await User.findByIdAndUpdate(currentId, { likedProjects: likedProjects })
         return res.status(200).send(updateProject)
-    }  
+    }
 
     //If false 
     //Add the project Id to user
-    await User.findByIdAndUpdate(currentId, {$push: {likedProjects : projectId}})
+    await User.findByIdAndUpdate(currentId, { $push: { likedProjects: projectId } })
 
     //Increment project.likes
-    const likedProject = await Project.findByIdAndUpdate(projectId, {$inc: {likes: 1}})
+    const likedProject = await Project.findByIdAndUpdate(projectId, { $inc: { likes: 1 } })
 
     return res.status(200).send(likedProject)
 
 }
 
+//Create a parameter for a project
+const createParameter = async (req, res) => {
+    const { error } = validateParameter(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
+    //Check if parameter already exists
+    const existingParam = await Parameter.findOne({
+        value: req.body.value,
+        parameterType: req.body.parameterType
+    });
+
+    if (existingParam) return res.status(400).send("Error - This parameter already exists!");
+
+    let parameter = new Parameter({
+        value: req.body.value,
+        parameterType: req.body.parameterType
+    });
+
+    parameter = await parameter.save();
+
+    res.send(parameter);
+}
 
 
 module.exports = {
@@ -356,4 +378,5 @@ module.exports = {
     writeComment,
     likeComment,
     deleteComment,
+    createParameter,
 }
