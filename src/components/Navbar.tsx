@@ -33,7 +33,7 @@ import {
 } from "@mui/icons-material";
 
 const pages = ["About", "Projects"];
-const settings = ["Login", "Register"];
+const pageshidden = ["About", "Projects", "Search"];
 
 const StyledToolBar = styled(Toolbar)({
   height: "75px",
@@ -50,6 +50,7 @@ const NavButtons = styled(Button)({
   letterSpacing: 2,
   textTransform: "capitalize",
   "&:hover": {},
+ 
 });
 {
   /*Navigation Bar*/
@@ -152,8 +153,8 @@ function ResponsiveAppBar() {
             }}
           >
             <SearchBar />
-            <Button onClick={()=> { goToPage("login")}}variant="outlined">Log In</Button>
-            <Button  onClick={()=> { goToPage("register")}}variant="contained">Sign Up</Button>
+            <Button sx={{whiteSpace: "nowrap", overflow: "hidden"}} onClick={()=> { goToPage("login")}}variant="outlined">Log In</Button>
+            <Button  sx={{whiteSpace: "nowrap", overflow: "hidden"}} onClick={()=> { goToPage("register")}}variant="contained">Sign Up</Button>
           </Box>
 
           
@@ -200,7 +201,14 @@ function ResponsiveAppBar() {
                   >
                     <Typography textAlign="center">{page}</Typography>
                   </MenuItem>
+                  
                 ))}
+                  <MenuItem 
+                      onClick={() => {
+                      handleCloseNavMenu();
+                      goToPage("/search")}}> 
+                    <Typography textAlign="center">Search</Typography>
+                  </MenuItem>
               </Menu>
             </Box>
           {/*Mobile Logo*/}
