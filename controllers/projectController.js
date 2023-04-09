@@ -9,16 +9,16 @@ const { Parameter, validateParameter } = require('../models/parameter');
 const getAllProjects = async (req, res) => {
     //Populate the project members attribute with id and names of users.
     const projects = await Project.find().populate('members', '_id, name')
-    .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
-    .sort('name');
+        .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
+        .sort('name');
     res.send(projects);
 }
 
 //get all projects by likes
 const getProjectsByLikes = async (req, res) => {
     const projects = await Project.find()
-    .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
-    .sort('likes');
+        .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
+        .sort('likes');
     res.send(projects)
 }
 
@@ -125,27 +125,30 @@ const addNewProject = async (req, res) => {
     }
 
     //Create or fetch tag objects.
-    for (const tagName of req.body.tags) {
-        const tag = await Tag.findOne({ name: tagName });
-        if (!tag) {
-            let tag = new Tag({
-                name: tagName,
-                mentions: 1,
-                projects: [{
-                    _id: project._id
-                }]
-            });
-            tag = await tag.save();
-            console.log(tag.name + ' was created.');
-            project.tags.push(tag._id);
-        } else {
-            const tag2 = await Tag.findByIdAndUpdate(tag._id, {
-                $inc: { mentions: 1 },
-                $push: { projects: project._id }
-            });
-            project.tags.push(tag2._id);
+    if (req.body.tags) {
+        for (const tagName of req.body.tags) {
+            const tag = await Tag.findOne({ name: tagName });
+            if (!tag) {
+                let tag = new Tag({
+                    name: tagName,
+                    mentions: 1,
+                    projects: [{
+                        _id: project._id
+                    }]
+                });
+                tag = await tag.save();
+                console.log(tag.name + ' was created.');
+                project.tags.push(tag._id);
+            } else {
+                const tag2 = await Tag.findByIdAndUpdate(tag._id, {
+                    $inc: { mentions: 1 },
+                    $push: { projects: project._id }
+                });
+                project.tags.push(tag2._id);
+            }
         }
     }
+
 
     //Add project to the user
 
