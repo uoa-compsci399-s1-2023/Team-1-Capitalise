@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { userSchema } = require('./user');
 const { commentSchema } = require('./comment');
 const { tagSchema } = require('./tag');
+const { parameterSchema } = require('./parameter');
 
 Joi.objectId = require("joi-objectid")(Joi);
 
@@ -17,13 +18,13 @@ const projectSchema = new mongoose.Schema({
     type: String
   },
   semester: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Parameter',
     required: true
   },
   category: {
-    type: String,
-    required: true,
-    enum: ['Mobile Development', 'Game Development', 'Web Development'],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Parameter'
   },
   repoLink: {
     type: String
@@ -65,8 +66,8 @@ const projectSchema = new mongoose.Schema({
     ref: 'Comment'
   }],
   badges: {
-    type: String,
-    enum: ['CommunityImpact', 'TopExcellence', 'PeoplesChoice'],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Parameter'
   },
   tags: [{
     type: mongoose.Schema.Types.ObjectId,

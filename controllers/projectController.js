@@ -8,13 +8,17 @@ const { Parameter, validateParameter } = require('../models/parameter');
 //Get all projects
 const getAllProjects = async (req, res) => {
     //Populate the project members attribute with id and names of users.
-    const projects = await Project.find().populate('members', '_id, name').sort('name');
+    const projects = await Project.find().populate('members', '_id, name')
+    .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
+    .sort('name');
     res.send(projects);
 }
 
 //get all projects by likes
 const getProjectsByLikes = async (req, res) => {
-    const projects = await Project.find().populate('members', '_id, name').sort('likes');
+    const projects = await Project.find()
+    .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
+    .sort('likes');
     res.send(projects)
 }
 
@@ -47,7 +51,7 @@ const getProject = async (req, res) => {
         return res.status(404).json({ err: "No projectid found" });
     }
 
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId).populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id');
 
     //If no project exist
     if (!project) {
@@ -93,21 +97,32 @@ const addNewProject = async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
+    //Check if semester exists in database
+    const sem = await Parameter.findOne({ value: req.body.semester, parameterType: "semester" });
+    if (!sem) return res.status(400).send("Error: Invalid semester!");
+    //Check if category exists in database
+    const cat = await Parameter.findOne({ value: req.body.category, parameterType: "category" });
+    if (!cat) return res.status(400).send("Error: Invalid category!");
+
     let project = new Project({
         name: req.body.name,
-        semester: req.body.semester,
+        semester: { _id: sem._id },
         teamname: req.body.teamname,
-        category: req.body.category,
+        category: { _id: cat._id },
         repoLink: req.body.repoLink,
         members: [{
             _id: req.user._id
         }],
         content: req.body.content,
-        likes: 0,
-        badges: req.body.badges
+        likes: 0
     });
 
-    console.log(project._id);
+    //Check if award exists in database
+    if (req.body.badges) {
+        const badge = await Parameter.findOne({ value: req.body.badges, parameterType: "award" });
+        if (!badge) return res.status(400).send("Error: Invalid award!");
+        project.badges = { _id: badge._id };
+    }
 
     //Create or fetch tag objects.
     for (const tagName of req.body.tags) {
