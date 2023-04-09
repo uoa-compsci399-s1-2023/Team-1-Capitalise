@@ -152,8 +152,8 @@ function ResponsiveAppBar() {
             }}
           >
             <SearchBar />
-            <Button variant="outlined">Log in</Button>
-            <Button variant="contained">Sign up</Button>
+            <Button onClick={()=> { goToPage("login")}}variant="outlined">Log In</Button>
+            <Button  onClick={()=> { goToPage("register")}}variant="contained">Sign Up</Button>
           </Box>
 
           
