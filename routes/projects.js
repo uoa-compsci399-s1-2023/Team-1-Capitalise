@@ -17,6 +17,8 @@ const {
   searchProjects,
   writeComment,
   likeComment,
+  deleteComment,
+
 } = require('../controllers/projectController')
 
 //Get all projects
@@ -51,5 +53,9 @@ router.post('/comment', auth, writeComment);
 
 //Create a route that likes or unlikes a project
 router.patch('/:projectId/like', auth, likeComment)
+//Delete a comment. Removes comment from relevant user and project. 
+router.delete('/comment/:commentId', auth, deleteComment);
+
+
 
 module.exports = router;

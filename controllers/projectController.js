@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { Project, validate } = require('../models/project');
 const { User } = require('../models/user');
 const { Comment, validateComment } = require('../models/comment');
+const { Tag, validateTag } = require('../models/tag');
 
 //Get all projects
 const getAllProjects = async (req, res) => {
@@ -102,9 +103,35 @@ const addNewProject = async (req, res) => {
         }],
         content: req.body.content,
         likes: 0,
-        badges: req.body.badges,
-        tags: req.body.tags
+        badges: req.body.badges
     });
+
+    console.log(project._id);
+
+    //Create or fetch tag objects.
+    for (const tagName of req.body.tags) {
+        const tag = await Tag.findOne({ name: tagName });
+        if (!tag) {
+            let tag = new Tag({
+                name: tagName,
+                mentions: 1,
+                projects: [{
+                    _id: project._id
+                }]
+            });
+            tag = await tag.save();
+            console.log(tag.name + ' was created.');
+            project.tags.push(tag._id);
+        } else {
+            const tag2 = await Tag.findByIdAndUpdate(tag._id, {
+                $inc: { mentions: 1 },
+                $push: { projects: project._id }
+            });
+            project.tags.push(tag2._id);
+        }
+    }
+
+    //Add project to the user
 
     const user = await User.findByIdAndUpdate(req.user._id, {
         project: {
@@ -148,6 +175,39 @@ const writeComment = async (req, res) => {
     comment = await comment.save();
 
     res.send(comment);
+}
+
+const deleteComment = async (req, res) => {
+    const { commentId } = req.params;
+
+    const comment = await Comment.findById({ _id: commentId, })
+    //different Id type from db id 
+    if (!mongoose.Types.ObjectId.isValid(commentId)) {
+        return res.status(404).json({ err: "Wrong type of id " });
+    }
+    //If no comment is found
+    if (!comment) {
+        return res.status(404).json({ err: "No comment found!" });
+    }
+
+    //Check if user owns the comment they are deleting
+    if (req.user._id != comment.user) return res.status(403).json({ err: "Not your comment!" });
+
+    const user = await User.findByIdAndUpdate(req.user._id, {
+        $pull: { myComments: comment._id }
+    }
+    );
+
+    const project = await Project.findByIdAndUpdate(comment.project, {
+        $pull: { comments: comment._id }
+    }
+    );
+
+    const deleted = await Comment.findByIdAndDelete(commentId);
+
+    res.send({ Success: `Comment ${commentId} deleted` });
+
+
 }
 
 //Endpoint is for adding team members only!
@@ -294,5 +354,6 @@ module.exports = {
     deleteProject,
     searchProjects,
     writeComment,
-    likeComment
+    likeComment,
+    deleteComment,
 }
