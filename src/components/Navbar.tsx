@@ -1,5 +1,4 @@
 import * as React from "react";
-import AdbIcon from "@mui/icons-material/Adb";
 import {
   AppBar,
   Avatar,
@@ -12,31 +11,23 @@ import {
   Tooltip,
   styled,
 } from "@mui/material";
-import LoginIcon from "@mui/icons-material/Login";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+
+import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
-import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import zIndex from "@mui/material/styles/zIndex";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { alignProperty } from "@mui/material/styles/cssUtils";
 import {
-  PersonAdd,
-  Settings,
-  Logout,
   Login,
   AppRegistration,
 } from "@mui/icons-material";
-
 const pages = ["About", "Projects"];
-const pageshidden = ["About", "Projects", "Search"];
 
 const StyledToolBar = styled(Toolbar)({
-  height: "75px",
+  height: "8vh",
   padding: "2px 10%",
   color: "black",
 });
@@ -45,9 +36,8 @@ const NavButtons = styled(Button)({
   color: "black",
   display: "block",
   fontSize: 18,
-  fontFamily: "Inter",
+  fontFamily: "Roboto",
   fontWeight: 400,
-  letterSpacing: 2,
   textTransform: "capitalize",
   "&:hover": {},
  
@@ -102,7 +92,7 @@ function ResponsiveAppBar() {
     /*App Bar*/
   }
   return (
-    <AppBar position="static" sx={{ bgcolor: "white" }}>
+    <AppBar position="sticky" sx={{ bgcolor: "white" }}>
       <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
           {/*Desktop Logo*/}
