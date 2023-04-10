@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { Container, Box, Grid2 } from '../mui'
+import { Container, Grid2 } from '../mui'
 import ProjectCard from './ProjectCard'
 import { TProject } from '../api/getProjects'
 
@@ -21,7 +19,7 @@ export default function ProjectsGrid({ projects }: props) {
           <Grid2 key={project._id}>
             <ProjectCard
               title={project.name}
-              semester={project.semester}
+              semester={project.semester.value}
             ></ProjectCard>
           </Grid2>
         ))}

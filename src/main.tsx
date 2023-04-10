@@ -1,13 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Home from "./routes/Home";
-import About from "./routes/About";
 import "./index.css";
-import "@fontsource/inter";
+import "@fontsource/inter"; // Don't use this. Will remove later.
 import { ThemeProvider } from "./mui";
-
-import Projects from "./routes/Projects";
+import { Home, Projects, About } from "./routes"
 import customTheme1 from "./themes/custom1"
 
 const router = createBrowserRouter([
