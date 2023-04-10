@@ -26,3 +26,6 @@ dist-ssr
 
 # Build files
 dist
+
+# Vite temp files
+.vite
