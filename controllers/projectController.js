@@ -288,6 +288,8 @@ const deleteProject = async (req, res) => {
 
 const searchProjects = async (req, res) => {
 
+    //console.log(req.query);
+
     //Create a JSON object which stores a query.
     query = {};
 
@@ -319,13 +321,18 @@ const searchProjects = async (req, res) => {
 
     // Create a JSON object which stores the sort query. 
     sortQuery = {};
-    (req.params.sortBy == 'likes') ? (sortQuery = { [req.params.sortBy]: -1 }) : (sortQuery = { [req.params.sortBy]: 1 }); //If sorting by likes, make it descending. 
+    if (req.query.sortBy){
+        const mySortRequest = req.query.sortBy.toLowerCase();
+        (mySortRequest == 'likes') ? (sortQuery = { [mySortRequest]: -1 }) : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending. 
+    }
+
 
     //Find relevant projects.
-    const projects = await Project.find(query)
+    const projects = await Project.find(query).skip(req.query.startIndex).limit(req.query.numProjects)
     .populate('members', '_id, name')
     .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
     .sort(sortQuery);
+
     
     //Send the projects off.
     res.send(projects);
