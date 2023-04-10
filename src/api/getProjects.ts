@@ -3,8 +3,14 @@ import { API_URL } from "./config";
 export type TProject = {
   _id: string;
   name: string;
-  semester: string;
+  semester: {
+    value: string;
+  };
+  category: {
+    value: string;
+  };
   repoLink: string;
+  teamname: string;
   likes: number;
   content: [
     {
@@ -17,7 +23,9 @@ export type TProject = {
       ];
     }
   ];
-  badges: "clientWinner" | "clientRunner" | "peopleWinner" | "peopleRunner";
+  badges: {
+    value: "clientWinner" | "clientRunner" | "peopleWinner" | "peopleRunner";
+  };
 };
 
 export async function getProjects(): Promise<TProject[]> {

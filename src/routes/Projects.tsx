@@ -38,12 +38,14 @@ const Projects = () => {
                 <Grid2 key={project._id}>
                   <ProjectCard
                     title={project.name}
-                    semester={project.semester}
+                    semester={project.semester.value}
                     image={
                       typeof project.content[0] != "undefined"
                         ? project.content[0].tab[0].photo
                         : ""
                     }
+                    teamname={project.teamname ? project.teamname : "teamname"}
+                    category={project.category.value}
                   ></ProjectCard>
                 </Grid2>
               ))}
