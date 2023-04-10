@@ -11,9 +11,6 @@ interface props {
 export default function ProjectsGrid({ projects }: props) {
   return (
     <Container>
-      <Box display="flex" justifyContent="center" padding=" 30px 0px">
-        <h1>Projects</h1>
-      </Box>
       <Grid2
         container
         gap="50px"

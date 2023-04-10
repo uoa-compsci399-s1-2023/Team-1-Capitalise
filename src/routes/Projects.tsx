@@ -1,9 +1,9 @@
-import { Box, Container, Stack, Grid2 } from "../mui";
+import { Box, Container, Stack, Grid2, Typography } from "../mui";
 import { useEffect, useState } from "react";
 
 // Components
 import Navbar from "../components/Navbar";
-import SearchFilters, { TSearchFilterProps } from "../components/SearchFilters";
+import { DesktopSearchFilters, MobileSearchFilters, TSearchFilterProps } from "../components/search"
 import ProjectsGrid from "../components/ProjectsGrid";
 
 // Apis
@@ -32,11 +32,27 @@ const Projects = () => {
   return (
     <Box bgcolor="#f9f9f9" width='100%'>
       <Navbar />
-      <Stack display="flex" height="100%" sx={{ flexDirection: { xs: "column", md: "row"} }}>
-        <SearchFilters 
+      
+      <DesktopSearchFilters 
             currFilters={searchFilters}
             setFilters={setSearchFilters}
+      />
+      <Stack display="flex" height="100%" flexDirection="column" sx={{ ml: { xs:"0", md:"340px" } }}>
+        <MobileSearchFilters             
+          currFilters={searchFilters}
+           setFilters={setSearchFilters}
         />
+        <Typography 
+          my={4} 
+          variant="h4" 
+          component="h1" 
+          // textAlign="center"
+          sx={{ textAlign: {xs: "center", md: "center"} }}
+        >
+          Projects
+        </Typography>
+
+
         <ProjectsGrid projects={projects} />
       </Stack>
     </Box>
