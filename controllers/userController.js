@@ -161,10 +161,10 @@ const deleteUserById = async (req, res) => {
   const projectId = await user.project
 
   if (projectId != null) {
-    const findProject = await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
+    await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
   }
 
-  const removeUser = await User.findByIdAndDelete(id);
+  await User.findByIdAndDelete(id);
   res.status(200).send({ removed: `${username} removed` });
 
 }
@@ -174,27 +174,22 @@ const deleteUserById = async (req, res) => {
 const adminDeleteUserById = async (req, res) => {
   const { id } = req.params
   if(id == req.user._id){
-    return res.send(403).send({err: "You are not allowed to delete yourself"})
+    return res.status(403).send({err: "You are not allowed to delete yourself"})
   }
 
-  const user = await User.findOne({ _id: id });
+  const user = await User.findOne({_id: id});
   if (user == null) {
     return res.send({ noUser: `User with id ${id} not found` })
-  }
-
-  if(id != req.user._id){
-    return res.status(403).send({err : "You are trying to delete someone else!"})
-
   }
 
   const username = user.username
   const projectId = await user.project
 
   if (projectId != null) {
-    const findProject = await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
+    await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
   }
 
-  const removeUser = await User.findByIdAndDelete(id);
+  await User.findByIdAndDelete(id);
   res.status(200).send({ removed: `${username} removed` });
 
 }
