@@ -18,7 +18,6 @@ const {
   writeComment,
   likeComment,
   deleteComment,
-  createParameter,
 
 } = require('../controllers/projectController')
 
@@ -32,7 +31,7 @@ router.post('/', auth, addNewProject);
 router.get('/likes', getProjectsByLikes)
 
 //Need to add more projects to properly test this
-router.get('/search/:keyword/:semester/:award', searchProjects)
+router.get('/search/:keyword/:semester/:category/:award', searchProjects)
 
 //Find a project by id
 router.get('/:projectId', getProject);
@@ -57,9 +56,6 @@ router.patch('/:projectId/like', auth, likeComment)
 
 //Delete a comment. Removes comment from relevant user and project. 
 router.delete('/comment/:commentId', auth, deleteComment);
-
-//Add new parameter.
-router.post('/parameter', createParameter);
 
 
 

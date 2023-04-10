@@ -9,8 +9,8 @@ const projects = require('./routes/projects');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const parameters = require('./routes/parameters');
-const {User} = require('./models/user');
-const {Project} = require('./models/project');
+const { User } = require('./models/user');
+const { Project } = require('./models/project');
 
 
 const app = express();

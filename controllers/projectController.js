@@ -288,8 +288,6 @@ const deleteProject = async (req, res) => {
 
 const searchProjects = async (req, res) => {
 
-    //console.log(req.query);
-
     //Create a JSON object which stores a query.
     query = {};
 
@@ -309,6 +307,16 @@ const searchProjects = async (req, res) => {
         }
     }
 
+    // If category is specified as a parameter, add it to the query.
+    if (req.params.category != -1) {
+        let index = req.params.category.indexOf("+");
+        let myCat = `${req.params.category.substring(0,index)} ${req.params.category.substring(index+1)}`
+        const myCategory = await Parameter.findOne({ value: {$regex: myCat, $options: 'i'}, parameterType: "category" });
+        query.category = {
+            _id: myCategory._id
+        }
+    }
+
     // If keyword is specified as a parameter, add it to the query. It may be in either the name or tag.
     if (req.params.keyword != -1) {
         const tag = await Tag.findOne({ name: req.params.keyword[0].toUpperCase() + req.params.keyword.substring(1).toLowerCase() });
@@ -321,7 +329,7 @@ const searchProjects = async (req, res) => {
 
     // Create a JSON object which stores the sort query. 
     sortQuery = {};
-    if (req.query.sortBy){
+    if (req.query.sortBy) {
         const mySortRequest = req.query.sortBy.toLowerCase();
         (mySortRequest == 'likes') ? (sortQuery = { [mySortRequest]: -1 }) : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending. 
     }
@@ -329,11 +337,11 @@ const searchProjects = async (req, res) => {
 
     //Find relevant projects.
     const projects = await Project.find(query).skip(req.query.startIndex).limit(req.query.numProjects)
-    .populate('members', '_id, name')
-    .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
-    .sort(sortQuery);
+        .populate('members', '_id, name')
+        .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
+        .sort(sortQuery);
 
-    
+
     //Send the projects off.
     res.send(projects);
 
@@ -393,29 +401,6 @@ const likeComment = async (req, res) => {
 
 }
 
-//Create a parameter for a project
-const createParameter = async (req, res) => {
-    const { error } = validateParameter(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    //Check if parameter already exists
-    const existingParam = await Parameter.findOne({
-        value: req.body.value,
-        parameterType: req.body.parameterType
-    });
-
-    if (existingParam) return res.status(400).send("Error - This parameter already exists!");
-
-    let parameter = new Parameter({
-        value: req.body.value,
-        parameterType: req.body.parameterType
-    });
-
-    parameter = await parameter.save();
-
-    res.send(parameter);
-}
-
 
 module.exports = {
     getAllProjects,
@@ -430,5 +415,4 @@ module.exports = {
     writeComment,
     likeComment,
     deleteComment,
-    createParameter,
 }

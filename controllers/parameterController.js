@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { Parameter } = require('../models/parameter');
+const { Parameter, validateParameter } = require('../models/parameter');
+
 
 
 //Gets all categories and sorts by name
@@ -35,9 +36,33 @@ const getAwards = async (req, res) => {
     res.send(awards);
 }
 
+//Create a parameter for a project
+const createParameter = async (req, res) => {
+    const { error } = validateParameter(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    //Check if parameter already exists
+    const existingParam = await Parameter.findOne({
+        value: req.body.value,
+        parameterType: req.body.parameterType
+    });
+
+    if (existingParam) return res.status(400).send("Error - This parameter already exists!");
+
+    let parameter = new Parameter({
+        value: req.body.value,
+        parameterType: req.body.parameterType
+    });
+
+    parameter = await parameter.save();
+
+    res.send(parameter);
+}
+
 module.exports = {
     getCategories,
     getSemesters,
     getSortBys,
     getAwards,
+    createParameter
 }
