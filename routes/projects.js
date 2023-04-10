@@ -32,7 +32,7 @@ router.post('/', auth, addNewProject);
 router.get('/likes', getProjectsByLikes)
 
 //Need to add more projects to properly test this
-router.get('/search/:keyword/:semester/:year/:award/:tags', searchProjects)
+router.get('/search/:keyword/:semester/:award/:sortBy', searchProjects)
 
 //Find a project by id
 router.get('/:projectId', getProject);

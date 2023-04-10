@@ -25,17 +25,13 @@ const getProjectsByLikes = async (req, res) => {
 
 // get projects by badge
 const getProjectByBadge = async (req, res) => {
-    const { badge } = req.params;
+    const myBadge = await Parameter.findOne({ value: req.params.badge, parameterType: "award" });
+    if (!myBadge) return res.status(404).json({ err: "No badge found!" });
     //need to check badge
-    const projects = await Project.find({ badges: badge })
-    const projectBadges = ['clientWinner', 'clientRunner', 'peopleWinner', 'peopleRunner'];
+    const projects = await Project.find({ badges: { _id: myBadge._id } })
 
-    if (!projectBadges.includes(badge)) {
-        return res.status(200).json({ noBadgeExist: `${badge} badge does not exist` })
-    }
-
-    else if (projects.length == 0) {
-        return res.status(200).json({ noBadgeGiven: `${badge} has not been given out` })
+    if (projects.length == 0) {
+        return res.status(200).json({ noBadgeGiven: `${myBadge.value} has not been given out` })
     }
     res.send(projects);
 
@@ -292,17 +288,48 @@ const deleteProject = async (req, res) => {
 
 const searchProjects = async (req, res) => {
 
-    //Build find query depending on the optional parameters
+    //Create a JSON object which stores a query.
     query = {};
-    (req.params.keyword != -1) ? (query.name = { $regex: req.params.keyword, $options: 'i' }) : "";
-    (req.params.semester != -1 && req.params.year != -1) ? (query.semester = { $regex: `${req.params.semester} ${req.params.year}`, $options: 'i' }) : "";
-    (req.params.award != -1) ? (query.badges = req.params.award) : "";
-    (req.params.tags != -1) ? (query.tags = { $in: req.params.tags.split(":") }) : "";
 
-    //Find relevant projects
-    const projects = await Project.find(query).populate('members', '_id, name').sort('name');
+    // If semester is specified as a parameter, add it to the query.
+    if (req.params.semester != -1) {
+        const mySem = await Parameter.findOne({ value: `${req.params.semester.substring(0, 2).toUpperCase()} ${req.params.semester.substring(2).toUpperCase()}`, parameterType: "semester" });
+        query.semester = {
+            _id: mySem._id
+        }
+    }
 
+    // If award is specified as a parameter, add it to the query.
+    if (req.params.award != -1) {
+        const myAward = await Parameter.findOne({ value: req.params.award, parameterType: "award" });
+        query.badges = {
+            _id: myAward._id
+        }
+    }
+
+    // If keyword is specified as a parameter, add it to the query. It may be in either the name or tag.
+    if (req.params.keyword != -1) {
+        const tag = await Tag.findOne({ name: req.params.keyword[0].toUpperCase() + req.params.keyword.substring(1).toLowerCase() });
+        if (tag) {
+            query.$or = [{ name: { $regex: req.params.keyword, $options: 'i' } }, { tags: { _id: tag._id } }];
+        } else {
+            query.name = { $regex: req.params.keyword, $options: 'i' };
+        }
+    }
+
+    // Create a JSON object which stores the sort query. 
+    sortQuery = {};
+    (req.params.sortBy == 'likes') ? (sortQuery = { [req.params.sortBy]: -1 }) : (sortQuery = { [req.params.sortBy]: 1 }); //If sorting by likes, make it descending. 
+
+    //Find relevant projects.
+    const projects = await Project.find(query)
+    .populate('members', '_id, name')
+    .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
+    .sort(sortQuery);
+    
+    //Send the projects off.
     res.send(projects);
+
 }
 
 
