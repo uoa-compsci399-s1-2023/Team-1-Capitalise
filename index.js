@@ -8,6 +8,7 @@ const dotenv = require('dotenv').config();
 const projects = require('./routes/projects');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
+const parameters = require('./routes/parameters');
 const {User} = require('./models/user');
 const {Project} = require('./models/project');
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use('/api/projects', projects);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
+app.use('/api/parameters', parameters);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
