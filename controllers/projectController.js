@@ -294,6 +294,7 @@ const searchProjects = async (req, res) => {
     // If semester is specified as a parameter, add it to the query.
     if (req.params.semester != -1) {
         const mySem = await Parameter.findOne({ value: `${req.params.semester.substring(0, 2).toUpperCase()} ${req.params.semester.substring(2).toUpperCase()}`, parameterType: "semester" });
+        if (!mySem) return res.status(404).send({ err: `Semester ${req.params.semester} found` });
         query.semester = {
             _id: mySem._id
         }
@@ -302,6 +303,7 @@ const searchProjects = async (req, res) => {
     // If award is specified as a parameter, add it to the query.
     if (req.params.award != -1) {
         const myAward = await Parameter.findOne({ value: req.params.award, parameterType: "award" });
+        if (!myAward) return res.status(404).send({ err: `Award ${req.params.award} found` });
         query.badges = {
             _id: myAward._id
         }
@@ -309,9 +311,10 @@ const searchProjects = async (req, res) => {
 
     // If category is specified as a parameter, add it to the query.
     if (req.params.category != -1) {
-        let index = req.params.category.indexOf("+");
-        let myCat = `${req.params.category.substring(0,index)} ${req.params.category.substring(index+1)}`
-        const myCategory = await Parameter.findOne({ value: {$regex: myCat, $options: 'i'}, parameterType: "category" });
+        //let index = req.params.category.indexOf("+");
+        //let myCat = `${req.params.category.substring(0,index)} ${req.params.category.substring(index+1)}`
+        const myCategory = await Parameter.findOne({ value: {$regex: req.params.category, $options: 'i'}, parameterType: "category" });
+        if (!myCategory) return res.status(404).send({ err: `Category ${req.params.category} found` });
         query.category = {
             _id: myCategory._id
         }
