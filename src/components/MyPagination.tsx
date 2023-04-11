@@ -1,68 +1,83 @@
 import * as React from "react";
 import { Box, Container, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import service from "../services/paginationService";
-import Pagination from "@mui/material/Pagination";
+import { Pagination as MuiPagination } from "@mui/material";
 
-import { TProject } from "../api/getProjects";
+import { TProject, getProjects } from "../api/getProjects";
 
-interface props {
-  projects: TProject[];
-}
+import ProjectCard from "../components/ProjectCard";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 const pageSize = 6; // set amount of projects to appear per page.
 
-export default function MyPagination({ projects }: props) {
-  const [pagination, setPagination] = useState({
-    count: 0,
-    from: 0,
-    to: pageSize,
-  });
+interface Project {
+  _id: string;
+  name: string;
+  semester: string;
+  repoLink: string;
+  likes: number;
+}
 
-  const service = {
-    getData: ({ from, to }: { from: number; to: number }) => {
-      return new Promise((resolve, reject) => {
-        const data = projects.slice(from, to); // slice the project array
+interface PaginationProps {
+  onPageChange: (page: number) => void;
+}
 
-        resolve({
-          count: projects.length,
-          data: data,
-        });
-      });
-    },
-  };
+const MyPagination: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [projectsPerPage] = useState(6); // Number of items to display per page
+  const [projects, setProjects] = useState<TProject[]>([]);
 
   useEffect(() => {
-    service
-      .getData({ from: pagination.from, to: pagination.to })
-      .then((response: any) => {
-        setPagination({ ...pagination, count: response.count });
-        projects = response.data;
-        console.log(projects);
-      });
-  }, [pagination.from, pagination.to]);
+    // fetch total number of projects from call to the fetch API (would be able to work with another fetch api like search)
+    const fetchProjects = async () => {
+      try {
+        const projects = await getProjects();
+        setProjects(projects);
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      }
+    };
 
-  const handlePageChange = (event: any, page: any) => {
-    const from = (page - 1) * pageSize;
-    const to = (page - 1) * pageSize + pageSize;
+    fetchProjects();
+  }, []);
 
-    setPagination({ ...pagination, from: from, to: to });
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
+  // calculate the start and end index of the projects to display based on the current page and projectsPerPage
+  const startIndex = (currentPage - 1) * projectsPerPage;
+  const endIndex = startIndex + projectsPerPage;
+
+  // slice the projects array to get the projects to display for the current page
+  const projectsToDisplay = projects.slice(startIndex, endIndex);
+
   return (
-    <Box
-      justifyContent={"center"}
-      alignItems="center"
-      display={"flex"}
-      sx={{
-        margin: "20px 0px",
-      }}
-    >
-      <Pagination
-        count={Math.ceil(pagination.count / pageSize)}
+    <div>
+      {/* Render project data */}
+      {projectsToDisplay.map((project) => (
+        <Grid2 key={project._id}>
+          <ProjectCard
+            title={project.name}
+            semester={project.semester}
+            image={
+              typeof project.content[0] != "undefined"
+                ? project.content[0].tab[0].photo
+                : ""
+            }
+          ></ProjectCard>
+        </Grid2>
+      ))}
+      <MuiPagination
+        count={Math.ceil(projects.length / projectsPerPage)}
+        page={currentPage}
+        onChange={(_, page) => handlePageChange(page)}
+        showFirstButton
+        showLastButton
         color="primary"
-        onChange={handlePageChange}
       />
-    </Box>
+    </div>
   );
-}
+};
+
+export default MyPagination;
