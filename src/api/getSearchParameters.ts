@@ -2,9 +2,9 @@ import { API_URL } from "./config";
 import { TProject } from "./getProjects";
 
 export type TAvailParameters = {
-  category: { _id: string; value: string; parameterType: string }[];
-  semester: { _id: string; value: string; parameterType: string }[];
-  award: { _id: string; value: string; parameterType: string }[];
+  category: { _id: string; value: string; qParam?: string; parameterType: string }[];
+  semester: { _id: string; value: string; qParam?: string; parameterType: string }[];
+  award: { _id: string; value: string; qParam?: string; parameterType: string }[];
   sortBy: { _id: string; qParam: keyof TProject; value: string; parameterType: string }[];
 };
 

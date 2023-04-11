@@ -6,7 +6,7 @@ export type FilterDpdownProps = {
   name: string, 
   label: string, 
   options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
-  handleChange?: (e: any) => void 
+  handleChange: (e: any) => void 
 }
 
 export default function FilterDropdown({ value, name, label, options, handleChange }: FilterDpdownProps) {
@@ -21,7 +21,7 @@ export default function FilterDropdown({ value, name, label, options, handleChan
         label={label}
         onChange={handleChange}
       >
-        {options.map(({_id, value}) => <MenuItem key={_id} value={value}>{value}</MenuItem>)}
+        {options.map((o) => <MenuItem key={o._id} value={o.value}>{o.value}</MenuItem>)}
       </Select>
     </FormControl>
   )

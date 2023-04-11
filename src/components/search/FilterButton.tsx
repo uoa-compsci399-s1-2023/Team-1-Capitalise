@@ -17,14 +17,14 @@ const CustomButton = styled(Button)({
 
 
 export type FilterChipProps = { 
-  value: string, 
+  // value: string, 
   label: string, 
   name: string, 
   options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
   filtersState: SearchFilterProps }
 
 
-export default function FilterButton({value, name, label, options, filtersState}: FilterChipProps) {
+export default function FilterButton({name, label, options, filtersState}: FilterChipProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -39,13 +39,13 @@ export default function FilterButton({value, name, label, options, filtersState}
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLElement>,
     index: number,
-    selectedId: string
+    selectedOption: TAvailParameters[keyof TAvailParameters][0]
   ) => {
     setSelectedIndex(index);
     setAnchorEl(null);
     setFilters({
       ...currFilters,
-      [name]: selectedId
+      [name]: selectedOption
     })
   };
 
@@ -80,13 +80,13 @@ export default function FilterButton({value, name, label, options, filtersState}
           role: 'listbox',
         }}
       >
-        {options.map(({_id, value}, index) => (
+        {options.map((param, index) => (
           <MenuItem
-            key={_id}
+            key={param._id}
             selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index, _id)}
+            onClick={(event) => handleMenuItemClick(event, index, param)}
           >
-            {value}
+            {param.value}
           </MenuItem>
         ))}
       </Menu>
