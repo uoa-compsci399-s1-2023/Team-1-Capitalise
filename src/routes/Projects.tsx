@@ -1,5 +1,9 @@
+// Yathi - margin on top of projects box to clear fixed position header.
+// Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
+
 import { Box, Container, Stack, Grid2, Typography } from "../mui";
 import { useEffect, useState } from "react";
+import { useTheme } from "@mui/material/styles";
 
 // Components
 import Navbar from "../components/Navbar";
@@ -21,6 +25,8 @@ const Projects = () => {
     sortby: ''
   } )
 
+  const theme = useTheme();
+
   useEffect(() => {
     async function fetchProjects() {
       const newProjects = await getProjectsSearch({...searchFilters});
@@ -30,7 +36,7 @@ const Projects = () => {
   }, [searchFilters]);
 
   return (
-    <Box bgcolor="#f9f9f9" width='100%'>
+    <Box bgcolor={theme.customColors.bgGrey} width='100%' mt='8vh' minHeight='92vh'>
       <Navbar />
       
       <DesktopSearchFilters 

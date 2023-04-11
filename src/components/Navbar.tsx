@@ -1,4 +1,4 @@
-// Yathi - Changed position to "sticky" and changed height to 8vh to calculate sidebar height
+// Yathi - Changed position to "fixed" and changed height to 8vh to calculate sidebar height
 
 import * as React from "react";
 import {
@@ -100,7 +100,7 @@ function ResponsiveAppBar() {
     /*App Bar*/
   }
   return (
-    <AppBar position="sticky" sx={{ bgcolor: "white" }}>
+    <AppBar position="fixed" sx={{ bgcolor: "white" }}>
       <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
           {/*Desktop Logo*/}
