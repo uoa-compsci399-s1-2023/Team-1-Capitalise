@@ -37,4 +37,9 @@ a {
  text-decoration: none;
 }
 
+/* This is supposed to stop the scroll bar from shifting content. */
+body {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
 
