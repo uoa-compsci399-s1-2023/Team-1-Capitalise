@@ -30,6 +30,11 @@ import {
   AppRegistration,
 } from "@mui/icons-material";
 
+import { SearchFilterProps } from "./search/DesktopSearchFilters";
+
+
+
+
 const pages = ["About", "Projects"];
 const pageshidden = ["About", "Projects", "Search"];
 
@@ -53,7 +58,7 @@ const NavButtons = styled(Button)({
 {
   /*Navigation Bar*/
 }
-function ResponsiveAppBar() {
+function ResponsiveAppBar( filterProps: SearchFilterProps ) {
   {
     /*Functionality for opening/closing sidebar*/
   }
@@ -150,7 +155,7 @@ function ResponsiveAppBar() {
               display: { xs: "none", md: "flex" },
             }}
           >
-            <SearchBar />
+            <SearchBar {...filterProps} />
             <Button sx={{whiteSpace: "nowrap", overflow: "hidden"}} onClick={()=> { goToPage("login")}}variant="outlined">Log In</Button>
             <Button  sx={{whiteSpace: "nowrap", overflow: "hidden"}} onClick={()=> { goToPage("register")}}variant="contained">Sign Up</Button>
           </Box>

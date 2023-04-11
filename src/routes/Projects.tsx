@@ -46,7 +46,7 @@ const Projects = () => {
 
   return (
     <Box bgcolor={theme.customColors.bgGrey} width='100%' mt='8vh' minHeight='92vh'>
-      <Navbar />
+      <Navbar currFilters={searchFilters} setFilters={setSearchFilters}/>
       
       <DesktopSearchFilters 
             currFilters={searchFilters}
@@ -63,7 +63,7 @@ const Projects = () => {
           component="h1" 
           sx={{ textAlign: {xs: "center", md: "center"} }}
         >
-          Projects
+          { searchFilters.keywords ? `Showing results for "${searchFilters.keywords}"` : `Projects` }
         </Typography>
 
 

@@ -24,7 +24,7 @@ export default function MobileSearchFilters({ currFilters, setFilters }: SearchF
         display: { xs: "flex", md: "none" },
       }}
     >
-      <SearchBar />
+      <SearchBar currFilters={currFilters} setFilters={setFilters}/>
       <Box
         sx={{
           display: "flex",
