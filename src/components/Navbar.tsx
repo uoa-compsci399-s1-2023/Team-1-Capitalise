@@ -1,3 +1,5 @@
+// Yathi - Changed position to "sticky" and changed height to 8vh to calculate sidebar height
+
 import * as React from "react";
 import {
   AppBar,
@@ -20,11 +22,11 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import {
-  Login,
-  AppRegistration,
-} from "@mui/icons-material";
+import { alignProperty } from "@mui/material/styles/cssUtils";
+import { AppRegistration, Login } from "@mui/icons-material";
+
 const pages = ["About", "Projects"];
+const settings = ["Login", "Register"];
 
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
@@ -35,12 +37,9 @@ const StyledToolBar = styled(Toolbar)({
 const NavButtons = styled(Button)({
   color: "black",
   display: "block",
-  fontSize: 18,
+  fontSize: 25,
   fontFamily: "Roboto",
   fontWeight: 400,
-  textTransform: "capitalize",
-  "&:hover": {},
- 
 });
 {
   /*Navigation Bar*/

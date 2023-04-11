@@ -6,14 +6,17 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
+import { Category } from "@mui/icons-material";
 
 interface Props {
   title: string;
   semester: string;
-  image?: string;
+  image: string;
+  teamname: string;
+  category: string;
 }
 
-const ProjectCard = ({ title, semester, image = "" }: Props) => {
+const ProjectCard = ({ title, semester, image, teamname, category }: Props) => {
   return (
     <Card sx={{ maxWidth: 320, width: 320, border: "none", boxShadow: "none" }}>
       <CardMedia component="img" alt="image" height="110" image={image} />
@@ -44,14 +47,14 @@ const ProjectCard = ({ title, semester, image = "" }: Props) => {
           color="text.secondary"
           sx={{ lineHeight: 1.5, fontSize: "12px" }}
         >
-          Team Name
+          {teamname}
         </Typography>
         <Typography
           gutterBottom
           variant="body2"
           sx={{ lineHeight: 1, fontSize: "12px" }}
         >
-          Tag
+          {category}
         </Typography>
       </CardContent>
     </Card>
