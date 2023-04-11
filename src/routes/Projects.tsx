@@ -1,57 +1,59 @@
-import { Box, Container, Stack } from "@mui/material";
-import Navbar from "../components/Navbar";
+import { Box, Container, Stack, Grid2, Typography } from "../mui";
 import { useEffect, useState } from "react";
-import ProjectCard from "../components/ProjectCard";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+
+// Components
+import Navbar from "../components/Navbar";
+import { DesktopSearchFilters, MobileSearchFilters, TSearchFilterProps } from "../components/search"
+import ProjectsGrid from "../components/ProjectsGrid";
+
+// Apis
 import { TProject, getProjects } from "../api/getProjects";
+import { getProjectsSearch } from "../api/getSearchProjects";
 
 const Projects = () => {
+  
   const [projects, setProjects] = useState<TProject[]>([]);
+  const [searchFilters, setSearchFilters] = useState<TSearchFilterProps>( {
+    keywords: '',
+    category: '',
+    semester: '',
+    award: '',
+    sortby: ''
+  } )
 
   useEffect(() => {
     async function fetchProjects() {
-      const newProjects = await getProjects();
+      const newProjects = await getProjectsSearch({...searchFilters});
       setProjects(newProjects);
     }
     fetchProjects();
-  }, []);
+  }, [searchFilters]);
 
   return (
-    <Box bgcolor="#f9f9f9">
-      <Stack display="flex" direction="column" height="100%">
-        <Navbar />
-        <Stack display="flex" direction="row" height="100%">
-          <Box bgcolor="white" minWidth="220px">
-            Search :)
-          </Box>
-          <Container maxWidth={false}>
-            <Box display="flex" justifyContent="center" padding=" 30px 0px">
-              <h1>Projects</h1>
-            </Box>
-            <Grid2
-              container
-              gap="50px"
-              justifyContent="center"
-              sx={{ margin: "px" }}
-            >
-              {projects.map((project) => (
-                <Grid2 key={project._id}>
-                  <ProjectCard
-                    title={project.name}
-                    semester={project.semester.value}
-                    image={
-                      typeof project.content[0] != "undefined"
-                        ? project.content[0].tab[0].photo
-                        : ""
-                    }
-                    teamname={project.teamname ? project.teamname : "teamname"}
-                    category={project.category.value}
-                  ></ProjectCard>
-                </Grid2>
-              ))}
-            </Grid2>
-          </Container>
-        </Stack>
+    <Box bgcolor="#f9f9f9" width='100%'>
+      <Navbar />
+      
+      <DesktopSearchFilters 
+            currFilters={searchFilters}
+            setFilters={setSearchFilters}
+      />
+      <Stack display="flex" height="100%" flexDirection="column" sx={{ ml: { xs:"0", md:"340px" } }}>
+        <MobileSearchFilters             
+          currFilters={searchFilters}
+           setFilters={setSearchFilters}
+        />
+        <Typography 
+          my={4} 
+          variant="h4" 
+          component="h1" 
+          // textAlign="center"
+          sx={{ textAlign: {xs: "center", md: "center"} }}
+        >
+          Projects
+        </Typography>
+
+
+        <ProjectsGrid projects={projects} />
       </Stack>
     </Box>
   );
