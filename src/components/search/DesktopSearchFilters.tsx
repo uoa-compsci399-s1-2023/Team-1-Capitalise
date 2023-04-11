@@ -1,22 +1,15 @@
 import React, { useEffect, useState, ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { Box, TextField, SelectChangeEvent, Typography } from '../../mui'
-import getSearchParams, { TAvailParameters } from "../../api/getSearchParameters";
 import FilterDropdown from './FilterDropdown'
-import { searchFilterParams } from './AvailableParams'
+import { searchFilterParams, TAvailParameters } from './AvailableParams'
+import { TFiltersState } from '../../routes/Projects';
 
-// Represents curr state filters
-export type TSearchFilterProps = {
-  keywords: string,
-  category: TAvailParameters['category'][0],
-  semester: TAvailParameters['semester'][0],
-  award: TAvailParameters['award'][0],
-  sortBy: TAvailParameters['sortBy'][0],
-}
+
 
 // represents props taken by DesktopSearchFilters and MobileSearchFilters
 export interface SearchFilterProps {
-  currFilters: TSearchFilterProps,
-  setFilters: Dispatch<SetStateAction<TSearchFilterProps>>
+  currFilters: TFiltersState,
+  setFilters: Dispatch<SetStateAction<TFiltersState>>
 }
 
 
@@ -26,11 +19,10 @@ export default function DesktopSearchFilters({ currFilters, setFilters }: Search
   const size = 'small';
   const variant = 'outlined';
 
-  // const [params, setParams] = useState<TAvailParameters>(getDefaultParams())
-
   const handleChange = (e: SelectChangeEvent) => {
     const name = e.target.name
     const key = name as keyof TAvailParameters
+    // find the actual parameter object based on value
     const param = searchFilterParams[key].find(p => p.value === e.target.value)
     setFilters({
       ...currFilters,

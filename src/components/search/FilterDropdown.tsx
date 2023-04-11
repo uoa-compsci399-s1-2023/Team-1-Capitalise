@@ -1,5 +1,5 @@
 import { Select, FormControl, InputLabel, MenuItem } from '../../mui'
-import { TAvailParameters } from '../../api/getSearchParameters'
+import { TAvailParameters } from './AvailableParams'
 
 export type FilterDpdownProps = { 
   value: string, 

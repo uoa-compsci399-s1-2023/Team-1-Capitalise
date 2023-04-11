@@ -1,5 +1,13 @@
-import getSearchParams, { TAvailParameters } from "../../api/getSearchParameters"
+import getSearchParams from "../../api/getSearchParameters"
+import { TProject } from "../../api/getProjects";
 
+
+export type TAvailParameters = {
+  category: { _id: string; value: string; qParam?: string; parameterType: string }[];
+  semester: { _id: string; value: string; qParam?: string; parameterType: string }[];
+  award: { _id: string; value: string; qParam?: string; parameterType: string }[];
+  sortBy: { _id: string; qParam: keyof TProject; value: string; parameterType: string }[];
+};
 
 // Returns new object literal of default params each time.
 export const getDefaultParams = (): TAvailParameters => {
@@ -17,17 +25,17 @@ export const getDefaultParams = (): TAvailParameters => {
     }
   }
 
+// main variable that holds the currently available parameters
 export let searchFilterParams: TAvailParameters = getDefaultParams();
 
 
 // Calls api and sets params
-export async function getParams() {
+export async function fetchCurrentParameters() {
   const [cats, sems, awards, sorts] = await getSearchParams();
   searchFilterParams = {
     category: [...(getDefaultParams().category), ...cats],
     semester: [...(getDefaultParams().semester), ...sems],
     award: [...(getDefaultParams().award), ...awards],
-    // sortBy: [...(getDefaultParams().sortBy), ...sorts],
-    sortBy: [...(getDefaultParams().sortBy)], // Is there a default sort by???
+    sortBy: [...(getDefaultParams().sortBy)],
   }
 }

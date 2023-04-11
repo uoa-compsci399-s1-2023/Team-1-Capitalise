@@ -2,11 +2,11 @@ import React, { ChangeEvent, FormEvent } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
-import { Grow, InputAdornment } from "@mui/material";
+import { InputAdornment } from "@mui/material";
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
 
-
-
+// Yathi - Added event handler for search bar to make searches.
+// Changed wrapper element to div instead of form so the searchbar can take up more space.
 
 const SearchBar = ({ currFilters, setFilters }: SearchFilterProps) => {
  

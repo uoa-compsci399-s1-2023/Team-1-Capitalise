@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 
 import { SearchFilterProps } from './DesktopSearchFilters';
-import { TAvailParameters } from '../../api/getSearchParameters'
+import { TAvailParameters } from './AvailableParams'
 
 
 const CustomButton = styled(Button)({
@@ -32,15 +32,16 @@ export default function FilterButton({name, label, options, filtersState}: Filte
 
   const open = Boolean(anchorEl);
   
-  const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClickButton = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLElement>,
+    // event: React.MouseEvent<HTMLElement>,
     index: number,
     selectedOption: TAvailParameters[keyof TAvailParameters][0]
-  ) => {
+    ) => {
+    console.log(currFilters.sortBy)
     setSelectedIndex(index);
     setAnchorEl(null);
     setFilters({
@@ -63,7 +64,7 @@ export default function FilterButton({name, label, options, filtersState}: Filte
         aria-controls="lock-menu"
         aria-label={`${name} search filter`}
         aria-expanded={open ? 'true' : undefined}
-        onClick={handleClickListItem}
+        onClick={handleClickButton}
         size="small"
       >
         {`${label}: ${options[selectedIndex]['value']}`}
@@ -84,7 +85,7 @@ export default function FilterButton({name, label, options, filtersState}: Filte
           <MenuItem
             key={param._id}
             selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index, param)}
+            onClick={() => handleMenuItemClick(index, param)}
           >
             {param.value}
           </MenuItem>

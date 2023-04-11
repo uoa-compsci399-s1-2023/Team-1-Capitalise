@@ -1,10 +1,7 @@
-import React, { useEffect, useState, ChangeEvent, Dispatch, SetStateAction } from 'react'
-import { Box, Container } from '../../mui'
+import { Box, Stack } from '@mui/material'
 import FilterButton from './FilterButton'
 import { SearchFilterProps } from './DesktopSearchFilters'
-import getSearchParams, { TAvailParameters } from '../../api/getSearchParameters'
 import SearchBar from '../SearchBar'
-import { Stack } from '@mui/system'
 import { searchFilterParams } from './AvailableParams'
 
 
