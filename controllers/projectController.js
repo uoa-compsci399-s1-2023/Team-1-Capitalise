@@ -292,41 +292,42 @@ const searchProjects = async (req, res) => {
     query = {};
 
     // If semester is specified as a parameter, add it to the query.
-    if (req.params.semester != -1) {
-        const mySem = await Parameter.findOne({ value: `${req.params.semester.substring(0, 2).toUpperCase()} ${req.params.semester.substring(2).toUpperCase()}`, parameterType: "semester" });
-        if (!mySem) return res.status(404).send({ err: `Semester ${req.params.semester} found` });
+    if (req.query.semester) {
+        let mySem = await Parameter.findOne({ value: `${req.query.semester.substring(0, 2).toUpperCase()} ${req.query.semester.substring(2).toUpperCase()}`, parameterType: "semester" });
+        if (!mySem) {
+            mySem = await Parameter.findOne({ value: req.query.semester.substring(0, 2).toUpperCase() + req.query.semester.substring(2).toUpperCase(), parameterType: "semester" });
+            if (!mySem) return res.status(404).send({ err: `Semester ${req.query.semester} found` });
+        }
         query.semester = {
             _id: mySem._id
         }
     }
 
     // If award is specified as a parameter, add it to the query.
-    if (req.params.award != -1) {
-        const myAward = await Parameter.findOne({ value: req.params.award, parameterType: "award" });
-        if (!myAward) return res.status(404).send({ err: `Award ${req.params.award} found` });
+    if (req.query.award) {
+        const myAward = await Parameter.findOne({ value: req.query.award, parameterType: "award" });
+        if (!myAward) return res.status(404).send({ err: `Award ${req.query.award} found` });
         query.badges = {
             _id: myAward._id
         }
     }
 
     // If category is specified as a parameter, add it to the query.
-    if (req.params.category != -1) {
-        //let index = req.params.category.indexOf("+");
-        //let myCat = `${req.params.category.substring(0,index)} ${req.params.category.substring(index+1)}`
-        const myCategory = await Parameter.findOne({ value: {$regex: req.params.category, $options: 'i'}, parameterType: "category" });
-        if (!myCategory) return res.status(404).send({ err: `Category ${req.params.category} found` });
+    if (req.query.category) {
+        const myCategory = await Parameter.findOne({ value: {$regex: req.query.category, $options: 'i'}, parameterType: "category" });
+        if (!myCategory) return res.status(404).send({ err: `Category ${req.query.category} found` });
         query.category = {
             _id: myCategory._id
         }
     }
 
     // If keyword is specified as a parameter, add it to the query. It may be in either the name or tag.
-    if (req.params.keyword != -1) {
-        const tag = await Tag.findOne({ name: req.params.keyword[0].toUpperCase() + req.params.keyword.substring(1).toLowerCase() });
+    if (req.query.keyword) {
+        const tag = await Tag.findOne({ name: req.query.keyword[0].toUpperCase() + req.query.keyword.substring(1).toLowerCase() });
         if (tag) {
-            query.$or = [{ name: { $regex: req.params.keyword, $options: 'i' } }, { tags: { _id: tag._id } }];
+            query.$or = [{ name: { $regex: req.query.keyword, $options: 'i' } }, { tags: { _id: tag._id } }];
         } else {
-            query.name = { $regex: req.params.keyword, $options: 'i' };
+            query.name = { $regex: req.query.keyword, $options: 'i' };
         }
     }
 

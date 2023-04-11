@@ -31,7 +31,7 @@ router.post('/', auth, addNewProject);
 router.get('/likes', getProjectsByLikes)
 
 //Need to add more projects to properly test this
-router.get('/search/:keyword/:semester/:category/:award', searchProjects)
+router.get('/search', searchProjects)
 
 //Find a project by id
 router.get('/:projectId', getProject);
