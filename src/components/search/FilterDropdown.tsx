@@ -1,6 +1,14 @@
 import { Select, FormControl, InputLabel, MenuItem } from '../../mui'
+import { TAvailParameters } from '../../api/getSearchParameters'
 
-export type FilterDpdownProps = { value: string, name: string, label: string, options: string[], handleChange?: (e: any) => void }
+export type FilterDpdownProps = { 
+  value: string, 
+  name: string, 
+  label: string, 
+  options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
+  handleChange?: (e: any) => void 
+}
+
 export default function FilterDropdown({ value, name, label, options, handleChange }: FilterDpdownProps) {
   return (
     <FormControl sx={{ mb: 4 }} size='small' variant='outlined' fullWidth>
@@ -13,7 +21,7 @@ export default function FilterDropdown({ value, name, label, options, handleChan
         label={label}
         onChange={handleChange}
       >
-        {options.map((c, i) => <MenuItem key={i} value={c}>{c}</MenuItem>)}
+        {options.map(({_id, value}) => <MenuItem key={_id} value={value}>{value}</MenuItem>)}
       </Select>
     </FormControl>
   )

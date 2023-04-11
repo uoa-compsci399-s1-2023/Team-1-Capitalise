@@ -6,20 +6,28 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 
 import { SearchFilterProps } from './DesktopSearchFilters';
+import { TAvailParameters } from '../../api/getSearchParameters'
+
 
 const CustomButton = styled(Button)({
   textTransform: 'none',
-  // fontSize: 16,
   whiteSpace: 'nowrap',
   borderRadius: '20px'
 })
 
 
-export type FilterChipProps = { value: string, label: string, name: string, options: string[], filtersState: SearchFilterProps }
+export type FilterChipProps = { 
+  value: string, 
+  label: string, 
+  name: string, 
+  options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
+  filtersState: SearchFilterProps }
+
+
 export default function FilterButton({value, name, label, options, filtersState}: FilterChipProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-  
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+
   const {currFilters, setFilters} = filtersState;
 
   const open = Boolean(anchorEl);
@@ -31,13 +39,13 @@ export default function FilterButton({value, name, label, options, filtersState}
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLElement>,
     index: number,
-    selectedOption: string
+    selectedId: string
   ) => {
     setSelectedIndex(index);
     setAnchorEl(null);
     setFilters({
       ...currFilters,
-      [name]: selectedOption
+      [name]: selectedId
     })
   };
 
@@ -58,7 +66,7 @@ export default function FilterButton({value, name, label, options, filtersState}
         onClick={handleClickListItem}
         size="small"
       >
-        {`${label}: ${options[selectedIndex]}`}
+        {`${label}: ${options[selectedIndex]['value']}`}
       </CustomButton>
 
 
@@ -72,13 +80,13 @@ export default function FilterButton({value, name, label, options, filtersState}
           role: 'listbox',
         }}
       >
-        {options.map((option, index) => (
+        {options.map(({_id, value}, index) => (
           <MenuItem
-            key={option}
+            key={_id}
             selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index, option)}
+            onClick={(event) => handleMenuItemClick(event, index, _id)}
           >
-            {option}
+            {value}
           </MenuItem>
         ))}
       </Menu>

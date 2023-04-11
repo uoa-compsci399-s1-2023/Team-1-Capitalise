@@ -11,11 +11,12 @@ import { DesktopSearchFilters, MobileSearchFilters, TSearchFilterProps } from ".
 import ProjectsGrid from "../components/ProjectsGrid";
 
 // Apis
-import { TProject, getProjects } from "../api/getProjects";
+import { TProject } from "../api/getProjects";
 import { getProjectsSearch } from "../api/getSearchProjects";
 
 const Projects = () => {
   
+  const theme = useTheme();
   const [projects, setProjects] = useState<TProject[]>([]);
   const [searchFilters, setSearchFilters] = useState<TSearchFilterProps>( {
     keywords: '',
@@ -25,8 +26,7 @@ const Projects = () => {
     sortby: ''
   } )
 
-  const theme = useTheme();
-
+  // Fetch projects every time user changes search filters
   useEffect(() => {
     async function fetchProjects() {
       const newProjects = await getProjectsSearch({...searchFilters});
@@ -52,7 +52,6 @@ const Projects = () => {
           my={4} 
           variant="h4" 
           component="h1" 
-          // textAlign="center"
           sx={{ textAlign: {xs: "center", md: "center"} }}
         >
           Projects
