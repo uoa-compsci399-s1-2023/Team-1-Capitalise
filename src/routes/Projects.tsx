@@ -17,6 +17,7 @@ import { getProjectsSearch } from "../api/getSearchProjects";
 const Projects = () => {
   return (
     <Box bgcolor="#f9f9f9" width="100%">
+      <Navbar />
       <MyPagination />
     </Box>
   );

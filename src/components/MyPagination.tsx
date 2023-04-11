@@ -54,9 +54,11 @@ const MyPagination: React.FC = () => {
   // slice the projects array to get the projects to display for the current page
   const projectsToDisplay = projects.slice(startIndex, endIndex);
 
+  // check if there are projects to display
+  const checkProjects = projectsToDisplay.length > 0;
+
   return (
-    <div>
-      <Navbar />
+    <Box>
       <DesktopSearchFilters
         currFilters={searchFilters}
         setFilters={setSearchFilters}
@@ -72,30 +74,45 @@ const MyPagination: React.FC = () => {
           currFilters={searchFilters}
           setFilters={setSearchFilters}
         />
-        <Typography
-          my={4}
-          variant="h4"
-          component="h1"
-          // textAlign="center"
-          sx={{ textAlign: { xs: "center", md: "center" } }}
+        <Box
+          sx={{
+            minWidth: 300,
+            minHeight: 700,
+            maxHeight: 700,
+          }}
         >
-          Projects
-        </Typography>
-        {/* Render project data into the ProjectsGrid component */}
-        <ProjectsGrid projects={projectsToDisplay} />
+          <Typography
+            my={4}
+            variant="h4"
+            component="h1"
+            sx={{ textAlign: { xs: "center", md: "center" } }}
+          >
+            Projects
+          </Typography>
+          {/* Render project data into the ProjectsGrid component */}
+          <ProjectsGrid projects={projectsToDisplay} />
+        </Box>
 
-        <Stack spacing={2} alignItems="center" padding={10}>
-          <MuiPagination
-            count={Math.ceil(projects.length / projectsPerPage)}
-            page={currentPage}
-            onChange={(_, page) => handlePageChange(page)}
-            showFirstButton
-            showLastButton
-            color="primary"
-          />
+        <Stack spacing={2} alignItems="center" padding={5}>
+          <Box>
+            {/* We will return the pagination component IF there are projects to display */}
+            {checkProjects && (
+              <MuiPagination
+                count={Math.ceil(projects.length / projectsPerPage)}
+                page={currentPage}
+                onChange={(_, page) => handlePageChange(page)}
+                showFirstButton
+                showLastButton
+                color="primary"
+              />
+            )}
+          </Box>
+          {/* If there are no projects to display, then we don't need to show pagination.
+          We just display an error message instead */}
+          {!checkProjects && <Typography>No projects to display</Typography>}
         </Stack>
       </Stack>
-    </div>
+    </Box>
   );
 };
 
