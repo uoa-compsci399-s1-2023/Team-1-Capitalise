@@ -2,6 +2,7 @@ import * as React from "react";
 import { Box, Container, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Pagination as MuiPagination } from "@mui/material";
+import ProjectsGrid from "../components/ProjectsGrid";
 
 import { TProject, getProjects } from "../api/getProjects";
 
@@ -29,6 +30,7 @@ const MyPagination: React.FC = () => {
 
   useEffect(() => {
     // fetch total number of projects from call to the fetch API (would be able to work with another fetch api like search)
+    // need to change it to the searchProjects API.
     const fetchProjects = async () => {
       try {
         const projects = await getProjects();
@@ -54,20 +56,8 @@ const MyPagination: React.FC = () => {
 
   return (
     <div>
-      {/* Render project data */}
-      {projectsToDisplay.map((project) => (
-        <Grid2 key={project._id}>
-          <ProjectCard
-            title={project.name}
-            semester={project.semester}
-            image={
-              typeof project.content[0] != "undefined"
-                ? project.content[0].tab[0].photo
-                : ""
-            }
-          ></ProjectCard>
-        </Grid2>
-      ))}
+      {/* Render project data into the ProjectsGrid component */}
+      <ProjectsGrid projects={projectsToDisplay} />
       <MuiPagination
         count={Math.ceil(projects.length / projectsPerPage)}
         page={currentPage}
