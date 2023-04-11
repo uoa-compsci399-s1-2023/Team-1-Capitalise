@@ -5,10 +5,11 @@ import { TSearchFilterProps } from "../components/search";
 
 export async function getProjectsSearch({keywords, category, semester, award, sortby}: TSearchFilterProps): Promise<TProject[]> {
   
+  let qParam = `keyword=${keywords}`
   if (keywords == '') {
-    keywords = '-1';
+    qParam = '';
   }
   
-  const response = await fetch(`${API_URL}/api/projects/search/${keywords}/-1/-1/-1`);
+  const response = await fetch(`${API_URL}/api/projects/search?${qParam}`);
   return response.json();
 }
