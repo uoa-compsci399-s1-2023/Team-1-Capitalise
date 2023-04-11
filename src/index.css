@@ -1,6 +1,6 @@
 :root {
-  font-family: "Inter";
-
+  /* font-family: "Inter";
+*/
   color-scheme: light dark;
   color: rgba(0, 0, 0, 0.87);
   background-color: #ffffff;
@@ -11,14 +11,14 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-
+/* 
 #root{ 
   height:100vh;
   width:100vw;
   display: flex;
   justify-content: center;
   align-items: stretch;
-}
+} */
 
 * , *:before, *:after{ 
   box-sizing:border-box; 
@@ -30,7 +30,7 @@
 * {
   margin: 0;
   padding: 0;
-  color: black;
+  /* color: black; */
 }
 
 a {

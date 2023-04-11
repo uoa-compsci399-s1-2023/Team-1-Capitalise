@@ -1,62 +1,66 @@
-import { Box, Container, Grid, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
-import ProjectCard from "../components/ProjectCard";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+
+// Components
+import Navbar from "../components/Navbar";
+import {
+  DesktopSearchFilters,
+  MobileSearchFilters,
+  TSearchFilterProps,
+} from "../components/search";
+import ProjectsGrid from "../components/ProjectsGrid";
+
+// Apis
 import { TProject, getProjects } from "../api/getProjects";
-import MyPagination from "../components/MyPagination";
 
 const Projects = () => {
-  // initially empty array, will be populated through pagination.
   const [projects, setProjects] = useState<TProject[]>([]);
+  const [searchFilters, setSearchFilters] = useState<TSearchFilterProps>({
+    keywords: "",
+    category: "",
+    semester: "",
+    award: "",
+    sortby: "",
+  });
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 10; // total number of pages should be dependent on number of projects.
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    // FETCH PROJECTS
-    const fetchProjects = async () => {
+  useEffect(() => {
+    async function fetchProjects() {
       const newProjects = await getProjects();
       setProjects(newProjects);
-    };
+    }
     fetchProjects();
-  };
+  }, []);
 
   return (
-    <Box bgcolor="#f9f9f9">
-      <Stack display="flex" direction="column" height="100%">
-        <Navbar />
-        <Stack display="flex" direction="row" height="100%">
-          <Box bgcolor="white" minWidth="220px">
-            Search :)
-          </Box>
-          <Container maxWidth={false}>
-            <Box display="flex" justifyContent="center" padding=" 30px 0px">
-              <h1>Projects</h1>
-            </Box>
-            <Grid2
-              container
-              gap="50px"
-              justifyContent="center"
-              sx={{ margin: "px" }}
-            >
-              {projects.map((project) => (
-                <Grid2 key={project._id}>
-                  <ProjectCard
-                    title={project.name}
-                    semester={project.semester}
-                    image={
-                      typeof project.content[0] != "undefined"
-                        ? project.content[0].tab[0].photo
-                        : ""
-                    }
-                  ></ProjectCard>
-                </Grid2>
-              ))}
-            </Grid2>
-          </Container>
-        </Stack>
+    <Box bgcolor="#f9f9f9" width="100%">
+      <Navbar />
+
+      <DesktopSearchFilters
+        currFilters={searchFilters}
+        setFilters={setSearchFilters}
+      />
+      <Stack
+        display="flex"
+        height="100%"
+        flexDirection="column"
+        sx={{ ml: { xs: "0", md: "340px" } }}
+      >
+        <MobileSearchFilters
+          currFilters={searchFilters}
+          setFilters={setSearchFilters}
+        />
+        <Typography
+          my={4}
+          variant="h4"
+          component="h1"
+          // textAlign="center"
+          sx={{ textAlign: { xs: "center", md: "center" } }}
+        >
+          Projects
+        </Typography>
+
+        <ProjectsGrid projects={projects} />
       </Stack>
       <Container></Container>
       <Box display="flex" justifyContent="center" padding=" 20px">
