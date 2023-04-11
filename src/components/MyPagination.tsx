@@ -6,23 +6,6 @@ import ProjectsGrid from "../components/ProjectsGrid";
 
 import { TProject, getProjects } from "../api/getProjects";
 
-import ProjectCard from "../components/ProjectCard";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-
-const pageSize = 6; // set amount of projects to appear per page.
-
-interface Project {
-  _id: string;
-  name: string;
-  semester: string;
-  repoLink: string;
-  likes: number;
-}
-
-interface PaginationProps {
-  onPageChange: (page: number) => void;
-}
-
 const MyPagination: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [projectsPerPage] = useState(6); // Number of items to display per page
@@ -58,14 +41,17 @@ const MyPagination: React.FC = () => {
     <div>
       {/* Render project data into the ProjectsGrid component */}
       <ProjectsGrid projects={projectsToDisplay} />
-      <MuiPagination
-        count={Math.ceil(projects.length / projectsPerPage)}
-        page={currentPage}
-        onChange={(_, page) => handlePageChange(page)}
-        showFirstButton
-        showLastButton
-        color="primary"
-      />
+
+      <Stack spacing={2} alignItems="center" padding={10}>
+        <MuiPagination
+          count={Math.ceil(projects.length / projectsPerPage)}
+          page={currentPage}
+          onChange={(_, page) => handlePageChange(page)}
+          showFirstButton
+          showLastButton
+          color="primary"
+        />
+      </Stack>
     </div>
   );
 };
