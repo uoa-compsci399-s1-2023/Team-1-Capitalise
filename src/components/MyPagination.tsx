@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 // Components
 import { Box, Container, Stack, Grid2, Typography } from "../mui";
 import { Pagination as MuiPagination } from "@mui/material";
-import ProjectsGrid from "../components/ProjectsGrid";
+import ProjectsGrid from "../components/projectCard/ProjectsGrid";
 import Navbar from "../components/Navbar";
 import {
   DesktopSearchFilters,
@@ -40,7 +40,6 @@ const MyPagination: React.FC = () => {
         console.error("Failed to fetch projects:", error);
       }
     };
-
     fetchProjects();
   }, [searchFilters]);
 
@@ -67,6 +66,7 @@ const MyPagination: React.FC = () => {
         height="100%"
         flexDirection="column"
         sx={{ ml: { xs: "0", md: "340px" } }}
+        paddingBottom="100px"
       >
         <MobileSearchFilters
           currFilters={searchFilters}
