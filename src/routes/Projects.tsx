@@ -1,6 +1,5 @@
-import { Box, Container, Stack } from "@mui/material";
-import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
+import { Box, Container, Stack, Grid2, Typography } from "../mui";
 
 // Components
 import Navbar from "../components/Navbar";
@@ -10,6 +9,8 @@ import {
   TSearchFilterProps,
 } from "../components/search";
 import ProjectsGrid from "../components/ProjectsGrid";
+import MyPagination from "../components/MyPagination";
+import { getProjectsSearch } from "../api/getSearchProjects";
 
 // Apis
 import { TProject, getProjects } from "../api/getProjects";
@@ -26,11 +27,11 @@ const Projects = () => {
 
   useEffect(() => {
     async function fetchProjects() {
-      const newProjects = await getProjects();
+      const newProjects = await getProjectsSearch({ ...searchFilters });
       setProjects(newProjects);
     }
     fetchProjects();
-  }, []);
+  }, [searchFilters]);
 
   return (
     <Box bgcolor="#f9f9f9" width="100%">
@@ -59,13 +60,8 @@ const Projects = () => {
         >
           Projects
         </Typography>
-
-        <ProjectsGrid projects={projects} />
-      </Stack>
-      <Container></Container>
-      <Box display="flex" justifyContent="center" padding=" 20px">
         <MyPagination />
-      </Box>
+      </Stack>
     </Box>
   );
 };
