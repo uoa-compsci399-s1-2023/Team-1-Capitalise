@@ -24,7 +24,7 @@ export type TProject = {
     }
   ];
   badges: {
-    value: "clientWinner" | "clientRunner" | "peopleWinner" | "peopleRunner";
+    value: "CommunityImpact" | "TopExcellence" | "PeoplesChoice";
   };
 };
 

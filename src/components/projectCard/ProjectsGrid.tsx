@@ -9,9 +9,16 @@ interface props {
 
 export default function ProjectsGrid({ projects }: props) {
   return (
-    <Grid2 container gap="50px" justifyContent="center" sx={{ margin: "px" }}>
+    <Box
+      display="grid"
+      gridTemplateColumns="repeat(auto-fill, 320px)"
+      flexDirection="row"
+      flexWrap="wrap"
+      gap="50px"
+      justifyContent="center"
+    >
       {projects.map((project) => (
-        <Grid2 key={project._id}>
+        <Box key={project._id}>
           <ProjectCard
             title={project.name}
             semester={project.semester.value}
@@ -23,9 +30,12 @@ export default function ProjectsGrid({ projects }: props) {
             teamname={project.teamname ? project.teamname : "teamname"}
             category={project.category.value}
             likes={project.likes}
+            badges={
+              typeof project.badges != "undefined" ? project.badges.value : ""
+            }
           ></ProjectCard>
-        </Grid2>
+        </Box>
       ))}
-    </Grid2>
+    </Box>
   );
 }
