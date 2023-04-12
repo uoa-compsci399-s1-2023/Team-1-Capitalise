@@ -1,5 +1,3 @@
-// Yathi - Changed position to "fixed" and changed height to 8vh to calculate sidebar height
-
 import * as React from "react";
 import {
   AppBar,
@@ -22,30 +20,31 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { alignProperty } from "@mui/material/styles/cssUtils";
 import { AppRegistration, Login } from "@mui/icons-material";
 
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
 
-
-
-
 const pages = ["About", "Projects"];
-const settings = ["Login", "Register"];
 
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",
   color: "black",
+
 });
 
-const NavButtons = styled(Button)({
+const NavButton = styled(Button)({
   color: "black",
   display: "block",
   fontSize: 19,
   fontFamily: "Roboto",
   fontWeight: 400,
   textTransform: "capitalize"
+});
+const AuthButton = styled(Button)({
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  padding: "0 25px"
 });
 
 
@@ -69,17 +68,13 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -103,7 +98,6 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
       <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
           {/*Desktop Logo*/}
-
           <Link to="/">
             <Box
               padding="0 30px"
@@ -128,7 +122,7 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
             }}
           >
             {pages.map((page) => (
-              <NavButtons
+              <NavButton
                 key={page}
                 onClick={() => {
                   handleCloseNavMenu();
@@ -136,7 +130,7 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
                 }}
               >
                 {page}
-              </NavButtons>
+              </NavButton>
             ))}
           </Box>
 
@@ -148,24 +142,22 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
             }}
           >
             <SearchBar {...filterProps} />
-            <Button
-              sx={{ whiteSpace: "nowrap", overflow: "hidden" }}
+            <AuthButton
               onClick={() => {
                 goToPage("login");
               }}
               variant="outlined"
             >
               Log In
-            </Button>
-            <Button
-              sx={{ whiteSpace: "nowrap", overflow: "hidden" }}
+            </AuthButton>
+            <AuthButton
               onClick={() => {
                 goToPage("register");
               }}
               variant="contained"
             >
               Sign Up
-            </Button>
+            </AuthButton>
           </Box>
 
           {/*This is the side bar for mobile*/}
