@@ -36,7 +36,7 @@ export default function MobileSearchFilters({ currFilters, setFilters }: SearchF
         <FilterButton  label='Category' name='category' options={searchFilterParams.category} filtersState={{ currFilters, setFilters }} />
         <FilterButton  label='Semester' name='semester' options={searchFilterParams.semester} filtersState={{ currFilters, setFilters }} />
         <FilterButton  label='Award' name='award' options={searchFilterParams.award} filtersState={{ currFilters, setFilters }} />
-        <FilterButton  label='Sort by' name='sortby' options={searchFilterParams.sortBy} filtersState={{ currFilters, setFilters }} />
+        <FilterButton  label='Sort by' name='sortBy' options={searchFilterParams.sortBy} filtersState={{ currFilters, setFilters }} />
       </Box>
     </Stack>
 

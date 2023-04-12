@@ -8,7 +8,7 @@ import { useTheme } from "@mui/material/styles";
 
 // Components
 import Navbar from "../components/Navbar";
-import { DesktopSearchFilters, MobileSearchFilters, TSearchFilterProps } from "../components/search"
+import { DesktopSearchFilters, MobileSearchFilters } from "../components/search"
 import ProjectsGrid from "../components/ProjectsGrid";
 
 // Apis
@@ -31,7 +31,7 @@ const Projects = () => {
 
   const theme = useTheme();
   const [projects, setProjects] = useState<TProject[]>([]);
-  const [searchFilters, setSearchFilters] = useState<TSearchFilterProps>({
+  const [searchFilters, setSearchFilters] = useState<TFiltersState>({
     keywords: '',
     category: searchFilterParams.category[0],
     semester: searchFilterParams.semester[0],
