@@ -40,19 +40,19 @@ const projectSchema = new mongoose.Schema({
       tab: [{
         type: new mongoose.Schema({
           _id: false,
-          Banner: {
+          banner: {
             type: String
           },
-          Gallery: [{
+          gallery: [{
             type: String
           }],
           text: {
             type: String
           },
-          Video: {
+          video: {
             type: String
           },
-          Poster: {
+          poster: {
             type: String
           }
         })
