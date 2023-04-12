@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
-import { Home, Projects, About } from "./routes";
+import { Home, Projects, About, Registration, Login } from "./routes";
 import customTheme1 from "./themes/custom1";
 
 // Apis
@@ -68,6 +68,8 @@ export default function App() {
             />}
           />
           <Route path="/About" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/Register" element={<Registration />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
