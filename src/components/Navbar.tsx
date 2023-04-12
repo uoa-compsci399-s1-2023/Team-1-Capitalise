@@ -13,22 +13,17 @@ import {
   Tooltip,
   styled,
 } from "@mui/material";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+
+import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
-import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-
-
-
-import {
-  Login,
-  AppRegistration,
-} from "@mui/icons-material";
+import { alignProperty } from "@mui/material/styles/cssUtils";
+import { AppRegistration, Login } from "@mui/icons-material";
 
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
 
@@ -36,7 +31,7 @@ import { SearchFilterProps } from "./search/DesktopSearchFilters";
 
 
 const pages = ["About", "Projects"];
-const pageshidden = ["About", "Projects", "Search"];
+const settings = ["Login", "Register"];
 
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
@@ -47,13 +42,9 @@ const StyledToolBar = styled(Toolbar)({
 const NavButtons = styled(Button)({
   color: "black",
   display: "block",
-  fontSize: 18,
-  fontFamily: "Inter",
+  fontSize: 25,
+  fontFamily: "Roboto",
   fontWeight: 400,
-  letterSpacing: 2,
-  textTransform: "capitalize",
-  "&:hover": {},
- 
 });
 {
   /*Navigation Bar*/
@@ -109,134 +100,146 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
       <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
           {/*Desktop Logo*/}
-   
-            <Link to="/">
-              <Box
-                padding = "0 30px"
-                component="img"
-                src={Logo}
-                alt="logo"
-                sx={{
-                  width: "200px",
-                  height: "auto",
-                  flexGrow: 1,
-                  display: { xs: "none", md: "flex" },
-                }}
-              ></Box>
-            </Link>
 
-            {/* The nav barpage links*/}
+          <Link to="/">
             <Box
-              gap="15px"
+              padding="0 30px"
+              component="img"
+              src={Logo}
+              alt="logo"
               sx={{
+                width: "200px",
+                height: "auto",
                 flexGrow: 1,
                 display: { xs: "none", md: "flex" },
               }}
+            ></Box>
+          </Link>
+
+          {/* The nav barpage links*/}
+          <Box
+            gap="15px"
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+            }}
+          >
+            {pages.map((page) => (
+              <NavButtons
+                key={page}
+                onClick={() => {
+                  handleCloseNavMenu();
+                  goToPage(page);
+                }}
+              >
+                {page}
+              </NavButtons>
+            ))}
+          </Box>
+
+          {/* This is for the right hand side of the Nav Bar*/}
+          <Box
+            gap="20px"
+            sx={{
+              display: { xs: "none", md: "flex" },
+            }}
+          >
+            <SearchBar {...filterProps} />
+            <Button
+              sx={{ whiteSpace: "nowrap", overflow: "hidden" }}
+              onClick={() => {
+                goToPage("login");
+              }}
+              variant="outlined"
+            >
+              Log In
+            </Button>
+            <Button
+              sx={{ whiteSpace: "nowrap", overflow: "hidden" }}
+              onClick={() => {
+                goToPage("register");
+              }}
+              variant="contained"
+            >
+              Sign Up
+            </Button>
+          </Box>
+
+          {/*This is the side bar for mobile*/}
+          <Box
+            gap="25px"
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+          >
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
             >
               {pages.map((page) => (
-                <NavButtons
+                <MenuItem
                   key={page}
                   onClick={() => {
                     handleCloseNavMenu();
                     goToPage(page);
                   }}
                 >
-                  {page}
-                </NavButtons>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
               ))}
-            </Box>
-   
-          
-          {/* This is for the right hand side of the Nav Bar*/}
-          <Box
-            gap="20px"
-            sx={{
-            
-              display: { xs: "none", md: "flex" },
-            }}
-          >
-            <SearchBar {...filterProps} />
-            <Button sx={{whiteSpace: "nowrap", overflow: "hidden"}} onClick={()=> { goToPage("login")}}variant="outlined">Log In</Button>
-            <Button  sx={{whiteSpace: "nowrap", overflow: "hidden"}} onClick={()=> { goToPage("register")}}variant="contained">Sign Up</Button>
+              <MenuItem
+                onClick={() => {
+                  handleCloseNavMenu();
+                  goToPage("/search");
+                }}
+              >
+                <Typography textAlign="center">Search</Typography>
+              </MenuItem>
+            </Menu>
           </Box>
-
-          
-          {/*This is the side bar for mobile*/}
-          <Box
-              gap="25px"
-              sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
-            >
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                {pages.map((page) => (
-                  <MenuItem
-                    key={page}
-                    onClick={() => {
-                      handleCloseNavMenu();
-                      goToPage(page);
-                    }}
-                  >
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                  
-                ))}
-                  <MenuItem 
-                      onClick={() => {
-                      handleCloseNavMenu();
-                      goToPage("/search")}}> 
-                    <Typography textAlign="center">Search</Typography>
-                  </MenuItem>
-              </Menu>
-            </Box>
           {/*Mobile Logo*/}
 
           <Link to="/">
-              <Box
-                component="img"
-                src={Logo}
-                alt="logo"
-                sx={{
-          
-                  width: "200px",
-                  height: "auto",
-                  flexGrow: 1,
-                  display: { xs: "flex", md: "none" },
-                 
-                }}
-              ></Box>
-            </Link>
+            <Box
+              component="img"
+              src={Logo}
+              alt="logo"
+              sx={{
+                width: "200px",
+                height: "auto",
+                flexGrow: 1,
+                display: { xs: "flex", md: "none" },
+              }}
+            ></Box>
+          </Link>
           {/*RHS for Mobile/Smaller Screens*/}
           <Box
             sx={{
               flexGrow: 1,
               display: { xs: "flex", md: "none" },
-              justifyContent: "right"
+              justifyContent: "right",
             }}
           >
             <Tooltip title="Open settings">

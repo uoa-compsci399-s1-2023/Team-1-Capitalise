@@ -22,8 +22,6 @@ export async function getProjectsSearch({keywords, category, semester, award, so
     awardQParam = '';
 
   let sortQParam = `sortBy=${sortBy.qParam}`
-
-  console.log(sortQParam);
   
   const response = await fetch(`${API_URL}/api/projects/search?${keywordQParam}${catQParam}${semQParam}${awardQParam}${sortQParam}`);
   return response.json();

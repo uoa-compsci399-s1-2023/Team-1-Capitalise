@@ -1,20 +1,15 @@
-import { Container, Box } from '@mui/material'
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
-import ProjectCard from './ProjectCard'
-import { TProject } from '../api/getProjects'
+import { Container, Box } from "@mui/material";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import ProjectCard from "./ProjectCard";
+import { TProject } from "../../api/getProjects";
 
 interface props {
-  projects: TProject[]
+  projects: TProject[];
 }
 
 export default function ProjectsGrid({ projects }: props) {
   return (
-    <Grid2
-      container
-      gap="50px"
-      justifyContent="center"
-      sx={{ margin: "px" }}
-    >
+    <Grid2 container gap="50px" justifyContent="center" sx={{ margin: "px" }}>
       {projects.map((project) => (
         <Grid2 key={project._id}>
           <ProjectCard
@@ -27,9 +22,10 @@ export default function ProjectsGrid({ projects }: props) {
             }
             teamname={project.teamname ? project.teamname : "teamname"}
             category={project.category.value}
+            likes={project.likes}
           ></ProjectCard>
         </Grid2>
       ))}
     </Grid2>
-  )
+  );
 }
