@@ -1,8 +1,9 @@
-import { Box, Container } from '../../mui'
+import { Box, Stack } from '@mui/material'
 import FilterButton from './FilterButton'
-import { SearchFilterProps, availFilters } from './DesktopSearchFilters'
+import { SearchFilterProps } from './DesktopSearchFilters'
 import SearchBar from '../SearchBar'
-import { Stack } from '@mui/system'
+import { searchFilterParams } from './AvailableParams'
+
 
 
 export default function MobileSearchFilters({ currFilters, setFilters }: SearchFilterProps) {
@@ -20,7 +21,7 @@ export default function MobileSearchFilters({ currFilters, setFilters }: SearchF
         display: { xs: "flex", md: "none" },
       }}
     >
-      <SearchBar />
+      <SearchBar currFilters={currFilters} setFilters={setFilters}/>
       <Box
         sx={{
           display: "flex",
@@ -32,10 +33,10 @@ export default function MobileSearchFilters({ currFilters, setFilters }: SearchF
         }}
 
       >
-        <FilterButton value={currFilters.category} label='Category' name='category' options={availFilters.category} filtersState={{ currFilters, setFilters }} />
-        <FilterButton value={currFilters.semester} label='Semester' name='semester' options={availFilters.semester} filtersState={{ currFilters, setFilters }} />
-        <FilterButton value={currFilters.award} label='Award' name='award' options={availFilters.award} filtersState={{ currFilters, setFilters }} />
-        <FilterButton value={currFilters.sortby} label='Sort by' name='sortby' options={availFilters.sortBy} filtersState={{ currFilters, setFilters }} />
+        <FilterButton  label='Category' name='category' options={searchFilterParams.category} filtersState={{ currFilters, setFilters }} />
+        <FilterButton  label='Semester' name='semester' options={searchFilterParams.semester} filtersState={{ currFilters, setFilters }} />
+        <FilterButton  label='Award' name='award' options={searchFilterParams.award} filtersState={{ currFilters, setFilters }} />
+        <FilterButton  label='Sort by' name='sortBy' options={searchFilterParams.sortBy} filtersState={{ currFilters, setFilters }} />
       </Box>
     </Stack>
 
