@@ -49,7 +49,7 @@ const projectSchema = new mongoose.Schema({
           text: {
             type: String
           },
-          video: {
+          Video: {
             type: String
           },
           Poster: {
