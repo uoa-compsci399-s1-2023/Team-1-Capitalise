@@ -41,7 +41,6 @@ export default function FilterButton({name, label, options, filtersState}: Filte
     index: number,
     selectedOption: TAvailParameters[keyof TAvailParameters][0]
     ) => {
-    // console.log(currFilters.sortBy)
     setSelectedIndex(index);
     setAnchorEl(null);
     setFilters({

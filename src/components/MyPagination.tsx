@@ -37,7 +37,6 @@ const MyPagination = ({
 
   const currentPage = currFilters.currPage
   const totalPages = Math.ceil(totalProjects / currFilters.projectsPerPage)
-  console.log(totalProjects)
 
   // check if there are projects to display
   const checkProjects = projectsToDisplay.length > 0;
