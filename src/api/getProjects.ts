@@ -16,15 +16,17 @@ export type TProject = {
     {
       tab: [
         {
-          photoGallery: [];
+          banner: string;
+          gallery: [];
+          poster: string;
           text: string;
-          photo: string;
+          video: string;
         }
       ];
     }
   ];
   badges: {
-    value: "clientWinner" | "clientRunner" | "peopleWinner" | "peopleRunner";
+    value: "CommunityImpact" | "TopExcellence" | "PeoplesChoice";
   };
 };
 
