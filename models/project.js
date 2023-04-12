@@ -40,16 +40,19 @@ const projectSchema = new mongoose.Schema({
       tab: [{
         type: new mongoose.Schema({
           _id: false,
-          photo: {
+          Banner: {
             type: String
           },
-          photoGallery: [{
+          Gallery: [{
             type: String
           }],
           text: {
             type: String
           },
           video: {
+            type: String
+          },
+          Poster: {
             type: String
           }
         })
@@ -87,10 +90,11 @@ function validateProject(project) {
     members: Joi.array().items(Joi.objectId()),
     content: Joi.array().items(Joi.object({
       tab: Joi.array().items(Joi.object({
-        photo: Joi.string(),
-        photoGallery: Joi.array().items(Joi.string()),
+        Banner: Joi.string(),
+        Gallery: Joi.array().items(Joi.string()),
         text: Joi.string(),
-        video: Joi.string()
+        video: Joi.string(),
+        poster: Joi.string()
       })).required()
     })),
     badges: Joi.string().valid('CommunityImpact', 'TopExcellence', 'PeoplesChoice'),
