@@ -28,7 +28,6 @@ const Projects = (props: TProjectsRouteProps) => {
 
   return (
     <Box bgcolor={theme.customColors.bgGrey} width="100%" minHeight="92vh">
-
       <MyPagination
         {...props}
       />
