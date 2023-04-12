@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 
@@ -67,7 +67,7 @@ const Projects = () => {
 
 
   return (
-    <Box bgcolor={theme.customColors.bgGrey} width="100%">
+    <Box bgcolor={theme.customColors.bgGrey} width="100%" minHeight="92vh">
       <Navbar
         currFilters={searchFilters}
         setFilters={setSearchFilters}

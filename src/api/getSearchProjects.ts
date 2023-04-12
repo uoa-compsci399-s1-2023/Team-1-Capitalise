@@ -3,7 +3,11 @@ import { TProject } from "./getProjects";
 import { TFiltersState } from "../routes/Projects";
 
 
-export async function getProjectsSearch({keywords, category, semester, award, sortBy}: TFiltersState): Promise<TProject[]> {
+export async function getProjectsSearch({
+  keywords, category, 
+  semester, award, sortBy,
+  currPage, projectsPerPage
+}: TFiltersState): Promise<TProject[]> {
   
   let keywordQParam = `keyword=${keywords}&`
   if (keywords == '')
@@ -21,8 +25,11 @@ export async function getProjectsSearch({keywords, category, semester, award, so
   if (award._id == '0')
     awardQParam = '';
 
-  let sortQParam = `sortBy=${sortBy.qParam}`
+  let sortQParam = `sortBy=${sortBy.qParam}&`
   
-  const response = await fetch(`${API_URL}/api/projects/search?${keywordQParam}${catQParam}${semQParam}${awardQParam}${sortQParam}`);
+  const startIndex = (currPage - 1) * projectsPerPage;
+  let pagesQParam = `startIndex=${startIndex}&numProjects=${projectsPerPage}`
+  
+  const response = await fetch(`${API_URL}/api/projects/search?${keywordQParam}${catQParam}${semQParam}${awardQParam}${sortQParam}${pagesQParam}`);
   return response.json();
 }

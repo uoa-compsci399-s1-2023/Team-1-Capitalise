@@ -42,7 +42,7 @@ const StyledToolBar = styled(Toolbar)({
 const NavButtons = styled(Button)({
   color: "black",
   display: "block",
-  fontSize: 25,
+  fontSize: 16, // changed from 25 
   fontFamily: "Roboto",
   fontWeight: 400,
 });

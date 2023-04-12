@@ -1,7 +1,6 @@
 // Yathi - margin on top of projects box to clear fixed position header.
 // Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
 
-
 // Components
 import { Box, Stack, Typography } from "../mui";
 import { Pagination as MuiPagination } from "@mui/material";
@@ -22,8 +21,8 @@ interface MyPaginationProps extends SearchFilterProps {
 
 
 const MyPagination = ({
-  currFilters, 
-  setFilters, 
+  currFilters,
+  setFilters,
   projectsToDisplay
 }: MyPaginationProps
 ) => {
@@ -39,7 +38,6 @@ const MyPagination = ({
   const projectsPerPage = currFilters.projectsPerPage
 
   // calculate the start and end index of the projects to display based on the current page and projectsPerPage
-  const startIndex = (currentPage - 1) * projectsPerPage;
   // const endIndex = startIndex + projectsPerPage;
 
   // slice the projects array to get the projects to display for the current page
@@ -49,38 +47,43 @@ const MyPagination = ({
   const checkProjects = projectsToDisplay.length > 0;
 
   return (
-    <Box>
+    <Box mt='8vh' >
       <DesktopSearchFilters
-        {...{currFilters, setFilters}}
+        {...{ currFilters, setFilters }}
       />
       <Stack
         display="flex"
-        height="100%"
+        minHeight="92vh"
         flexDirection="column"
         sx={{ ml: { xs: "0", md: "340px" } }}
-        paddingBottom="100px"
+        paddingBottom="0px" // changed from 100
       >
         <MobileSearchFilters
-          {...{currFilters, setFilters}}
+          {...{ currFilters, setFilters }}
         />
-        <Box
+        <Typography
+          my={4}
+          variant="h4"
+          component="h1"
           sx={{
-            minWidth: 300,
-            minHeight: 700,
-            maxHeight: 700,
+            textAlign: { xs: "center", md: "left" },
+            ml: { md: "40px" }
           }}
         >
-          <Typography
-            my={4}
-            variant="h4"
-            component="h1"
-            sx={{ textAlign: { xs: "center", md: "left" } }}
-          >
-            {currFilters.keywords ? `Showing results for "${currFilters.keywords}"` : `Projects`}
-          </Typography>
-          {/* Render project data into the ProjectsGrid component */}
-          <ProjectsGrid projects={projectsToDisplay} />
-        </Box>
+          {currFilters.keywords ? `Showing results for "${currFilters.keywords}"` : `Projects`}
+        </Typography>
+        {/* Render project data into the ProjectsGrid component */}
+        <ProjectsGrid projects={projectsToDisplay} />
+        {/* <Box
+          sx={{
+            minWidth: 300,
+            height: '100%',
+            // minHeight: 700,
+            // maxHeight: 700,
+          }}
+        >
+          
+        </Box> */}
 
         <Stack spacing={2} alignItems="center" padding={5}>
           <Box>
@@ -88,7 +91,7 @@ const MyPagination = ({
             {checkProjects && (
               <MuiPagination
                 // count={Math.ceil(projects.length / projectsPerPage)}
-                count = {10}
+                count={10}
                 page={currentPage}
                 onChange={(_, page) => handlePageChange(page)}
                 showFirstButton

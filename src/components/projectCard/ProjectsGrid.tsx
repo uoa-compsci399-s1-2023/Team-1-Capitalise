@@ -9,7 +9,12 @@ interface props {
 
 export default function ProjectsGrid({ projects }: props) {
   return (
-    <Grid2 container gap="50px" justifyContent="center" sx={{ margin: "px" }}>
+    <Grid2 container 
+      gap="50px" 
+      justifyContent="center" 
+      sx={{ margin: "px" }}
+      flex={1} // Grows to fill space of page
+    >
       {projects.map((project) => (
         <Grid2 key={project._id}>
           <ProjectCard
