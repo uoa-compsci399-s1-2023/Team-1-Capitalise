@@ -42,10 +42,13 @@ const StyledToolBar = styled(Toolbar)({
 const NavButtons = styled(Button)({
   color: "black",
   display: "block",
-  fontSize: 16, // changed from 25 
+  fontSize: 19,
   fontFamily: "Roboto",
   fontWeight: 400,
+  textTransform: "capitalize"
 });
+
+
 {
   /*Navigation Bar*/
 }

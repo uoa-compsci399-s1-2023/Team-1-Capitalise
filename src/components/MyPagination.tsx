@@ -16,14 +16,15 @@ import { SearchFilterProps } from "./search/DesktopSearchFilters";
 import { TProject } from "../api/getProjects";
 
 interface MyPaginationProps extends SearchFilterProps {
-  projectsToDisplay: TProject[]
+  projects: TProject[]
+  totalNumProjects: number
 }
-
 
 const MyPagination = ({
   currFilters,
   setFilters,
-  projectsToDisplay
+  projects: projectsToDisplay, 
+  totalNumProjects: totalProjects,
 }: MyPaginationProps
 ) => {
 
@@ -35,13 +36,8 @@ const MyPagination = ({
   };
 
   const currentPage = currFilters.currPage
-  const projectsPerPage = currFilters.projectsPerPage
-
-  // calculate the start and end index of the projects to display based on the current page and projectsPerPage
-  // const endIndex = startIndex + projectsPerPage;
-
-  // slice the projects array to get the projects to display for the current page
-  // const projectsToDisplay = projects.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(totalProjects / currFilters.projectsPerPage)
+  console.log(totalProjects)
 
   // check if there are projects to display
   const checkProjects = projectsToDisplay.length > 0;
@@ -73,7 +69,7 @@ const MyPagination = ({
           {currFilters.keywords ? `Showing results for "${currFilters.keywords}"` : `Projects`}
         </Typography>
         {/* Render project data into the ProjectsGrid component */}
-        <ProjectsGrid projects={projectsToDisplay} />
+        {checkProjects && <ProjectsGrid projects={projectsToDisplay} />}
         {/* <Box
           sx={{
             minWidth: 300,
@@ -91,7 +87,7 @@ const MyPagination = ({
             {checkProjects && (
               <MuiPagination
                 // count={Math.ceil(projects.length / projectsPerPage)}
-                count={10}
+                count={totalPages}
                 page={currentPage}
                 onChange={(_, page) => handlePageChange(page)}
                 showFirstButton

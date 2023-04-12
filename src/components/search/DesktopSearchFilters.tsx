@@ -1,8 +1,8 @@
-import React, { useEffect, useState, ChangeEvent, Dispatch, SetStateAction } from 'react'
+import React, { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { Box, TextField, SelectChangeEvent, Typography } from '../../mui'
 import FilterDropdown from './FilterDropdown'
 import { searchFilterParams, TAvailParameters } from './AvailableParams'
-import { TFiltersState } from '../../routes/Projects';
+import { TFiltersState } from '../../app';
 
 
 
@@ -11,7 +11,6 @@ export interface SearchFilterProps {
   currFilters: TFiltersState,
   setFilters: Dispatch<SetStateAction<TFiltersState>>
 }
-
 
 
 export default function DesktopSearchFilters({ currFilters, setFilters }: SearchFilterProps) {
