@@ -16,9 +16,11 @@ export type TProject = {
     {
       tab: [
         {
-          photoGallery: [];
+          banner: string;
+          gallery: [];
+          poster: string;
           text: string;
-          photo: string;
+          video: string;
         }
       ];
     }

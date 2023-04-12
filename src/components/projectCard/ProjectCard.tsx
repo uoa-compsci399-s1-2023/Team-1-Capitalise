@@ -1,4 +1,11 @@
-import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Typography,
+} from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import communityImpact from "../../assets/communityImpact.svg";
 import peoplesChoice from "../../assets/peoplesChoice.svg";
@@ -53,86 +60,100 @@ const ProjectCard = ({
 
   return (
     <Card
-      sx={{ minWidth: 320, maxWidth: 320, border: "none", boxShadow: "none" }}
+      sx={{
+        minWidth: 320,
+        maxWidth: 320,
+        border: "none",
+        ":hover": {
+          boxShadow: 10,
+        },
+      }}
     >
-      <CardMedia
-        component="img"
-        alt="error loading image"
-        height="125px"
-        src={image}
-        onError={handleDefaultImage}
-      />
-      <Box bgcolor={colour} height="8px" />
+      <CardActionArea>
+        <CardMedia
+          component="img"
+          alt="error loading image"
+          height="125px"
+          src={image}
+          onError={handleDefaultImage}
+        />
+        <Box bgcolor={colour} height="8px" />
 
-      <CardContent
-        sx={{
-          paddingTop: "15px",
-          paddingBottom: "13px",
-          "&:last-child": {
+        <CardContent
+          sx={{
             paddingTop: "15px",
             paddingBottom: "13px",
-          },
-        }}
-      >
-        <Box display="flex">
-          {awardIcon && (
-            <Box paddingRight="10px">
-              <img src={awardIcon}></img>
+            "&:last-child": {
+              paddingTop: "15px",
+              paddingBottom: "13px",
+            },
+          }}
+        >
+          <Box display="flex">
+            {awardIcon && (
+              <Box paddingRight="10px">
+                <img src={awardIcon}></img>
+              </Box>
+            )}
+            <Box display="grid">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ lineHeight: 0.4, fontSize: "10px" }}
+              >
+                {semester}
+              </Typography>
+              <Typography noWrap variant="h5" sx={{ fontWeight: 600 }}>
+                {title}
+              </Typography>
+              <Typography
+                variant="body2"
+                marginBottom="1.5em"
+                sx={{ lineHeight: 0.4, fontSize: "10px", color: colour }}
+              >
+                {awardText}
+              </Typography>
             </Box>
-          )}
-          <Box display="grid">
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ lineHeight: 0.4, fontSize: "10px" }}
-            >
-              {semester}
-            </Typography>
-            <Typography noWrap variant="h5" sx={{ fontWeight: 600 }}>
-              {title}
-            </Typography>
-            <Typography
-              variant="body2"
-              marginBottom="1.5em"
-              sx={{ lineHeight: 0.4, fontSize: "10px", color: colour }}
-            >
-              {awardText}
-            </Typography>
           </Box>
-        </Box>
 
-        <Box display="flex" justifyContent="space-between" alignItems="end">
-          <Box>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              lineHeight={1.5}
-              fontSize="12px"
+          <Box display="flex" justifyContent="space-between" alignItems="end">
+            <Box>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                lineHeight={1.5}
+                fontSize="12px"
+              >
+                {teamname}
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="body2"
+                lineHeight={1}
+                fontSize="12px"
+              >
+                {category}
+              </Typography>
+            </Box>
+            <Box
+              display="flex"
+              alignItems="end"
+              gap="2px"
+              paddingBottom="0.35em"
             >
-              {teamname}
-            </Typography>
-            <Typography
-              gutterBottom
-              variant="body2"
-              lineHeight={1}
-              fontSize="12px"
-            >
-              {category}
-            </Typography>
+              <FavoriteIcon color="error" fontSize="small" />
+              <Typography
+                variant="body2"
+                color="error"
+                fontSize="1.25em"
+                lineHeight={1}
+              >
+                {likes}
+              </Typography>
+            </Box>
           </Box>
-          <Box display="flex" alignItems="end" gap="2px" paddingBottom="0.35em">
-            <FavoriteIcon color="error" fontSize="small" />
-            <Typography
-              variant="body2"
-              color="error"
-              fontSize="1.25em"
-              lineHeight={1}
-            >
-              {likes}
-            </Typography>
-          </Box>
-        </Box>
-      </CardContent>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };
