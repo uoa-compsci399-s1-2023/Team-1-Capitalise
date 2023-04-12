@@ -97,7 +97,7 @@ function validateProject(project) {
         poster: Joi.string()
       })).required()
     })),
-    badges: Joi.string().valid('CommunityImpact', 'TopExcellence', 'PeoplesChoice'),
+    badges: Joi.string().valid('Community Impact', 'Top Excellence', 'Peoples Choice'),
     category: Joi.string().valid('Mobile Development', 'Game Development', 'Web Development').required(),
     tags: Joi.array().items(Joi.string())
   });
