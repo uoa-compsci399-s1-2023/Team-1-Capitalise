@@ -40,10 +40,10 @@ const projectSchema = new mongoose.Schema({
       tab: [{
         type: new mongoose.Schema({
           _id: false,
-          Banner: {
+          banner: {
             type: String
           },
-          Gallery: [{
+          gallery: [{
             type: String
           }],
           text: {
@@ -52,7 +52,7 @@ const projectSchema = new mongoose.Schema({
           video: {
             type: String
           },
-          Poster: {
+          poster: {
             type: String
           }
         })
@@ -90,8 +90,8 @@ function validateProject(project) {
     members: Joi.array().items(Joi.objectId()),
     content: Joi.array().items(Joi.object({
       tab: Joi.array().items(Joi.object({
-        Banner: Joi.string(),
-        Gallery: Joi.array().items(Joi.string()),
+        banner: Joi.string(),
+        gallery: Joi.array().items(Joi.string()),
         text: Joi.string(),
         video: Joi.string(),
         poster: Joi.string()
