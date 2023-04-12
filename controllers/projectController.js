@@ -345,6 +345,7 @@ const searchProjects = async (req, res) => {
         .populate('semester', 'value -_id').populate('category', 'value -_id').populate('badges', 'value -_id').populate('tags', 'name -_id')
         .sort(sortQuery);
 
+    projects.unshift(projects.length);
 
     //Send the projects off.
     res.send(projects);
