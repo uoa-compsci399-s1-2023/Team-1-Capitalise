@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
 import { Home, Projects, About, Registration, Login } from "./routes";
@@ -28,7 +28,7 @@ export type TFiltersState = {
 
 
 export default function App() {
-
+  
   const [projects, setProjects] = useState<TProject[]>([]);
   const [totalNumProjects, setTotalNumProjects] = useState(0)
   const [searchFilters, setSearchFilters] = useState<TFiltersState>({
@@ -40,7 +40,6 @@ export default function App() {
     currPage: 1,
     projectsPerPage: 6
   })
-
   // Fetch required number of projects based on given parameters
   useEffect(() => {
     const fetchProjects = async () => {

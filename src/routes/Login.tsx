@@ -1,6 +1,11 @@
-const Login = () => {
-    return (<h1> hi</h1>
+import { Box } from "@mui/material";
+import LoginForm from "../components/LoginForm";
+import { useEffect } from "react";
+
+export default function Login() {
+    return (<Box> 
+        <LoginForm />
+    </Box>
     );
 };
 
-export default Login;

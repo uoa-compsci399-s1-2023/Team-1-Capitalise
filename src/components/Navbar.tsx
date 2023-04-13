@@ -27,7 +27,7 @@ import { AppRegistration, Login } from "@mui/icons-material";
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
 
 const pages = ["About", "Projects"];
-
+const NoNavPages = ["/register", "/login"];
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",
@@ -85,16 +85,18 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
     setAnchorEl(null);
   };
 
-  {
-    /*Navigation Functionality + Routing*/
-  }
+
+
+//Navigation Functionality + Routing
+  
   const navigate = useNavigate();
   const goToPage = (pageName: any) => {
     navigate("/" + pageName);
   };
-  {
-    /*App Bar*/
-  }
+// App bar
+  if (NoNavPages.includes(window.location.pathname) ) {
+    return null
+  } 
   return (
     <AppBar position="fixed" sx={{ bgcolor: "white" }}>
       <Container maxWidth="xl" disableGutters>
@@ -295,13 +297,17 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
 
               <Divider />
 
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={() => {
+                handleClose(); 
+                goToPage("register")}}>
                 <ListItemIcon>
                   <AppRegistration fontSize="small" />
                 </ListItemIcon>
                 Register
               </MenuItem>
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={() => {
+                handleClose(); 
+                goToPage("login")}}>
                 <ListItemIcon>
                   <Login fontSize="small" />
                 </ListItemIcon>

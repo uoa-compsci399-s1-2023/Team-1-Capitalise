@@ -1,5 +1,10 @@
+import { Box } from "@mui/material";
+import LoginForm from "../components/LoginForm";
+import SignUp from "../components/RegisterForm";
 const Registration = () => {
-    return (<h1> hi</h1>
+    return (<Box> 
+        <SignUp/>
+    </Box>
     )
 };
 
