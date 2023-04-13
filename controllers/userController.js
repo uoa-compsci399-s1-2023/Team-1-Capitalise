@@ -1,44 +1,47 @@
-const { User, validate } = require('../models/user');
-const { Project } = require('../models/project');
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv').config();
-const { Comment, validateComment } = require('../models/comment');
-
+const { User, validate } = require("../models/user");
+const { Project } = require("../models/project");
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv").config();
+const { Comment, validateComment } = require("../models/comment");
 
 //Gets all users and sorts by name
 const getAllUsers = async (req, res) => {
   //Added populate method to dynamically fetch information of project document!
-  const users = await User.find().populate('project', '_id, name').sort('name');
+  const users = await User.find().populate("project", "_id, name").sort("name");
   res.send(users);
-}
+};
 
 //Get user by username
 const getUserByName = async (req, res) => {
-  const { username } = req.params
+  const { username } = req.params;
 
-  const user = await User.findOne({ username: username }).populate('project', '_id, name');
+  const user = await User.findOne({ username: username }).populate(
+    "project",
+    "_id, name"
+  );
   if (!user) {
-    return res.status(404).json({ fail: `no user with ${username} found` })
+    return res.status(404).json({ fail: `no user with ${username} found` });
   }
 
   res.send(user);
-}
+};
 
 //Get user by Id
 const getUserById = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
 
-  const username = await User.findOne({ _id: id }).populate('project', '_id, name');
+  const username = await User.findOne({ _id: id }).populate(
+    "project",
+    "_id, name"
+  );
   if (!username) {
-    return res.status(404).json({ fail: `no user with ${id} found` })
+    return res.status(404).json({ fail: `no user with ${id} found` });
   }
 
   res.send(username);
-}
-
-
+};
 
 //Adds new user
 const postUser = async (req, res) => {
@@ -47,41 +50,57 @@ const postUser = async (req, res) => {
 
   //Check if the email already exists
   let checkExistingEmail = await User.findOne({ email: req.body.email });
-  if (checkExistingEmail) return res.status(400).send('Email already registered.');
+  if (checkExistingEmail)
+    return res.status(400).send("Email already registered.");
 
   //Check if the username already exists
-  let checkExistingUsername = await User.findOne({ username: req.body.username });
-  if (checkExistingUsername) return res.status(400).send('Username already registered.');
+  let checkExistingUsername = await User.findOne({
+    username: req.body.username,
+  });
+  if (checkExistingUsername)
+    return res.status(400).send("Username already registered.");
+
+  //Determine if email has aucklanduni.ac.nz domain
+  const gradEmailDomain = req.body.email.substring(
+    req.body.email.indexOf("@") + 1
+  );
+  let myUserType = "";
+  gradEmailDomain != "aucklanduni.ac.nz"
+    ? (myUserType = "visitor")
+    : (myUserType = "graduate");
 
   let user = "";
   let password = await bcrypt.hash(req.body.password, 10);
 
   if (req.body.projectId) {
     const project = await Project.findById(req.body.projectId);
-    if (!project) return res.status(400).send('Invalid project.');
+    if (!project) return res.status(400).send("Invalid project.");
 
     user = new User({
       name: req.body.name,
       email: req.body.email,
       username: req.body.username,
       password: password,
+      profilePicture: req.body.profilePicture,
       github: req.body.github,
       linkedin: req.body.linkedin,
       project: {
-        _id: project._id
+        _id: project._id,
       },
       bio: req.body.bio,
       likedProjects: [],
       myComments: [],
-      userType: req.body.userType
+      userType: myUserType,
     });
 
-    //Append user to project's members 
-    const appendToProject = await Project.findByIdAndUpdate(project._id,
+    //Append user to project's members
+    const appendToProject = await Project.findByIdAndUpdate(
+      project._id,
       {
-        $push: { members: user }
-      }, { new: true });
-
+        $push: { members: user },
+      },
+      { new: true }
+    );
   } else {
     user = new User({
       name: req.body.name,
@@ -93,35 +112,63 @@ const postUser = async (req, res) => {
       bio: req.body.bio,
       likedProjects: [],
       myComments: [],
-      userType: req.body.userType
+      userType: myUserType,
     });
-
   }
 
   user = await user.save();
 
   const token = user.generateAuthToken();
 
-  res.header('x-auth-token', token).send(user);
-}
+  res.header("x-auth-token", token).send(user);
+};
+
+//Adds new user from Google
+const postGoogleUser = async (profile) => {
+  const gradEmailDomain = profile.email.substring(
+    profile.email.indexOf("@") + 1
+  );
+  let myUserType = "";
+  gradEmailDomain != "aucklanduni.ac.nz"
+    ? (myUserType = "visitor")
+    : (myUserType = "graduate");
+
+  let user = "";
+
+  user = new User({
+    name: `${profile.given_name} ${profile.family_name}`,
+    email: profile.email,
+    username:
+      profile.given_name.toLowerCase() +
+      "." +
+      profile.family_name.toLowerCase(),
+    profilePicture: profile.picture,
+    likedProjects: [],
+    myComments: [],
+    userType: myUserType,
+  });
+
+  user = await user.save();
+
+  return user;
+};
 
 //updates the user details besides the user type
 //This method also assumes that if a user doesn't update a field
-//The front end form sent will send the user.<parameter> default value 
+//The front end form sent will send the user.<parameter> default value
 const updateUserDetails = async (req, res) => {
-  
   const { id } = req.params;
 
   //If user logged in is trying to update someone else
-  if(id != req.user._id){
-    return res.status(403).send({err: "You are trying to edit someone else"})
+  if (id != req.user._id) {
+    return res.status(403).send({ err: "You are trying to edit someone else" });
   }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ err: "Wrong type of id " });
   }
-  
-  const user = await User.findById(id)
+
+  const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ err: "No user found" });
   }
@@ -132,107 +179,111 @@ const updateUserDetails = async (req, res) => {
   const { name, password, email, username, userType } = req.body;
   const encrypted = await bcrypt.hash(password, 10);
   var updateUser;
-  if (userType != 'admin') {
-    updateUser = await User.findByIdAndUpdate(id, { name: name, password: encrypted, email: email, username: username, userType: userType })
+  if (userType != "admin") {
+    updateUser = await User.findByIdAndUpdate(id, {
+      name: name,
+      password: encrypted,
+      email: email,
+      username: username,
+      userType: userType,
+    });
+  } else {
+    updateUser = await User.findByIdAndUpdate(id, {
+      name: name,
+      password: encrypted,
+      email: email,
+      username: username,
+    });
   }
 
-  else {
-    updateUser = await User.findByIdAndUpdate(id, { name: name, password: encrypted, email: email, username: username })
-  }
-
-
-  res.send(updateUser)
-}
+  res.send(updateUser);
+};
 
 const deleteUserById = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   const user = await User.findOne({ _id: id });
 
   if (user == null) {
-    return res.send({ noUser: `User with id ${id} not found` })
+    return res.send({ noUser: `User with id ${id} not found` });
   }
 
-  if(id != req.user._id){
-    return res.status(403).send({err : "You are trying to delete someone else!"})
-
+  if (id != req.user._id) {
+    return res
+      .status(403)
+      .send({ err: "You are trying to delete someone else!" });
   }
 
-  const username = user.username
-  const projectId = await user.project
+  const username = user.username;
+  const projectId = await user.project;
 
   if (projectId != null) {
-    await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
+    await Project.findByIdAndUpdate(projectId, { $pull: { members: id } });
   }
 
   await User.findByIdAndDelete(id);
   res.status(200).send({ removed: `${username} removed` });
-
-}
-
+};
 
 //Need to properly test
 const adminDeleteUserById = async (req, res) => {
-  const { id } = req.params
-  if(id == req.user._id){
-    return res.status(403).send({err: "You are not allowed to delete yourself"})
+  const { id } = req.params;
+  if (id == req.user._id) {
+    return res
+      .status(403)
+      .send({ err: "You are not allowed to delete yourself" });
   }
 
-  const user = await User.findOne({_id: id});
+  const user = await User.findOne({ _id: id });
   if (user == null) {
-    return res.send({ noUser: `User with id ${id} not found` })
+    return res.send({ noUser: `User with id ${id} not found` });
   }
 
-  const username = user.username
-  const projectId = await user.project
+  const username = user.username;
+  const projectId = await user.project;
 
   if (projectId != null) {
-    await Project.findByIdAndUpdate(projectId, { $pull: { members: id } })
+    await Project.findByIdAndUpdate(projectId, { $pull: { members: id } });
   }
 
   await User.findByIdAndDelete(id);
   res.status(200).send({ removed: `${username} removed` });
-
-}
+};
 
 const adminUpdateUserDetails = async (req, res) => {
-    const { id } = req.params;
-    
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({ err: "Wrong type of id " });
-    }
-    
-    const user = await User.findById(id)
-    if (!user) {
-      return res.status(404).json({ err: "No user found" });
-    }
-  
-    //look through request body. Also assumes frontend will only give vistor or graduate options
-    // to visitor and only admin can update a user and give them admin userType
-    //For now, no authorization
-    const { name, password, email, username, userType } = req.body;
-    const encrypted = await bcrypt.hash(password, 10);
+  const { id } = req.params;
 
-    //Admin can make other users admin
-    updateUser = await User.findByIdAndUpdate(id, { name: name, password: encrypted, email: email, username: username, userType: userType })
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ err: "Wrong type of id " });
+  }
 
-  
-    res.send(updateUser)
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ err: "No user found" });
+  }
 
-}
+  //look through request body. Also assumes frontend will only give vistor or graduate options
+  // to visitor and only admin can update a user and give them admin userType
+  //For now, no authorization
+  const { name, password, email, username, userType } = req.body;
+  const encrypted = await bcrypt.hash(password, 10);
 
+  //Admin can make other users admin
+  updateUser = await User.findByIdAndUpdate(id, {
+    name: name,
+    password: encrypted,
+    email: email,
+    username: username,
+    userType: userType,
+  });
 
+  res.send(updateUser);
+};
 
 //uses the _id attribute from the JSON web token to grab the session user. Excludes their password.
 const getCurrentUser = async (req, res) => {
-  const user = await User.findById(req.user._id).select('-password');
+  const user = await User.findById(req.user._id).select("-password");
   res.send(user);
-}
-
-
-
-
-
-
+};
 
 module.exports = {
   getAllUsers,
@@ -243,5 +294,6 @@ module.exports = {
   deleteUserById,
   getCurrentUser,
   adminDeleteUserById,
-  adminUpdateUserDetails
-}
+  adminUpdateUserDetails,
+  postGoogleUser,
+};

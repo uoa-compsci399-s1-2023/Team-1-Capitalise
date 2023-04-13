@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 //Grabs auth and admin functions from the middleware (for Authorization)
-const auth = require('../middleware/auth');
+const {auth} = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
 const {

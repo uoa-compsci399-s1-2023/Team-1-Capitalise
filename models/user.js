@@ -1,8 +1,8 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv').config();
-const { commentSchema } = require('./comment');
+const Joi = require("joi");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv").config();
+const { commentSchema } = require("./comment");
 Joi.objectId = require("joi-objectid")(Joi);
 
 const userSchema = new mongoose.Schema({
@@ -10,65 +10,73 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 5,
-    maxlength: 50
+    maxlength: 50,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+  },
+  profilePicture: {
+    type: String,
   },
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
   },
   github: {
-    type: String
+    type: String,
   },
   linkedin: {
-    type: String
+    type: String,
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project'
+    ref: "Project",
   },
   bio: {
     type: String,
-    maxLength: 2000
+    maxLength: 2000,
   },
-  likedProjects: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project'
-  }],
-  myComments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
-  }],
+  likedProjects: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+    },
+  ],
+  myComments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
 
   userType: {
     type: String,
-    enum: ['visitor', 'graduate', 'admin'],
-    default: 'visitor',
-    required: true
-  }
-
+    enum: ["visitor", "graduate", "admin"],
+    default: "visitor",
+    required: true,
+  },
 });
 
-//Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user. 
+//Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user.
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({
-    _id: this._id,
-    username: this.username,
-    userType: this.userType
-  }, process.env.JWT_PRIVATE_KEY);
+  const token = jwt.sign(
+    {
+      _id: this._id,
+      username: this.username,
+      userType: this.userType,
+    },
+    process.env.JWT_PRIVATE_KEY
+  );
   return token;
-}
+};
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 function validateUser(User) {
   const schema = Joi.object({
@@ -82,7 +90,7 @@ function validateUser(User) {
     bio: Joi.string().max(2000),
     likedProjects: Joi.array(),
     myComments: Joi.array(),
-    userType: Joi.string().valid('visitor', 'graduate')
+    profilePicture: Joi.string(),
   });
 
   return schema.validate(User);
