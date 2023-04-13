@@ -1,10 +1,7 @@
 
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import styled from '@emotion/styled';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-
+import { Button, Menu, MenuItem } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { SearchFilterProps } from './DesktopSearchFilters';
 import { TAvailParameters } from './AvailableParams'
 

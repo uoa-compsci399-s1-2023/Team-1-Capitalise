@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { ThemeProvider } from "@mui/material";
+import { ThemeProvider, Box } from "@mui/material";
 import { Home, Projects, About } from "./routes";
 import customTheme1 from "./themes/custom1";
 
@@ -10,7 +10,8 @@ import { TProject } from "./api/getProjects";
 import { getProjectsSearch } from "./api/getSearchProjects";
 
 // Other
-import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "./components/search/AvailableParams";
+import { searchFilterParams, TAvailParameters } from "./components/search/AvailableParams";
+import ProjectPage from './components/projectPage/ProjectPage';
 import Navbar from "./components/Navbar";
 
 
@@ -31,7 +32,7 @@ export default function App() {
 
   const [projects, setProjects] = useState<TProject[]>([]);
   const [totalNumProjects, setTotalNumProjects] = useState(0)
-  const [searchFilters, setSearchFilters] = useState<TFiltersState>({
+  const [currFilters, setFilters] = useState<TFiltersState>({
     keywords: '',
     category: searchFilterParams.category[0],
     semester: searchFilterParams.semester[0],
@@ -44,31 +45,35 @@ export default function App() {
   // Fetch required number of projects based on given parameters
   useEffect(() => {
     const fetchProjects = async () => {
-      const respData = await getProjectsSearch({ ...searchFilters });
+      const respData = await getProjectsSearch({ ...currFilters });
       setTotalNumProjects(respData.searchTotal)
       setProjects(respData.projects);
     };
     fetchProjects();
-  }, [searchFilters]);
+  }, [currFilters]);
 
   return (
     <BrowserRouter>
       <ThemeProvider theme={customTheme1}>
-        <Navbar
-          currFilters={searchFilters}
-          setFilters={setSearchFilters}
-        />
-        <Routes >
-          <Route path="/" element={<Home />} />
-          <Route path="/projects/*" element={
-            <Projects
-              currFilters={searchFilters}
-              setFilters={setSearchFilters}
-              {...{totalNumProjects, projects}}
-            />}
-          />
-          <Route path="/About" element={<About />} />
-        </Routes>
+        <Navbar {...{ currFilters, setFilters }} />
+        <Box mt="8vh" >
+          <Routes >
+            <Route path="/" element={<Home />} />
+            <Route path="/projects/*" element={
+              <Projects
+                {...{ currFilters, setFilters, totalNumProjects, projects }}
+              />
+            }/>
+            <Route path="/projectpage" element={<ProjectPage />} />
+
+
+
+
+            <Route path="/About" element={<About />} />
+          </Routes>
+        </Box>
+
+
       </ThemeProvider>
     </BrowserRouter>
   )
