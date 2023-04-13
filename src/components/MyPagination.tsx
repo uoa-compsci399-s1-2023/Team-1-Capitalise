@@ -2,7 +2,7 @@
 // Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
 
 // Components
-import { Box, Stack, Typography } from "../mui";
+import { Box, Stack, Typography } from "@mui/material";
 import { Pagination as MuiPagination } from "@mui/material";
 import ProjectsGrid from "../components/projectCard/ProjectsGrid";
 
@@ -42,7 +42,7 @@ const MyPagination = ({
   const checkProjects = projectsToDisplay.length > 0;
 
   return (
-    <Box mt='8vh' >
+    <Box>
       <DesktopSearchFilters
         {...{ currFilters, setFilters }}
       />

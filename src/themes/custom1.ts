@@ -3,6 +3,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { light } from "@mui/material/styles/createPalette";
 
 
 // Any new theme variables have to be declared in the interfaces below first!
@@ -10,19 +11,75 @@ declare module "@mui/material/styles" {
   interface Theme {
     customColors: {
       bgGrey: string;
+      netural: string;
     };
+    contentBlock: {
+      border: string;
+      borderRadius: string;
+    }
+    projStatus: {
+      pending: string
+      approved: string
+    }
   }
   // allow configuration using `createTheme`
   interface ThemeOptions {
     customColors?: {
-      bgGrey?: string;
-    };
+      bgGrey?: string
+      neutral?: string
+    }
+    contentBlock?: {
+      border?: string;
+      borderRadius?: string;
+    }
+    projStatus?: {
+      pending?: string
+      approved?: string
+    }
   }
+
+  interface Palette {
+    neutral: Palette['primary'];
+    black: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    neutral?: PaletteOptions['primary'];
+    black: Palette['secondary'];
+  }
+
 }
 
-export default createTheme({
-  customColors: {
-    bgGrey: "#f9f9f9",
-  },
-  
-});
+
+
+  export default createTheme({
+    palette: {
+      neutral: {
+        main: '#292929'
+      },
+      black: {
+        main: '#000000',
+        light: '#0',
+        dark: '#0',
+        contrastText: '#0'
+      }
+    },
+    typography: {
+      button: {
+        fontWeight: 400
+      }
+    },
+    customColors: {
+      bgGrey: '#f9f9f9',
+      // neutral: '#c7c7c7'
+    },
+    contentBlock: {
+      border: "1px solid #f5f5f5",
+      borderRadius: '10px'
+    },
+    projStatus: {
+      pending: '#ffc107',
+      approved: '#8bc34a'
+    }
+  })
+
