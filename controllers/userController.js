@@ -79,6 +79,7 @@ const postUser = async (req, res) => {
     user = new User({
       name: req.body.name,
       email: req.body.email,
+      profilePicture: req.body.profilePicture,
       username: req.body.username,
       password: password,
       profilePicture: req.body.profilePicture,
