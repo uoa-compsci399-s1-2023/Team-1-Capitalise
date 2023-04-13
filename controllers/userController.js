@@ -134,15 +134,22 @@ const postGoogleUser = async (profile) => {
     ? (myUserType = "visitor")
     : (myUserType = "graduate");
 
+  //Existing username check
+  let suggestedUsername =
+    profile.given_name.toLowerCase() + "." + profile.family_name.toLowerCase();
+  const takenUsername = await User.findOne({ username: suggestedUsername });
+  if (takenUsername) {
+    suggestedUsername = profile.email;
+  }
+
+  //Create the user
+
   let user = "";
 
   user = new User({
     name: `${profile.given_name} ${profile.family_name}`,
     email: profile.email,
-    username:
-      profile.given_name.toLowerCase() +
-      "." +
-      profile.family_name.toLowerCase(),
+    username: suggestedUsername,
     profilePicture: profile.picture,
     likedProjects: [],
     myComments: [],

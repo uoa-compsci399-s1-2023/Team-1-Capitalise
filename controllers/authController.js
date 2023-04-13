@@ -49,6 +49,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      //callbackURL: "http://localhost:3000/api/auth/google/callback",
       callbackURL: "https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google/callback",
       passReqToCallback: true,
     },
@@ -74,9 +75,7 @@ passport.deserializeUser(function (user, done) {
 
 //Function which links to google OAuth handler
 const googleOAuth = async (req, res) => {
-  res.send(
-    '<a href="../auth/google/">Authenticate with Google</a>'
-  );
+  res.send('<a href="../auth/google/">Authenticate with Google</a>');
 };
 
 //Endpoint which is called once callback has occured. Provides a JSON Web Token in the response header. Session is destroyed, so can only be called once.
@@ -87,9 +86,7 @@ const protected = async (req, res) => {
   req.session.destroy();
   res
     .header("x-auth-token", token)
-    .send(
-      "x-auth-token should have been added to the response."
-    );
+    .send(token + "<br><p>x-auth-token should have been added to the response.</p>");
 };
 
 //Called if Google sign in goes wrong
@@ -112,7 +109,7 @@ const nextPage = async (req, res) => {
                         return response.text();
                     })
                     .then((html) => {
-                        document.body.innerHTML = '<p>Check the response header.</p>'
+                        document.body.innerHTML = html
                     });
             }
     
@@ -120,7 +117,7 @@ const nextPage = async (req, res) => {
         </script>
     </head>
     <body>
-        <button onclick = "fetchHtml()" > Get your token! </button>
+        <button onclick = "fetchHtml()" > Waddup top g? - Get your token! </button>
     </body>
     
     </html>`;
