@@ -56,7 +56,7 @@ passport.use(
     async function (request, accessToken, refreshToken, profile, done) {
       let user = await User.findOne({ email: profile.email });
       if (!user) {
-        user = await postGoogleUser(profile);
+        user = await postGoogleUser(profile._json);
       }
       return done(null, user);
     }

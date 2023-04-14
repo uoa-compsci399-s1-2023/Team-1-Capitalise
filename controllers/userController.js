@@ -134,10 +134,14 @@ const postGoogleUser = async (profile) => {
     ? (myUserType = "visitor")
     : (myUserType = "graduate");
 
-  //Existing username check
-  let suggestedUsername =
-    profile.given_name.toLowerCase() + "." + profile.family_name.toLowerCase();
+  //Check if the user has a given name and family name
+  let suggestedUsername = profile.email
+    .substring(0, profile.email.indexOf("@"))
+    .toLowerCase();
+
+  // Check if username is taken
   const takenUsername = await User.findOne({ username: suggestedUsername });
+  // If yes, change the username to their unique email
   if (takenUsername) {
     suggestedUsername = profile.email;
   }
@@ -147,7 +151,7 @@ const postGoogleUser = async (profile) => {
   let user = "";
 
   user = new User({
-    name: `${profile.given_name} ${profile.family_name}`,
+    name: profile.name,
     email: profile.email,
     username: suggestedUsername,
     profilePicture: profile.picture,
