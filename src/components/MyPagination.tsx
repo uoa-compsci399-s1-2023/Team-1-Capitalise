@@ -58,8 +58,8 @@ const MyPagination = ({
         />
         <Typography
           my={4}
-          variant="h4"
-          component="h1"
+          variant="h1"
+          // component="h1"
           sx={{
             textAlign: { xs: "center", md: "left" },
             ml: { md: "40px" }

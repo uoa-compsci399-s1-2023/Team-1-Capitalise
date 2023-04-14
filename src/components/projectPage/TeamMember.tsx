@@ -30,7 +30,7 @@ export default function TeamMember({ name, avatar, role }: FieldProps) {
       <Member
         startIcon={<Avatar sizes='small' alt={name} src={avatar} sx={{ width: 30, height: 30 }} />}
         variant='text'
-        color='neutral'
+        color='neutral' // Ignore type error.
         size='large'
         fullWidth
         style={{}}

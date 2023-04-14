@@ -1,8 +1,6 @@
 import React, { ChangeEvent, FormEvent } from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
-import { InputAdornment } from "@mui/material";
+import { Box, TextField, InputAdornment } from "@mui/material";
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
 
 // Yathi - Added event handler for search bar to make searches.

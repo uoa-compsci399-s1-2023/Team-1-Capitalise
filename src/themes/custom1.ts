@@ -1,9 +1,8 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { light } from "@mui/material/styles/createPalette";
 
 
 // Any new theme variables have to be declared in the interfaces below first!
@@ -52,7 +51,7 @@ declare module "@mui/material/styles" {
 
 
 
-  export default createTheme({
+let theme = createTheme({
     palette: {
       neutral: {
         main: '#292929'
@@ -67,6 +66,10 @@ declare module "@mui/material/styles" {
     typography: {
       button: {
         fontWeight: 400
+      },
+      h1: {
+        fontSize: 36,
+        fontWeight: 300
       }
     },
     customColors: {
@@ -83,3 +86,5 @@ declare module "@mui/material/styles" {
     }
   })
 
+theme = responsiveFontSizes(theme);
+export default theme;

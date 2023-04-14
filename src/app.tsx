@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { ThemeProvider, Box } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
+import { Box } from "@mui/material";
 import { Home, Projects, About } from "./routes";
 import customTheme1 from "./themes/custom1";
 
@@ -65,10 +66,6 @@ export default function App() {
               />
             }/>
             <Route path="/projectpage" element={<ProjectPage />} />
-
-
-
-
             <Route path="/About" element={<About />} />
           </Routes>
         </Box>

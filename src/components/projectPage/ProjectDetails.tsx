@@ -16,12 +16,12 @@ export default function ProjectDetails() {
 
   return (
     <Stack
-      width={'340px'}
+      maxWidth={'30%'}
       bgcolor={'white'}
       style={theme.contentBlock}
       padding={'40px'}
-      m={'40px'}
       gap={4}
+      sx={{ display: { xs: 'none', md: 'flex' } }}
     >
       <StatusChip label='Status:' status='Pending Approval' />
       <EditableTextField label='Category:' text='Web Development' />
@@ -37,16 +37,12 @@ export default function ProjectDetails() {
         <TeamMember name='Isabelle Gonzalez' avatar='src/components/projectPage/dps/matheus-ferrero-W7b3eDUb_2I-unsplash.jpg' />
       </Box>
 
-      <Box mt={3}>
+      <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Links:</Typography>
         <GithubBtn />
         <CodeSandboxBtn />
       </Box>
-
-
-
-
-
     </Stack>
+
   )
 }
