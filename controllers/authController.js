@@ -20,6 +20,9 @@ const authenticateUser = async (req, res) => {
   let user = await User.findOne({ username: req.body.username });
   if (!user) return res.status(400).send("Invalid username or password.");
 
+  //Check if they were created using OAuth
+  if (user.isGoogleCreated === true) return res.status(400).send("Please sign in using Google!");
+
   //Compare the password specified in the request password with that stored in the database.
   bcrypt.compare(req.body.password, user.password, function (err, result) {
     if (result === false) {

@@ -92,6 +92,7 @@ const postUser = async (req, res) => {
       likedProjects: [],
       myComments: [],
       userType: myUserType,
+      isGoogleCreated: false,
     });
 
     //Append user to project's members
@@ -114,6 +115,7 @@ const postUser = async (req, res) => {
       likedProjects: [],
       myComments: [],
       userType: myUserType,
+      isGoogleCreated: false,
     });
   }
 
@@ -158,6 +160,7 @@ const postGoogleUser = async (profile) => {
     likedProjects: [],
     myComments: [],
     userType: myUserType,
+    isGoogleCreated: true,
   });
 
   user = await user.save();

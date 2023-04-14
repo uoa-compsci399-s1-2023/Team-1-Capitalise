@@ -64,6 +64,11 @@ const userSchema = new mongoose.Schema({
     default: "visitor",
     required: true,
   },
+  isGoogleCreated: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 });
 
 //Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user.
@@ -95,6 +100,7 @@ function validateUser(User) {
     likedProjects: Joi.array(),
     myComments: Joi.array(),
     profilePicture: Joi.string(),
+    isGoogleCreated: Joi.boolean(),
   });
 
   return schema.validate(User);
