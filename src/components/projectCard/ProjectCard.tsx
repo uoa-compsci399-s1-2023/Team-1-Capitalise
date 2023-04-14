@@ -23,6 +23,7 @@ interface Props {
   category: string;
   likes: number;
   badges: string;
+  projectId: string;
 }
 
 const ProjectCard = ({
@@ -33,6 +34,7 @@ const ProjectCard = ({
   category,
   likes,
   badges,
+  projectId,
 }: Props) => {
   const handleDefaultImage = (e: any) => {
     e.target.onerror = null;
@@ -63,15 +65,10 @@ const ProjectCard = ({
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    console.log("clicked");
-    // when a project card is clicked, redirects to the below project id (Capitalise)
-    // routes through the ProjectDetails page, which displays the project name and the project id
+    // console.log("clicked");
+    // console.log(projectId);
 
-    // need it so that we supply the project id of the project card so it re-directs
-    // to the project details of that project, not the hard-coded one as below.
-
-    // BASICALLY, WE NEED TO PASS A PROJECT ID TO THE ROUTE
-    navigate("/project/6432f9226cce2fc1706572e3");
+    navigate(`/project/${projectId}`);
   };
 
   return (
