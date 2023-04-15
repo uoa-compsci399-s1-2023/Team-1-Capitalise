@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Stack, Typography, useTheme, Button } from '@mui/material'
+import { Box, Stack, Typography, useTheme, Chip } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 import EditableTextField from './EditableTextField'
@@ -42,6 +42,12 @@ export default function ProjectDetails() {
         <GithubBtn />
         <CodeSandboxBtn />
       </Box>
+
+      <Stack flexDirection={'row'} gap={1}>
+          <Chip size='small' label='#ML' />
+          <Chip size='small' label='#Artificial Intelligence' />
+          <Chip size='small' label='#Data Science' />
+        </Stack>
     </Stack>
 
   )

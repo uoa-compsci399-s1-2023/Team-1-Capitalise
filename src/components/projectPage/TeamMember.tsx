@@ -21,7 +21,8 @@ export default function TeamMember({ name, avatar, role }: FieldProps) {
     fontWeight: 300,
     display: "flex", 
     justifyContent: "flex-start", 
-    paddingLeft: "40px"
+    paddingLeft: "40px",
+    color: 'black'
   })
 
   return (

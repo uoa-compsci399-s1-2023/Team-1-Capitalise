@@ -57,7 +57,7 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider theme={customTheme1}>
         <Navbar {...{ currFilters, setFilters }} />
-        <Box mt="8vh" >
+        <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey} >
           <Routes >
             <Route path="/" element={<Home />} />
             <Route path="/projects/*" element={
@@ -69,8 +69,6 @@ export default function App() {
             <Route path="/About" element={<About />} />
           </Routes>
         </Box>
-
-
       </ThemeProvider>
     </BrowserRouter>
   )
