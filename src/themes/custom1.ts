@@ -33,11 +33,13 @@ declare module "@mui/material/styles" {
   interface Palette {
     neutral: Palette['primary']
     black: Palette['primary']
+    editBtnGrey: Palette['primary']
   }
 
   interface PaletteOptions {
     neutral: PaletteOptions['primary']
     black: PaletteOptions['primary']
+    editBtnGrey: PaletteOptions['primary']
   }
 
 }
@@ -53,6 +55,9 @@ let theme = createTheme({
         light: '#0',
         dark: '#0',
         contrastText: '#0'
+      },
+      editBtnGrey: {
+        main: '#b7b7b7',
       }
     },
     typography: {
@@ -70,7 +75,7 @@ let theme = createTheme({
       DividerGrey: '#f7f7f7'
     },
     contentBlock: {
-      // border: "1px solid #f5f5f5",
+      border: "3px solid transparent",
       borderRadius: '10px',
     },
     projStatus: {

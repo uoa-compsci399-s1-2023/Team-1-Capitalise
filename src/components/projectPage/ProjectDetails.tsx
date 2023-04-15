@@ -27,8 +27,8 @@ export default function ProjectDetails( p : TMockProject) {
       sx={{ display: { xs: 'none', md: 'flex' } }}
     >
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
-      <EditableTextField label='Category:' text={`${p.category}`} />
-      <EditableTextField label='Semester:' text={`${p.semester}`} />
+      <EditableTextField label='Category:' text={`${p.category.value}`} />
+      <EditableTextField label='Semester:' text={`${p.semester.value}`} />
       <EditableTextField label='Team:' text={`${p.teamname}`} />
 
       <Box>

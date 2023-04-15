@@ -56,7 +56,7 @@ export type TMockProject = {
       userId: number
       commentBody: string
       parentComment?: number
-      timestamp: number
+      createdAt: number
     }[]
   };
 

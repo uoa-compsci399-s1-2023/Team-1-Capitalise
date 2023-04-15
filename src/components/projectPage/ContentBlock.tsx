@@ -1,7 +1,9 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material'
+import React, { useState, FC, useRef } from 'react'
+import { Box, Stack, Typography, useTheme, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import Slider from 'react-slick'
 import { TMockProject } from '../../model/MockProject'
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 interface ContentBlockProps {
@@ -10,46 +12,85 @@ interface ContentBlockProps {
   value: TMockProject['content'][0]['tabContent'][0]['value']
 }
 
+
 export default function ContentBlock({ type, value, subHeading }: ContentBlockProps) {
 
   const theme = useTheme();
 
-  // const NoStylesSlider = styled(Slider)({
-  //   ":root": {}
-  // })
+  // const [isHovering, setIsHovering] = useState(false);
+  const editBtnRef = useRef<HTMLButtonElement>(null);
+  const deleteBtnRef = useRef<HTMLButtonElement>(null);
+  // const [btnStyle, setBtnStyle] = useState({height: '100%', visibility: 'visible', flex: '1'});
 
-  // const settings = {
-  //   dots: true,
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1,
-  //   centerMode: true,
-  //   variableWidth: true,
-  //   swipeToSlide: true,
-  //   edgeFriction: 0.15,
-  // };
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // console.log('hovering')
+    // setIsHovering(true)
+    if (editBtnRef.current) {
+      editBtnRef.current.style.visibility = 'visible'
+    }
+    if (deleteBtnRef.current) {
+      deleteBtnRef.current.style.visibility = 'visible'
+    }
+  }
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    console.log('leaving')
+    if (editBtnRef.current) {
+      editBtnRef.current.style.visibility = 'hidden'
+    }    
+    if (deleteBtnRef.current) {
+      deleteBtnRef.current.style.visibility = 'hidden'
+    }
+  }
+
+  const ContentStack = styled(Stack)({
+    backgroundColor: 'white',
+    border: theme.contentBlock?.border,
+    // border: `3px solid ${theme.customColors.DividerGrey}`,
+    borderRadius: theme.contentBlock?.borderRadius,
+    paddingTop: '40px',
+    paddingBottom: '40px',
+    paddingLeft: '40px',
+    "&:hover": {
+      border: `3px solid ${theme.customColors.DividerGrey}`
+    },
+    width: '100%'
+  })
+
+  const EditButton = styled(Button)({
+    height: "100%",
+    visibility: 'hidden',
+    flex: '1',
+    ':hover': {
+      backgroundColor: theme.customColors.DividerGrey
+    }
+  })
 
 
-  let content = [];
+  let Content: FC = () => <></>;
+  let Heading: FC = () => <></>;
+
+  if (subHeading) {
+    Heading = () => (
+      <Typography
+        component='p'
+        fontSize={20}
+        fontWeight={600}
+      >
+        {subHeading}
+      </Typography>
+    )
+  }
+
 
   switch (type) {
     case 'text':
-      content.push(
-        <Typography
-          component='p'
-          fontSize={20}
-          fontWeight={600}
-        >
-          {subHeading}
-        </Typography>
-      )
-      content.push(
+      Content = () => (
         <Typography variant='body1'>{value[0]}</Typography>
       )
       break;
     case 'quote':
-      content.push(
+      Content = () => (
         <Typography
           component='p'
           fontSize={20}
@@ -61,36 +102,44 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
       )
       break;
     case 'gallery':
-      content.push(
-        // <img src={value[0]} alt='project image' width={'70%'} style={{margin: '0 auto'}} />
-        <div>
-          {/* <NoStylesSlider {...settings} >
-            {(value as string[]).map((image, i) => (
-              <img key={i}
-                id={image}
-                src={image}
-                width={'100%'}
-                alt="image" />
-            ))}
-          </NoStylesSlider> */}
-          <img src={value[0]}
-            width={'100%'}
-            alt="image" />
-        </div>
-
+      Content = () => (
+        <img src={value[0]}
+          width={'70%'}
+          style={{ margin: '0 auto' }}
+          alt="image" />
       )
   }
 
   return (
-    <Stack
-      bgcolor={'white'}
-      // bgcolor={theme.customColors.bgGrey}
+    <>
+      <ContentStack
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <Stack flexDirection={'row'}>
 
-      style={theme.contentBlock}
-      padding={'10px 40px'}
-      width={'100%'}
-    >
-      {...content}
-    </Stack>
+          <Stack width={'100%'}>
+            <Heading />
+            <Content />
+          </Stack>
+
+          {/* negative margin counters parent padding */}
+          <Stack my={'-40px'}>
+
+            {/* <div style={{flex: 1, width: '40px'}}> */}
+            <EditButton ref={editBtnRef} color='editBtnGrey'>
+              <EditIcon />
+            </EditButton>
+            {/* </div> */}
+
+            <EditButton ref={deleteBtnRef} color='editBtnGrey'>
+              <DeleteIcon />
+            </EditButton>
+          </Stack>
+
+        </Stack>
+      </ContentStack>
+    </>
+
   )
 }

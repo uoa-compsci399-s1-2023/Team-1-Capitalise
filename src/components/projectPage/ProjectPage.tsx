@@ -52,7 +52,7 @@ export default function ProjectPage() {
         />
 
         <Stack flexDirection={'row'} mt={2}>
-          <Stack flex={1} alignItems={'center'} mr={4} gap={2} mb={10} >
+          <Stack flex={1} alignItems={'center'} mr={4} mb={10} >
             {/* Content goes here */}
 
             <Stack 
@@ -80,7 +80,7 @@ export default function ProjectPage() {
             ))}
 
           </Stack>
-          <ProjectDetails />
+          <ProjectDetails {...mockProject}/>
         </Stack>
       </Stack>
     </>
