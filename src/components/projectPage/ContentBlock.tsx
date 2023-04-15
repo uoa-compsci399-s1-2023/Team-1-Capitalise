@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Slider from 'react-slick'
-import { TMockProject } from './MockProject'
+import { TMockProject } from '../../model/MockProject'
 
 
 interface ContentBlockProps {

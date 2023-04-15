@@ -3,7 +3,7 @@ import ProjectDetails from './ProjectDetails';
 import ContentBlock from './ContentBlock';
 import ProjectHeader from './ProjectHeader';
 import TabButton from './TabButton';
-import { mockProject } from './MockProject';
+import { mockProject } from '../../model/MockProject';
 
 import { Stack, Box, useTheme, Container, Typography, Button, Divider } from '@mui/material';
 

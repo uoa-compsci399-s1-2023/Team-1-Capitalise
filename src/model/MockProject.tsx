@@ -1,4 +1,4 @@
-import { TProject } from '../../api/getProjects'
+import { TProject } from '../api/getProjects'
 
 export type TMockProject = {
     _id: string;
@@ -18,7 +18,14 @@ export type TMockProject = {
     teamname: string;
     likes: number;
     views: number;
-    banner: string;
+    banner?: string;
+    // thumbnail: string;
+
+    members: {
+      _id: string;
+      name: string;
+    }[]
+
     content:
     {
       tabName: string
@@ -29,6 +36,8 @@ export type TMockProject = {
         value: string[]  // Perhaps look into whether it can be a string[] + string?
       }[],
     }[]
+
+
     badges: {
       id: string
       value: 'People\'s Choice' | 'Excellence' | 'Community Impact'
@@ -44,7 +53,7 @@ export type TMockProject = {
     comments : {
       id: string
       projectId: number
-      useId: number
+      userId: number
       commentBody: string
       parentComment?: number
       timestamp: number
@@ -61,6 +70,7 @@ export const mockProject: TMockProject = {
     type: 'github',
     value: "https://github.com/uoa-compsci399-s1-2023/project-team-1"}],
   teamname: "Zuckerberg Enterprises",
+  members: [],
   likes: 17,
   views: 52,
   banner: "src/components/projectPage/galleryImgs/Neural_Networks.png",
@@ -84,10 +94,10 @@ export const mockProject: TMockProject = {
         // { 
         //   type: "gallery", value: ["src/components/projectPage/galleryImgs/img1.png",] 
         // },
-        {
-          type: "quote",
-          value: ["We built a neural network from scratch.",]
-        },
+        // {
+        //   type: "quote",
+        //   value: ["We built a neural network from scratch.",]
+        // },
         {
           type: "text",
           subHeading: "Description",

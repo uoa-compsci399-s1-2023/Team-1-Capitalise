@@ -1,7 +1,7 @@
 // Copied from https://react-slideshow-image.netlify.app/?path=/docs/introduction--page
 
 import React, { Component } from "react";
-import Slider from "react-slick";
+// import Slider from "react-slick";
 // import "slick-carousel/slick/slick.css"; 
 // import "slick-carousel/slick/slick-theme.css";
 

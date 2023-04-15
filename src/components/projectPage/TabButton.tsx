@@ -14,15 +14,6 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
 
   const theme = useTheme();
 
-  // const NormalButton = styled(Button)({
-  //   // borderRadius: '0',
-  //   // borderBottom: `3px solid ${theme.customColors.bgGrey}`
-  // })
-
-  // const ActiveButton = styled(NormalButton)({
-  //   // borderBottom: `3px solid ${theme.customColors.DividerGrey}`
-  // })
-
   const NormalButton = () => (
     <Button 
       variant='text' 
