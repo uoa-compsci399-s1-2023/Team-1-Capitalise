@@ -1,3 +1,5 @@
+// need to add comment support.
+
 import {
   Box,
   Card,
@@ -15,6 +17,7 @@ import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 
 import { useNavigate } from "react-router-dom";
 
+// these are just the props we are using with the ProjectCard component.
 interface Props {
   title: string;
   semester: string;
@@ -66,8 +69,9 @@ const ProjectCard = ({
 
   const handleCardClick = () => {
     // console.log("clicked");
-    // console.log(projectId);
-
+    console.log(projectId);
+    // when project card is clicked, redirect to project details.
+    // we pass the project id to the ProjectDetails page.
     navigate(`/project/${projectId}`);
   };
 

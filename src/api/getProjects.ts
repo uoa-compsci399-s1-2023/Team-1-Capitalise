@@ -1,5 +1,9 @@
+// need to add comment support
+
 import { API_URL } from "./config";
 
+// included the comments: [] parameter
+// since we need to retrieve the comments of a given project.
 export type TProject = {
   _id: string;
   name: string;
@@ -28,6 +32,7 @@ export type TProject = {
   badges: {
     value: "CommunityImpact" | "TopExcellence" | "PeoplesChoice";
   };
+  comments: [];
 };
 
 export async function getProjects(): Promise<TProject[]> {

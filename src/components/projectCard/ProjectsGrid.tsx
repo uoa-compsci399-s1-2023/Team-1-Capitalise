@@ -1,10 +1,14 @@
+// need to add comment support
+
 import { Container, Box } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import ProjectCard from "./ProjectCard";
 import { TProject } from "../../api/getProjects";
+
 interface props {
   projects: TProject[];
 }
+
 export default function ProjectsGrid({ projects }: props) {
   return (
     <Box
