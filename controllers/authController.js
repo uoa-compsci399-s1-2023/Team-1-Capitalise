@@ -15,13 +15,21 @@ const authenticateUser = async (req, res) => {
   //Use Joi to validate the req.body. POST JSON object should have a username and password.
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-
+  let user = "";
   //Check if a user exists with the same username specified in the request.
-  let user = await User.findOne({ username: req.body.username });
-  if (!user) return res.status(400).send("Invalid username or password.");
+  if (req.body.email) {
+    user = await User.findOne({ email: req.body.email });
+    if (!user) return res.status(400).send("Invalid email or password.");
+  } else if (req.body.username) {
+    user = await User.findOne({ username: req.body.username });
+    if (!user) return res.status(400).send("Invalid username or password.");
+  } else {
+    return res.status(400).send("You didn't provide a username or email!");
+  }
 
   //Check if they were created using OAuth
-  if (user.isGoogleCreated === true) return res.status(400).send("Please sign in using Google!");
+  if (user.isGoogleCreated === true)
+    return res.status(400).send("Please sign in using Google!");
 
   //Compare the password specified in the request password with that stored in the database.
   bcrypt.compare(req.body.password, user.password, function (err, result) {
@@ -37,7 +45,8 @@ const authenticateUser = async (req, res) => {
 //Creates a Joi schema which requires a JSON object containing username and password specifiied by the client.
 function validate(req) {
   const schema = Joi.object({
-    username: Joi.string().min(3).required(),
+    email: Joi.string().min(3),
+    username: Joi.string().min(3),
     password: Joi.string().min(3).required(),
   });
 
@@ -53,7 +62,8 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       //callbackURL: "http://localhost:3000/api/auth/google/callback",
-      callbackURL: "https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google/callback",
+      callbackURL:
+        "https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google/callback",
       passReqToCallback: true,
     },
     async function (request, accessToken, refreshToken, profile, done) {
@@ -89,7 +99,9 @@ const protected = async (req, res) => {
   req.session.destroy();
   res
     .header("x-auth-token", token)
-    .send(token + "<br><p>x-auth-token should have been added to the response.</p>");
+    .send(
+      token + "<br><p>x-auth-token should have been added to the response.</p>"
+    );
 };
 
 //Called if Google sign in goes wrong

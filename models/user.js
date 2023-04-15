@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema({
   },
   username: {
     type: String,
-    required: true,
     unique: true,
   },
   profilePicture: {
@@ -79,7 +78,8 @@ userSchema.methods.generateAuthToken = function () {
       username: this.username,
       userType: this.userType,
     },
-    process.env.JWT_PRIVATE_KEY
+    process.env.JWT_PRIVATE_KEY,
+    { expiresIn: '1h' }
   );
   return token;
 };

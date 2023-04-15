@@ -13,6 +13,12 @@ const parameterSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: ['category', 'semester', 'award', 'sortBy']
+    },
+    runnerUp: {
+        type: Boolean
+    },
+    image: {
+        type: String
     }
 });
 
@@ -22,7 +28,9 @@ const Parameter = mongoose.model('Parameter', parameterSchema);
 function validateParameter(Parameter) {
     const schema = Joi.object({
         value: Joi.string().min(1).max(50).required(),
-        parameterType: Joi.string().valid('category', 'semester', 'award', 'sortBy').required()
+        parameterType: Joi.string().valid('category', 'semester', 'award', 'sortBy').required(),
+        runnerUp: Joi.boolean(),
+        image: Joi.string()
     });
 
     return schema.validate(Parameter);

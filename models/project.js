@@ -1,105 +1,173 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
-const { userSchema } = require('./user');
-const { commentSchema } = require('./comment');
-const { tagSchema } = require('./tag');
-const { parameterSchema } = require('./parameter');
+const Joi = require("joi");
+const mongoose = require("mongoose");
+const { userSchema } = require("./user");
+const { commentSchema } = require("./comment");
+const { tagSchema } = require("./tag");
+const { parameterSchema } = require("./parameter");
 
 Joi.objectId = require("joi-objectid")(Joi);
 
-const projectSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 100
-  },
-  teamname: {
-    type: String
-  },
-  semester: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Parameter',
-    required: true
-  },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Parameter'
-  },
-  repoLink: {
-    type: String
-  },
-  members: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }],
-  content: [{
-    type: new mongoose.Schema({
-      _id: false,
-      tab: [{
+const projectSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 5,
+      maxlength: 100,
+    },
+    teamname: {
+      type: String,
+    },
+    blurb: {
+      type: String,
+    },
+    views: {
+      type: Number,
+      default: 0,
+    },
+    semester: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Parameter",
+      required: true,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Parameter",
+    },
+    links: [
+      {
+        type: new mongoose.Schema({
+          value: {
+            type: String,
+          },
+          type: {
+            type: String,
+            enum: [
+              "github",
+              "codesandbox",
+              "deployedSite",
+              "codepen",
+              "notion",
+              "kaggle",
+            ],
+          },
+        }),
+      },
+    ],
+    members: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+    ],
+    banner: {
+      type: String,
+    },
+    content: [
+      {
         type: new mongoose.Schema({
           _id: false,
-          banner: {
-            type: String
-          },
-          gallery: [{
-            type: String
-          }],
-          text: {
-            type: String
-          },
-          video: {
-            type: String
-          },
-          poster: {
-            type: String
-          }
-        })
-      }]
-    }),
-    required: true
-  }],
-  likes: {
-    type: Number,
-    required: true
+          tab: [
+            {
+              tabName: {
+                type: String,
+              },
+              tabContent: {
+                type: new mongoose.Schema({
+                  type: {
+                    type: String,
+                    enum: [
+                      "gallery",
+                      "poster",
+                      "text",
+                      "video",
+                      "codeBlock",
+                      "quote",
+                      "image",
+                    ],
+                  },
+                  subHeading: {
+                    type: String,
+                  },
+                  value: [
+                    {
+                      type: String,
+                    },
+                  ],
+                }),
+              },
+            },
+          ],
+        }),
+        required: true,
+      },
+    ],
+    likes: {
+      type: Number,
+      required: true,
+    },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
+    badges: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Parameter",
+    },
+    tags: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tag",
+      },
+    ],
   },
-  comments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
-  }],
-  badges: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Parameter'
-  },
-  tags: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Tag'
-  }],
-});
+  { timestamps: true }
+);
 
-const Project = mongoose.model('Project', projectSchema);
+const Project = mongoose.model("Project", projectSchema);
 
 function validateProject(project) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(100).required(),
+    blurb: Joi.string(),
     teamname: Joi.string(),
+    banner: Joi.string(),
     semester: Joi.string().min(7).max(7).required(),
     userId: Joi.array().items(Joi.objectId()),
-    repoLink: Joi.string(),
-    members: Joi.array().items(Joi.objectId()),
-    content: Joi.array().items(Joi.object({
-      tab: Joi.array().items(Joi.object({
-        banner: Joi.string(),
-        gallery: Joi.array().items(Joi.string()),
-        text: Joi.string(),
-        video: Joi.string(),
-        poster: Joi.string()
-      })).required()
-    })),
-    badges: Joi.string().valid('Community Impact', 'Top Excellence', 'Peoples Choice'),
-    category: Joi.string().valid('Mobile Development', 'Game Development', 'Web Development').required(),
-    tags: Joi.array().items(Joi.string())
+    links: Joi.object({
+      type: Joi.string().valid("github", "codesandbox", "deployedSite", "codepen", "notion", "kaggle").required(),
+      value: Joi.string().required()
+    }),
+    content: Joi.array().items(
+      Joi.object({
+        tabName: Joi.string().required(),
+        tabContent: Joi.object({
+          type: Joi.string().valid(
+            "gallery",
+            "poster",
+            "text",
+            "video",
+            "codeBlock",
+            "quote",
+            "image"
+          ).required(),
+          subHeading: Joi.string(),
+          value: Joi.array().items(Joi.string()).required(),
+        }),
+      })
+    ),
+    badges: Joi.string().valid(
+      "Community Impact",
+      "Top Excellence",
+      "Peoples Choice"
+    ),
+    category: Joi.string()
+      .valid("Mobile Development", "Game Development", "Web Development")
+      .required(),
+    tags: Joi.array().items(Joi.string()),
   });
 
   return schema.validate(project);
