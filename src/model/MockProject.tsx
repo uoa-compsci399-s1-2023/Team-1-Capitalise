@@ -61,7 +61,7 @@ export type TMockProject = {
   };
 
 export const mockProject: TMockProject = {
-  _id: "0",
+  _id: "1",
   name: "InceptionNet",
   blurb: "Building a neural network from scratch.",
   semester: { value: "S1 2023" },

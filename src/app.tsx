@@ -14,7 +14,7 @@ import { getProjectsSearch } from "./api/getSearchProjects";
 import { searchFilterParams, TAvailParameters } from "./components/search/AvailableParams";
 import ProjectPage from './components/projectPage/ProjectPage';
 import Navbar from "./components/Navbar";
-
+import { TUser, mockUser } from './model/TUser';
 
 // Represents curr state of filters
 export type TFiltersState = {
@@ -31,8 +31,7 @@ export type TFiltersState = {
 
 export default function App() {
 
-  const [projects, setProjects] = useState<TProject[]>([]);
-  const [totalNumProjects, setTotalNumProjects] = useState(0)
+
   const [currFilters, setFilters] = useState<TFiltersState>({
     keywords: '',
     category: searchFilterParams.category[0],
@@ -43,15 +42,7 @@ export default function App() {
     projectsPerPage: 6
   })
 
-  // Fetch required number of projects based on given parameters
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const respData = await getProjectsSearch({ ...currFilters });
-      setTotalNumProjects(respData.searchTotal)
-      setProjects(respData.projects);
-    };
-    fetchProjects();
-  }, [currFilters]);
+  const [loggedInUser, setLoggedInUser] = useState<TUser | null>(mockUser)
 
   return (
     <BrowserRouter>
@@ -62,7 +53,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/projects/*" element={
               <Projects
-                {...{ currFilters, setFilters, totalNumProjects, projects }}
+                {...{ currFilters, setFilters }}
               />
             }/>
             <Route path="/projectpage" element={<ProjectPage />} />
