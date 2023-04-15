@@ -1,19 +1,15 @@
-import React, { ChangeEvent, Dispatch, SetStateAction } from 'react'
+import React, { ChangeEvent } from 'react'
+import { SearchProps } from '../MyPagination'
 import { Box, TextField, SelectChangeEvent, Typography } from '@mui/material'
 import FilterDropdown from './FilterDropdown'
 import { searchFilterParams, TAvailParameters } from './AvailableParams'
-import { TFiltersState } from '../../app';
 
 
 
 // represents props taken by DesktopSearchFilters and MobileSearchFilters
-export interface SearchFilterProps {
-  currFilters: TFiltersState,
-  setFilters: Dispatch<SetStateAction<TFiltersState>>
-}
 
 
-export default function DesktopSearchFilters({ currFilters, setFilters }: SearchFilterProps) {
+export default function DesktopSearchFilters({ currFilters, setFilters }: SearchProps) {
 
   const size = 'small';
   const variant = 'outlined';

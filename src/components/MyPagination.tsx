@@ -1,32 +1,48 @@
 // Yathi - margin on top of projects box to clear fixed position header.
 // Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
 
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
+
 // Components
 import { Box, Stack, Typography } from "@mui/material";
 import { Pagination as MuiPagination } from "@mui/material";
-import ProjectsGrid from "../components/projectCard/ProjectsGrid";
+import ProjectsGrid from "./projectCard/ProjectsGrid";
 
 import {
   DesktopSearchFilters,
   MobileSearchFilters
-} from "../components/search";
+} from "./search";
 
 // Other
-import { SearchFilterProps } from "./search/DesktopSearchFilters";
 import { TProject } from "../api/getProjects";
+import { getProjectsSearch } from "../api/getSearchProjects";
+import { TFiltersState } from '../app';
 
-interface MyPaginationProps extends SearchFilterProps {
-  projects: TProject[]
-  totalNumProjects: number
+
+export interface SearchProps {
+  currFilters: TFiltersState,
+  setFilters: Dispatch<SetStateAction<TFiltersState>>
 }
+
 
 const MyPagination = ({
   currFilters,
   setFilters,
-  projects: projectsToDisplay, 
-  totalNumProjects: totalProjects,
-}: MyPaginationProps
+}: SearchProps
 ) => {
+
+  const [projects, setProjects] = useState<TProject[]>([]);
+  const [totalNumProjects, setTotalNumProjects] = useState(0)
+
+  // Fetch required number of projects based on given parameters
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const respData = await getProjectsSearch({ ...currFilters });
+      setTotalNumProjects(respData.searchTotal)
+      setProjects(respData.projects);
+    };
+    fetchProjects();
+  }, [currFilters]);
 
   const handlePageChange = (page: number) => {
     setFilters({
@@ -36,10 +52,10 @@ const MyPagination = ({
   };
 
   const currentPage = currFilters.currPage
-  const totalPages = Math.ceil(totalProjects / currFilters.projectsPerPage)
+  const totalPages = Math.ceil(totalNumProjects / currFilters.projectsPerPage)
 
   // check if there are projects to display
-  const checkProjects = projectsToDisplay.length > 0;
+  const checkProjects = projects.length > 0;
 
   return (
     <Box>
@@ -68,7 +84,7 @@ const MyPagination = ({
           {currFilters.keywords ? `Showing results for "${currFilters.keywords}"` : `Projects`}
         </Typography>
         {/* Render project data into the ProjectsGrid component */}
-        {checkProjects && <ProjectsGrid projects={projectsToDisplay} />}
+        {checkProjects && <ProjectsGrid projects={projects} />}
         {/* <Box
           sx={{
             minWidth: 300,
