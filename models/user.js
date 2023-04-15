@@ -79,7 +79,7 @@ userSchema.methods.generateAuthToken = function () {
       userType: this.userType,
     },
     process.env.JWT_PRIVATE_KEY,
-    { expiresIn: '1h' }
+    { expiresIn: '30d' }
   );
   return token;
 };
