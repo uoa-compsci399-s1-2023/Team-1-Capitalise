@@ -3,9 +3,12 @@ import ProjectDetails from "./ProjectDetails";
 import ContentBlock from "./ContentBlock";
 import ProjectHeader from "./ProjectHeader";
 import TabButton from "./TabButton";
+
+// import the mock project.
 import { mockProject } from "../../model/MockProject";
 
-import Comment from "../../components/Comment";
+import Comment from "../MyComment";
+import Comments from "../../components/Comments";
 
 import {
   Stack,
@@ -38,6 +41,9 @@ export default function ProjectPage() {
   if (mockProject.content.length > 0) {
     imgs = mockProject.content[0].tabContent[1].value;
   }
+
+  // we want a way to pass the comments to the Comments component
+  console.log(mockProject.comments);
 
   return (
     <>
@@ -99,9 +105,8 @@ export default function ProjectPage() {
           <Typography variant="h1" color="initial" fontWeight={600}>
             Comments
           </Typography>
-          {mockProject.comments.map((comment, index) => (
-            <Comment key={index} text={comment.commentBody} />
-          ))}
+          {/* Pass currentUserId since user needs to be logged in to leave a comment /> */}
+          <Comments currentUserId="1" comments={mockProject.comments} />
         </Stack>
       </Stack>
     </>

@@ -61,17 +61,17 @@ export type TMockProject = {
     projects: TProject[];
   }[];
   comments: {
-    id: string;
-    projectId: string; // changed this from number to string
+    commentId: string;
+    // projectId: string; // changed this from number to string
     userId: string; // changed this from number to string
     commentBody: string;
-    parentComment?: string; // changed this from number to stirng
-    timestamp: string; // changed this from number to string
+    parentId?: string; // changed this from number to stirng
+    createdAt: Date; // changed this from number to string
   }[];
 };
 
 export const mockProject: TMockProject = {
-  _id: "0",
+  _id: "1",
   name: "InceptionNet",
   blurb: "Building a neural network from scratch.",
   semester: { value: "S1 2023" },
@@ -134,25 +134,23 @@ export const mockProject: TMockProject = {
   ],
   comments: [
     {
-      id: "0",
-      projectId: "0",
+      commentId: "0",
       userId: "0",
       commentBody: "This is a test comment",
-      timestamp: "15/04/2023",
+      createdAt: new Date(),
     },
     {
-      id: "1",
-      projectId: "0",
+      commentId: "1",
       userId: "1",
       commentBody: "Daniel Ricciardo is a g",
-      timestamp: "15/04/2023",
+      createdAt: new Date(),
     },
     {
-      id: "2",
-      projectId: "0",
+      commentId: "2",
       userId: "1",
       commentBody: "JK Charles Leclerc WDC 2023",
-      timestamp: "15/04/2023",
+      parentId: "1",
+      createdAt: new Date(),
     },
   ],
   tags: [],
