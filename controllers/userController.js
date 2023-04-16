@@ -54,11 +54,15 @@ const postUser = async (req, res) => {
     return res.status(400).send("Email already registered.");
 
   //Check if the username already exists
-  let checkExistingUsername = await User.findOne({
-    username: req.body.username,
-  });
-  if (checkExistingUsername)
-    return res.status(400).send("Username already registered.");
+  if (req.body.username) {
+    let checkExistingUsername = await User.findOne({
+      username: req.body.username,
+    });
+    if (checkExistingUsername)
+      return res.status(400).send("Username already registered.");
+  } else {
+    req.body.username = req.body.email
+  }
 
   //Determine if email has aucklanduni.ac.nz domain
   const gradEmailDomain = req.body.email.substring(
