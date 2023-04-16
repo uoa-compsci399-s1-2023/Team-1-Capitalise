@@ -16,6 +16,21 @@ const UserProfile = () => {
     fetchUser();
   }, [userName]);
 
+  if (typeof user === "undefined") {
+    return (
+      <Box
+        justifyContent="center"
+        display="flex"
+        alignItems="center"
+        width="100%"
+        minHeight="92vh"
+        mt="8vh"
+      >
+        <Typography>{userName} does not exist</Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box
       justifyContent="center"
@@ -25,7 +40,7 @@ const UserProfile = () => {
       minHeight="92vh"
       mt="8vh"
     >
-      <Typography>{user?.name}</Typography>
+      <Typography>{user.name}</Typography>
     </Box>
   );
 };

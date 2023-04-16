@@ -16,7 +16,10 @@ export type TUser = {
   profilePicture: string;
 };
 
-export async function getUser(userName: string) {
+export async function getUser(userName: string): Promise<TUser | undefined> {
   const response = await fetch(`${API_URL}/api/users/${userName}`);
-  return response.json();
+  if (response.ok) {
+    return response.json();
+  }
+  return;
 }
