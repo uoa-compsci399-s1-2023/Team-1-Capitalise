@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
-import Comment from "../../components/Comment";
+import MyComment from "../components/MyComment";
 
-interface CommentFormProps {
-  onSubmit: (comment: Comment) => void;
-}
-
-const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
-  const [author, setAuthor] = useState("");
+const CommentForm = ({ handleSubmit, submitLabel }) => {
   const [text, setText] = useState("");
-
-  const handleSubmit = () => {
-    if (author && text) {
-      const newComment: Comment = {
-        id: new Date.getTime(),
-        author,
-        text,
-        createdAt: NestCamWiredStandTwoTone(),
-      };
-    }
+  const isTextAreaDisabled = text.length == 0;
+  const onSubmit = (event) => {
+    event.preventDefault();
+    handleSubmit(text);
+    setText("");
   };
+  return (
+    <form onSubmit={onSubmit}>
+      <textarea
+        className="comment-form-textarea"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button className="comment-form-button" disabled={isTextAreaDisabled}>
+        {submitLabel}
+      </button>
+    </form>
+  );
 };
 
 export default CommentForm;

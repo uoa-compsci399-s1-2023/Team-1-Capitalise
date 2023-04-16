@@ -63,10 +63,10 @@ export type TMockProject = {
   comments: {
     commentId: string;
     // projectId: string; // changed this from number to string
-    userId: string; // changed this from number to string
+    userId: string; // userId would be set when a comment is created by getCurrentUser() which is an authenticated endpoint
     commentBody: string;
     parentId?: string; // changed this from number to stirng
-    createdAt: Date; // changed this from number to string
+    createdAt: string; // changed this to string since react can't deal with Date()
   }[];
 };
 
@@ -137,20 +137,41 @@ export const mockProject: TMockProject = {
       commentId: "0",
       userId: "0",
       commentBody: "This is a test comment",
-      createdAt: new Date(),
+      createdAt: "2022-08-16T23:00:33.010+02:00",
     },
     {
       commentId: "1",
       userId: "1",
       commentBody: "Daniel Ricciardo is a g",
-      createdAt: new Date(),
+      createdAt: "2021-05-16T23:00:33.010+02:00",
     },
     {
       commentId: "2",
-      userId: "1",
+      userId: "0",
       commentBody: "JK Charles Leclerc WDC 2023",
       parentId: "1",
-      createdAt: new Date(),
+      createdAt: "2021-10-16T23:00:33.010+02:00",
+    },
+    {
+      commentId: "3",
+      userId: "1",
+      commentBody: "Nah Lando Norris at least one podium this year",
+      parentId: "1",
+      createdAt: "2021-08-16T23:00:33.010+02:00",
+    },
+    {
+      commentId: "4",
+      userId: "1",
+      commentBody: "This is another test comment",
+      parentId: "0",
+      createdAt: "2022-08-16T23:00:33.010+02:00",
+    },
+    {
+      commentId: "5",
+      userId: "1",
+      commentBody: "Daniel Ricciardo to Mercedes",
+      parentId: "1",
+      createdAt: "2022-08-16T23:00:33.010+02:00",
     },
   ],
   tags: [],

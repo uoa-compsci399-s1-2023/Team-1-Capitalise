@@ -7,15 +7,28 @@ interface Comment {
   userId: string;
   commentBody: string;
   parentId?: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 interface CommentProps {
   comment: Comment;
   replies: Comment[];
+  currentUserId: string;
 }
 
-const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
+const MyComment: React.FC<CommentProps> = ({
+  comment,
+  replies,
+  currentUserId,
+}) => {
+  // const fiveMinutes = 300000;
+  // const timePassed = new Date() - new Date(comment.createdAt) > fiveMinutes;
+  const canReply = Boolean(currentUserId); // if currentUser is null then they cannot reply, if we have a current user id it means user is authenticated and can reply
+  const canEdit = currentUserId == comment.userId; // check if the current user is the one that wrote the comment.
+  const canDelete = currentUserId == comment.userId;
+
+  const createdAt = new Date(comment.createdAt).toLocaleDateString();
+
   return (
     <div className="comment">
       <div className="comment-image-container">
@@ -28,12 +41,23 @@ const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
       <div className="comment-right-part">
         <div className="comment-content">
           <div className="comment-author">{comment.userId}</div>
+          <div>{createdAt}</div>
         </div>
         <div className="comment-text">{comment.commentBody}</div>
+        <div className="comment-actions">
+          {canReply && <div className="comment-action">Reply</div>}
+          {canEdit && <div className="comment-action">Edit</div>}
+          {canDelete && <div className="comment-action">Delete</div>}
+        </div>
         {replies.length > 0 && (
           <div className="replies">
             {replies.map((reply) => (
-              <MyComment comment={reply} key={reply.commentId} replies={[]} />
+              <MyComment
+                comment={reply}
+                key={reply.commentId}
+                replies={[]}
+                currentUserId={currentUserId}
+              />
             ))}
           </div>
         )}
