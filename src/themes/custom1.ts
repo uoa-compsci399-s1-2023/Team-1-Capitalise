@@ -10,6 +10,9 @@ interface CustomThemeStyles {
   customColors: {
     bgGrey?: string;
     DividerGrey?: string;
+    excellenceAward?: string;
+    communityImpact?: string;
+    peoplesChoice?: string;
   };
   contentBlock?: {
     border?: string;
@@ -72,7 +75,10 @@ let theme = createTheme({
     },
     customColors: {
       bgGrey: '#f9f9f9',
-      DividerGrey: '#f7f7f7'
+      DividerGrey: '#f7f7f7',
+      excellenceAward: '#FFB300',
+      communityImpact: '#00E676',
+      peoplesChoice: '#F44336',
     },
     contentBlock: {
       border: "3px solid transparent",
