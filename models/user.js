@@ -91,7 +91,7 @@ function validateUser(User) {
     name: Joi.string().min(3).max(50).required(),
     email: Joi.string().min(3).max(50).required(),
     profilePicture: Joi.string(),
-    username: Joi.string().min(3).required(),
+    username: Joi.string().min(3),
     password: Joi.string().min(3).required(),
     github: Joi.string(),
     linkedin: Joi.string(),
