@@ -13,10 +13,11 @@ interface ContentBlockProps {
 }
 
 
+
+
 export default function ContentBlock({ type, value, subHeading }: ContentBlockProps) {
-
+  
   const theme = useTheme();
-
   // const [isHovering, setIsHovering] = useState(false);
   const editBtnRef = useRef<HTMLButtonElement>(null);
   const deleteBtnRef = useRef<HTMLButtonElement>(null);
@@ -37,7 +38,7 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
     console.log('leaving')
     if (editBtnRef.current) {
       editBtnRef.current.style.visibility = 'hidden'
-    }    
+    }
     if (deleteBtnRef.current) {
       deleteBtnRef.current.style.visibility = 'hidden'
     }

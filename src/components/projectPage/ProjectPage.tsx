@@ -55,24 +55,25 @@ export default function ProjectPage() {
           <Stack flex={1} alignItems={'center'} mr={4} mb={10} >
             {/* Content goes here */}
 
-            <Stack 
-              flexDirection={'row'} 
-              justifyContent={'center'} 
-              mb={6} 
-              pb={3} 
-              borderBottom={`2px solid ${theme.customColors.DividerGrey}`} 
+            <Stack
+              flexDirection={'row'}
+              justifyContent={'center'}
+              mb={6}
+              pb={3}
+              borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
               width={'90%'}
             >
-              {mockProject.content.map((tab, index) => (
-                <TabButton
-                  key={index}
-                  isSelected={selectedTab===index}
-                  value={tab.tabName}
-                  setSelected={setSelectedTab}
-                  index={index}
-                />
-              ))}
-              {/* <Divider variant='middle' /> */}
+              {mockProject.content.length > 1 &&
+                mockProject.content.map((tab, index) => (
+                  <TabButton
+                    key={index}
+                    isSelected={selectedTab === index}
+                    value={tab.tabName}
+                    setSelected={setSelectedTab}
+                    index={index}
+                  />
+                ))
+              }
             </Stack>
 
             {mockProject.content[selectedTab].tabContent.map((cb, index) => (
@@ -80,7 +81,7 @@ export default function ProjectPage() {
             ))}
 
           </Stack>
-          <ProjectDetails {...mockProject}/>
+          <ProjectDetails {...mockProject} />
         </Stack>
       </Stack>
     </>

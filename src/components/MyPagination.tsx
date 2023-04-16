@@ -16,7 +16,7 @@ import {
 // Other
 import { TProject } from "../api/getProjects";
 import { getProjectsSearch } from "../api/getSearchProjects";
-import { TFiltersState } from '../app';
+import { TFiltersState } from '../App';
 
 
 export interface SearchProps {
