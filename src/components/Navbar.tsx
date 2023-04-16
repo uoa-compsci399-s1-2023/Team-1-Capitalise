@@ -208,14 +208,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-              <MenuItem
-                onClick={() => {
-                  handleCloseNavMenu();
-                  goToPage("/search");
-                }}
-              >
-                <Typography textAlign="center">Search</Typography>
-              </MenuItem>
+            
             </Menu>
           </Box>
           {/*Mobile Logo*/}
@@ -226,7 +219,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               src={Logo}
               alt="logo"
               sx={{
-                width: "200px",
+                width: "140px",
                 height: "auto",
                 flexGrow: 1,
                 display: { xs: "flex", md: "none" },
