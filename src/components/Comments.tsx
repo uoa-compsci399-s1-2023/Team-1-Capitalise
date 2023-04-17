@@ -7,7 +7,7 @@ import CommentForm from "../components/CommentForm";
 
 interface Comment {
   commentId: string;
-  userId: string;
+  userId: string; // this is the id of the user who wrote the comment. At the time of writing, this would have been set by the currentUser
   commentBody: string;
   parentId?: string;
   createdAt: string;
@@ -19,11 +19,11 @@ interface CommentsProps {
 }
 
 const Comments: React.FC<CommentsProps> = ({ currentUserId, comments }) => {
-  console.log("All project comments:", comments);
+  // console.log("All project comments:", comments);
 
   // we must first get root comment since some comments may be replies
   const rootComments = comments.filter((comment) => comment.parentId == null);
-  console.log("Only root comments:", rootComments);
+  // console.log("Only root comments:", rootComments);
 
   const getReplies = (commentId: any) => {
     return comments

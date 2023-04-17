@@ -2,6 +2,12 @@
 
 import { Container, Box, Typography } from "@mui/material";
 
+import { getUserbyId, TUser } from "../api/getUserbyId";
+
+import { useParams } from "react-router-dom";
+
+import { useEffect, useState } from "react";
+
 interface Comment {
   commentId: string;
   userId: string;
@@ -28,6 +34,24 @@ const MyComment: React.FC<CommentProps> = ({
   const canDelete = currentUserId == comment.userId;
 
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
+
+  // we set the user associated with the comment we want to display
+  const [user, setUser] = useState<TUser | undefined>();
+  let { userId } = useParams();
+
+  // grab the user associated with the comment (do know if i need the useEffect??)
+  useEffect(() => {
+    const fetchUsername = async () => {
+      // hard coded atm, but will link to real users later.
+      // did this since mock user won't work with fetch API
+      const newUser = await getUserbyId("6432f85f6cce2fc1706572cf");
+      setUser(newUser);
+
+      // check the user
+      console.log(newUser.username);
+    };
+    fetchUsername();
+  }, [userId]);
 
   return (
     <div className="comment">

@@ -43,7 +43,7 @@ export default function ProjectPage() {
   }
 
   // we want a way to pass the comments to the Comments component
-  console.log(mockProject.comments);
+  // console.log(mockProject.comments);
 
   return (
     <>
