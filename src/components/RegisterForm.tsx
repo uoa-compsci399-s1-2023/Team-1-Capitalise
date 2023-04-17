@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { TUser } from "../model/TUser";
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -11,10 +9,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../customHooks/useAuth';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import Logo from "../assets/Logo.svg";
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import { Alert } from '@mui/material';
+
+//Copyright bottom of page
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -30,6 +27,7 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
+//Sign Up Function
 export default function SignUp() {
   // Auth Provider
   const auth = useAuth();
@@ -44,7 +42,7 @@ export default function SignUp() {
   const [username, setUsername] = React.useState("");
   const [nameErrorText, setNameErrorText] = React.useState("");
   const [usernameErrorText, setUsernameErrorText] = React.useState("");
-
+  //Validators
   const validateName = () => {
     if (!name) {
       setNameErrorText("Please enter a name.");
@@ -95,21 +93,25 @@ export default function SignUp() {
     }
   }
     
-
+  // Submit Function (What happens when you submit the form?)
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    //Retrieve validation booleans. Must keep this so all errors appear on the UI  at the same time
     const n = validateName();
     const u = validateUsername();
     const e = validateEmail();
     const p = validatePassword();
     event.preventDefault();
-
+    // Check if all are valid before submitting to server.
     if (n && u && e && p) {
-      const data = new FormData(event.currentTarget);      
+      const data = new FormData(event.currentTarget);   
+      //Get all form data and convert to string   
       const fn = data.get('fullName') as string;
       const un = data.get('userName') as string;
       const em = data.get('email') as string;
       const pw = data.get('password') as string;
+      //Create object obeying SignUpProp Interface.
       const userToSignUp = {name: fn, username: un, email: em , password: pw}
+      //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
       
   
@@ -218,7 +220,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

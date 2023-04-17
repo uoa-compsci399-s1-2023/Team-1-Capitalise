@@ -111,7 +111,7 @@ function useProvideAuth(): TAuthReturnType {
     if (user) {
       signin(user.username)
     } else {
-      navigate('/projects')
+      navigate('/login')
       console.log('not authorised')
     }
   }

@@ -23,8 +23,9 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import { AppRegistration, Login } from "@mui/icons-material";
-
+import { useAuth } from '../customHooks/useAuth'; 
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
+import { useState } from "react";
 
 const pages = ["About", "Projects"];
 const NoNavPages = ["/register", "/login"];
@@ -54,9 +55,15 @@ const AuthButton = styled(Button)({
   /*Navigation Bar*/
 }
 function ResponsiveAppBar(filterProps: SearchFilterProps) {
-  {
-    /*Functionality for opening/closing sidebar*/
-  }
+  const [isLoggedIn, setLogin] = useState(false);
+  //Auth Header
+  const auth = useAuth();
+  //Fetch Current User (Check if Logged in)
+  
+
+  
+  //Functionality for opening/closing sidebar
+  
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -98,6 +105,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
     return null
   } 
   return (
+   
     <AppBar position="fixed" sx={{ bgcolor: "white" }}>
       <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
@@ -145,23 +153,26 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               display: { xs: "none", md: "flex" },
             }}
           >
+            
             <SearchBar {...filterProps} />
-            <AuthButton
-              onClick={() => {
-                goToPage("login");
-              }}
-              variant="outlined"
-            >
-              Log In
-            </AuthButton>
-            <AuthButton
-              onClick={() => {
-                goToPage("register");
-              }}
-              variant="contained"
-            >
-              Sign Up
-            </AuthButton>
+            {/* Check if User is logged in */}
+            { (auth.getToken() != null) ?
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Not Logged In" src="" />
+              </IconButton>
+            :
+              
+              <><AuthButton onClick={() => { goToPage("login"); } }
+                variant="outlined"> Log In </AuthButton>
+                <AuthButton onClick={() => { goToPage("register"); } } variant="contained"> Sign Up </AuthButton></>
+              
+
+        
+            }
+              
+            
+            
+            
           </Box>
 
           {/*This is the side bar for mobile*/}
@@ -313,5 +324,4 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
     </AppBar>
   );
 }
-
 export default ResponsiveAppBar;

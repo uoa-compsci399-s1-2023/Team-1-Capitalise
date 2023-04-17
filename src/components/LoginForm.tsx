@@ -1,4 +1,6 @@
+//REACT
 import * as React from 'react';
+//MUI 
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -10,14 +12,16 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+//Project Files
 import Logo from "../assets/Logo.svg";
 import { useAuth } from '../customHooks/useAuth';
-import { TUser } from '../model/TUser';
+
+//Copyright (Bottom of Screen)
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="capitalise.space">
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -25,18 +29,22 @@ function Copyright(props: any) {
     </Typography>
   );
 }
-
+//Theme
 const theme = createTheme();
 
+//Sign In Function
 function SignInSide() {
-  // Auth Provider
+  // Auth Provider - important for calling sign in api
   const auth = useAuth();
+  //Email Pattern Checker
   const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
+  // States for Validation Check
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [emailErrorText, setEmailErrorText] = React.useState("");
   const [passwordErrorText, setPasswordErrorText] = React.useState("");
-
+  // Validation Checks - are the given inputs appropriate?
   const validateEmail = () => {
     if (!email) {
       setEmailErrorText("Please enter email.");
@@ -50,7 +58,6 @@ function SignInSide() {
       
     }
   }
-
   const validatePassword = () => {
     if (!password) {
       setPasswordErrorText("Please enter password.");
@@ -59,25 +66,21 @@ function SignInSide() {
       return true;
     }
   }
-
+  // Submit Function - what happens when you submit the form?
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     var e = validateEmail();
     var p = validatePassword();
     if (e && p) {
       const data = new FormData(event.currentTarget);
-      console.log({
-        email: data.get('email'),
-        password: data.get('password')
-      });
-   
-        
+      //Store Form Data as Strings
+      const logEmail = data.get('email') as string;
+      const logPw = data.get('password') as string;
+      // Pass Email and PW onto Auth Provider -> Sign In API
+      auth.signin(logEmail, logPw);
+
       }
     }
-
-  
-
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -170,7 +173,7 @@ function SignInSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/register" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
