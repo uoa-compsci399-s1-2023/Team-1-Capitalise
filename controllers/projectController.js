@@ -196,6 +196,7 @@ const writeComment = async (req, res) => {
     project: req.body.projectId,
     user: req.user._id,
     commentBody: req.body.commentBody,
+    parentComment: req.body.parentComment,
   });
 
   const user = await User.findByIdAndUpdate(req.user._id, {

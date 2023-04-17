@@ -4,6 +4,7 @@ const router = express.Router();
 //Grabs auth and admin functions from the middleware (for Authorization)
 const {auth} = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const graduate = require('../middleware/graduate');
 
 const {
   getAllProjects,
@@ -25,7 +26,7 @@ const {
 router.get('/', getAllProjects);
 
 //Add new project. Requires authorization. 
-router.post('/', auth, addNewProject);
+router.post('/', [auth, graduate], addNewProject);
 
 //Need to add more projects to properly test this
 router.get('/likes', getProjectsByLikes)
@@ -37,7 +38,7 @@ router.get('/search', searchProjects)
 router.get('/:projectId', getProject);
 
 //Update a project
-router.patch('/:projectId', auth, updateProjectById)
+router.patch('/:projectId', [auth, graduate], updateProjectById)
 
 //Delete the project. Will carry out general authorization first, before admin authorization. 
 router.delete('/:projectId', [auth, admin], deleteProject)
@@ -46,7 +47,7 @@ router.delete('/:projectId', [auth, admin], deleteProject)
 router.get('/badges/:badge', getProjectByBadge);
 
 //This put call appends a user to a project. It is not great.
-router.put('/:id/:userid', auth, addUserToProject);
+router.put('/:id/:userid', [auth, graduate], addUserToProject);
 
 //Writes a comment. Appends it to the relevant user and project. 
 router.post('/comment', auth, writeComment);
