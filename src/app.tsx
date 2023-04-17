@@ -12,7 +12,7 @@ import { getProjectsSearch } from "./api/getSearchProjects";
 // Other
 import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "./components/search/AvailableParams";
 import Navbar from "./components/Navbar";
-
+import { AuthProvider } from './customHooks/useAuth';
 
 // Represents curr state of filters
 export type TFiltersState = {
@@ -52,25 +52,27 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <ThemeProvider theme={customTheme1}>
-        <Navbar
-          currFilters={searchFilters}
-          setFilters={setSearchFilters}
-        />
-        <Routes >
-          <Route path="/" element={<Home />} />
-          <Route path="/projects/*" element={
-            <Projects
-              currFilters={searchFilters}
-              setFilters={setSearchFilters}
-              {...{totalNumProjects, projects}}
-            />}
+      <AuthProvider>
+        <ThemeProvider theme={customTheme1}>
+          <Navbar
+            currFilters={searchFilters}
+            setFilters={setSearchFilters}
           />
-          <Route path="/About" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/Register" element={<Registration />} />
-        </Routes>
-      </ThemeProvider>
+          <Routes >
+            <Route path="/" element={<Home />} />
+            <Route path="/projects/*" element={
+              <Projects
+                currFilters={searchFilters}
+                setFilters={setSearchFilters}
+                {...{totalNumProjects, projects}}
+              />}
+            />
+            <Route path="/About" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/Register" element={<Registration />} />
+          </Routes>
+        </ThemeProvider>
+      </AuthProvider>
     </BrowserRouter>
   )
 }
