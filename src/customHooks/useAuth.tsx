@@ -17,6 +17,8 @@ type TAuthReturnType = {
   signup: (newUser: SignUpProps) => void;
   signout: () => void;
   onlyAuthenticated: () => void;
+  isAllowed: (allowedRoles: TUser['userType'][]) => boolean;
+  getToken: () => string | null;
   error: string;
   isLoading: boolean;
 };
@@ -46,6 +48,7 @@ function useProvideAuth(): TAuthReturnType {
       body: JSON.stringify({ username, password }),
     })
   }
+
 
   function signin(username: TUser["username"], password: string='null') {
     const savedToken = localStorage.getItem('jwtToken');
@@ -113,12 +116,22 @@ function useProvideAuth(): TAuthReturnType {
     }
   }
 
+  function getToken() {
+    return localStorage.getItem('jwtToken')
+  }
+
+  function isAllowed(allowedRoles: TUser['userType'][]) {
+    return (user !== null && allowedRoles.includes(user.userType)) 
+  }
+
   return {
     user,
     signin,
     signup,
     signout,
     onlyAuthenticated,
+    isAllowed,
+    getToken,
     error,
     isLoading,
   };
@@ -130,6 +143,8 @@ const authContext = createContext<TAuthReturnType>({
   signup: (newUser: SignUpProps) => { },
   signout: () => { },
   onlyAuthenticated: () => { },
+  isAllowed: (allowedRoles: TUser['userType'][]) => false,
+  getToken: () => null,
   error: '',
   isLoading: false,
 });
