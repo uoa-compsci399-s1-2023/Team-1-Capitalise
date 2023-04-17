@@ -179,7 +179,7 @@ const updateUserDetails = async (req, res) => {
   const { id } = req.params;
 
   //If user logged in is trying to update someone else
-  if (id != req.user._id) {
+  if (id != req.user._id && req.user.userType !== "admin") {
     return res.status(403).send({ err: "You are trying to edit someone else" });
   }
 
@@ -226,7 +226,7 @@ const deleteUserById = async (req, res) => {
     return res.send({ noUser: `User with id ${id} not found` });
   }
 
-  if (id != req.user._id) {
+  if (id != req.user._id && req.user.userType !== "admin") {
     return res
       .status(403)
       .send({ err: "You are trying to delete someone else!" });

@@ -84,7 +84,7 @@ const updateProjectById = async (req, res) => {
   //Check if user is part of the project
   const userIsMember = projectMembers.includes(currentId);
 
-  if (!userIsMember) {
+  if (!userIsMember && req.user.userType !== "admin") {
     return res.status(403).send({ err: "You are not part of this project" });
   }
 
@@ -256,7 +256,7 @@ const deleteComment = async (req, res) => {
 const addUserToProject = async (req, res) => {
   const myProj = await Project.findById(req.params.id);
 
-  if (!myProj.members.includes(req.user._id)) {
+  if (!myProj.members.includes(req.user._id) && req.user.userType !== "admin") {
     return res
       .status(403)
       .send(
