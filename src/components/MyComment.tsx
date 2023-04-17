@@ -1,12 +1,11 @@
-// this is just for a single comment
+// this is for rendering a comment
 
 import { Container, Box, Typography } from "@mui/material";
-
 import { getUserbyId, TUser } from "../api/getUserbyId";
-
 import { useParams } from "react-router-dom";
-
 import { useEffect, useState } from "react";
+
+import { useAuth } from "../customHooks/useAuth";
 
 interface Comment {
   commentId: string;
@@ -19,19 +18,32 @@ interface Comment {
 interface CommentProps {
   comment: Comment;
   replies: Comment[];
-  currentUserId: string;
 }
 
-const MyComment: React.FC<CommentProps> = ({
-  comment,
-  replies,
-  currentUserId,
-}) => {
-  // const fiveMinutes = 300000;
-  // const timePassed = new Date() - new Date(comment.createdAt) > fiveMinutes;
-  const canReply = Boolean(currentUserId); // if currentUser is null then they cannot reply, if we have a current user id it means user is authenticated and can reply
-  const canEdit = currentUserId == comment.userId; // check if the current user is the one that wrote the comment.
-  const canDelete = currentUserId == comment.userId;
+const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
+  const auth = useAuth();
+
+  // need to put logic to handle replies
+  const handleReply = () => {
+    auth.onlyAuthenticated(); // checks if the user is signed in and redirects if otherwise
+    if (auth.user) {
+      console.log(auth.user._id, "can reply");
+    }
+  };
+
+  // need to put logic to handle comment deletion
+  const handleDelete = () => {
+    auth.onlyAuthenticated(); // checks if the user is signed in and redirects if otherwise
+    if (auth.user) {
+      console.log(auth.user._id, "is logged in");
+      if (auth.user._id == comment.userId) {
+        console.log(
+          auth.user._id,
+          "is the author of the comment and can delete it"
+        );
+      }
+    }
+  };
 
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
 
@@ -39,16 +51,16 @@ const MyComment: React.FC<CommentProps> = ({
   const [user, setUser] = useState<TUser | undefined>();
   let { userId } = useParams();
 
-  // grab the user associated with the comment (do know if i need the useEffect??)
+  // grab the user associated with the comment
   useEffect(() => {
     const fetchUsername = async () => {
       // hard coded atm, but will link to real users later.
-      // did this since mock user won't work with fetch API
-      const newUser = await getUserbyId("6432f85f6cce2fc1706572cf");
+      // did this since mock user won't work with getUserbyId API
+      const newUser = await getUserbyId("6432f85f6cce2fc1706572cf"); // this is my UPI
       setUser(newUser);
 
       // check the user
-      console.log(newUser.username);
+      console.log("Current comment author:", newUser.username);
     };
     fetchUsername();
   }, [userId]);
@@ -56,6 +68,7 @@ const MyComment: React.FC<CommentProps> = ({
   return (
     <div className="comment">
       <div className="comment-image-container">
+        {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
         <img
           src="src/components/projectPage/dps/brooke-cagle-wKOKidNT14w-unsplash.jpg"
           width="30"
@@ -64,24 +77,27 @@ const MyComment: React.FC<CommentProps> = ({
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
+          {/* will be able to chuck in user.username when we're dealing with actual users */}
           <div className="comment-author">{comment.userId}</div>
           <div>{createdAt}</div>
         </div>
-        <div className="comment-text">{comment.commentBody}</div>
+        <Typography variant="body1" color="initial" fontWeight={100}>
+          {comment.commentBody}
+        </Typography>
         <div className="comment-actions">
-          {canReply && <div className="comment-action">Reply</div>}
-          {canEdit && <div className="comment-action">Edit</div>}
-          {canDelete && <div className="comment-action">Delete</div>}
+          <div className="comment-action">
+            <input type="button" onClick={handleReply} value="Reply" />
+          </div>
+
+          {auth.isAllowed(["graduate", "admin"]) &&
+            auth.user?._id == comment.userId && (
+              <input type="button" onClick={handleDelete} value="Delete" />
+            )}
         </div>
         {replies.length > 0 && (
           <div className="replies">
             {replies.map((reply) => (
-              <MyComment
-                comment={reply}
-                key={reply.commentId}
-                replies={[]}
-                currentUserId={currentUserId}
-              />
+              <MyComment comment={reply} key={reply.commentId} replies={[]} />
             ))}
           </div>
         )}

@@ -19,6 +19,7 @@ import ProjectPage from "./components/projectPage/ProjectPage";
 import Navbar from "./components/Navbar";
 
 import { TUser, mockUser } from "./model/TUser";
+import { AuthProvider } from "./customHooks/useAuth";
 
 // Represents curr state of filters
 export type TFiltersState = {
@@ -45,7 +46,7 @@ export default function App() {
     projectsPerPage: 6,
   });
 
-  const [loggedInUser, setLoggedInUser] = useState<TUser | null>(mockUser);
+  // const [loggedInUser, setLoggedInUser] = useState<TUser | null>(mockUser);
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
@@ -59,24 +60,26 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <ThemeProvider theme={customTheme1}>
-        <Navbar {...{ currFilters, setFilters }} />
-        <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/projects/*"
-              element={
-                <Projects
-                  {...{ currFilters, setFilters, totalNumProjects, projects }}
-                />
-              }
-            />
-            <Route path="/projectpage" element={<ProjectPage />} />
-            <Route path="/About" element={<About />} />
-          </Routes>
-        </Box>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider theme={customTheme1}>
+          <Navbar {...{ currFilters, setFilters }} />
+          <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/projects/*"
+                element={
+                  <Projects
+                    {...{ currFilters, setFilters, totalNumProjects, projects }}
+                  />
+                }
+              />
+              <Route path="/projectpage" element={<ProjectPage />} />
+              <Route path="/About" element={<About />} />
+            </Routes>
+          </Box>
+        </ThemeProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

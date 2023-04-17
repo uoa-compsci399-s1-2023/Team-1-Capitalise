@@ -1,4 +1,5 @@
 import { TProject } from "../api/getProjects";
+import { TUser, mockUser } from "./TUser";
 
 export type TMockProject = {
   _id: string;
@@ -50,7 +51,7 @@ export type TMockProject = {
 
   badges: {
     id: string;
-    value: "People's Choice" | "Excellence" | "Community Impact";
+    value: "People's Choice" | "Top Excellence" | "Community Impact";
     runnerUp: boolean;
     image: string;
   }[];
@@ -62,11 +63,10 @@ export type TMockProject = {
   }[];
   comments: {
     commentId: string;
-    // projectId: string; // changed this from number to string
-    userId: string; // userId would be set when a comment is created by getCurrentUser() which is an authenticated endpoint
+    userId: string;
     commentBody: string;
-    parentId?: string; // changed this from number to stirng
-    createdAt: string; // changed this to string since react can't deal with Date()
+    parentId?: string;
+    createdAt: string;
   }[];
 };
 
@@ -127,12 +127,18 @@ export const mockProject: TMockProject = {
   badges: [
     {
       id: "1",
-      value: "Excellence",
+      value: "Top Excellence",
       runnerUp: false,
       image: "",
     },
   ],
   comments: [
+    {
+      commentId: "6",
+      userId: "6432f85f6cce2fc1706572cf",
+      commentBody: "Rachel's super funky comment",
+      createdAt: "2023-04-16T23:00:33.010+02:00",
+    },
     {
       commentId: "0",
       userId: "0",
@@ -175,4 +181,61 @@ export const mockProject: TMockProject = {
     },
   ],
   tags: [],
+};
+
+// mock users
+const mockUser1: TUser = {
+  _id: "2",
+  name: "Troy Barnes",
+  username: "tb",
+  password: "test",
+  email: "",
+  likedProjects: [],
+  isGoogleCreated: true,
+  myComments: [],
+  userType: "graduate",
+  project: { _id: "1", name: "InceptionNet" },
+  profilePicture: "src/components/projectPage/dps/Troy_Season_Two1.webp",
+};
+
+const mockUser2: TUser = {
+  _id: "2",
+  name: "Annie Edison",
+  username: "tb",
+  password: "test",
+  email: "",
+  likedProjects: [],
+  isGoogleCreated: true,
+  myComments: [],
+  userType: "graduate",
+  project: { _id: "1", name: "InceptionNet" },
+  profilePicture: "src/components/projectPage/dps/annie1280jpg-e9764d_160w.jpg",
+};
+
+const mockUser3: TUser = {
+  _id: "3",
+  name: "Pierce Hawthorne",
+  username: "tb",
+  password: "test",
+  email: "",
+  likedProjects: [],
+  isGoogleCreated: true,
+  myComments: [],
+  userType: "graduate",
+  project: { _id: "1", name: "InceptionNet" },
+  profilePicture: "src/components/projectPage/dps/pierce_400x400.jpg",
+};
+
+const mockUser4: TUser = {
+  _id: "4",
+  name: "Chang",
+  username: "tb",
+  password: "test",
+  email: "",
+  likedProjects: [],
+  isGoogleCreated: true,
+  myComments: [],
+  userType: "graduate",
+  project: { _id: "1", name: "InceptionNet" },
+  profilePicture: "src/components/projectPage/dps/chang.webp",
 };

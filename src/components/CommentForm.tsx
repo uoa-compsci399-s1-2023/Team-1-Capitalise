@@ -5,11 +5,13 @@ import MyComment from "../components/MyComment";
 const CommentForm = ({ handleSubmit, submitLabel }) => {
   const [text, setText] = useState("");
   const isTextAreaDisabled = text.length == 0;
+
   const onSubmit = (event) => {
     event.preventDefault();
     handleSubmit(text);
     setText("");
   };
+
   return (
     <form onSubmit={onSubmit}>
       <textarea

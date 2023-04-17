@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import ProjectDetails from "./ProjectDetails";
 import ContentBlock from "./ContentBlock";
 import ProjectHeader from "./ProjectHeader";
@@ -9,6 +8,11 @@ import { mockProject } from "../../model/MockProject";
 
 import Comment from "../MyComment";
 import Comments from "../../components/Comments";
+
+import { TUser } from "../../api/getUserbyId";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "../../api/getCurrentUser";
+import { useAuth } from "../../customHooks/useAuth";
 
 import {
   Stack,
@@ -33,6 +37,8 @@ type TabContent = {
 };
 
 export default function ProjectPage() {
+  const auth = useAuth();
+
   const theme = useTheme();
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -45,6 +51,22 @@ export default function ProjectPage() {
   // we want a way to pass the comments to the Comments component
   // console.log(mockProject.comments);
 
+  const handleSignin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const uname = e.target.username.value;
+    const password = e.target.password.value;
+    auth.signin(uname, password);
+  };
+
+  let currentId = "";
+  const handleComment = () => {
+    auth.onlyAuthenticated(); // Redirects the use to the signin page if not signed in (currently just redirects to projects page)
+    if (auth.user) {
+      currentId = auth.user._id;
+      console.log("User id of the current user:", currentId);
+    }
+  };
+
   return (
     <>
       <img
@@ -56,6 +78,18 @@ export default function ProjectPage() {
           objectFit: "cover",
         }}
       />
+      <h1>About {auth.user?.name} </h1>
+      {auth.error && <h3>{auth.error}</h3>}
+      <Box mb={6}>
+        <form onSubmit={handleSignin}>
+          username: <input type="text" name="username" id="username" />
+          password: <input type="text" name="password" />
+          <input type="submit" value={"signin"} />
+          <input type="button" onClick={auth.signout} value={"signout"} />
+        </form>
+      </Box>
+
+      <input type="button" onClick={handleComment} value={"CAN COMMENT?"} />
 
       <Stack
         // bgcolor={theme.customColors.bgGrey}
@@ -106,7 +140,7 @@ export default function ProjectPage() {
             Comments
           </Typography>
           {/* Pass currentUserId since user needs to be logged in to leave a comment /> */}
-          <Comments currentUserId="1" comments={mockProject.comments} />
+          <Comments comments={mockProject.comments} />
         </Stack>
       </Stack>
     </>
