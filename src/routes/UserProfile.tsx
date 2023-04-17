@@ -1,19 +1,60 @@
-import { Box, Stack, Tab, Tabs, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { getUser, TUser } from "../api/getUser";
 import { useEffect, useState } from "react";
 import { TabPanel } from "@mui/lab";
 import MyTabs from "../components/MyTabs";
+import ProjectCard from "../components/projectCard/ProjectCard";
+import { TProject, getProject } from "../api/getProject";
 
 const UserProfile = () => {
   const [user, setUser] = useState<TUser | undefined>();
+  const [project, setProject] = useState<TProject | undefined>();
   let { userName } = useParams();
   const theme = useTheme();
   const userTabs = [
     {
       label: "Overview",
       index: "1",
-      Component: <div>Hello, I am tab 1</div>,
+      Component: (
+        <Stack height="100%">
+          <Box height="30%" padding="0px 24px 10px 24px">
+            <Typography variant="h6">Bio</Typography>
+            <Typography>Hi</Typography>
+          </Box>
+          <Divider />
+          {typeof project != "undefined" && (
+            <Box padding="10px 24px 0px 24px">
+              <Typography variant="h6">Project</Typography>
+              <ProjectCard
+                title={project.name}
+                semester={project.semester.value}
+                image={
+                  typeof project.content[0] != "undefined"
+                    ? project.content[0].tab[0].banner
+                    : ""
+                }
+                teamname={project.teamname ? project.teamname : "teamname"}
+                category={project.category.value}
+                likes={project.likes}
+                badges={
+                  typeof project.badges != "undefined"
+                    ? project.badges.value
+                    : ""
+                }
+              ></ProjectCard>
+            </Box>
+          )}
+        </Stack>
+      ),
     },
     {
       label: "Likes",
@@ -30,6 +71,16 @@ const UserProfile = () => {
     };
     fetchUser();
   }, [userName]);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      if (typeof user === "undefined") return;
+      if (typeof user.project === "undefined") return;
+      const newProject = await getProject(user.project._id);
+      setProject(newProject);
+    };
+    fetchProject();
+  }, [user]);
 
   if (typeof user === "undefined") {
     return (
@@ -51,34 +102,39 @@ const UserProfile = () => {
       justifyContent={{ xs: "start", md: "center" }}
       spacing={0}
       minHeight="92vh"
-      margin="8vh auto"
+      margin="8vh 0vh auto"
     >
       <Stack
         display="flex"
         direction="column"
         alignItems="start"
         width={{ xs: "100%", md: "300px" }}
-        paddingTop="20px"
+        padding="24px"
       >
-        <Box
-          width="90%"
-          component="img"
-          src={user.profilePicture}
-          alt="user profile"
-          referrerPolicy="no-referrer"
-          borderRadius="50%"
-          alignSelf="center"
-        ></Box>
-        <Typography>{user.userType}</Typography>
-        <Typography
-          width="100%"
-          variant="h6"
-          style={{ wordBreak: "break-all" }}
-        >
-          {user.name}
-        </Typography>
+        <Box display={{ xs: "flex", md: "block" }} width="100%">
+          <Box
+            width={{ xs: "25%", md: "90%" }}
+            component="img"
+            src={user.profilePicture}
+            alt="user profile"
+            referrerPolicy="no-referrer"
+            borderRadius="50%"
+            alignSelf="center"
+          ></Box>
+          <Box paddingLeft={{ xs: "24px", md: "0px" }}>
+            <Typography>{user.userType}</Typography>
+            <Typography
+              width="100%"
+              variant="h6"
+              style={{ wordBreak: "break-all" }}
+            >
+              {user.name}
+            </Typography>
+            <Typography>{user.username}</Typography>
+          </Box>
+        </Box>
       </Stack>
-      <Box width={{ xs: "100%", md: "1000px" }}>
+      <Box height="inherit" width={{ xs: "100%", md: "1000px" }}>
         <MyTabs tabs={userTabs} />
       </Box>
     </Stack>

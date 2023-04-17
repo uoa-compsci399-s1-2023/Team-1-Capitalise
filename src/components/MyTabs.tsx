@@ -13,7 +13,7 @@ const MyTabs = ({ tabs }: Props) => {
   };
 
   return (
-    <Box>
+    <Box height="100%">
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList aria-label="MyTab" onChange={handleChange}>
@@ -23,7 +23,12 @@ const MyTabs = ({ tabs }: Props) => {
           </TabList>
         </Box>
         {tabs.map(({ Component }, i) => (
-          <TabPanel value={tabs[i].index} key={i}>
+          <TabPanel
+            value={tabs[i].index}
+            key={i}
+            style={{ height: "90%" }}
+            sx={{ padding: "0px" }}
+          >
             {Component}
           </TabPanel>
         ))}
