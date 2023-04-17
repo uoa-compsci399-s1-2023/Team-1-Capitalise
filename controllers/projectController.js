@@ -239,7 +239,7 @@ const deleteComment = async (req, res) => {
   if (req.user._id != comment.user && req.user.userType != "admin")
     return res.status(403).json({ err: "Not your comment!" });
 
-  const user = await User.findByIdAndUpdate(req.user._id, {
+  const user = await User.findByIdAndUpdate(comment.user, {
     $pull: { myComments: comment._id },
   });
 
