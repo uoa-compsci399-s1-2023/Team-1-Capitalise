@@ -128,6 +128,7 @@ const addNewProject = async (req, res) => {
     teamname: req.body.teamname,
     likes: 0,
     views: 0,
+    thumbnail: req.body.thumbnail,
     banner: req.body.banner,
     content: req.body.content,
     members: [

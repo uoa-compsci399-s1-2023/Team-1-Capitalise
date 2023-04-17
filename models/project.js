@@ -64,39 +64,40 @@ const projectSchema = new mongoose.Schema(
     banner: {
       type: String,
     },
+    thumbnail: {
+      type: String,
+    },
     content: [
       {
         type: new mongoose.Schema({
           _id: false,
-          tab: [
+          tabName: {
+            type: String,
+          },
+          tabContent: [
             {
-              tabName: {
-                type: String,
-              },
-              tabContent: {
-                type: new mongoose.Schema({
-                  type: {
-                    type: String,
-                    enum: [
-                      "gallery",
-                      "poster",
-                      "text",
-                      "video",
-                      "codeBlock",
-                      "quote",
-                      "image",
-                    ],
-                  },
-                  subHeading: {
-                    type: String,
-                  },
-                  value: [
-                    {
-                      type: String,
-                    },
+              type: new mongoose.Schema({
+                type: {
+                  type: String,
+                  enum: [
+                    "gallery",
+                    "poster",
+                    "text",
+                    "video",
+                    "codeBlock",
+                    "quote",
+                    "image",
                   ],
-                }),
-              },
+                },
+                subHeading: {
+                  type: String,
+                },
+                value: [
+                  {
+                    type: String,
+                  },
+                ],
+              }),
             },
           ],
         }),
@@ -135,28 +136,44 @@ function validateProject(project) {
     blurb: Joi.string(),
     teamname: Joi.string(),
     banner: Joi.string(),
+    thumbnail: Joi.string(),
     semester: Joi.string().min(7).max(7).required(),
     userId: Joi.array().items(Joi.objectId()),
-    links: Joi.object({
-      type: Joi.string().valid("github", "codesandbox", "deployedSite", "codepen", "notion", "kaggle").required(),
-      value: Joi.string().required()
-    }),
+    links: Joi.array().items(
+      Joi.object({
+        type: Joi.string()
+          .valid(
+            "github",
+            "codesandbox",
+            "deployedSite",
+            "codepen",
+            "notion",
+            "kaggle"
+          )
+          .required(),
+        value: Joi.string().required(),
+      })
+    ),
     content: Joi.array().items(
       Joi.object({
         tabName: Joi.string().required(),
-        tabContent: Joi.object({
-          type: Joi.string().valid(
-            "gallery",
-            "poster",
-            "text",
-            "video",
-            "codeBlock",
-            "quote",
-            "image"
-          ).required(),
-          subHeading: Joi.string(),
-          value: Joi.array().items(Joi.string()).required(),
-        }),
+        tabContent: Joi.array().items(
+          Joi.object({
+            type: Joi.string()
+              .valid(
+                "gallery",
+                "poster",
+                "text",
+                "video",
+                "codeBlock",
+                "quote",
+                "image"
+              )
+              .required(),
+            subHeading: Joi.string(),
+            value: Joi.array().items(Joi.string()).required(),
+          })
+        ),
       })
     ),
     badges: Joi.string().valid(
