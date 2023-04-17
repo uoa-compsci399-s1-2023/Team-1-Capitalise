@@ -27,16 +27,3 @@ export const mockUser: TUser = {
     isGoogleCreated: false,
     profilePicture: '' 
 }
-
-// {
-//     "_id": "6432f8a46cce2fc1706572db",
-//     "name": "Yathi Kidambi",
-//     "email": "ykid285@aucklanduni.ac.nz",
-//     "username": "ykid285",
-//     "likedProjects": [],
-//     "myComments": [],
-//     "userType": "graduate",
-//     "__v": 0,
-//     "project": "6432f9226cce2fc1706572e3",
-//     "isGoogleCreated": false
-// }
