@@ -30,7 +30,7 @@ export default function EditableTextField({ label, text }: FieldProps) {
     <Box width='100%' display='flex' flexDirection={'row'} alignItems={'center'} >
       <Typography fontWeight={400} width={'100px'} variant="body1">{label}</Typography>
       <Typography fontWeight={300} width={'140px'} variant="body1">{text}</Typography>
-      <EditButton color='editBtnGrey'><EditIcon/></EditButton>
+      <EditButton color='editBtnGrey'><EditIcon fontSize='small'/></EditButton>
     </Box>
   )
 }
