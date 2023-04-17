@@ -70,7 +70,6 @@ const projectSchema = new mongoose.Schema(
     content: [
       {
         type: new mongoose.Schema({
-          _id: false,
           tabName: {
             type: String,
           },
