@@ -478,6 +478,17 @@ const likeComment = async (req, res) => {
   return res.status(200).send(likedProject);
 };
 
+const incrementViews = async (req, res) => {
+  //need to check badge
+  const project = await Project.findByIdAndUpdate(req.params.projectId, {
+    $inc: { views: 1 },
+  });
+
+  if (!project) return res.status(404).json({ err: "No project found" });
+
+  return res.status(200).send(project);
+};
+
 module.exports = {
   getAllProjects,
   getProjectsByLikes,
@@ -491,4 +502,5 @@ module.exports = {
   writeComment,
   likeComment,
   deleteComment,
+  incrementViews,
 };

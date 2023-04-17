@@ -19,6 +19,7 @@ const {
   writeComment,
   likeComment,
   deleteComment,
+  incrementViews,
 
 } = require('../controllers/projectController')
 
@@ -57,6 +58,9 @@ router.patch('/:projectId/like', auth, likeComment)
 
 //Delete a comment. Removes comment from relevant user and project. 
 router.delete('/comment/:commentId', auth, deleteComment);
+
+//Increments the view counter of a page
+router.patch('/:projectId/incrementViews', incrementViews);
 
 
 
