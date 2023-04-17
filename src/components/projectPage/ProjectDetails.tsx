@@ -29,9 +29,9 @@ export default function ProjectDetails(p: TMockProject) {
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
       {p.badges.length > 0 && <AwardBadge {...p.badges[0]} />}
-      <EditableTextField label='Category:' text={`${p.category.value}`} />
-      <EditableTextField label='Semester:' text={`${p.semester.value}`} />
-      <EditableTextField label='Team:' text={`${p.teamname}`} />
+      <EditableTextField type='text' label='Category:' text={`${p.category.value}`} />
+      <EditableTextField type='text' label='Semester:' text={`${p.semester.value}`} />
+      <EditableTextField type='text' label='Team:' text={`${p.teamname}`} />
 
       <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>

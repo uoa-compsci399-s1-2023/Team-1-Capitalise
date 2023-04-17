@@ -1,16 +1,15 @@
 import React, { ChangeEvent, FormEvent } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, TextField, InputAdornment } from "@mui/material";
-import { SearchFilterProps } from "./search/DesktopSearchFilters";
+import { SearchProps } from "./MyPagination";
 
 // Yathi - Added event handler for search bar to make searches.
 // Changed wrapper element to div instead of form so the searchbar can take up more space.
 
-const SearchBar = ({ currFilters, setFilters }: SearchFilterProps) => {
- 
-  const handleKeyDown = (e: any) => {
-    // Check if enter key is pressed
-    if (e.keyCode === 13) {
+const SearchBar = ({ currFilters, setFilters }: SearchProps) => {
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
       setFilters({
         ...currFilters,
         keywords: (e.target as HTMLTextAreaElement).value
@@ -21,7 +20,7 @@ const SearchBar = ({ currFilters, setFilters }: SearchFilterProps) => {
 
   return (
     // <Box component="form" noValidate autoComplete="off">
-    <Box width='80%'> 
+    <Box width='80%'>
       <TextField
         onKeyDown={handleKeyDown}
         fullWidth

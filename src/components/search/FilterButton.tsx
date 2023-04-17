@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { SearchFilterProps } from './DesktopSearchFilters';
+import { SearchProps } from '../MyPagination';
 import { TAvailParameters } from './AvailableParams'
 
 
@@ -18,7 +18,7 @@ export type FilterChipProps = {
   label: string, 
   name: string, 
   options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
-  filtersState: SearchFilterProps }
+  filtersState: SearchProps }
 
 
 export default function FilterButton({name, label, options, filtersState}: FilterChipProps) {
