@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 interface SignUpProps {
   name: TUser["name"];
   email: TUser["email"];
-  username: TUser["username"]
+  // username: TUser["username"] No longer needed. POST will fail if you include this 
   password: string;
 }
 
