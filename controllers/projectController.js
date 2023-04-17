@@ -236,7 +236,7 @@ const deleteComment = async (req, res) => {
   }
 
   //Check if user owns the comment they are deleting
-  if (req.user._id != comment.user)
+  if (req.user._id != comment.user && req.user.userType != "admin")
     return res.status(403).json({ err: "Not your comment!" });
 
   const user = await User.findByIdAndUpdate(req.user._id, {
