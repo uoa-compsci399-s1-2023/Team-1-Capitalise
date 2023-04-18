@@ -88,8 +88,6 @@ const postUser = async (req, res) => {
       password: password,
       links: req.body.links,
       profilePicture: req.body.profilePicture,
-      github: req.body.github,
-      linkedin: req.body.linkedin,
       project: {
         _id: project._id,
       },
@@ -117,8 +115,6 @@ const postUser = async (req, res) => {
       password: password,
       links: req.body.links,
       profilePicture: req.body.profilePicture,
-      github: req.body.github,
-      linkedin: req.body.linkedin,
       bio: req.body.bio,
       likedProjects: [],
       myComments: [],

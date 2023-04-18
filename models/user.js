@@ -27,12 +27,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
   },
-  github: {
-    type: String,
-  },
-  linkedin: {
-    type: String,
-  },
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
@@ -107,8 +101,6 @@ function validateUser(User) {
     profilePicture: Joi.string(),
     username: Joi.string().min(3),
     password: Joi.string().min(3).required(),
-    github: Joi.string(),
-    linkedin: Joi.string(),
     projectId: Joi.objectId(),
     bio: Joi.string().max(2000),
     likedProjects: Joi.array(),
