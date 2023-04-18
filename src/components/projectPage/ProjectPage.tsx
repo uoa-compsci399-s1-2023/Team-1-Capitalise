@@ -140,7 +140,10 @@ export default function ProjectPage() {
             Comments
           </Typography>
           {/* Pass currentUserId since user needs to be logged in to leave a comment /> */}
-          <Comments comments={mockProject.comments} />
+          <Comments
+            comments={mockProject.comments}
+            projectId={mockProject._id}
+          />
         </Stack>
       </Stack>
     </>

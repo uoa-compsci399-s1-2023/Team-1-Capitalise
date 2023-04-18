@@ -8,7 +8,7 @@ const CommentForm = ({ handleSubmit, submitLabel }) => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    handleSubmit(text);
+    handleSubmit(text); // we are just calling the addComment function defined in Comments
     setText("");
   };
 

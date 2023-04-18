@@ -21,26 +21,31 @@ interface Comment {
 
 interface CommentsProps {
   comments: Comment[];
+  projectId: string;
 }
 
 // so instead of passing in currentUserId for authentication, we just pass in the comments array of the current project.
 // we handle auth through the useAuth rather than through the getCurrentUser api.
-const Comments: React.FC<CommentsProps> = ({ comments }) => {
+const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
+  const [backendComments, setBackendComments] = useState(comments);
+
   // we must first get root comment since some comments may be replies
-  const rootComments = comments.filter((comment) => comment.parentId == null);
+  const rootComments = backendComments.filter(
+    (backendComment) => backendComment.parentId == null
+  );
   const getReplies = (commentId: any) => {
-    return comments
-      .filter((comment) => comment.parentId == commentId)
+    return backendComments
+      .filter((backendComment) => backendComment.parentId == commentId)
       .sort(
         (a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
   };
 
-  // we are only providing the commentBody and parentId, this is because backend should be aware of currentUserId
-  const addComment = async (text: string, parentId: string) => {
-    await createComment(text, parentId); // call the createComment API
-    console.log("addComment", text, parentId);
+  // Function to handle comment submission
+  const addComment = async (text: string) => {
+    console.log("addComment", text);
+    await createComment("643cd630b9c2e863834d1be5", text); // use proxy projectId for now.
   };
 
   return (
