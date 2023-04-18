@@ -10,11 +10,12 @@ import FilterDropdown, { FilterDpdownProps } from '../search/FilterDropdown';
 interface FieldProps {
   label: string
   text: string
-  type: 'text' | 'team'
-
+  type: 'text' | 'dropdown'
+  name: string
+  params?: FilterDpdownProps['options']
 }
 
-export default function EditableTextField({ label, text, type }: FieldProps) {
+export default function EditableTextField({ label, text, name, type, params }: FieldProps) {
 
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
@@ -48,7 +49,7 @@ export default function EditableTextField({ label, text, type }: FieldProps) {
     }
   }
 
-  const TeamNameInput = () => (
+  const TextInput = () => (
     <TextField
       size='small'
       sx={{ width: '140px' }}
@@ -56,9 +57,9 @@ export default function EditableTextField({ label, text, type }: FieldProps) {
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={handleKeyDown}
     />
-
-  const 
-
+  )
+  const DropDownInput = () => (
+    <FilterDropdown value={text} name={name} label={label} options={params!} handleChange={(e) => console.log(e.target.value)}/>
   )
 
   return (
@@ -74,13 +75,7 @@ export default function EditableTextField({ label, text, type }: FieldProps) {
         <Typography fontWeight={400} width={'100px'} variant="body1">{label}</Typography>
         <div ref={ref} style={{ width: '140px' }} >
           {isComponentVisible ?
-            <TextField
-              size='small'
-              sx={{ width: '140px' }}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
+            (type == 'text' ? <TextInput/> : <DropDownInput/>)
             :
             <Typography fontWeight={300} variant="body1">{savedText}</Typography>
           }

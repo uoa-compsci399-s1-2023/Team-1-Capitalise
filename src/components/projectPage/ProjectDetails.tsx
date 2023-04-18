@@ -15,7 +15,6 @@ import AwardBadge from './AwardBadge'
 export default function ProjectDetails(p: TMockProject) {
 
   const theme = useTheme()
-  // const EditableText = styled(EditableTextField)();
 
   return (
     <Stack
@@ -29,9 +28,9 @@ export default function ProjectDetails(p: TMockProject) {
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
       {p.badges.length > 0 && <AwardBadge {...p.badges[0]} />}
-      <EditableTextField type='text' label='Category:' text={`${p.category.value}`} />
-      <EditableTextField type='text' label='Semester:' text={`${p.semester.value}`} />
-      <EditableTextField type='text' label='Team:' text={`${p.teamname}`} />
+      <EditableTextField type='text' name='' label='Category:' text={`${p.category.value}`} />
+      <EditableTextField type='text' name='' label='Semester:' text={`${p.semester.value}`} />
+      <EditableTextField type='text' name='' label='Team:' text={`${p.teamname}`} />
 
       <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>
