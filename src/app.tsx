@@ -30,7 +30,6 @@ export type TFiltersState = {
   projectsPerPage: number,
 }
 
-
 export default function App() {
 
 
@@ -44,7 +43,6 @@ export default function App() {
     projectsPerPage: 6
   })
 
-  // const [loggedInUser, setLoggedInUser] = useState<TUser | null>(mockUser)
 
   return (
     <BrowserRouter>

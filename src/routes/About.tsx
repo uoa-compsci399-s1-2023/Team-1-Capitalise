@@ -64,6 +64,10 @@ const About = () => {
         </form>
       </Box>
 
+      <input type="submit" onClick={() => auth.pauseTokenValidation()} value={'pause'} />
+      <input type="submit" onClick={() => auth.resumeTokenValidation()} value={'resume'} />
+
+
       <Box mb={6}>
         <h1>Example 1: Something everyone sees. But only logged in users can use.</h1>
         <input type="button" onClick={handleLike} value={'Like'} />
