@@ -1,7 +1,6 @@
-import { useState, useContext, createContext, useEffect, useRef } from "react";
+import { useState, useContext, createContext, useEffect } from "react";
 import { TUser } from "../model/TUser";
 import { API_URL } from "../api/config";
-import { Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface SignUpProps {
@@ -18,8 +17,6 @@ type TAuthReturnType = {
   onlyAuthenticated: () => void;
   isAllowed: (allowedRoles: TUser['userType'][]) => boolean;
   getToken: () => string | null;
-  pauseTokenValidation: () => void,
-  resumeTokenValidation: () => void,
   error: string;
   isLoading: boolean;
 };
@@ -28,8 +25,6 @@ function useProvideAuth(): TAuthReturnType {
   const [user, setUser] = useState<TUser | null>(null);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  // const [isTokenValidation, setIsTokenValidation] = useState(true);
-  const isTokenValidation = useRef(true);
   const navigate = useNavigate();
 
   const getUserPromise = (savedToken: string | null) => {
@@ -51,27 +46,30 @@ function useProvideAuth(): TAuthReturnType {
     })
   }
 
-  // validates token and fetches latest user changes
-  function validateTokenAndFetchUser() {
+  useEffect(() => {
+    // Auto sigin in on mount
+    signinWithSavedToken()
+    // Validates token every 5 seconds.
+    setInterval(validateToken, 5000);
+  }, [])
+
+  // validates token
+  function validateToken() {
     const savedToken = localStorage.getItem('jwtToken');
-    if (isTokenValidation.current === true && savedToken) {
+    if (savedToken) {
+      console.log('validating')
       getUserPromise(savedToken)
-      .then((resp) => {
-        // If token valid fetch latest user.
-        if (resp.ok) {
-          resp.json().then((user) => { setUser(user) })
-        } else {
-          // Delete token, and sign out.
-          signout();
-        }
-      })
+        .then((resp) => {
+          // If token valid fetch latest user.
+          if (resp.ok) {
+            // resp.json().then((user) => { setUser(user) })
+          } else {
+            // Delete token, and sign out.
+            signout();
+          }
+        })
     }
   }
-
-  // Validates token every 5 seconds.
-  useEffect(() => {
-    setInterval(validateTokenAndFetchUser, 5000);
-  }, [])
 
   // signs in user from given username and password
   // saves token locally
@@ -83,17 +81,31 @@ function useProvideAuth(): TAuthReturnType {
       .then(resp => {
         if (!resp.ok) {
           // Set login error
-          resp.text().then(err => setError(err));
+          resp.text().then(err => {setError(err); setIsLoading(false)} );
         } else {
           // Otherwise save token and signin.
           resp.text().then(token => {
             localStorage.setItem('jwtToken', token);
-            validateTokenAndFetchUser();
+            signinWithSavedToken();
           })
         }
-      });
+      })
   }
 
+  function signinWithSavedToken() {
+    setError('')
+    const savedToken = localStorage.getItem('jwtToken');
+    if (savedToken) {
+      getUserPromise(savedToken)
+        .then((resp) => {
+          if (resp.ok) {
+            resp.json().then((jsonData) => setUser(jsonData));
+          } else {
+            resp.text().then(err => setError(err))
+          }
+        }).finally(() => setIsLoading(false))
+    }
+  }
 
   // Registers user given the required data from the above interface
   function signup(newUser: SignUpProps) {
@@ -101,7 +113,6 @@ function useProvideAuth(): TAuthReturnType {
       ...newUser,
       username: newUser.email
     });
-    console.log(postBody)
     setIsLoading(true);
     fetch(`${API_URL}/api/users`, {
       method: "POST",
@@ -113,10 +124,9 @@ function useProvideAuth(): TAuthReturnType {
       if (resp.ok) {
         return;
       } else {
-        resp.text().then( err => setError(err) );
+        resp.text().then(err => setError(err));
       }
-      setIsLoading(false);
-    });
+    }).finally(() => setIsLoading(false));
   }
 
   // Deletes token and sets user to null
@@ -127,10 +137,9 @@ function useProvideAuth(): TAuthReturnType {
 
   // Redirects to login page if no valid user is signed in.
   function onlyAuthenticated() {
-    validateTokenAndFetchUser(); // checks if current user is valid.
+    validateToken(); // checks if current user is valid.
     if (!user) {
       navigate('/projects')
-      console.log('not authorised')
     }
   }
 
@@ -142,21 +151,10 @@ function useProvideAuth(): TAuthReturnType {
 
   // Checks if the current user is authorised based on given roles
   function isAllowed(allowedRoles: TUser['userType'][]) {
-    return (user !== null && allowedRoles.includes(user.userType)) 
+    return (user !== null && allowedRoles.includes(user.userType))
   }
 
-  // Pauses token validation.
-  // Maybe useful when making local changes to the user, 
-  // and you don't when them to rewritten every 5 seconds.
-  // If you call this, please please please don't forget to resume!
-  function pauseTokenValidation() {
-    isTokenValidation.current = false;
-    console.log(isTokenValidation.current, 'set to false')
-  }
-  function resumeTokenValidation() {
-    isTokenValidation.current = true;
-  }
-  
+
   return {
     user,
     signin,
@@ -165,8 +163,6 @@ function useProvideAuth(): TAuthReturnType {
     onlyAuthenticated,
     isAllowed,
     getToken,
-    pauseTokenValidation,
-    resumeTokenValidation,
     error,
     isLoading,
   };
@@ -183,8 +179,6 @@ const authContext = createContext<TAuthReturnType>({
   onlyAuthenticated: () => { },
   isAllowed: (allowedRoles: TUser['userType'][]) => false,
   getToken: () => null,
-  pauseTokenValidation: () => { },
-  resumeTokenValidation: () => { },
   error: '',
   isLoading: false,
 });

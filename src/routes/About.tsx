@@ -3,9 +3,12 @@ import Navbar from "../components/Navbar";
 import { useAuth } from "../customHooks/useAuth";
 import { Box } from "@mui/material";
 
+let counter =0;
+
 const About = () => {
 
   const auth = useAuth();
+
 
   const handleSignin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,6 +45,9 @@ const About = () => {
 
   return (
     <div className="About">
+      <h1>{counter++}</h1>
+      {auth.isLoading && <h1>Loading...</h1>}
+
       {/* <Navbar /> */}
       <h1>About {auth.user?.name} </h1>
       {auth.error && <h3>{auth.error}</h3>}
