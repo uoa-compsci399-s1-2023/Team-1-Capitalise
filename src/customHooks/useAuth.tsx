@@ -50,7 +50,7 @@ function useProvideAuth(): TAuthReturnType {
   }
 
 
-  function signin(username: TUser["username"], password: string='null') {
+  function signin(username: TUser["username"], password: string='null'){
     const savedToken = localStorage.getItem('jwtToken');
     setIsLoading(true);
     getUserPromise(savedToken)
@@ -72,8 +72,10 @@ function useProvideAuth(): TAuthReturnType {
                     .then(resp => resp.json())
                     .then(user => { setUser(user); setIsLoading(false); setError('') })
                     .catch(err => setError(err))
+                  
                 })
               }
+              
             });
         }
       });

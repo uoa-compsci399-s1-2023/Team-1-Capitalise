@@ -69,8 +69,8 @@ function SignInSide() {
   // Submit Function - what happens when you submit the form?
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    var e = validateEmail();
-    var p = validatePassword();
+    const e = validateEmail();
+    const p = validatePassword();
     if (e && p) {
       const data = new FormData(event.currentTarget);
       //Store Form Data as Strings
@@ -78,6 +78,7 @@ function SignInSide() {
       const logPw = data.get('password') as string;
       // Pass Email and PW onto Auth Provider -> Sign In API
       auth.signin(logEmail, logPw);
+      
 
       }
     }

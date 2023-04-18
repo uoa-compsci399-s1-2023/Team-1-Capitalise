@@ -22,7 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { AppRegistration, Login } from "@mui/icons-material";
+import { AppRegistration, Login, Logout } from "@mui/icons-material";
 import { useAuth } from '../customHooks/useAuth'; 
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
 import { useState } from "react";
@@ -55,11 +55,10 @@ const AuthButton = styled(Button)({
   /*Navigation Bar*/
 }
 function ResponsiveAppBar(filterProps: SearchFilterProps) {
-  const [isLoggedIn, setLogin] = useState(false);
   //Auth Header
   const auth = useAuth();
   //Fetch Current User (Check if Logged in)
-  
+  const uCheck = (auth.getToken() != null);
 
   
   //Functionality for opening/closing sidebar
@@ -156,7 +155,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
             
             <SearchBar {...filterProps} />
             {/* Check if User is logged in */}
-            { (auth.getToken() != null) ?
+            { (uCheck) ?
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Not Logged In" src="" />
               </IconButton>
@@ -295,13 +294,24 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
             >
               {/*The dropdown options*/}
               <MenuItem onClick={handleClose}>
-                <Avatar />
-                Guest
+              <Avatar />
+                {(uCheck) ? auth.user?.email + 'hello' : "Guest" }
+                
               </MenuItem>
 
               <Divider />
-
-              <MenuItem onClick={() => {
+                {(uCheck) ? 
+               <MenuItem onClick={() => {
+                auth.signout(); 
+                navigate("/home");
+                handleClose(); 
+                }}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                Log Out
+              </MenuItem>:  
+              <><MenuItem onClick={() => {
                 handleClose(); 
                 goToPage("register")}}>
                 <ListItemIcon>
@@ -316,7 +326,8 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
                   <Login fontSize="small" />
                 </ListItemIcon>
                 Login
-              </MenuItem>
+              </MenuItem></>
+              }
             </Menu>
           </Box>
         </StyledToolBar>
