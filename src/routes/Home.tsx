@@ -30,7 +30,7 @@ function Home() {
 
   return (
     <Box width="100%">
-      <Navbar />
+      {/* <Navbar /> */}
       <Stack
         display="flex"
         direction="column"

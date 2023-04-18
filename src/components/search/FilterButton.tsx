@@ -6,33 +6,41 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 
 import { SearchFilterProps } from './DesktopSearchFilters';
+import { TAvailParameters } from './AvailableParams'
+
 
 const CustomButton = styled(Button)({
   textTransform: 'none',
-  // fontSize: 16,
   whiteSpace: 'nowrap',
   borderRadius: '20px'
 })
 
 
-export type FilterChipProps = { value: string, label: string, name: string, options: string[], filtersState: SearchFilterProps }
-export default function FilterButton({value, name, label, options, filtersState}: FilterChipProps) {
+export type FilterChipProps = { 
+  // value: string, 
+  label: string, 
+  name: string, 
+  options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
+  filtersState: SearchFilterProps }
+
+
+export default function FilterButton({name, label, options, filtersState}: FilterChipProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-  
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+
   const {currFilters, setFilters} = filtersState;
 
   const open = Boolean(anchorEl);
   
-  const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClickButton = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLElement>,
+    // event: React.MouseEvent<HTMLElement>,
     index: number,
-    selectedOption: string
-  ) => {
+    selectedOption: TAvailParameters[keyof TAvailParameters][0]
+    ) => {
     setSelectedIndex(index);
     setAnchorEl(null);
     setFilters({
@@ -55,10 +63,10 @@ export default function FilterButton({value, name, label, options, filtersState}
         aria-controls="lock-menu"
         aria-label={`${name} search filter`}
         aria-expanded={open ? 'true' : undefined}
-        onClick={handleClickListItem}
+        onClick={handleClickButton}
         size="small"
       >
-        {`${label}: ${options[selectedIndex]}`}
+        {`${label}: ${options[selectedIndex]['value']}`}
       </CustomButton>
 
 
@@ -72,13 +80,13 @@ export default function FilterButton({value, name, label, options, filtersState}
           role: 'listbox',
         }}
       >
-        {options.map((option, index) => (
+        {options.map((param, index) => (
           <MenuItem
-            key={option}
+            key={param._id}
             selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index, option)}
+            onClick={() => handleMenuItemClick(index, param)}
           >
-            {option}
+            {param.value}
           </MenuItem>
         ))}
       </Menu>
