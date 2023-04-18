@@ -113,7 +113,15 @@ export default function SignUp() {
       const userToSignUp = {name: fn, username: un, email: em , password: pw}
       //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
-      
+      //Error Handler
+      if (auth.error != '') {
+        if (auth.error == 'Email already registered.') {
+          setEmailErrorText('Email is already registered. Please enter another one.')
+          
+        } else if (auth.error == 'Username already registered.') {
+          setUsernameErrorText('Username is already registered. Please enter another one.')
+        }
+      }
   
   }}
 

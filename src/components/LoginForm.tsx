@@ -78,10 +78,17 @@ function SignInSide() {
       const logPw = data.get('password') as string;
       // Pass Email and PW onto Auth Provider -> Sign In API
       auth.signin(logEmail, logPw);
+      setEmailErrorText(auth.error)
+      if (auth.error == 'Invalid username or password.') {
+        setEmailErrorText('Incorrect Username/Email or Password')
+        setPasswordErrorText(" ")
+        
       
 
       }
     }
+  }
+    
 
   return (
     <ThemeProvider theme={theme}>

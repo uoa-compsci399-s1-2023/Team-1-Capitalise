@@ -157,7 +157,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
             {/* Check if User is logged in */}
             { (uCheck) ?
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Not Logged In" src="" />
+                <Avatar alt="Logged In" src="" />
               </IconButton>
             :
               
@@ -250,6 +250,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               </IconButton>
             </Tooltip>
             <Menu
+              
               sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
@@ -295,25 +296,30 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               {/*The dropdown options*/}
               <MenuItem onClick={handleClose}>
               <Avatar />
-                {(uCheck) ? auth.user?.email + 'hello' : "Guest" }
+                {(uCheck) ? auth.user?.name : "Guest" }
                 
               </MenuItem>
 
               <Divider />
+              {/*Display settings based on login status*/}
                 {(uCheck) ? 
-               <MenuItem onClick={() => {
+               <MenuItem 
+               
+               onClick={() => {
+                handleClose; 
+                location.reload();
                 auth.signout(); 
-                navigate("/home");
-                handleClose(); 
-                }}>
+                navigate("/home");}} 
+                >
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>
                 Log Out
-              </MenuItem>:  
+              </MenuItem>
+              :  //Or display guest (not logged in details)
               <><MenuItem onClick={() => {
                 handleClose(); 
-                goToPage("register")}}>
+                navigate("register")}}>
                 <ListItemIcon>
                   <AppRegistration fontSize="small" />
                 </ListItemIcon>
