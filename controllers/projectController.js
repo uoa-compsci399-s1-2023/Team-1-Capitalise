@@ -489,6 +489,14 @@ const incrementViews = async (req, res) => {
   return res.status(200).send(project);
 };
 
+//Get all projects
+const getAllComments = async (req, res) => {
+  //Populate the project members attribute with id and names of users.
+  const comments = await Comment.find()
+    .sort("createdAt");
+  res.send(comments);
+};
+
 module.exports = {
   getAllProjects,
   getProjectsByLikes,
@@ -503,4 +511,5 @@ module.exports = {
   likeComment,
   deleteComment,
   incrementViews,
+  getAllComments,
 };

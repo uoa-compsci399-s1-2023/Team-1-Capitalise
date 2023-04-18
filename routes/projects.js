@@ -20,6 +20,7 @@ const {
   likeComment,
   deleteComment,
   incrementViews,
+  getAllComments,
 
 } = require('../controllers/projectController')
 
@@ -61,6 +62,9 @@ router.delete('/comment/:commentId', auth, deleteComment);
 
 //Increments the view counter of a page
 router.patch('/:projectId/incrementViews', incrementViews);
+
+//Get all projects
+router.get('/comments/all', getAllComments);
 
 
 
