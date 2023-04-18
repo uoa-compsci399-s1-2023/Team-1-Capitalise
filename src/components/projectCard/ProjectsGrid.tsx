@@ -20,6 +20,10 @@ export default function ProjectsGrid({ projects }: props) {
         <Box key={project._id}>
           <ProjectCard
             title={project.name}
+            semester={project.semester.value}
+            image={
+              typeof project.thumbnail != "undefined" ? project.thumbnail : ""
+            }
             teamname={project.teamname ? project.teamname : "teamname"}
             category={project.category.value}
             likes={project.likes}
