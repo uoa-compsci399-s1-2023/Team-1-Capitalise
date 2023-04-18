@@ -96,7 +96,6 @@ function validateUser(User) {
     bio: Joi.string().max(2000),
     likedProjects: Joi.array(),
     myComments: Joi.array(),
-    profilePicture: Joi.string(),
     isGoogleCreated: Joi.boolean(),
   });
 

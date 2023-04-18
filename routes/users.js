@@ -13,10 +13,13 @@ const {
   getCurrentUser,
   adminDeleteUserById,
   adminUpdateUserDetails,
+  searchUsers,
 } = require('../controllers/userController')
 
 
 router.get('/', getAllUsers);
+
+router.get('/search', searchUsers);
 
 router.get('/:username', getUserByName);
 

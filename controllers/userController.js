@@ -61,7 +61,7 @@ const postUser = async (req, res) => {
     if (checkExistingUsername)
       return res.status(400).send("Username already registered.");
   } else {
-    req.body.username = req.body.email
+    req.body.username = req.body.email;
   }
 
   //Determine if email has aucklanduni.ac.nz domain
@@ -304,6 +304,22 @@ const getCurrentUser = async (req, res) => {
   res.send(user);
 };
 
+//search for users
+const searchUsers = async (req, res) => {
+  //console.log(req.query.name.split(" "));
+  //let myArr = req.query.name.split(" ");
+  //let myQueryArr = [];
+  //for (let i = 0; i < myArr.length; i++) {
+  //  myQueryArr.push({ name: { $regex: myArr[i], $options: "i" } });
+  //}
+  //console.log(myQueryArr);
+  const users = await User.find({
+    //$or: myQueryArr,
+    name: { $regex: req.query.name, $options: "i" },
+  });
+  res.send(users);
+};
+
 module.exports = {
   getAllUsers,
   getUserByName,
@@ -315,4 +331,5 @@ module.exports = {
   adminDeleteUserById,
   adminUpdateUserDetails,
   postGoogleUser,
+  searchUsers,
 };
