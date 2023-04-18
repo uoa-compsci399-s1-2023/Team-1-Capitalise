@@ -89,8 +89,6 @@ export default function ProjectPage() {
         </form>
       </Box>
 
-      <input type="button" onClick={handleComment} value={"CAN COMMENT?"} />
-
       <Stack
         // bgcolor={theme.customColors.bgGrey}
         bgcolor={"white"}
@@ -103,6 +101,7 @@ export default function ProjectPage() {
           name={mockProject.name}
           blurb={mockProject.blurb}
           likes={mockProject.likes}
+          projectId={mockProject._id}
         />
 
         <Stack flexDirection={"row"} mt={2}>

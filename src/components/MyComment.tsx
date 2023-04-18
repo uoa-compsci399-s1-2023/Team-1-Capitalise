@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../customHooks/useAuth";
+import { API_URL } from "../api/config";
 
 interface Comment {
   commentId: string;
@@ -45,6 +46,27 @@ const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
     }
   };
 
+  const deleteComment = async (commentId: string) => {
+    const token = auth.getToken();
+    if (token) {
+      if (window.confirm("Are you sure you want to remove comment?")) {
+        fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+          body: JSON.stringify({
+            commentId: "643e2fbca5ec12d8d7e14d3d",
+          }),
+        })
+          .then((response) => response.json())
+          .then((response) => console.log(JSON.stringify(response)));
+      }
+    }
+  };
+
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
 
   // we set the user associated with the comment we want to display
@@ -60,7 +82,7 @@ const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
       setUser(newUser);
 
       // check the user
-      console.log("Current comment author:", newUser.username);
+      // console.log("Current comment author:", newUser.username);
     };
     fetchUsername();
   }, [userId]);
