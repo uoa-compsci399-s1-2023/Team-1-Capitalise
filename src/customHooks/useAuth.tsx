@@ -181,8 +181,9 @@ const authContext = createContext<TAuthReturnType>({
 });
 
 export function AuthProvider({ children }: { children: any }) { // Gave any type but might need to be React.ReactNode
+  const auth = useProvideAuth()
   return (
-    <authContext.Provider value={useProvideAuth()}>
+    <authContext.Provider value={auth}>
       {children}
     </authContext.Provider>
   )
