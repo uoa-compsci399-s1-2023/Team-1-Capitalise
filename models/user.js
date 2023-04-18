@@ -64,7 +64,24 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
-  }
+  },
+  links: [
+    {
+      type: new mongoose.Schema({
+        value: {
+          type: String,
+        },
+        type: {
+          type: String,
+          enum: [
+            "github",
+            "linkedin",
+            "deployedSite",
+          ],
+        },
+      }),
+    },
+  ],
 });
 
 //Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user.
@@ -97,6 +114,18 @@ function validateUser(User) {
     likedProjects: Joi.array(),
     myComments: Joi.array(),
     isGoogleCreated: Joi.boolean(),
+    links: Joi.array().items(
+      Joi.object({
+        type: Joi.string()
+          .valid(
+            "github",
+            "linkedin",
+            "deployedSite",
+          )
+          .required(),
+        value: Joi.string().required(),
+      })
+    ),
   });
 
   return schema.validate(User);
