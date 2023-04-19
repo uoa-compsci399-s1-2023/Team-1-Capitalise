@@ -10,7 +10,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../customHooks/useAuth';
 import Logo from "../assets/Logo.svg";
-
+import { Alert, Divider, Fade } from '@mui/material';
+import {useState} from 'react';
+import GoogleIcon from '@mui/icons-material/Google';
 //Copyright bottom of page
 function Copyright(props: any) {
   return (
@@ -31,17 +33,19 @@ const theme = createTheme();
 export default function SignUp() {
   // Auth Provider
   const auth = useAuth();
+  
   // Reg Expressions for validation
   const spCh = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
   const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [emailErrorText, setEmailErrorText] = React.useState("");
-  const [passwordErrorText, setPasswordErrorText] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [nameErrorText, setNameErrorText] = React.useState("");
-  const [usernameErrorText, setUsernameErrorText] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailErrorText, setEmailErrorText] = useState("");
+  const [passwordErrorText, setPasswordErrorText] = useState("");
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [nameErrorText, setNameErrorText] = useState("");
+  const [usernameErrorText, setUsernameErrorText] = useState("");
+  const [success, setSuccess] = useState(false);
   //Validators
   const validateName = () => {
     if (!name) {
@@ -114,13 +118,19 @@ export default function SignUp() {
       //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
       //Error Handler
+      setEmailErrorText(auth.error + " Hello")
       if (auth.error != '') {
+        // Need to check if email and username registered (one error message)
+    
         if (auth.error == 'Email already registered.') {
           setEmailErrorText('Email is already registered. Please enter another one.')
           
         } else if (auth.error == 'Username already registered.') {
           setUsernameErrorText('Username is already registered. Please enter another one.')
         }
+
+
+
       }
   
   }}
@@ -144,13 +154,14 @@ export default function SignUp() {
               src={Logo}
               alt="logo"
               sx={{
-                width: "200px",
+                mt: 10,
+                width: "300px",
                 height: "auto",
                 flexGrow: 1,
                 display: { xs: "flex", md: "flex" },
               }}
             ></Box>
-          <Typography component="h1" variant="h6">
+          <Typography sx={{fontWeight: "700", mt: 2}}component="h1" variant="h6">
             Register
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -217,25 +228,28 @@ export default function SignUp() {
               
              
             </Grid>
-            <Button
-              
+          
+       
+             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              >
+              sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
+            
+            <Divider></Divider>
+            <Button fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign up with Google</Button>
+            <Grid sx={{mb:2}}container justifyContent="center">
               <Grid item>
-                <Link href="/login" variant="body2">
+                <Link href="/login" underline="hover"variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+       
       </Container>
     </ThemeProvider>
   );}

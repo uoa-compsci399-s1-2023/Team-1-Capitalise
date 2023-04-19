@@ -1,5 +1,6 @@
 //REACT
 import * as React from 'react';
+import {useState} from 'react';
 //MUI 
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,7 +16,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 //Project Files
 import Logo from "../assets/Logo.svg";
 import { useAuth } from '../customHooks/useAuth';
-
+import { Divider } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 //Copyright (Bottom of Screen)
 function Copyright(props: any) {
   return (
@@ -40,17 +42,17 @@ function SignInSide() {
   const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
   // States for Validation Check
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [emailErrorText, setEmailErrorText] = React.useState("");
-  const [passwordErrorText, setPasswordErrorText] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailErrorText, setEmailErrorText] = useState("");
+  const [passwordErrorText, setPasswordErrorText] = useState("");
   // Validation Checks - are the given inputs appropriate?
   const validateEmail = () => {
     if (!email) {
       setEmailErrorText("Please enter email.");
      
     } else if (!emailF.test(email)) {
-      setEmailErrorText("Enter an email in the format of example@aucklanduni.ac.nz or example@domain.com");
+      setEmailErrorText("Enter an email in the format of example@aucklanduni.ac.nz or example@gmail.com");
      
     } else {
       setEmailErrorText("");
@@ -78,14 +80,12 @@ function SignInSide() {
       const logPw = data.get('password') as string;
       // Pass Email and PW onto Auth Provider -> Sign In API
       auth.signin(logEmail, logPw);
-      setEmailErrorText(auth.error)
+      setEmailErrorText(auth.error);
       if (auth.error == 'Invalid username or password.') {
-        setEmailErrorText('Incorrect Username/Email or Password')
-        setPasswordErrorText(" ")
-        
-      
-
+        setEmailErrorText('Incorrect Username/Email or Password');
+        setPasswordErrorText(" ");
       }
+
     }
   }
     
@@ -118,22 +118,25 @@ function SignInSide() {
               alignItems: 'center',
             }}
           >
+            <Box sx={{mt: 20, mb: 3}}>
             <Box
               padding="0 30px"
               component="img"
               src={Logo}
               alt="logo"
               sx={{
-                width: "200px",
+                width: "300px",
                 height: "auto",
                 flexGrow: 1,
                 display: { xs: "flex", md: "flex" },
               }}
             ></Box>
-            <Typography component="h1" variant="h5">
-              Sign In
+            
+            </Box>
+            <Typography component="h1" variant="h5" sx={{fontWeight: 500}}>
+              Login
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" noValidate onSubmit={handleSubmit}>
               <TextField
                 margin="normal"
                 required
@@ -162,10 +165,7 @@ function SignInSide() {
                 helperText={passwordErrorText}
                 onChange={e => setPassword(e.target.value)}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+              
               <Button
                 type="submit"
                 fullWidth
@@ -174,19 +174,22 @@ function SignInSide() {
               >
                 Sign In
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
+              
+              <Divider></Divider>
+              <Button fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign In with Google</Button>
+
+              <Grid container 
+              direction="column"
+              justifyContent="flex-end"
+              alignItems="center">
+                
                 <Grid item>
-                  <Link href="/register" variant="body2">
+                  <Link href="/register" underline="hover" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
+
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>

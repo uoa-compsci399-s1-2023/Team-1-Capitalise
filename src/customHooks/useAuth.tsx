@@ -1,26 +1,24 @@
-import { useState, useContext, createContext, Context } from "react";
+import { useState, useContext, createContext, useEffect } from "react";
 import { TUser } from "../model/TUser";
 import { API_URL } from "../api/config";
-import { Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface SignUpProps {
   name: TUser["name"];
   email: TUser["email"];
-  username: TUser["username"]
   password: string;
 }
 
 type TAuthReturnType = {
-  user: TUser | null;
-  signin: (username: TUser["username"], password: string) => void;
-  signup: (newUser: SignUpProps) => void;
-  signout: () => void;
-  onlyAuthenticated: () => void;
-  isAllowed: (allowedRoles: TUser['userType'][]) => boolean;
-  getToken: () => string | null;
-  error: string;
-  isLoading: boolean;
+  user: TUser | null; // Current user object. You can access everything from this, role, username, profile pic, etc. If no one is signed in it is set to null.
+  signin: (username: TUser["username"], password: string) => void; // Signs in user. Mostly for the sign in form.
+  signup: (newUser: SignUpProps) => void; // Signs up user 
+  signout: () => void; // Deletes saved token and set user to null.
+  onlyAuthenticated: () => void; // Use this redirect users to sign in page.
+  isAllowed: (allowedRoles: TUser['userType'][]) => boolean; // For role-based authorization.
+  getToken: () => string | null; // For restricted api calls.
+  error: string; // Set with server message if signin or signout fails.
+  isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
 };
 
 function useProvideAuth(): TAuthReturnType {
@@ -29,12 +27,11 @@ function useProvideAuth(): TAuthReturnType {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-
   const getUserPromise = (savedToken: string | null) => {
     return fetch(`${API_URL}/api/users/getCurrentUser/me`, {
       method: "GET",
       headers: {
-        "x-auth-token": savedToken as string, // This will be set to 'undefined' if token doesn't exist
+        "x-auth-token": savedToken as string, // This will be set to 'null' if token doesn't exist
       },
     })
   }
@@ -49,44 +46,70 @@ function useProvideAuth(): TAuthReturnType {
     })
   }
 
+  useEffect(() => {
+    // Auto sigin in on mount
+    signinWithSavedToken()
+    // Validates token every 5 seconds.
+    setInterval(validateToken, 5000);
+  }, [])
 
-  function signin(username: TUser["username"], password: string='null'){
+  // validates token
+  function validateToken() {
     const savedToken = localStorage.getItem('jwtToken');
-    setIsLoading(true);
-    getUserPromise(savedToken)
-      .then((resp) => {
-        if (resp.ok) {
-          resp.json().then((user) => { setUser(user); setError(''); setIsLoading(false) })
-        } else {
-          setUser(null);
-          localStorage.removeItem('jwtToken')
-          resp.text().then(err => setError(err));
-          getTokenPromise(username, password)
-            .then(resp => {
-              if (!resp.ok) {
-                resp.text().then(err => setError(err));
-              } else {
-                resp.text().then(token => {
-                  localStorage.setItem('jwtToken', token);
-                  getUserPromise(token)
-                    .then(resp => resp.json())
-                    .then(user => { setUser(user); setIsLoading(false); setError('') })
-                    .catch(err => setError(err))
-                  
-                })
-              }
-              
-            });
-        }
-      });
+    if (savedToken) {
+      console.log('validating')
+      getUserPromise(savedToken)
+        .then((resp) => {
+          // sign out if token invalid.
+          if (!resp.ok) {
+            signout();
+          } 
+        })
+    }
   }
 
+  // signs in user from given username and password
+  // saves token locally
+  // Any errors are set in the error state variable.
+  function signin(username: TUser["username"], password: string) {
+    setIsLoading(true);
+    setError('');
+    getTokenPromise(username, password)
+      .then(resp => {
+        if (!resp.ok) {
+          // Set login error
+          resp.text().then(err => {setError(err); setIsLoading(false)} );
+        } else {
+          // Otherwise save token and signin.
+          resp.text().then(token => {
+            localStorage.setItem('jwtToken', token);
+            signinWithSavedToken();
+          })
+        }
+      })
+  }
+
+  function signinWithSavedToken() {
+    setError('')
+    const savedToken = localStorage.getItem('jwtToken');
+    if (savedToken) {
+      getUserPromise(savedToken)
+        .then((resp) => {
+          if (resp.ok) {
+            resp.json().then((jsonData) => setUser(jsonData));
+          } else {
+            resp.text().then(err => setError(err))
+          }
+        }).finally(() => setIsLoading(false))
+    }
+  }
+
+  // Registers user given the required data from the above interface
   function signup(newUser: SignUpProps) {
     const postBody = JSON.stringify({
       ...newUser,
       username: newUser.email
     });
-    console.log(postBody)
     setIsLoading(true);
     fetch(`${API_URL}/api/users`, {
       method: "POST",
@@ -98,33 +121,36 @@ function useProvideAuth(): TAuthReturnType {
       if (resp.ok) {
         return;
       } else {
-        resp.text().then( err => setError(err) );
+        resp.text().then(err => setError(err));
       }
-      setIsLoading(false);
-    });
+    }).finally(() => setIsLoading(false));
   }
 
+  // Deletes token and sets user to null
   function signout() {
     setUser(null);
     localStorage.removeItem("jwtToken");
   }
 
+  // Redirects to login page if no valid user is signed in.
   function onlyAuthenticated() {
-    if (user) {
-      signin(user.username)
-    } else {
+    validateToken(); // checks if current user is valid.
+    if (!user) {
       navigate('/login')
-      console.log('not authorised')
     }
   }
 
+  // Returns the currently saved token.
+  // Useful for api calls that need authorisation.
   function getToken() {
     return localStorage.getItem('jwtToken')
   }
 
+  // Checks if the current user is authorised based on given roles
   function isAllowed(allowedRoles: TUser['userType'][]) {
-    return (user !== null && allowedRoles.includes(user.userType)) 
+    return (user !== null && allowedRoles.includes(user.userType))
   }
+
 
   return {
     user,
@@ -139,6 +165,9 @@ function useProvideAuth(): TAuthReturnType {
   };
 }
 
+// Create context with default value.
+// The value isn't important it's just there cause createContext
+// needs an initial value.
 const authContext = createContext<TAuthReturnType>({
   user: null,
   signin: (username: TUser["username"], password: string) => { },

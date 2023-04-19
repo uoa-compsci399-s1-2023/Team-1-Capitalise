@@ -55,6 +55,7 @@ const AuthButton = styled(Button)({
   /*Navigation Bar*/
 }
 function ResponsiveAppBar(filterProps: SearchFilterProps) {
+  
   //Auth Header
   const auth = useAuth();
   //Fetch Current User (Check if Logged in)
@@ -63,10 +64,10 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
   
   //Functionality for opening/closing sidebar
   
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(
     null
   );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(
     null
   );
 
@@ -82,7 +83,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -90,7 +91,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+ 
 
 
 //Navigation Functionality + Routing
@@ -104,7 +105,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
     return null
   } 
   return (
-   
+    
     <AppBar position="fixed" sx={{ bgcolor: "white" }}>
       <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
@@ -157,7 +158,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
             {/* Check if User is logged in */}
             { (uCheck) ?
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src="" />
+                <Avatar alt="Logged In" src="https://static.vecteezy.com/system/resources/previews/005/643/136/original/profile-picture-woman-using-virtual-reality-headset-metaverse-digital-cyber-world-technology-illustration-vector.jpg" />
               </IconButton>
             :
               
@@ -246,7 +247,9 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Not Logged In" src="" />
+                {uCheck ? 
+                <Avatar alt="Logged In" src="https://static.vecteezy.com/system/resources/previews/005/643/136/original/profile-picture-woman-using-virtual-reality-headset-metaverse-digital-cyber-world-technology-illustration-vector.jpg" />
+                : <Avatar alt="Logged In" src="" />}
               </IconButton>
             </Tooltip>
             <Menu
@@ -294,10 +297,9 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               onClose={handleCloseUserMenu}
             >
               {/*The dropdown options*/}
-              <MenuItem onClick={handleClose}>
-              <Avatar />
-                {(uCheck) ? auth.user?.name : "Guest" }
-                
+              <MenuItem onClick={handleCloseUserMenu}>
+              {/*If User is logged in, render his name*/}
+              {(uCheck) ? <><Avatar src = "https://static.vecteezy.com/system/resources/previews/005/643/136/original/profile-picture-woman-using-virtual-reality-headset-metaverse-digital-cyber-world-technology-illustration-vector.jpg"/> {auth.user?.name} </> : "Guest" }
               </MenuItem>
 
               <Divider />
@@ -306,8 +308,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
                <MenuItem 
                
                onClick={() => {
-                handleClose; 
-                location.reload();
+                handleCloseUserMenu(); 
                 auth.signout(); 
                 navigate("/home");}} 
                 >
@@ -318,7 +319,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               </MenuItem>
               :  //Or display guest (not logged in details)
               <><MenuItem onClick={() => {
-                handleClose(); 
+                handleCloseUserMenu(); 
                 navigate("register")}}>
                 <ListItemIcon>
                   <AppRegistration fontSize="small" />
@@ -326,14 +327,14 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
                 Register
               </MenuItem>
               <MenuItem onClick={() => {
-                handleClose(); 
+                handleCloseUserMenu(); 
                 goToPage("login")}}>
                 <ListItemIcon>
                   <Login fontSize="small" />
                 </ListItemIcon>
                 Login
               </MenuItem></>
-              }
+              } {/*End of Check condition*/}
             </Menu>
           </Box>
         </StyledToolBar>
