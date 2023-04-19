@@ -1,23 +1,27 @@
-import React, { SetStateAction } from 'react'
+import React, { SetStateAction, useContext } from 'react'
 import { Box, Stack, Typography, useTheme, Chip } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 
 import { TMockProject } from '../../model/MockProject'
 import { ProjectProps } from './ProjectPage'
-import EditableTextField from './EditableTextField'
+import TeamnameField from './Fields/TeamnameField'
 import StatusChip from './StatusChip'
 import TeamMember from './TeamMember'
 import GithubBtn from './GithubBtn'
 import CodeSandboxBtn from './CodeSandbox'
 import AwardBadge from './AwardBadge'
+import { ProjectContext } from './ProjectPage'
 
 
 
 
-export default function ProjectDetails({project, setProject}: ProjectProps) {
+export default function ProjectDetails() {
 
   const theme = useTheme()
+  const {project, setProject} = useContext(ProjectContext);
+
+
 
   return (
     <Stack
@@ -31,9 +35,9 @@ export default function ProjectDetails({project, setProject}: ProjectProps) {
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
       {project.badges.length > 0 && <AwardBadge {...project.badges[0]} />}
-      <EditableTextField type='text' name='category' label='Category:' text={`${project.category.value}`} />
-      <EditableTextField type='text' name='' label='Semester:' text={`${project.semester.value}`} />
-      <EditableTextField type='text' name='' label='Team:' text={`${project.teamname}`} />
+      <TeamnameField />
+      <TeamnameField type='text' name='' label='Semester:' text={`${project.semester.value}`} />
+      <TeamnameField type='text' name='' label='Team:' text={`${project.teamname}`} />
 
       <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>

@@ -163,7 +163,6 @@ function useProvideAuth(): TAuthReturnType {
     return true
   }
 
-
   return {
     user,
     signin,

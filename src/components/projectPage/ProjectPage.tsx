@@ -19,12 +19,13 @@ export interface ProjectProps {
   setProject: React.Dispatch<SetStateAction<TMockProject>>
 }
 
-const ProjectContext = createContext<TMockProject>(mockProject)
+export const ProjectContext = createContext<ProjectProps>({} as ProjectProps)
+
 
 export default function ProjectPage() {
   const theme = useTheme()
-
-
+  
+  
   const [selectedTab, setSelectedTab] = useState(0);
   const [project, setProject] = useState<TMockProject>(mockProject)
 
@@ -33,12 +34,12 @@ export default function ProjectPage() {
     imgs = mockProject.content[0].tabContent[1].value
   }
 
-
   return (
-    <>
+    <ProjectContext.Provider value={{project, setProject}}>
       {/* banner */}
+      <h1>{project.teamname}</h1>
       <img
-        src={mockProject.banner}
+        src={project.banner}
         alt='Project cover photo'
         width={'100%'}
         height={150}
@@ -57,9 +58,9 @@ export default function ProjectPage() {
       >
 
         <ProjectHeader
-          name={mockProject.name}
-          blurb={mockProject.blurb}
-          likes={mockProject.likes}
+          name={project.name}
+          blurb={project.blurb}
+          likes={project.likes}
         />
 
         <Stack flexDirection={'row'} mt={2}>
@@ -74,8 +75,8 @@ export default function ProjectPage() {
               borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
               width={'90%'}
             >
-              {mockProject.content.length > 1 &&
-                mockProject.content.map((tab, index) => (
+              {project.content.length > 1 &&
+                project.content.map((tab, index) => (
                   <TabButton
                     key={index}
                     isSelected={selectedTab === index}
@@ -87,14 +88,14 @@ export default function ProjectPage() {
               }
             </Stack>
 
-            {mockProject.content[selectedTab].tabContent.map((cb, index) => (
+            {project.content[selectedTab].tabContent.map((cb, index) => (
               <ContentBlock key={index} {...cb} />
             ))}
 
           </Stack>
-          <ProjectDetails {...{ project, setProject, ...mockProject }} />
+          <ProjectDetails />
         </Stack>
       </Stack>
-    </>
+  </ProjectContext.Provider>    
   )
 }
