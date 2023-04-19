@@ -118,7 +118,7 @@ export default function SignUp() {
       //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
       //Error Handler
-      setEmailErrorText(auth.error + " Hello")
+     
       if (auth.error != '') {
         // Need to check if email and username registered (one error message)
     
