@@ -54,6 +54,15 @@ function SignInSide() {
   const [emailErrorText, setEmailErrorText] = useState("");
   const [passwordErrorText, setPasswordErrorText] = useState("");
   // Validation Checks - are the given inputs appropriate?
+  
+  useEffect(() => {
+    if (auth.error === 'Invalid username or password.') {
+      setEmailErrorText('Incorrect Username/Email or Password');
+      setPasswordErrorText(" ");
+    }
+  }, [auth.error])
+  
+  
   const validateEmail = () => {
     if (!email) {
       setEmailErrorText("Please enter email.");
@@ -75,6 +84,9 @@ function SignInSide() {
       return true;
     }
   }
+
+
+
   // Submit Function - what happens when you submit the form?
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
