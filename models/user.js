@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   profilePicture: {
-    type: String
+    type: String,
   },
   password: {
     type: String,
@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
   isGoogleCreated: {
     type: Boolean,
     required: true,
-    default: false
+    default: false,
   },
   links: [
     {
@@ -67,13 +67,14 @@ const userSchema = new mongoose.Schema({
         },
         type: {
           type: String,
-          enum: [
-            "github",
-            "linkedin",
-            "deployedSite",
-          ],
+          enum: ["github", "linkedin", "deployedSite"],
         },
       }),
+    },
+  ],
+  skills: [
+    {
+      type: String,
     },
   ],
 });
@@ -87,7 +88,7 @@ userSchema.methods.generateAuthToken = function () {
       userType: this.userType,
     },
     process.env.JWT_PRIVATE_KEY,
-    { expiresIn: '30d' }
+    { expiresIn: "30d" }
   );
   return token;
 };
@@ -109,15 +110,12 @@ function validateUser(User) {
     links: Joi.array().items(
       Joi.object({
         type: Joi.string()
-          .valid(
-            "github",
-            "linkedin",
-            "deployedSite",
-          )
+          .valid("github", "linkedin", "deployedSite")
           .required(),
         value: Joi.string().required(),
       })
     ),
+    skills: Joi.array().items(Joi.string()),
   });
 
   return schema.validate(User);
