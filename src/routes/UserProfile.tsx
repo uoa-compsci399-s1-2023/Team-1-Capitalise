@@ -1,23 +1,17 @@
-import {
-  Box,
-  Divider,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { getUser, TUser } from "../api/getUser";
 import { useEffect, useState } from "react";
-import { TabPanel } from "@mui/lab";
 import MyTabs from "../components/MyTabs";
 import ProjectCard from "../components/projectCard/ProjectCard";
 import { TProject, getProject } from "../api/getProject";
 
+import ProjectsGrid from "../components/projectCard/ProjectsGrid";
+
 const UserProfile = () => {
   const [user, setUser] = useState<TUser | undefined>();
   const [project, setProject] = useState<TProject | undefined>();
+  const [likedProjects, setLikedProjects] = useState<TProject[]>([]);
   let { userName } = useParams();
   const theme = useTheme();
   const userTabs = [
@@ -38,8 +32,8 @@ const UserProfile = () => {
                 title={project.name}
                 semester={project.semester.value}
                 image={
-                  typeof project.content[0] != "undefined"
-                    ? project.content[0].tab[0].banner
+                  typeof project.thumbnail != "undefined"
+                    ? project.thumbnail
                     : ""
                 }
                 teamname={project.teamname ? project.teamname : "teamname"}
@@ -50,6 +44,7 @@ const UserProfile = () => {
                     ? project.badges.value
                     : ""
                 }
+                projectID={project._id}
               ></ProjectCard>
             </Box>
           )}
@@ -59,7 +54,12 @@ const UserProfile = () => {
     {
       label: "Likes",
       index: "2",
-      Component: <div>Hello, I am tab 2</div>,
+      Component: (
+        <Box height="100%" padding="0px 24px 10px 24px">
+          <Typography variant="h6">Likes</Typography>
+          <ProjectsGrid projects={likedProjects} justifyContent="start" />
+        </Box>
+      ),
     },
   ];
 
@@ -73,13 +73,23 @@ const UserProfile = () => {
   }, [userName]);
 
   useEffect(() => {
+    if (typeof user === "undefined") return;
+
     const fetchProject = async () => {
-      if (typeof user === "undefined") return;
       if (typeof user.project === "undefined") return;
       const newProject = await getProject(user.project._id);
       setProject(newProject);
     };
+    const fetchLikes = async () => {
+      let likedProjects = [];
+      for (const projectId of user.likedProjects) {
+        const newProject = await getProject(projectId);
+        likedProjects.push(newProject);
+      }
+      setLikedProjects(likedProjects);
+    };
     fetchProject();
+    fetchLikes();
   }, [user]);
 
   if (typeof user === "undefined") {
@@ -134,7 +144,7 @@ const UserProfile = () => {
           </Box>
         </Box>
       </Stack>
-      <Box height="inherit" width={{ xs: "100%", md: "1000px" }}>
+      <Box height="inherit" width={{ xs: "100%", md: "1150px" }}>
         <MyTabs tabs={userTabs} />
       </Box>
     </Stack>

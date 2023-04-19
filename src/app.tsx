@@ -60,7 +60,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
-            path="/projects/*"
+            path="/projects"
             element={
               <Projects
                 currFilters={searchFilters}
@@ -69,10 +69,11 @@ export default function App() {
               />
             }
           />
-          <Route path="/About" element={<About />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/user/:userName" element={<UserProfile />} />
-          <Route path="/Register" element={<Registration />} />
+          <Route path="/register" element={<Registration />} />
+          <Route path="/projects/:projectID" element={<Home />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

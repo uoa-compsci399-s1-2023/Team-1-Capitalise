@@ -8,7 +8,7 @@ import ProjectsGrid from "../components/projectCard/ProjectsGrid";
 
 import {
   DesktopSearchFilters,
-  MobileSearchFilters
+  MobileSearchFilters,
 } from "../components/search";
 
 // Other
@@ -16,36 +16,32 @@ import { SearchFilterProps } from "./search/DesktopSearchFilters";
 import { TProject } from "../api/getProjects";
 
 interface MyPaginationProps extends SearchFilterProps {
-  projects: TProject[]
-  totalNumProjects: number
+  projects: TProject[];
+  totalNumProjects: number;
 }
 
 const MyPagination = ({
   currFilters,
   setFilters,
-  projects: projectsToDisplay, 
+  projects: projectsToDisplay,
   totalNumProjects: totalProjects,
-}: MyPaginationProps
-) => {
-
+}: MyPaginationProps) => {
   const handlePageChange = (page: number) => {
     setFilters({
       ...currFilters,
-      ['currPage']: page
+      ["currPage"]: page,
     });
   };
 
-  const currentPage = currFilters.currPage
-  const totalPages = Math.ceil(totalProjects / currFilters.projectsPerPage)
+  const currentPage = currFilters.currPage;
+  const totalPages = Math.ceil(totalProjects / currFilters.projectsPerPage);
 
   // check if there are projects to display
   const checkProjects = projectsToDisplay.length > 0;
 
   return (
-    <Box mt='8vh' >
-      <DesktopSearchFilters
-        {...{ currFilters, setFilters }}
-      />
+    <Box mt="8vh">
+      <DesktopSearchFilters {...{ currFilters, setFilters }} />
       <Stack
         display="flex"
         minHeight="92vh"
@@ -53,19 +49,19 @@ const MyPagination = ({
         sx={{ ml: { xs: "0", md: "340px" } }}
         paddingBottom="0px" // changed from 100
       >
-        <MobileSearchFilters
-          {...{ currFilters, setFilters }}
-        />
+        <MobileSearchFilters {...{ currFilters, setFilters }} />
         <Typography
           my={4}
           variant="h4"
           component="h1"
           sx={{
             textAlign: { xs: "center", md: "left" },
-            ml: { md: "40px" }
+            ml: { md: "40px" },
           }}
         >
-          {currFilters.keywords ? `Showing results for "${currFilters.keywords}"` : `Projects`}
+          {currFilters.keywords
+            ? `Showing results for "${currFilters.keywords}"`
+            : `Projects`}
         </Typography>
         {/* Render project data into the ProjectsGrid component */}
         {checkProjects && <ProjectsGrid projects={projectsToDisplay} />}

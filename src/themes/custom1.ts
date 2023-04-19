@@ -4,18 +4,25 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-
 // Any new theme variables have to be declared in the interfaces below first!
 declare module "@mui/material/styles" {
   interface Theme {
     customColors: {
       bgGrey: string;
+      communityImpact: string;
+      topExcellence: string;
+      peoplesChoice: string;
+      likes: string;
     };
   }
   // allow configuration using `createTheme`
   interface ThemeOptions {
     customColors?: {
       bgGrey?: string;
+      communityImpact?: string;
+      topExcellence?: string;
+      peoplesChoice?: string;
+      likes: string;
     };
   }
 }
@@ -23,6 +30,9 @@ declare module "@mui/material/styles" {
 export default createTheme({
   customColors: {
     bgGrey: "#f9f9f9",
+    communityImpact: "#00E676",
+    topExcellence: "#FFCA28",
+    peoplesChoice: "#F44336",
+    likes: "#FF3D00",
   },
-  
 });
