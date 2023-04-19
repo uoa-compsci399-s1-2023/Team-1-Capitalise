@@ -5,6 +5,8 @@ import ContentBlock from './ContentBlock'
 import EditIcon from '@mui/icons-material/Edit';
 import useComponentVisible from '../../customHooks/useComponentVisible';
 import FilterDropdown, { FilterDpdownProps } from '../search/FilterDropdown';
+import EditTextDialog from './EditTextDialog'
+
 
 
 interface FieldProps {
@@ -18,6 +20,8 @@ interface FieldProps {
 export default function EditableTextField({ label, text, name, type, params }: FieldProps) {
 
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+
 
   // const [isInput, setIsInput] = useState(false);
   const [value, setValue] = useState(text);
@@ -59,31 +63,35 @@ export default function EditableTextField({ label, text, name, type, params }: F
     />
   )
   const DropDownInput = () => (
-    <FilterDropdown value={text} name={name} label={label} options={params!} handleChange={(e) => console.log(e.target.value)}/>
+    <FilterDropdown value={text} name={name} label={label} options={params!} handleChange={(e) => console.log(e.target.value)} />
   )
 
   return (
     <>
+    <EditTextDialog value={value} setValue={setValue} isOpen={isOpen} setIsOpen={setIsOpen} fieldName={name} />
       <Box
         width='100%'
         display='flex'
         flexDirection={'row'}
         alignItems={'center'}
-        onMouseEnter={() => handleMouseIn()}
-        onMouseLeave={() => handleMouseOut()}
+        onMouseEnter={handleMouseIn}
+        onMouseLeave={handleMouseOut}
       >
         <Typography fontWeight={400} width={'100px'} variant="body1">{label}</Typography>
-        <div ref={ref} style={{ width: '140px' }} >
+        {/* <div ref={ref} style={{ width: '140px' }} >
           {isComponentVisible ?
             (type == 'text' ? <TextInput/> : <DropDownInput/>)
             :
             <Typography fontWeight={300} variant="body1">{savedText}</Typography>
           }
-        </div>
+        </div> */}
+
+        <Typography width={140} fontWeight={300} variant="body1">{savedText}</Typography>
 
         <EditButton
           ref={btnRef}
-          onClick={() => setIsComponentVisible(true)}
+          // onClick={() => setIsComponentVisible(true)}
+          onClick={() => setIsOpen(true)}
           color='editBtnGrey'
         ><EditIcon fontSize='small' /></EditButton>
       </Box>

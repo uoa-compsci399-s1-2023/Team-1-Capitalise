@@ -47,7 +47,7 @@ const About = () => {
   return (
     <div className="About">
       <h1>{counter++}</h1>
-      {auth.isLoading && <h1>Loading...</h1>}
+      {/* {auth.isLoading && <h1>Loading...</h1>} */}
 
       {/* <Navbar /> */}
       <h1>About {auth.user?.name} </h1>

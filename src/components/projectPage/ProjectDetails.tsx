@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { SetStateAction } from 'react'
 import { Box, Stack, Typography, useTheme, Chip } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 
 import { TMockProject } from '../../model/MockProject'
+import { ProjectProps } from './ProjectPage'
 import EditableTextField from './EditableTextField'
 import StatusChip from './StatusChip'
 import TeamMember from './TeamMember'
@@ -12,7 +13,9 @@ import CodeSandboxBtn from './CodeSandbox'
 import AwardBadge from './AwardBadge'
 
 
-export default function ProjectDetails(p: TMockProject) {
+
+
+export default function ProjectDetails({project, setProject}: ProjectProps) {
 
   const theme = useTheme()
 
@@ -27,10 +30,10 @@ export default function ProjectDetails(p: TMockProject) {
     >
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
-      {p.badges.length > 0 && <AwardBadge {...p.badges[0]} />}
-      <EditableTextField type='text' name='' label='Category:' text={`${p.category.value}`} />
-      <EditableTextField type='text' name='' label='Semester:' text={`${p.semester.value}`} />
-      <EditableTextField type='text' name='' label='Team:' text={`${p.teamname}`} />
+      {project.badges.length > 0 && <AwardBadge {...project.badges[0]} />}
+      <EditableTextField type='text' name='category' label='Category:' text={`${project.category.value}`} />
+      <EditableTextField type='text' name='' label='Semester:' text={`${project.semester.value}`} />
+      <EditableTextField type='text' name='' label='Team:' text={`${project.teamname}`} />
 
       <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>
