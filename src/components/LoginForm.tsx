@@ -1,6 +1,6 @@
 //REACT
 import * as React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 //MUI 
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -47,6 +47,15 @@ function SignInSide() {
   const [emailErrorText, setEmailErrorText] = useState("");
   const [passwordErrorText, setPasswordErrorText] = useState("");
   // Validation Checks - are the given inputs appropriate?
+  
+  useEffect(() => {
+    if (auth.error === 'Invalid username or password.') {
+      setEmailErrorText('Incorrect Username/Email or Password');
+      setPasswordErrorText(" ");
+    }
+  }, [auth.error])
+  
+  
   const validateEmail = () => {
     if (!email) {
       setEmailErrorText("Please enter email.");
@@ -68,6 +77,9 @@ function SignInSide() {
       return true;
     }
   }
+
+
+
   // Submit Function - what happens when you submit the form?
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -80,12 +92,6 @@ function SignInSide() {
       const logPw = data.get('password') as string;
       // Pass Email and PW onto Auth Provider -> Sign In API
       auth.signin(logEmail, logPw);
-      setEmailErrorText(auth.error);
-      if (auth.error == 'Invalid username or password.') {
-        setEmailErrorText('Incorrect Username/Email or Password');
-        setPasswordErrorText(" ");
-      }
-
     }
   }
     
