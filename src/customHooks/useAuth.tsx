@@ -15,7 +15,7 @@ type TAuthReturnType = {
   signup: (newUser: SignUpProps) => void;
   signout: () => void;
   onlyAuthenticated: () => void;
-  isAllowed: (allowedRoles: TUser['userType'][]) => boolean;
+  isAllowed: (aRoles?: TUser['userType'][], aIds?: string[]) => boolean;
   getToken: () => string | null;
   error: string;
   isLoading: boolean;
@@ -57,7 +57,7 @@ function useProvideAuth(): TAuthReturnType {
   function validateToken() {
     const savedToken = localStorage.getItem('jwtToken');
     if (savedToken) {
-      console.log('validating')
+      // console.log('validating')
       getUserPromise(savedToken)
         .then((resp) => {
           // If token valid fetch latest user.
@@ -75,6 +75,7 @@ function useProvideAuth(): TAuthReturnType {
   // saves token locally
   // Any errors are set in the error state variable.
   function signin(username: TUser["username"], password: string) {
+    setUser(null) // clear previous user.
     setIsLoading(true);
     setError('');
     getTokenPromise(username, password)
@@ -122,7 +123,7 @@ function useProvideAuth(): TAuthReturnType {
       body: postBody,
     }).then(resp => {
       if (resp.ok) {
-        return;
+        signin(newUser.email, newUser.password);
       } else {
         resp.text().then(err => setError(err));
       }
@@ -149,9 +150,21 @@ function useProvideAuth(): TAuthReturnType {
     return localStorage.getItem('jwtToken')
   }
 
-  // Checks if the current user is authorised based on given roles
-  function isAllowed(allowedRoles: TUser['userType'][]) {
-    return (user !== null && allowedRoles.includes(user.userType))
+  // Checks if the current user is authorised based on given roles and ids
+  function isAllowed(
+    allowedRoles?: TUser['userType'][],
+    allowedIds?: string[] | null) 
+    {
+    if (!user) {
+      return false;
+    } else if (allowedIds && !allowedIds.includes(user._id)) {
+      console.log(user._id)
+      console.log(allowedIds)
+      return false;
+    } else if (allowedRoles && !allowedRoles.includes(user.userType)) {
+      return false;
+    }
+    return true
   }
 
 
@@ -177,7 +190,7 @@ const authContext = createContext<TAuthReturnType>({
   signup: (newUser: SignUpProps) => { },
   signout: () => { },
   onlyAuthenticated: () => { },
-  isAllowed: (allowedRoles: TUser['userType'][]) => false,
+  isAllowed: (aRoles: TUser['userType'][], aIds: string[]) => false,
   getToken: () => null,
   error: '',
   isLoading: false,

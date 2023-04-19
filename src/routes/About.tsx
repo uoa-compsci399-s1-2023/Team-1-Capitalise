@@ -9,7 +9,6 @@ const About = () => {
 
   const auth = useAuth();
 
-
   const handleSignin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const uname = e.target.username.value;
@@ -36,12 +35,14 @@ const About = () => {
   }
 
   const handleNotAllowed = () => {
-    if (auth.isAllowed(['graduate'])) {
+    if (auth.isAllowed(['graduate'], ['6432f85f6cce2fc1706572cf'])) {
       alert('allowed')
     } else {
       alert('not allowed')
     }
   }
+
+  console.log(auth.user?._id)
 
   return (
     <div className="About">
@@ -70,10 +71,6 @@ const About = () => {
         </form>
       </Box>
 
-      <input type="submit" onClick={() => auth.pauseTokenValidation()} value={'pause'} />
-      <input type="submit" onClick={() => auth.resumeTokenValidation()} value={'resume'} />
-
-
       <Box mb={6}>
         <h1>Example 1: Something everyone sees. But only logged in users can use.</h1>
         <input type="button" onClick={handleLike} value={'Like'} />
@@ -86,7 +83,7 @@ const About = () => {
 
       <Box mb={6}>
         <h1>Example 3: Something only visitors, and graduates can see but only graduates can use</h1>
-        {auth.isAllowed(['visitor', 'graduate']) && <input type="button" onClick={handleNotAllowed} value={'idk use case'} />}
+        {auth.isAllowed(['visitor', 'graduate'], ['6432f8a46cce2fc1706572db', '6432f85f6cce2fc1706572cf']) && <input type="button" onClick={handleNotAllowed} value={'idk use case'} />}
       </Box>
     </div>
 
