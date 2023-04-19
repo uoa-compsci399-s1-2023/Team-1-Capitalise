@@ -27,6 +27,13 @@ function useProvideAuth(): TAuthReturnType {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Auto sigin in on mount
+    signinWithSavedToken()
+    // Validates token every 5 seconds.
+    setInterval(validateToken, 5000);
+  }, [])
+
   const getUserPromise = (savedToken: string | null) => {
     return fetch(`${API_URL}/api/users/getCurrentUser/me`, {
       method: "GET",
@@ -46,12 +53,6 @@ function useProvideAuth(): TAuthReturnType {
     })
   }
 
-  useEffect(() => {
-    // Auto sigin in on mount
-    signinWithSavedToken()
-    // Validates token every 5 seconds.
-    setInterval(validateToken, 5000);
-  }, [])
 
   // validates token
   function validateToken() {
@@ -151,15 +152,10 @@ function useProvideAuth(): TAuthReturnType {
   }
 
   // Checks if the current user is authorised based on given roles and ids
-  function isAllowed(
-    allowedRoles?: TUser['userType'][],
-    allowedIds?: string[] | null) 
-    {
+  function isAllowed(allowedRoles?: TUser['userType'][], allowedIds?: string[]) {
     if (!user) {
       return false;
     } else if (allowedIds && !allowedIds.includes(user._id)) {
-      console.log(user._id)
-      console.log(allowedIds)
       return false;
     } else if (allowedRoles && !allowedRoles.includes(user.userType)) {
       return false;
@@ -182,19 +178,8 @@ function useProvideAuth(): TAuthReturnType {
 }
 
 // Create context with default value.
-// The value isn't important it's just there cause createContext
-// needs an initial value.
-const authContext = createContext<TAuthReturnType>({
-  user: null,
-  signin: (username: TUser["username"], password: string) => { },
-  signup: (newUser: SignUpProps) => { },
-  signout: () => { },
-  onlyAuthenticated: () => { },
-  isAllowed: (aRoles: TUser['userType'][], aIds: string[]) => false,
-  getToken: () => null,
-  error: '',
-  isLoading: false,
-});
+// The default value is never used so I'm just gonna cast a empty object as the desired type.
+const authContext = createContext<TAuthReturnType>({} as TAuthReturnType);
 
 export function AuthProvider({ children }: { children: any }) { // Gave any type but might need to be React.ReactNode
   return (
