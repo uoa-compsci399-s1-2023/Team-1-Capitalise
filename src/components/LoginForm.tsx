@@ -1,6 +1,6 @@
 //REACT
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 //MUI 
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -38,6 +38,13 @@ const theme = createTheme();
 function SignInSide() {
   // Auth Provider - important for calling sign in api
   const auth = useAuth();
+  useEffect(() => {
+    if (auth.error == 'Invalid username or password.') {
+      setEmailErrorText('Incorrect email or password! Re-enter your details.');
+      setPasswordErrorText(' ');
+      auth.error = "";
+    }
+  })
   //Email Pattern Checker
   const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
@@ -80,14 +87,12 @@ function SignInSide() {
       const logPw = data.get('password') as string;
       // Pass Email and PW onto Auth Provider -> Sign In API
       auth.signin(logEmail, logPw);
-      setEmailErrorText(auth.error);
-      if (auth.error == 'Invalid username or password.') {
-        setEmailErrorText('Incorrect Username/Email or Password');
-        setPasswordErrorText(" ");
+  
+      
       }
 
     }
-  }
+  
     
 
   return (

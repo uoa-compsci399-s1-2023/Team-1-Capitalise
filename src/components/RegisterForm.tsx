@@ -11,7 +11,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../customHooks/useAuth';
 import Logo from "../assets/Logo.svg";
 import { Alert, Divider, Fade } from '@mui/material';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import GoogleIcon from '@mui/icons-material/Google';
 //Copyright bottom of page
 function Copyright(props: any) {
@@ -33,7 +33,12 @@ const theme = createTheme();
 export default function SignUp() {
   // Auth Provider
   const auth = useAuth();
-  
+  useEffect(() => {
+    if (auth.error == 'Email already registered.') {
+      setEmailErrorText('Email is already registered. Please enter another one.');
+      auth.error = "";
+    }
+  })
   // Reg Expressions for validation
   const spCh = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
   const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -99,6 +104,7 @@ export default function SignUp() {
     
   // Submit Function (What happens when you submit the form?)
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    
     //Retrieve validation booleans. Must keep this so all errors appear on the UI  at the same time
     const n = validateName();
     const u = validateUsername();
@@ -117,23 +123,12 @@ export default function SignUp() {
       const userToSignUp = {name: fn, username: un, email: em , password: pw}
       //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
-      //Error Handler
-     
-      if (auth.error != '') {
-        // Need to check if email and username registered (one error message)
+      
+    }
     
-        if (auth.error == 'Email already registered.') {
-          setEmailErrorText('Email is already registered. Please enter another one.')
-          
-        } else if (auth.error == 'Username already registered.') {
-          setUsernameErrorText('Username is already registered. Please enter another one.')
-        }
-
-
-
-      }
+  }
+//Error Handler
   
-  }}
 
   return (
     <ThemeProvider theme={theme}>
@@ -252,5 +247,7 @@ export default function SignUp() {
        
       </Container>
     </ThemeProvider>
-  );}
-
+  );
+            }          
+            
+          
