@@ -219,7 +219,10 @@ const writeComment = async (req, res) => {
 
   comment = await comment.save();
 
-  res.send(comment);
+  const justCreated = await Comment.findById(comment._id)
+  .populate("user", "name email username profilePicture")
+
+  res.send(justCreated);
 };
 
 const deleteComment = async (req, res) => {
