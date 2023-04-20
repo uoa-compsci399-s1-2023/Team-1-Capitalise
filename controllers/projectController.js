@@ -492,9 +492,28 @@ const incrementViews = async (req, res) => {
 //Get all projects
 const getAllComments = async (req, res) => {
   //Populate the project members attribute with id and names of users.
-  const comments = await Comment.find()
-    .sort("createdAt");
+  const comments = await Comment.find().sort({ createdAt: -1 });
   res.send(comments);
+};
+
+const getCommentsByProjectId = async (req, res) => {
+  const { projectId } = req.params;
+
+  //Checks if the paramter projectId is a valid Id i.e long enough
+  if (!mongoose.Types.ObjectId.isValid(projectId)) {
+    return res.status(404).json({ err: "No projectid found" });
+  }
+
+  const project = await Project.findById(projectId)
+    .populate("comments")
+    .sort({ createdAt: -1 })
+
+  //If no project exist
+  if (!project) {
+    return res.status(404).json({ err: "No project found" });
+  }
+  //If a project exist
+  res.status(200).json(project.comments);
 };
 
 module.exports = {
@@ -512,4 +531,5 @@ module.exports = {
   deleteComment,
   incrementViews,
   getAllComments,
+  getCommentsByProjectId,
 };

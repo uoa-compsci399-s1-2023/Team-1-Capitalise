@@ -21,6 +21,7 @@ const {
   deleteComment,
   incrementViews,
   getAllComments,
+  getCommentsByProjectId,
 
 } = require('../controllers/projectController')
 
@@ -65,6 +66,10 @@ router.patch('/:projectId/incrementViews', incrementViews);
 
 //Get all projects
 router.get('/comments/all', getAllComments);
+
+//Get all comments by projectId
+router.get('/comments/:projectId', getCommentsByProjectId);
+
 
 
 

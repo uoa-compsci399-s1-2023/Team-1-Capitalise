@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
+    default: "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/default_pfp.svg"
   },
   password: {
     type: String,
