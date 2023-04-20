@@ -22,12 +22,6 @@ interface CommentsProps {
   projectId?: string;
 }
 
-interface CommentDisplay {
-  commentBody: string;
-  user: string;
-  date: string;
-}
-
 // so instead of passing in currentUserId for authentication, we just pass in the comments array of the current project.
 // we handle auth through the useAuth rather than through the getCurrentUser api.
 const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
@@ -45,14 +39,10 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     }
   }, comments);
 
-  const [user, setUser] = useState<TUser | undefined>();
-
-  // grab the user associated with the comment
-
   const fetchUsername = async (userId: string) => {
     const newUser = await getUserbyId(userId); // when i used comment.userId it didn't work
-    setUser(newUser);
-    // console.log(newUser);
+    const name: string = newUser.name;
+    return name;
   };
 
   // Function to handle comment submission
@@ -80,21 +70,18 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
           return response.json();
         })
         .then((data) => {
-          comment.id = data._id;
+          comment._id = data._id;
           comment.projectId = data.project;
-          // comment.userId = data.user; // problem here is that data.user is a User object - not a string.
+
+          comment.user = data.user; // problem here is that data.user is a User object - not a string.
+
           comment.commentBody = data.commentBody;
           comment.parentComment = data.parentComment;
           comment.createdAt = data.createdAt;
           comment.updatedAt = data.updatedAt;
           comment.__v = data.__v;
 
-          // fetchUsername(data.user);
-          // console.log(user);
-
-          comment.userId = data.user;
-
-          // setBackendComments([comment, ...backendComments]);
+          setBackendComments([comment, ...backendComments]);
 
           // reload the page to show the changes (this is temporary)
           // location.reload();

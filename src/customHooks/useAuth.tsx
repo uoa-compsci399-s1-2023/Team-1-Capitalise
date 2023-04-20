@@ -10,15 +10,15 @@ interface SignUpProps {
 }
 
 type TAuthReturnType = {
-  user: TUser | null;
-  signin: (username: TUser["username"], password: string) => void;
-  signup: (newUser: SignUpProps) => void;
-  signout: () => void;
-  onlyAuthenticated: () => void;
-  isAllowed: (allowedRoles: TUser["userType"][]) => boolean;
-  getToken: () => string | null;
-  error: string;
-  isLoading: boolean;
+  user: TUser | null; // Current user object. You can access everything from this, role, username, profile pic, etc. If no one is signed in it is set to null.
+  signin: (username: TUser["username"], password: string) => void; // Signs in user. Mostly for the sign in form.
+  signup: (newUser: SignUpProps) => void; // Signs up user
+  signout: () => void; // Deletes saved token and set user to null.
+  onlyAuthenticated: () => void; // Use this redirect users to sign in page.
+  isAllowed: (aRoles?: TUser["userType"][], aIds?: string[]) => boolean; // For role and id based authorization.
+  getToken: () => string | null; // For restricted api calls.
+  error: string; // Set with server message if signin or signout fails.
+  isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
 };
 
 function useProvideAuth(): TAuthReturnType {
@@ -57,13 +57,10 @@ function useProvideAuth(): TAuthReturnType {
   function validateToken() {
     const savedToken = localStorage.getItem("jwtToken");
     if (savedToken) {
-      console.log("validating");
+      // console.log('validating')
       getUserPromise(savedToken).then((resp) => {
-        // If token valid fetch latest user.
-        if (resp.ok) {
-          // resp.json().then((user) => { setUser(user) })
-        } else {
-          // Delete token, and sign out.
+        // sign out if token invalid.
+        if (!resp.ok) {
           signout();
         }
       });
@@ -74,6 +71,7 @@ function useProvideAuth(): TAuthReturnType {
   // saves token locally
   // Any errors are set in the error state variable.
   function signin(username: TUser["username"], password: string) {
+    setUser(null); // clear previous user.
     setIsLoading(true);
     setError("");
     getTokenPromise(username, password).then((resp) => {
@@ -125,7 +123,7 @@ function useProvideAuth(): TAuthReturnType {
     })
       .then((resp) => {
         if (resp.ok) {
-          return;
+          signin(newUser.email, newUser.password); // signin user if signup successful
         } else {
           resp.text().then((err) => setError(err));
         }
@@ -153,9 +151,19 @@ function useProvideAuth(): TAuthReturnType {
     return localStorage.getItem("jwtToken");
   }
 
-  // Checks if the current user is authorised based on given roles
-  function isAllowed(allowedRoles: TUser["userType"][]) {
-    return user !== null && allowedRoles.includes(user.userType);
+  // Checks if the current user is authorised based on given roles and ids
+  function isAllowed(
+    allowedRoles?: TUser["userType"][],
+    allowedIds?: string[] | null
+  ) {
+    if (!user) {
+      return false;
+    } else if (allowedIds && !allowedIds.includes(user._id)) {
+      return false;
+    } else if (allowedRoles && !allowedRoles.includes(user.userType)) {
+      return false;
+    }
+    return true;
   }
 
   return {
@@ -180,7 +188,7 @@ const authContext = createContext<TAuthReturnType>({
   signup: (newUser: SignUpProps) => {},
   signout: () => {},
   onlyAuthenticated: () => {},
-  isAllowed: (allowedRoles: TUser["userType"][]) => false,
+  isAllowed: (aRoles?: TUser["userType"][], aIds?: string[]) => false,
   getToken: () => null,
   error: "",
   isLoading: false,

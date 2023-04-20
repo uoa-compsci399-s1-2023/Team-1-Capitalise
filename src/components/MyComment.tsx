@@ -60,8 +60,6 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
           .then((response) => response.json())
           .then((response) => console.log(JSON.stringify(response)));
       }
-      // reload the page to show the changes
-      // location.reload();
     }
   };
 
