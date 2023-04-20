@@ -7,6 +7,10 @@ const { parameterSchema } = require("./parameter");
 
 Joi.objectId = require("joi-objectid")(Joi);
 
+function pickRandomBanner() {
+  return `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/banners/banner${Math.floor(Math.random() * (7 - 1 + 1) + 1)}.svg`;
+}
+
 const projectSchema = new mongoose.Schema(
   {
     name: {
@@ -63,10 +67,12 @@ const projectSchema = new mongoose.Schema(
     ],
     banner: {
       type: String,
+      default: pickRandomBanner(),
     },
     thumbnail: {
       type: String,
-      default: "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/backgroundImages/capBack.png",
+      default:
+        "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/backgroundImages/capBack.png",
     },
     content: [
       {
@@ -127,7 +133,7 @@ const projectSchema = new mongoose.Schema(
     isBeingEdited: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   { timestamps: true }
 );
