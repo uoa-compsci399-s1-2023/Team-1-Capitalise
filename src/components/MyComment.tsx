@@ -1,6 +1,6 @@
 // this is for rendering a comment
 
-import { Container, Box, Typography } from "@mui/material";
+import { Container, Box, Typography, Button } from "@mui/material";
 import { getUserbyId, TUser } from "../api/getUserbyId";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -8,20 +8,16 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../customHooks/useAuth";
 import { API_URL } from "../api/config";
 
-interface Comment {
-  commentId: string;
-  userId: string;
-  commentBody: string;
-  parentId?: string;
-  createdAt: string;
-}
+import ReplyIcon from "@mui/icons-material/Reply";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
+import { TComment } from "../api/getComments";
 
 interface CommentProps {
-  comment: Comment;
-  replies: Comment[];
+  comment: TComment;
 }
 
-const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
+const MyComment: React.FC<CommentProps> = ({ comment }) => {
   const auth = useAuth();
 
   // need to put logic to handle replies
@@ -46,11 +42,11 @@ const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
     }
   };
 
-  const deleteComment = async (commentId: string) => {
+  const deleteComment = async () => {
     const token = auth.getToken();
     if (token) {
       if (window.confirm("Are you sure you want to remove comment?")) {
-        fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+        fetch(`${API_URL}/api/projects/comment/${comment._id}`, {
           method: "DELETE",
           headers: {
             Accept: "application/json",
@@ -58,7 +54,7 @@ const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
             "x-auth-token": token,
           },
           body: JSON.stringify({
-            commentId: "643e2fbca5ec12d8d7e14d3d",
+            commentId: comment._id,
           }),
         })
           .then((response) => response.json())
@@ -76,13 +72,8 @@ const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
   // grab the user associated with the comment
   useEffect(() => {
     const fetchUsername = async () => {
-      // hard coded atm, but will link to real users later.
-      // did this since mock user won't work with getUserbyId API
-      const newUser = await getUserbyId("6432f85f6cce2fc1706572cf"); // this is my UPI
+      const newUser = await getUserbyId(comment.user); // when i used comment.userId it didn't work
       setUser(newUser);
-
-      // check the user
-      // console.log("Current comment author:", newUser.username);
     };
     fetchUsername();
   }, [userId]);
@@ -91,38 +82,42 @@ const MyComment: React.FC<CommentProps> = ({ comment, replies }) => {
     <div className="comment">
       <div className="comment-image-container">
         {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
-        <img
-          src="src/components/projectPage/dps/brooke-cagle-wKOKidNT14w-unsplash.jpg"
-          width="30"
-          height="30"
-        />
+        <img src={user?.profilePicture} width="30" height="30" />
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
           {/* will be able to chuck in user.username when we're dealing with actual users */}
-          <div className="comment-author">{comment.userId}</div>
-          <div>{createdAt}</div>
+          <div className="comment-author">{user?.name}</div>
+          <div className="comment-date">{createdAt}</div>
         </div>
         <Typography variant="body1" color="initial" fontWeight={100}>
           {comment.commentBody}
         </Typography>
         <div className="comment-actions">
           <div className="comment-action">
-            <input type="button" onClick={handleReply} value="Reply" />
+            <Button
+              variant="outlined"
+              startIcon={<ReplyIcon />}
+              onClick={handleReply}
+              size="small"
+            >
+              Reply
+            </Button>
           </div>
-
-          {auth.isAllowed(["graduate", "admin"]) &&
-            auth.user?._id == comment.userId && (
-              <input type="button" onClick={handleDelete} value="Delete" />
-            )}
+          <div className="comment-action">
+            {auth.isAllowed(["graduate", "admin"]) &&
+              auth.user?._id == comment.user && (
+                <Button
+                  variant="outlined"
+                  startIcon={<DeleteOutlineIcon />}
+                  onClick={deleteComment}
+                  size="small"
+                >
+                  Delete
+                </Button>
+              )}
+          </div>
         </div>
-        {replies.length > 0 && (
-          <div className="replies">
-            {replies.map((reply) => (
-              <MyComment comment={reply} key={reply.commentId} replies={[]} />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

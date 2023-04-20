@@ -13,17 +13,17 @@ import { create } from "@mui/material/styles/createTransitions";
 
 import { API_URL } from "../api/config";
 
-interface Comment {
-  commentId: string;
-  userId: string; // this is the id of the user who wrote the comment. At the time of writing, this would have been set by the currentUser
-  commentBody: string;
-  parentId?: string;
-  createdAt: string;
-}
+import { TComment } from "../api/getComments";
 
 interface CommentsProps {
-  comments: Comment[];
-  projectId: string;
+  comments: TComment[];
+  projectId?: string;
+}
+
+interface CommentDisplay {
+  commentBody: string;
+  user: string;
+  date: string;
 }
 
 // so instead of passing in currentUserId for authentication, we just pass in the comments array of the current project.
@@ -31,28 +31,26 @@ interface CommentsProps {
 const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   const auth = useAuth();
 
-  const [backendComments, setBackendComments] = useState(comments);
+  const [backendComments, setBackendComments] = useState<TComment[]>([]);
 
-  // we must first get root comment since some comments may be replies
-  const rootComments = backendComments.filter(
-    (backendComment) => backendComment.parentId == null
-  );
-  const getReplies = (commentId: any) => {
-    return backendComments
-      .filter((backendComment) => backendComment.parentId == commentId)
-      .sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-  };
+  // set the backend comments array when we mount the Components comment
+  useEffect(() => {
+    // check that comments array is not null
+    if (comments != null) {
+      console.log("We have comments");
+      setBackendComments(comments);
+    } else {
+      console.log("We have an empty comment array");
+    }
+  }, comments);
 
   // Function to handle comment submission
   const addComment = async (text: string) => {
-    console.log("addComment", text);
-    //await createComment("643cd630b9c2e863834d1be5", text); // use proxy projectId for now.
+    console.log("addComment", text, projectId);
+
     const token = auth.getToken();
     if (token) {
-      const comment = {} as Comment;
+      const comment = {} as TComment;
 
       fetch(`${API_URL}/api/projects/comment`, {
         method: "POST",
@@ -62,33 +60,32 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
           "x-auth-token": token,
         },
         body: JSON.stringify({
-          projectId: "6432fd557b09c2f91d48a112", // hard-coded project id atm, will change to projectId
+          projectId: projectId,
           commentBody: text,
         }),
       })
-        // .then((response) => response.json())
-        // .then((response) => console.log(JSON.stringify(response)));
-
         // update the backendComments (need to create a comment object based on response using the interface)
         .then((response) => {
           return response.json();
         })
         .then((data) => {
-          comment.commentId = data._id;
-          comment.userId = data.user;
+          comment.id = data._id;
+          comment.projectId = data.project;
+          comment.userId = data.user; // problem here is that data.user is a User object - not a string.
           comment.commentBody = data.commentBody;
+          comment.parentComment = data.parentComment;
           comment.createdAt = data.createdAt;
-          comment.parentId = data.parentComment;
+          comment.updatedAt = data.updatedAt;
+          comment.__v = data.__v;
 
           setBackendComments([comment, ...backendComments]);
-          console.log("updated backendComments", backendComments);
         });
     } else {
-      // console.log("User is not logged in so cannot leave a comment");
       alert("You must be logged in to leave a comment");
     }
   };
 
+  // might bring in deleteComment method defined in MyComment component.
   const deleteComment = async (commentId: string) => {
     const token = auth.getToken();
     if (token) {
@@ -112,17 +109,13 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
   return (
     <div className="comments">
-      <Typography variant="h6" color="initial" fontWeight={100}>
-        Write comment
+      <Typography variant="body1" color="initial" fontWeight={"light"}>
+        Project Discussion ({backendComments.length})
       </Typography>
-      <CommentForm submitLabel="Submit" handleSubmit={addComment} />
+      <CommentForm submitLabel="Post" handleSubmit={addComment} />
       <div className="comments-container">
-        {rootComments.map((rootComment) => (
-          <MyComment
-            key={rootComment.commentId}
-            comment={rootComment}
-            replies={getReplies(rootComment.commentId)}
-          />
+        {backendComments.map((backendComment) => (
+          <MyComment key={backendComment.id} comment={backendComment} />
         ))}
       </div>
     </div>

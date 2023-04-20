@@ -58,7 +58,7 @@ export type TProject = {
   }[];
 };
 
-export async function getProjects(): Promise<TProject[]> {
-  const response = await fetch(`${API_URL}/api/projects`);
+export async function getProject(projectID: string): Promise<TProject> {
+  const response = await fetch(`${API_URL}/api/projects/${projectID}`);
   return response.json();
 }

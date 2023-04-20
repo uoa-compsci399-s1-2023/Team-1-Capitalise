@@ -68,6 +68,10 @@ body {
   margin-bottom: 8px;
   margin-top: 8px;
   border: 1px solid rgb(107, 114, 12);
+  font-family: "Roboto";
+  font-size: 14px;
+  padding-left: 5px;
+  padding-top: 5px;
 }
 
 .comment-form-button {
@@ -95,6 +99,7 @@ body {
 .comment {
   display: flex;
   margin-bottom: 28px;
+  padding-top: 10px;
 }
 
 .comment-image-container {
@@ -115,12 +120,20 @@ body {
 
 .comment-author {
   margin-right: 8px;
-  font-size: 20px;
+  font-size: 18px;
   color: rgb(59, 130, 246);
+  font-family: "Roboto";
 }
 
 .comment-text {
   font-size: 18px;
+}
+
+.comment-date {
+  font-size: 12px;
+  font-family: "Roboto";
+  padding-top: 5px;
+  padding-left: 15px;
 }
 
 .comment-actions {

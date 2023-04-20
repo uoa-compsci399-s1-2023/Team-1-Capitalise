@@ -21,6 +21,8 @@ import Navbar from "./components/Navbar";
 import { TUser, mockUser } from "./model/TUser";
 import { AuthProvider } from "./customHooks/useAuth";
 
+import Project from "./routes/Project";
+
 // Represents curr state of filters
 export type TFiltersState = {
   keywords: string;
@@ -31,6 +33,11 @@ export type TFiltersState = {
   // These two are for pagination
   currPage: number;
   projectsPerPage: number;
+};
+
+// Represents current projectId
+export type TProjectState = {
+  projectId: string;
 };
 
 export default function App() {
@@ -45,8 +52,6 @@ export default function App() {
     currPage: 1,
     projectsPerPage: 6,
   });
-
-  // const [loggedInUser, setLoggedInUser] = useState<TUser | null>(mockUser);
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
@@ -76,6 +81,7 @@ export default function App() {
               />
               <Route path="/projectpage" element={<ProjectPage />} />
               <Route path="/About" element={<About />} />
+              <Route path="/project/:projectId" element={<Project />} />
             </Routes>
           </Box>
         </ThemeProvider>

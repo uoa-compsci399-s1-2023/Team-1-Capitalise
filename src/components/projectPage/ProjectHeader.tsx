@@ -70,7 +70,7 @@ export default function ProjectHeader({
         <Stack flexDirection={"row"} gap={2}>
           <Button
             onClick={() => {
-              likeProject("6432fd557b09c2f91d48a112"); // pass in proxy projectId
+              likeProject("6432fd557b09c2f91d48a112"); // pass in a projectId
             }}
             variant="contained"
             color="error"
