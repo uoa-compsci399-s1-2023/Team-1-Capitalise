@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
 import { Box } from "@mui/material";
-import { Home, Projects, About } from "./routes";
+import { Home, Projects, About, Registration, Login } from "./routes";
 import customTheme1 from "./themes/custom1";
 
 // Apis
@@ -21,6 +21,7 @@ import Navbar from "./components/Navbar";
 import { TUser, mockUser } from "./model/TUser";
 import { AuthProvider } from "./customHooks/useAuth";
 
+// Project page
 import Project from "./routes/Project";
 
 // Represents curr state of filters
@@ -82,6 +83,8 @@ export default function App() {
               <Route path="/projectpage" element={<ProjectPage />} />
               <Route path="/About" element={<About />} />
               <Route path="/project/:projectId" element={<Project />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/Register" element={<Registration />} />
             </Routes>
           </Box>
         </ThemeProvider>

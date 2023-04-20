@@ -20,17 +20,17 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { AppRegistration, Login } from "@mui/icons-material";
-
+import { AppRegistration, Login, Logout } from "@mui/icons-material";
+import { useAuth } from "../customHooks/useAuth";
 import { SearchFilterProps } from "./search/DesktopSearchFilters";
+import { useState } from "react";
 
 const pages = ["About", "Projects"];
-
+const NoNavPages = ["/register", "/login"];
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",
   color: "black",
-
 });
 
 const NavButton = styled(Button)({
@@ -39,28 +39,25 @@ const NavButton = styled(Button)({
   fontSize: 19,
   fontFamily: "Roboto",
   fontWeight: 400,
-  textTransform: "capitalize"
+  textTransform: "capitalize",
 });
 const AuthButton = styled(Button)({
   whiteSpace: "nowrap",
   overflow: "hidden",
-  padding: "0 25px"
+  padding: "0 25px",
 });
-
 
 {
   /*Navigation Bar*/
 }
-function ResponsiveAppBar( filterProps: SearchFilterProps ) {
-  {
-    /*Functionality for opening/closing sidebar*/
-  }
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+function ResponsiveAppBar(filterProps: SearchFilterProps) {
+  //Auth Header
+  const auth = useAuth();
+  //Fetch Current User (Check if Logged in)
+  const uCheck = auth.user != null;
+  //Functionality for opening/closing sidebar
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -74,24 +71,16 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
-  {
-    /*Navigation Functionality + Routing*/
-  }
+  //Navigation Functionality + Routing
+
   const navigate = useNavigate();
   const goToPage = (pageName: any) => {
     navigate("/" + pageName);
   };
-  {
-    /*App Bar*/
+  // App bar
+  if (NoNavPages.includes(window.location.pathname)) {
+    return null;
   }
   return (
     <AppBar position="fixed" sx={{ bgcolor: "white" }}>
@@ -142,22 +131,33 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
             }}
           >
             <SearchBar {...filterProps} />
-            <AuthButton
-              onClick={() => {
-                goToPage("login");
-              }}
-              variant="outlined"
-            >
-              Log In
-            </AuthButton>
-            <AuthButton
-              onClick={() => {
-                goToPage("register");
-              }}
-              variant="contained"
-            >
-              Sign Up
-            </AuthButton>
+            {/* Check if User is logged in */}
+            {uCheck ? (
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Logged In" src="" />
+              </IconButton>
+            ) : (
+              <>
+                <AuthButton
+                  onClick={() => {
+                    goToPage("login");
+                  }}
+                  variant="outlined"
+                >
+                  {" "}
+                  Log In{" "}
+                </AuthButton>
+                <AuthButton
+                  onClick={() => {
+                    goToPage("register");
+                  }}
+                  variant="contained"
+                >
+                  {" "}
+                  Sign Up{" "}
+                </AuthButton>
+              </>
+            )}
           </Box>
 
           {/*This is the side bar for mobile*/}
@@ -204,14 +204,6 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-              <MenuItem
-                onClick={() => {
-                  handleCloseNavMenu();
-                  goToPage("/search");
-                }}
-              >
-                <Typography textAlign="center">Search</Typography>
-              </MenuItem>
             </Menu>
           </Box>
           {/*Mobile Logo*/}
@@ -222,7 +214,7 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
               src={Logo}
               alt="logo"
               sx={{
-                width: "200px",
+                width: "140px",
                 height: "auto",
                 flexGrow: 1,
                 display: { xs: "flex", md: "none" },
@@ -239,7 +231,7 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Not Logged In" src="" />
+                <Avatar alt="Logged In" src="" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -286,25 +278,59 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
               onClose={handleCloseUserMenu}
             >
               {/*The dropdown options*/}
-              <MenuItem onClick={handleClose}>
-                <Avatar />
-                Guest
+              <MenuItem onClick={handleCloseUserMenu}>
+                {/*If User is logged in, render his name*/}
+                {uCheck ? (
+                  <>
+                    <Avatar src="" /> {auth.user?.name}{" "}
+                  </>
+                ) : (
+                  "Guest"
+                )}
               </MenuItem>
-
               <Divider />
-
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <AppRegistration fontSize="small" />
-                </ListItemIcon>
-                Register
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <Login fontSize="small" />
-                </ListItemIcon>
-                Login
-              </MenuItem>
+              {/*Display settings based on login status*/}
+              {uCheck ? (
+                <MenuItem
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    auth.signout();
+                    navigate("/home");
+                  }}
+                >
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Log Out
+                </MenuItem>
+              ) : (
+                //Or display guest (not logged in details)
+                <>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate("register");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <AppRegistration fontSize="small" />
+                    </ListItemIcon>
+                    Register
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      goToPage("login");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <Login fontSize="small" />
+                    </ListItemIcon>
+                    Login
+                  </MenuItem>
+                </>
+              )}{" "}
+              {/*End of Check condition*/}
             </Menu>
           </Box>
         </StyledToolBar>
@@ -312,5 +338,4 @@ function ResponsiveAppBar( filterProps: SearchFilterProps ) {
     </AppBar>
   );
 }
-
 export default ResponsiveAppBar;

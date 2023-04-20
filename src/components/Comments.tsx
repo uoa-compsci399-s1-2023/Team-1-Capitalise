@@ -97,7 +97,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
           // setBackendComments([comment, ...backendComments]);
 
           // reload the page to show the changes (this is temporary)
-          location.reload();
+          // location.reload();
         });
     } else {
       alert("You must be logged in to leave a comment");

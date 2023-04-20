@@ -61,7 +61,7 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
           .then((response) => console.log(JSON.stringify(response)));
       }
       // reload the page to show the changes
-      location.reload();
+      // location.reload();
     }
   };
 
@@ -97,13 +97,14 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
         </Typography>
         <div className="comment-actions">
           <div className="comment-action">
-            {auth.isAllowed(["graduate", "admin"]) &&
+            {auth.isAllowed(["graduate", "admin", "visitor"]) &&
               auth.user?._id == comment.user && (
                 <Button
                   variant="outlined"
                   startIcon={<DeleteOutlineIcon />}
                   onClick={deleteComment}
                   size="small"
+                  color="error"
                 >
                   Delete
                 </Button>

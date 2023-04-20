@@ -13,17 +13,19 @@ const CommentForm = ({ handleSubmit, submitLabel }) => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <textarea
-        className="comment-form-textarea"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
+    <Box sx={{ width: 600 }}>
+      <form onSubmit={onSubmit}>
+        <textarea
+          className="comment-form-textarea"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
 
-      <button className="comment-form-button" disabled={isTextAreaDisabled}>
-        {submitLabel}
-      </button>
-    </form>
+        <button className="comment-form-button" disabled={isTextAreaDisabled}>
+          {submitLabel}
+        </button>
+      </form>
+    </Box>
   );
 };
 

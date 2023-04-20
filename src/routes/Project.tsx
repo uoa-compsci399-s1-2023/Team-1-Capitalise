@@ -55,25 +55,34 @@ const Project = () => {
 
   return (
     <div>
-      <h1>About {auth.user?.name} </h1>
-      {auth.error && <h3>{auth.error}</h3>}
-      <Box mb={6}>
-        <form onSubmit={handleSignin}>
-          username: <input type="text" name="username" id="username" />
-          password: <input type="text" name="password" />
-          <input type="submit" value={"signin"} />
-          <input type="button" onClick={auth.signout} value={"signout"} />
-        </form>
+      <Box
+        sx={{
+          paddingLeft: 44,
+          paddingTop: 5,
+          backgroundColor: "white",
+        }}
+      >
+        {project ? (
+          <div>
+            <Stack mt={2} paddingLeft={4} paddingTop={4} spacing={1}>
+              <Typography variant="h5" color="initial" fontWeight={500}>
+                NAME: {project.name}
+              </Typography>
+              <Typography variant="h5" color="initial" fontWeight={500}>
+                LIKES: {project.likes}
+              </Typography>
+            </Stack>
+            <Stack mt={2} paddingLeft={4} paddingTop={4} spacing={1}>
+              <Typography variant="h5" color="initial" fontWeight={500}>
+                Comments
+              </Typography>
+              <Comments comments={comments} projectId={projectId} />
+            </Stack>
+          </div>
+        ) : (
+          <p>Loading...</p>
+        )}
       </Box>
-      {project ? (
-        <div>
-          <h2>NAME: {project.name}</h2>
-          <p>LIKES: {project.likes}</p>
-          <Comments comments={comments} projectId={projectId} />
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
     </div>
   );
 };
