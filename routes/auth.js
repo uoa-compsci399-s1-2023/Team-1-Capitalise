@@ -24,8 +24,8 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: "../nextPage",
-    failureRedirect: "../failure",
+    successRedirect: "http://localhost:8080/googleSuccessRedirect",
+    failureRedirect: "http://localhost:8080/googleFailure",
   })
 );
 

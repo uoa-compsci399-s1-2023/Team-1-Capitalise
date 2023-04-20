@@ -96,6 +96,7 @@ const postUser = async (req, res) => {
       myComments: [],
       userType: myUserType,
       isGoogleCreated: false,
+      skills: req.body.skills,
     });
 
     //Append user to project's members

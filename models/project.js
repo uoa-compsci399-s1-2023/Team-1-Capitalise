@@ -123,6 +123,10 @@ const projectSchema = new mongoose.Schema(
         ref: "Tag",
       },
     ],
+    isBeingEdited: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );
