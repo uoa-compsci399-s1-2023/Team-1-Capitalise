@@ -60,6 +60,8 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
           .then((response) => response.json())
           .then((response) => console.log(JSON.stringify(response)));
       }
+      // reload the page to show the changes
+      location.reload();
     }
   };
 
@@ -94,16 +96,6 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
           {comment.commentBody}
         </Typography>
         <div className="comment-actions">
-          <div className="comment-action">
-            <Button
-              variant="outlined"
-              startIcon={<ReplyIcon />}
-              onClick={handleReply}
-              size="small"
-            >
-              Reply
-            </Button>
-          </div>
           <div className="comment-action">
             {auth.isAllowed(["graduate", "admin"]) &&
               auth.user?._id == comment.user && (

@@ -13,6 +13,8 @@ import { TComment } from "../api/getComments";
 
 import { useAuth } from "../customHooks/useAuth";
 
+import { getProjectComments } from "../api/getProjectComments";
+
 const Project = () => {
   const auth = useAuth();
 
@@ -29,9 +31,8 @@ const Project = () => {
       setProject(newProject);
 
       // We are using the get all comments endpoint to test rendering
-      const respData = await getComments();
+      const respData = await getProjectComments(projectId);
       setComments(respData);
-      console.log(comments);
     };
     fetchProject();
   }, [projectId]);

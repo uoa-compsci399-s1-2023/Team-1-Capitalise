@@ -14,6 +14,8 @@ import { create } from "@mui/material/styles/createTransitions";
 import { API_URL } from "../api/config";
 
 import { TComment } from "../api/getComments";
+import { getUserbyId, TUser } from "../api/getUserbyId";
+import { useParams } from "react-router-dom";
 
 interface CommentsProps {
   comments: TComment[];
@@ -37,16 +39,25 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   useEffect(() => {
     // check that comments array is not null
     if (comments != null) {
-      console.log("We have comments");
       setBackendComments(comments);
     } else {
       console.log("We have an empty comment array");
     }
   }, comments);
 
+  const [user, setUser] = useState<TUser | undefined>();
+
+  // grab the user associated with the comment
+
+  const fetchUsername = async (userId: string) => {
+    const newUser = await getUserbyId(userId); // when i used comment.userId it didn't work
+    setUser(newUser);
+    // console.log(newUser);
+  };
+
   // Function to handle comment submission
   const addComment = async (text: string) => {
-    console.log("addComment", text, projectId);
+    // console.log("addComment", text, projectId);
 
     const token = auth.getToken();
     if (token) {
@@ -71,14 +82,22 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
         .then((data) => {
           comment.id = data._id;
           comment.projectId = data.project;
-          comment.userId = data.user; // problem here is that data.user is a User object - not a string.
+          // comment.userId = data.user; // problem here is that data.user is a User object - not a string.
           comment.commentBody = data.commentBody;
           comment.parentComment = data.parentComment;
           comment.createdAt = data.createdAt;
           comment.updatedAt = data.updatedAt;
           comment.__v = data.__v;
 
-          setBackendComments([comment, ...backendComments]);
+          // fetchUsername(data.user);
+          // console.log(user);
+
+          comment.userId = data.user;
+
+          // setBackendComments([comment, ...backendComments]);
+
+          // reload the page to show the changes (this is temporary)
+          location.reload();
         });
     } else {
       alert("You must be logged in to leave a comment");
