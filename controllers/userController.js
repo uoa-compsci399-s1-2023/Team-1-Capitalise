@@ -84,7 +84,7 @@ const postUser = async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       profilePicture: req.body.profilePicture,
-      username: req.body.username,
+      username: req.body.email,
       password: password,
       links: req.body.links,
       profilePicture: req.body.profilePicture,
@@ -112,7 +112,7 @@ const postUser = async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       profilePicture: req.body.profilePicture,
-      username: req.body.username,
+      username: req.body.email,
       password: password,
       links: req.body.links,
       profilePicture: req.body.profilePicture,
@@ -142,18 +142,6 @@ const postGoogleUser = async (profile) => {
     ? (myUserType = "visitor")
     : (myUserType = "graduate");
 
-  //Check if the user has a given name and family name
-  let suggestedUsername = profile.email
-    .substring(0, profile.email.indexOf("@"))
-    .toLowerCase();
-
-  // Check if username is taken
-  const takenUsername = await User.findOne({ username: suggestedUsername });
-  // If yes, change the username to their unique email
-  if (takenUsername) {
-    suggestedUsername = profile.email;
-  }
-
   //Create the user
 
   let user = "";
@@ -161,7 +149,7 @@ const postGoogleUser = async (profile) => {
   user = new User({
     name: profile.name,
     email: profile.email,
-    username: suggestedUsername,
+    username: profile.email,
     profilePicture: profile.picture,
     likedProjects: [],
     myComments: [],

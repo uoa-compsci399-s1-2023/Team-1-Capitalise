@@ -509,6 +509,7 @@ const getCommentsByProjectId = async (req, res) => {
 
   const project = await Project.findById(projectId)
     .populate("comments")
+    .populate("user", "name email username profilePicture")
 
   //If no project exist
   if (!project) {
