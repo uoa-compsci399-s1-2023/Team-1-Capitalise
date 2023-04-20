@@ -66,6 +66,7 @@ const projectSchema = new mongoose.Schema(
     },
     thumbnail: {
       type: String,
+      default: "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/backgroundImages/capBack.png",
     },
     content: [
       {

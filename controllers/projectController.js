@@ -506,14 +506,13 @@ const getCommentsByProjectId = async (req, res) => {
 
   const project = await Project.findById(projectId)
     .populate("comments")
-    .sort({ createdAt: -1 })
 
   //If no project exist
   if (!project) {
     return res.status(404).json({ err: "No project found" });
   }
   //If a project exist
-  res.status(200).json(project.comments);
+  res.status(200).json(project.comments.reverse());
 };
 
 module.exports = {
