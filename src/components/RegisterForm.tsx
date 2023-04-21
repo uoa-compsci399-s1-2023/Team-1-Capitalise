@@ -47,10 +47,9 @@ export default function SignUp() {
   const [emailErrorText, setEmailErrorText] = useState("");
   const [passwordErrorText, setPasswordErrorText] = useState("");
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [nameErrorText, setNameErrorText] = useState("");
-  const [usernameErrorText, setUsernameErrorText] = useState("");
-  const [success, setSuccess] = useState(false);
+ 
+
   //Validators
   const validateName = () => {
     if (!name) {
@@ -64,16 +63,7 @@ export default function SignUp() {
       return true;
     }
   }
-  const validateUsername = () => {
-    if (!username) {
-      setUsernameErrorText("Please enter a username.");
-      
-    } else {
-      setUsernameErrorText("");
-      return true;
-    }
-
-  }
+  
   const validateEmail = () => {
     if (!email) {
       setEmailErrorText("Please enter email.");
@@ -107,20 +97,19 @@ export default function SignUp() {
     
     //Retrieve validation booleans. Must keep this so all errors appear on the UI  at the same time
     const n = validateName();
-    const u = validateUsername();
+
     const e = validateEmail();
     const p = validatePassword();
     event.preventDefault();
     // Check if all are valid before submitting to server.
-    if (n && u && e && p) {
+    if (n && e && p) {
       const data = new FormData(event.currentTarget);   
       //Get all form data and convert to string   
       const fn = data.get('fullName') as string;
-      const un = data.get('userName') as string;
       const em = data.get('email') as string;
       const pw = data.get('password') as string;
       //Create object obeying SignUpProp Interface.
-      const userToSignUp = {name: fn, username: un, email: em , password: pw}
+      const userToSignUp = {name: fn, email: em , password: pw}
       //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
       
@@ -176,21 +165,7 @@ export default function SignUp() {
                   onChange={e => setName(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} >
-                <TextField
-                  autoComplete="off"
-                  name="userName"
-                  id="userName"
-                  label="Username"
-                  required
-                  fullWidth
-                  autoFocus
-                  value={username}
-                  error={!!usernameErrorText}
-                  helperText= {usernameErrorText}
-                  onChange={e => setUsername(e.target.value)}
-                />
-              </Grid>
+              
               <Grid item xs={12}>
                 <TextField
                   required
