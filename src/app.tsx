@@ -17,6 +17,7 @@ import {
 } from "./components/search/AvailableParams";
 import Navbar from "./components/Navbar";
 import ProjectDetails from "./routes/ProjectDetails";
+import UserProfile from "./routes/UserProfile";
 
 // Represents curr state of filters
 export type TFiltersState = {
@@ -76,6 +77,7 @@ export default function App() {
           />
           <Route path="/About" element={<About />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/user/:userName" element={<UserProfile />} />
           <Route path="/Register" element={<Registration />} />
           <Route path="/project/:projectId" element={<ProjectDetails />} />
         </Routes>
