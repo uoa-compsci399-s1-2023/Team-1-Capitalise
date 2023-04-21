@@ -26,8 +26,8 @@ export default function ProjectsGrid({ projects }: props) {
             title={project.name}
             semester={project.semester.value}
             image={
-              typeof project.thumbnail != "undefined"
-                ? project.thumbnail
+              typeof project.content[0] != "undefined"
+                ? project.content[0].tab[0].banner
                 : ""
             }
             teamname={project.teamname ? project.teamname : "teamname"}
