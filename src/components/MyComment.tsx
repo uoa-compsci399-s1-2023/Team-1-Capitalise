@@ -28,20 +28,6 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
     }
   };
 
-  // need to put logic to handle comment deletion
-  const handleDelete = () => {
-    auth.onlyAuthenticated(); // checks if the user is signed in and redirects if otherwise
-    if (auth.user) {
-      console.log(auth.user._id, "is logged in");
-      if (auth.user._id == comment.userId) {
-        console.log(
-          auth.user._id,
-          "is the author of the comment and can delete it"
-        );
-      }
-    }
-  };
-
   const deleteComment = async () => {
     const token = auth.getToken();
     if (token) {
@@ -65,29 +51,16 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
 
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
 
-  // we set the user associated with the comment we want to display
-  const [user, setUser] = useState<TUser | undefined>();
-  let { userId } = useParams();
-
-  // grab the user associated with the comment
-  useEffect(() => {
-    const fetchUsername = async () => {
-      const newUser = await getUserbyId(comment.user); // when i used comment.userId it didn't work
-      setUser(newUser);
-    };
-    fetchUsername();
-  }, [userId]);
-
   return (
     <div className="comment">
       <div className="comment-image-container">
         {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
-        <img src={user?.profilePicture} width="30" height="30" />
+        <img src={comment.user.profilePicture} width="30" height="30" />
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
           {/* will be able to chuck in user.username when we're dealing with actual users */}
-          <div className="comment-author">{user?.name}</div>
+          <div className="comment-author">{comment.user.name}</div>
           <div className="comment-date">{createdAt}</div>
         </div>
         <Typography variant="body1" color="initial" fontWeight={100}>
@@ -96,7 +69,7 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
         <div className="comment-actions">
           <div className="comment-action">
             {auth.isAllowed(["graduate", "admin", "visitor"]) &&
-              auth.user?._id == comment.user && (
+              auth.user?._id == comment.user._id && (
                 <Button
                   variant="outlined"
                   startIcon={<DeleteOutlineIcon />}

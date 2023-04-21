@@ -28,6 +28,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   const auth = useAuth();
 
   const [backendComments, setBackendComments] = useState<TComment[]>([]);
+  // console.log("backend comments", backendComments);
 
   // set the backend comments array when we mount the Components comment
   useEffect(() => {
@@ -39,16 +40,8 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     }
   }, comments);
 
-  const fetchUsername = async (userId: string) => {
-    const newUser = await getUserbyId(userId); // when i used comment.userId it didn't work
-    const name: string = newUser.name;
-    return name;
-  };
-
   // Function to handle comment submission
   const addComment = async (text: string) => {
-    // console.log("addComment", text, projectId);
-
     const token = auth.getToken();
     if (token) {
       const comment = {} as TComment;
@@ -70,10 +63,10 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
           return response.json();
         })
         .then((data) => {
+          console.log("Posted comment name", data.user);
+
           comment._id = data._id;
           comment.projectId = data.project;
-
-          comment.user = data.user; // problem here is that data.user is a User object - not a string.
 
           comment.commentBody = data.commentBody;
           comment.parentComment = data.parentComment;
@@ -81,35 +74,13 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
           comment.updatedAt = data.updatedAt;
           comment.__v = data.__v;
 
-          setBackendComments([comment, ...backendComments]);
+          // comment use field needs to be updated one by one
+          comment.user = data.user;
 
-          // reload the page to show the changes (this is temporary)
-          // location.reload();
+          setBackendComments([comment, ...backendComments]);
         });
     } else {
       alert("You must be logged in to leave a comment");
-    }
-  };
-
-  // might bring in deleteComment method defined in MyComment component.
-  const deleteComment = async (commentId: string) => {
-    const token = auth.getToken();
-    if (token) {
-      if (window.confirm("Are you sure you want to remove comment?")) {
-        fetch(`${API_URL}/api/projects/comment/${commentId}`, {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-          body: JSON.stringify({
-            commentId: "643e2fbca5ec12d8d7e14d3d",
-          }),
-        })
-          .then((response) => response.json())
-          .then((response) => console.log(JSON.stringify(response)));
-      }
     }
   };
 
