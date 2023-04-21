@@ -14,7 +14,7 @@ import { getProjectsSearch } from "./api/getSearchProjects";
 import { searchFilterParams, TAvailParameters } from "./components/search/AvailableParams";
 import ProjectPage from './components/projectPage/ProjectPage';
 import Navbar from "./components/Navbar";
-import { TUser, mockUser } from './model/TUser';
+import { TUser } from './model/TUser';
 import { AuthProvider } from "./customHooks/useAuth";
 
 
@@ -57,7 +57,7 @@ export default function App() {
                   {...{ currFilters, setFilters }}
                 />
               } />
-              <Route path="/projectpage" element={<ProjectPage projectId="6440f6a8707a61d62e49a2c6"/>} />
+              <Route path="/projectpage" element={<ProjectPage projectId="6442068f7297a06fc1659115"/>} />
               <Route path="/About" element={<About />} />
             </Routes>
           </Box>

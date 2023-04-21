@@ -13,7 +13,6 @@ export default function SemesterField() {
   const btnRef = useRef<HTMLButtonElement>(null);
   const { project, setProject } = useContext(ProjectContext)
   const [value, setValue] = useState<string>(project.semester.value);
-  console.log(project.semester.value)
   const theme = useTheme();
   const searchParams = useSearchParams();
 

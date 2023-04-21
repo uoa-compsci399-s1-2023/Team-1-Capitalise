@@ -12,7 +12,7 @@
         type: 'github' | 'codesandbox' | 'deployedSite' | 'codepen' | 'notion' | 'kaggle'
         _id: string,
       }[]
-    members: { _id: string }[]
+    members: string[]
     banner: string,
     thumbnail: string,
     content:

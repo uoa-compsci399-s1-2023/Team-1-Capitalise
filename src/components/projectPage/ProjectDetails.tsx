@@ -37,12 +37,11 @@ export default function ProjectDetails() {
     >
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
-      {project.badges?.length > 0 && <AwardBadge {...project.badges[0]} />}
+      {project.badges && <AwardBadge {...project.badges} />}
       <CategoryField />
       <SemesterField />
       <TeamnameField />
       {/* <TeamnameField type='text' name='' label='Team:' text={`${project.teamname}`} /> */}
-
       <MembersField />
       <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Links:</Typography>

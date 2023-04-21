@@ -9,6 +9,11 @@ export default async function getSearchParams() {
     fetch(`${API_URL}/api/parameters/sortBys`),
   ]);
 
-  return await Promise.all(responses.map((r) => r.json()));
-
+  return await Promise.all(responses.map((r) => {
+    if (r.ok) {
+      return r.json()
+    } else {
+      console.log(`failed to fetch parameter ${r.text()}`)
+    }
+    }));
 }

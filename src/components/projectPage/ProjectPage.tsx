@@ -32,15 +32,11 @@ export default function ProjectPage({projectId}: {projectId:string}) {
   useEffect(() => {
     setIsLoading(true)
     getProject(projectId)
-      .then((data) => {data && setProject(data); console.log(data)})
+      .then((data) => {data && setProject(data)})
       .finally(() => setIsLoading(false));
   }, [])
 
 
-  let imgs: string[] = [];
-  if (mockProject.content.length > 0) {
-    imgs = mockProject.content[0].tabContent[1].value
-  }
   if (!isLoading) {
     return (
       <ProjectContext.Provider value={{ project, setProject }}>
