@@ -4,16 +4,16 @@ import { TUser, mockUser } from './TUser';
 export type TProjectPost = {
   name: string;
   blurb?: string;
-  teamname: string;
+  teamname?: string;
   banner?: string;
-  thumbnail: string;
+  thumbnail?: string;
   semester: string
   category: TProject['category']['value']
-  links: {
+  links?: {
     type: 'github' | 'codesandbox' | 'deployedSite' | 'codepen' | 'notion' | 'kaggle'
     value: string
   }[];
-  content:
+  content?:
   {
     tabName: string
     tabContent:
@@ -23,8 +23,8 @@ export type TProjectPost = {
       value: string[]
     }[],
   }[]
-  badges: TProject['badges'][0]['value']
-  tags: string[]
+  badges?: TProject['badges'][0]['value']
+  tags?: string[]
 };
 
 export type TMockProject = {
@@ -141,7 +141,6 @@ export const mockProject: TProjectPost = {
     value: "https://github.com/uoa-compsci399-s1-2023/project-team-1"
   }],
   teamname: "Zuckerberg Enterprises",
-  members: [],
   banner: "src/components/projectPage/galleryImgs/Neural_Networks.png",
   content: [
     {
@@ -160,13 +159,6 @@ export const mockProject: TProjectPost = {
     {
       tabName: "Breakdown",
       tabContent: [
-        // { 
-        //   type: "gallery", value: ["src/components/projectPage/galleryImgs/img1.png",] 
-        // },
-        // {
-        //   type: "quote",
-        //   value: ["We built a neural network from scratch.",]
-        // },
         {
           type: "text",
           subHeading: "Description",
@@ -175,7 +167,5 @@ export const mockProject: TProjectPost = {
       ],
     }
   ],
-  badges: 'PeoplesChoice'
-  comments: [],
-  tags: []
+  badges: 'Peoples Choice'
 }

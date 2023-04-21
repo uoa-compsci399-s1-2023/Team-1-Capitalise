@@ -5,7 +5,6 @@ export type TUser = {
     name: string;
     email: string;
     username: string;
-    // password: string; // not in getCurrentUser api
     likedProjects: string[]
     myComments: string[]
     userType: "graduate" | "visitor" | "admin";
@@ -19,7 +18,6 @@ export const mockUser: TUser = {
     name: "Snoop Dogg",
     email: "dogg@gmail.com",
     username: "dogg696",
-    // password: "$2a$10$xk2SY1gbcKLlO.o5vYEEUOxSsieiqOf5qrZ2Dan3UBy13KMz0sdse", // "decodes to test"
     likedProjects: ["1"], // references mockProject
     myComments: [],
     userType: 'graduate',

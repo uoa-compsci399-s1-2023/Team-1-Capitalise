@@ -6,7 +6,7 @@ import communityImpact from '../..assets/communityImpact.svg'
 
 type TBadge = {
   value: string,
-  image: string
+  image?: string
 }
 
 

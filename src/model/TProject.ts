@@ -12,7 +12,7 @@
         type: 'github' | 'codesandbox' | 'deployedSite' | 'codepen' | 'notion' | 'kaggle'
         _id: string,
       }[]
-    members: { _id: string, name: string}[]
+    members: { _id: string }[]
     banner: string,
     thumbnail: string,
     content:
@@ -30,7 +30,7 @@
     likes: number,
     comments: string[], // array of ids
     tags: {value: string}[],
-    badges: {value: 'People\'s Choice' | 'Top Excellence' | 'Community Impact' }[],
+    badges: {value: 'Peoples Choice' | 'Top Excellence' | 'Community Impact' }[], // There should be an apostrophe in people's choice!
     isBeingEdited: false,
     createdAt: string,
     updatedAt: string,
