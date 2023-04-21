@@ -12,12 +12,16 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { TComment } from "../api/getComments";
+import deleteComment from "../components/Comments";
 
 interface CommentProps {
   comment: TComment;
+  deleteComment: (commentId: string) => void;
 }
 
-const MyComment: React.FC<CommentProps> = ({ comment }) => {
+// try passing the deleteComment function into the MyComment prop
+
+const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
   const auth = useAuth();
 
   // need to put logic to handle replies
@@ -28,31 +32,10 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
     }
   };
 
-  const deleteComment = async () => {
-    const token = auth.getToken();
-    if (token) {
-      if (window.confirm("Are you sure you want to remove comment?")) {
-        fetch(`${API_URL}/api/projects/comment/${comment._id}`, {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-          body: JSON.stringify({
-            commentId: comment._id,
-          }),
-        })
-          .then((response) => response.json())
-          .then((response) => console.log(JSON.stringify(response)));
-      }
-    }
-  };
-
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
 
   return (
-    <div className="comment">
+    <div key={comment._id} className="comment">
       <div className="comment-image-container">
         {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
         <img src={comment.user.profilePicture} width="30" height="30" />
@@ -73,7 +56,7 @@ const MyComment: React.FC<CommentProps> = ({ comment }) => {
                 <Button
                   variant="outlined"
                   startIcon={<DeleteOutlineIcon />}
-                  onClick={deleteComment}
+                  onClick={() => deleteComment(comment._id)}
                   size="small"
                   color="error"
                 >

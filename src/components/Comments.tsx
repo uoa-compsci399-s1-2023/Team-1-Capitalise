@@ -63,8 +63,6 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
           return response.json();
         })
         .then((data) => {
-          console.log("Posted comment name", data.user);
-
           comment._id = data._id;
           comment.projectId = data.project;
 
@@ -84,6 +82,31 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     }
   };
 
+  const deleteComment = async (commentId: string) => {
+    const token = auth.getToken();
+    if (token) {
+      if (window.confirm("Are you sure you want to remove comment?")) {
+        fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+          body: JSON.stringify({
+            commentId: commentId,
+          }),
+        }).then(() => {
+          // we need to update the backend comments list
+          const updatedBackendComments = backendComments.filter(
+            (backendComment) => backendComment._id != commentId
+          );
+          setBackendComments(updatedBackendComments);
+        });
+      }
+    }
+  };
+
   return (
     <div className="comments">
       <Typography variant="body1" color="initial" fontWeight={"light"}>
@@ -92,7 +115,11 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
       <CommentForm submitLabel="Post" handleSubmit={addComment} />
       <div className="comments-container">
         {backendComments.map((backendComment) => (
-          <MyComment key={backendComment.id} comment={backendComment} />
+          <MyComment
+            key={backendComment.id}
+            comment={backendComment}
+            deleteComment={deleteComment}
+          />
         ))}
       </div>
     </div>
