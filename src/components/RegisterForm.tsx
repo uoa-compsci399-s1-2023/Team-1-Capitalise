@@ -209,7 +209,7 @@ export default function SignUp() {
             </Button>
             
             <Divider></Divider>
-            <Button fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign up with Google</Button>
+            <Button href="https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google" fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign up with Google</Button>
             <Grid sx={{mb:2}}container justifyContent="center">
               <Grid item>
                 <Link href="/login" underline="hover"variant="body2">

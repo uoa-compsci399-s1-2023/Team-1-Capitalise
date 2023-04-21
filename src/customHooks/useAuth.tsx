@@ -19,6 +19,7 @@ type TAuthReturnType = {
   getToken: () => string | null; // For restricted api calls.
   error: string; // Set with server message if signin or signout fails.
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
+  googleAuth: () => void;
 };
 
 function useProvideAuth(): TAuthReturnType {
@@ -26,6 +27,12 @@ function useProvideAuth(): TAuthReturnType {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  
+  const getGoogleToken = () => {
+    return fetch(`${API_URL}/api/auth/protected`, {
+      method: "GET"
+    })
+  }
 
   const getUserPromise = (savedToken: string | null) => {
     return fetch(`${API_URL}/api/users/getCurrentUser/me`, {
@@ -66,6 +73,26 @@ function useProvideAuth(): TAuthReturnType {
           } 
         })
     }
+  }
+  function googleAuth() {
+    setUser(null);
+    setIsLoading(true);
+    setError('');
+    getGoogleToken().then(resp => {
+        console.log(resp.text())
+        if (!resp.ok) {
+          // Set login error
+          resp.text().then(err => {setError(err); setIsLoading(false)} );
+          console.log(error)
+        } else {
+          // Otherwise save token and signin.
+          resp.text().then(token => {
+            console.log(token)
+            localStorage.setItem('jwtToken', token);
+            signinWithSavedToken();
+          })
+        }
+      })
   }
 
   // signs in user from given username and password
@@ -173,6 +200,7 @@ function useProvideAuth(): TAuthReturnType {
     getToken,
     error,
     isLoading,
+    googleAuth
   };
 }
 
@@ -189,6 +217,7 @@ const authContext = createContext<TAuthReturnType>({
   getToken: () => null,
   error: '',
   isLoading: false,
+  googleAuth: ()=> {}
 });
 
 export function AuthProvider({ children }: { children: any }) { // Gave any type but might need to be React.ReactNode

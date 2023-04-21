@@ -3,15 +3,21 @@ import * as React from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState} from "react";
 import HashLoader from "react-spinners/HashLoader";
-
+import { useAuth } from "../customHooks/useAuth";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function GoogleSuccessRedirect() {
+    const navigate = useNavigate();
+    const auth = useAuth();
     const [loading, setLoading] = useState(true);
     const [color, setColor] = useState("#22d55f");
     useEffect(() => {
         setLoading(true)
         setTimeout(() => {
-            setLoading(false)
+            auth.googleAuth();
+            navigate("/");
+            setLoading(false);
+            
         }, 6000)
     },[])
     return (
