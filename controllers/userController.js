@@ -189,20 +189,28 @@ const updateUserDetails = async (req, res) => {
   const encrypted = await bcrypt.hash(password, 10);
   var updateUser;
   if (userType != "admin") {
-    updateUser = await User.findByIdAndUpdate(id, {
-      name: name,
-      password: encrypted,
-      email: email,
-      username: username,
-      userType: userType,
-    });
+    updateUser = await User.findByIdAndUpdate(
+      id,
+      {
+        name: name,
+        password: encrypted,
+        email: email,
+        username: username,
+        userType: userType,
+      },
+      { new: true }
+    );
   } else {
-    updateUser = await User.findByIdAndUpdate(id, {
-      name: name,
-      password: encrypted,
-      email: email,
-      username: username,
-    });
+    updateUser = await User.findByIdAndUpdate(
+      id,
+      {
+        name: name,
+        password: encrypted,
+        email: email,
+        username: username,
+      },
+      { new: true }
+    );
   }
 
   res.send(updateUser);

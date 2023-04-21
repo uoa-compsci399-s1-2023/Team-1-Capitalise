@@ -92,7 +92,8 @@ const updateProjectById = async (req, res) => {
   //Doesnt add any additional tags
   const project = await Project.findOneAndUpdate(
     { _id: projectId },
-    { ...req.body }
+    { ...req.body },
+    { new: true }
   );
 
   if (!project) {
@@ -476,17 +477,25 @@ const likeComment = async (req, res) => {
   });
 
   //Increment project.likes
-  const likedProject = await Project.findByIdAndUpdate(projectId, {
-    $inc: { likes: 1 },
-  });
+  const likedProject = await Project.findByIdAndUpdate(
+    projectId,
+    {
+      $inc: { likes: 1 },
+    },
+    { new: true }
+  );
 
   return res.status(200).send(likedProject);
 };
 
 const incrementViews = async (req, res) => {
-  const project = await Project.findByIdAndUpdate(req.params.projectId, {
-    $inc: { views: 1 },
-  });
+  const project = await Project.findByIdAndUpdate(
+    req.params.projectId,
+    {
+      $inc: { views: 1 },
+    },
+    { new: true }
+  );
 
   if (!project) return res.status(404).json({ err: "No project found" });
 
@@ -533,9 +542,13 @@ const awardBadge = async (req, res) => {
   if (!badge) return res.status(400).send("Error: Invalid award!");
 
   //Update the provided project
-  const project = await Project.findByIdAndUpdate(req.body.projectId, {
-    badges: badge._id,
-  });
+  const project = await Project.findByIdAndUpdate(
+    req.body.projectId,
+    {
+      badges: badge._id,
+    },
+    { new: true }
+  );
 
   if (!project) return res.status(404).json({ err: "No project found" });
 
