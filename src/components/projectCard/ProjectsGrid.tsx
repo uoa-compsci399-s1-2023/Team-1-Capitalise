@@ -1,7 +1,7 @@
 import { Container, Box } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import ProjectCard from "./ProjectCard";
-import { TProject } from "../../api/getProjects";
+import { TProject } from "../../model/TProject";
 interface props {
   projects: TProject[];
 }
@@ -21,17 +21,11 @@ export default function ProjectsGrid({ projects }: props) {
           <ProjectCard
             title={project.name}
              semester={project.semester.value}
-             image={
-               typeof project.content[0] != "undefined"
-                 ? project.content[0].tab[0].banner
-                 : ""
-             }
+             image={ project.thumbnail ? project.thumbnail : "" }
             teamname={project.teamname ? project.teamname : "teamname"}
             category={project.category.value}
             likes={project.likes}
-            badges={
-              typeof project.badges != "undefined" ? project.badges.value : ""
-            }
+            badges={project.badges ? project.badges.value : ""}
           ></ProjectCard>
         </Box>
       ))}

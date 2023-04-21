@@ -17,7 +17,7 @@
     thumbnail: string,
     content:
       {
-        tabName: "My Goat Tab",
+        tabName: string,
         tabContent:
           {
             type: string,
@@ -30,7 +30,7 @@
     likes: number,
     comments: string[], // array of ids
     tags: {value: string}[],
-    badges: {value: 'Peoples Choice' | 'Top Excellence' | 'Community Impact' }[], // There should be an apostrophe in people's choice!
+    badges: {value: 'Peoples Choice' | 'Top Excellence' | 'Community Impact' }, // There should be an apostrophe in people's choice!
     isBeingEdited: false,
     createdAt: string,
     updatedAt: string,
