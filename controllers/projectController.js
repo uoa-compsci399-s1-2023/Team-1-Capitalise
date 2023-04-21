@@ -219,8 +219,10 @@ const writeComment = async (req, res) => {
 
   comment = await comment.save();
 
-  const justCreated = await Comment.findById(comment._id)
-  .populate("user", "name email username profilePicture")
+  const justCreated = await Comment.findById(comment._id).populate(
+    "user",
+    "name email username profilePicture"
+  );
 
   res.send(justCreated);
 };
@@ -482,7 +484,6 @@ const likeComment = async (req, res) => {
 };
 
 const incrementViews = async (req, res) => {
-  //need to check badge
   const project = await Project.findByIdAndUpdate(req.params.projectId, {
     $inc: { views: 1 },
   });
@@ -507,11 +508,13 @@ const getCommentsByProjectId = async (req, res) => {
     return res.status(404).json({ err: "No projectid found" });
   }
 
-  const project = await Project.findById(projectId)
-    .populate({path: 'comments', populate: {
-      path: 'user',
-      select: 'name email username profilePicture'
-    }})
+  const project = await Project.findById(projectId).populate({
+    path: "comments",
+    populate: {
+      path: "user",
+      select: "name email username profilePicture",
+    },
+  });
 
   //If no project exist
   if (!project) {
@@ -519,6 +522,24 @@ const getCommentsByProjectId = async (req, res) => {
   }
   //If a project exist
   res.status(200).json(project.comments.reverse());
+};
+
+const awardBadge = async (req, res) => {
+  //get Award
+  const badge = await Parameter.findOne({
+    value: req.body.award,
+    parameterType: "award",
+  });
+  if (!badge) return res.status(400).send("Error: Invalid award!");
+
+  //Update the provided project
+  const project = await Project.findByIdAndUpdate(req.body.projectId, {
+    badges: badge._id,
+  });
+
+  if (!project) return res.status(404).json({ err: "No project found" });
+
+  return res.status(200).send(project);
 };
 
 module.exports = {
@@ -537,4 +558,5 @@ module.exports = {
   incrementViews,
   getAllComments,
   getCommentsByProjectId,
+  awardBadge,
 };
