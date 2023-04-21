@@ -96,12 +96,12 @@ const protected = async (req, res) => {
   let user = await User.findOne({ email: req.user.email });
   if (!user) return res.status(400).send("Error: No user provided!");
   const token = user.generateAuthToken();
-  req.session.destroy();
   res
     .header("x-auth-token", token)
     .send(
       token + "<br><p>x-auth-token should have been added to the response.</p>"
     );
+  req.session.destroy();
 };
 
 //Called if Google sign in goes wrong
