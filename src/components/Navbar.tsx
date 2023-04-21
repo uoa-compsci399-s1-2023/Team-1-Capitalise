@@ -26,7 +26,7 @@ import { SearchFilterProps } from "./search/DesktopSearchFilters";
 import { useState } from "react";
 
 const pages = ["About", "Projects"];
-const NoNavPages = ["/register", "/login"];
+const NoNavPages = ["/register", "/login", "/googleSuccessRedirect", "/googleFailure"];
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",

@@ -13,6 +13,8 @@ import { getProjectsSearch } from "./api/getSearchProjects";
 import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "./components/search/AvailableParams";
 import Navbar from "./components/Navbar";
 import { AuthProvider } from './customHooks/useAuth';
+import GoogleSuccessRedirect from './routes/googleSuccessRedirect';
+import GoogleFailure from './routes/googleFailure';
 
 // Represents curr state of filters
 export type TFiltersState = {
@@ -70,6 +72,8 @@ export default function App() {
             <Route path="/About" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/Register" element={<Registration />} />
+            <Route  path="/googleSuccessRedirect" element={<GoogleSuccessRedirect/>} />
+            <Route  path="/googleFailure" element={<GoogleFailure/>} />
           </Routes>
         </ThemeProvider>
       </AuthProvider>
