@@ -6,6 +6,9 @@ import { styled } from '@mui/material/styles'
 import { TMockProject } from '../../model/MockProject'
 import { ProjectProps } from './ProjectPage'
 import TeamnameField from './Fields/TeamnameField'
+import CategoryField from './Fields/CategoryField'
+import SemesterField from './Fields/SemesterField'
+import MembersField from './Fields/MembersField'
 import StatusChip from './StatusChip'
 import TeamMember from './TeamMember'
 import GithubBtn from './GithubBtn'
@@ -28,30 +31,19 @@ export default function ProjectDetails() {
       maxWidth={'30%'}
       bgcolor={'white'}
       style={theme.contentBlock}
-      padding={'40px'}
+      padding={'20px'}
       gap={4}
       sx={{ display: { xs: 'none', md: 'flex' }, position: 'relative' }}
     >
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
-      {project.badges.length > 0 && <AwardBadge {...project.badges[0]} />}
+      {project.badges?.length > 0 && <AwardBadge {...project.badges[0]} />}
+      <CategoryField />
+      <SemesterField />
       <TeamnameField />
-      <TeamnameField type='text' name='' label='Semester:' text={`${project.semester.value}`} />
-      <TeamnameField type='text' name='' label='Team:' text={`${project.teamname}`} />
+      {/* <TeamnameField type='text' name='' label='Team:' text={`${project.teamname}`} /> */}
 
-      <Box>
-        <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>
-        {/* {p.members.map((m, i) => (
-          <TeamMember name={m.name} avatar='src/components/projectPage/dps/brooke-cagle-wKOKidNT14w-unsplash.jpg' />
-
-        ))} */}
-        <TeamMember name='Rowan Woods' avatar='src/components/projectPage/dps/brooke-cagle-wKOKidNT14w-unsplash.jpg' />
-        <TeamMember name='Jesse Pinkman' avatar='src/components/projectPage/dps/harps-joseph-tAvpDE7fXgY-unsplash.jpg' />
-        <TeamMember name='Annie Edison' avatar='src/components/projectPage/dps/tiktok-profile-picture-idea-4--1--1.jpeg' />
-        <TeamMember name='Troy Barnes' avatar='src/components/projectPage/dps/brooke-cagle-wKOKidNT14w-unsplash.jpg' />
-        <TeamMember name='Isabelle Gonzalez' avatar='src/components/projectPage/dps/matheus-ferrero-W7b3eDUb_2I-unsplash.jpg' />
-      </Box>
-
+      <MembersField />
       <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Links:</Typography>
         <GithubBtn />

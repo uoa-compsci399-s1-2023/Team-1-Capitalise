@@ -17,7 +17,7 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
     <>
       <Stack
         // style={theme.contentBlock}
-        padding={'0 40px'}
+        padding={'0 20px'}
         width={'100%'}
         mt={4}
         flexDirection={'row'}

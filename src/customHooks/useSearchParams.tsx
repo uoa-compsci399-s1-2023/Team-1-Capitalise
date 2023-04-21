@@ -27,10 +27,13 @@ const getDefaultParams = (): TAvailParameters => {
 }
 
 export default function useSearchParams(): TAvailParameters {
-    // main variable that holds the currently available parameters
 
-    type TAvailableParams = TAvailParameters
     const [params, setParams] = useState<TAvailParameters>(getDefaultParams);
+
+    useEffect(() => {
+        fetchCurrentParameters();
+    }, [])
+    // main variable that holds the currently available parameters
 
     // Calls api and sets params
     async function fetchCurrentParameters() {
@@ -42,10 +45,6 @@ export default function useSearchParams(): TAvailParameters {
             sortBy: [...(getDefaultParams().sortBy)],
         })
     }
-
-    useEffect(() => {
-        fetchCurrentParameters();
-    })
 
     return params
 }

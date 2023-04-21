@@ -4,15 +4,14 @@ import { styled } from '@mui/material/styles'
 import { TMockProject } from '../../model/MockProject'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { TProject } from '../../model/TProject';
 
 
-interface ContentBlockProps {
-  type: TMockProject['content'][0]['tabContent'][0]['type']
-  subHeading?: TMockProject['content'][0]['tabContent'][0]['subHeading']
-  value: TMockProject['content'][0]['tabContent'][0]['value']
+export interface ContentBlockProps {
+  type: TProject['content'][0]['tabContent'][0]['type']
+  subHeading?: TProject['content'][0]['tabContent'][0]['subHeading']
+  value: TProject['content'][0]['tabContent'][0]['value']
 }
-
-
 
 
 export default function ContentBlock({ type, value, subHeading }: ContentBlockProps) {
@@ -35,7 +34,6 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
   }
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    console.log('leaving')
     if (editBtnRef.current) {
       editBtnRef.current.style.visibility = 'hidden'
     }
@@ -49,9 +47,9 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
     border: theme.contentBlock?.border,
     // border: `3px solid ${theme.customColors.DividerGrey}`,
     borderRadius: theme.contentBlock?.borderRadius,
-    paddingTop: '40px',
-    paddingBottom: '40px',
-    paddingLeft: '40px',
+    padding: '40px 0 40px 40px',
+    // paddingBottom: '40px',
+    // paddingLeft: '40px',
     "&:hover": {
       border: `3px solid ${theme.customColors.DividerGrey}`
     },

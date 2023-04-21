@@ -57,7 +57,7 @@ export default function App() {
                   {...{ currFilters, setFilters }}
                 />
               } />
-              <Route path="/projectpage" element={<ProjectPage />} />
+              <Route path="/projectpage" element={<ProjectPage projectId="6440f6a8707a61d62e49a2c6"/>} />
               <Route path="/About" element={<About />} />
             </Routes>
           </Box>
