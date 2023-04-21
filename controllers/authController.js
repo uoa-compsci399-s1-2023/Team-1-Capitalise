@@ -97,9 +97,8 @@ const protected = async (req, res) => {
   if (!user) return res.status(400).send("Error: No user provided!");
   const token = user.generateAuthToken();
   res
-    .header("x-auth-token", token)
-    .send(
-      token + "<br><p>x-auth-token should have been added to the response.</p>"
+    .redirect(
+      `http://localhost:8080/googleSuccessRedirect?token=${token}`
     );
   req.session.destroy();
 };
@@ -111,32 +110,10 @@ const failure = async (req, res) => {
 
 //Placeholder for redirect.
 const nextPage = async (req, res) => {
-  //res.redirect('https://www.capitalise.space');
-  let myHTML = `<!DOCTYPE html>
-    <html>
-    
-    <head>
-        <script>
-    
-            function fetchHtml() {
-                fetch('../auth/protected')
-                    .then((response) => {
-                        return response.text();
-                    })
-                    .then((html) => {
-                        document.body.innerHTML = html
-                    });
-            }
-    
-    
-        </script>
-    </head>
-    <body>
-        <button onclick = "fetchHtml()" > Waddup top g? - Get your token! </button>
-    </body>
-    
-    </html>`;
-  res.send(myHTML);
+  res.header("user", req.user);
+  //res.user = req.user;
+  //console.log(res.user);
+  res.redirect("http://localhost:8080/googleSuccessRedirect");
 };
 
 module.exports = {
