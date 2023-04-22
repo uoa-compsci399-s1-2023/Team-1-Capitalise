@@ -21,6 +21,7 @@ const getAllProjects = async (req, res) => {
 //get all projects by likes
 const getProjectsByLikes = async (req, res) => {
   const projects = await Project.find()
+    .populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -57,6 +58,7 @@ const getProject = async (req, res) => {
   }
 
   const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -182,7 +184,12 @@ const updateProjectById = async (req, res) => {
     { _id: projectId },
     { ...req.body },
     { new: true }
-  );
+  )
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id");
 
   if (!project) {
     return res.status(404).json({ err: "No Project found" });
@@ -274,7 +281,14 @@ const addNewProject = async (req, res) => {
 
   project = await project.save();
 
-  res.send(project);
+  populated = await Project.findById(project._id)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id");
+
+  res.send(populated);
 };
 
 const writeComment = async (req, res) => {
@@ -377,10 +391,19 @@ const addUserToProject = async (req, res) => {
   if (!user) return res.status(400).send("Invalid user.");
 
   //Appends i.e. pushes the user onto the members.
-  const project = await Project.findByIdAndUpdate(req.params.id, {
-    //Appends
-    $push: { members: req.params.userid },
-  });
+  const project = await Project.findByIdAndUpdate(
+    req.params.id,
+    {
+      //Appends
+      $push: { members: req.params.userid },
+    },
+    { new: true }
+  )
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id");
 
   if (!project)
     return res.status(404).send("The project with the given ID was not found.");
@@ -554,7 +577,12 @@ const likeComment = async (req, res) => {
         $inc: { likes: -1 },
       },
       { new: true }
-    );
+    )
+      .populate("members", "_id, name")
+      .populate("semester", "value -_id")
+      .populate("category", "value -_id")
+      .populate("badges", "value -_id")
+      .populate("tags", "name -_id");
     const likedProjects = usersLikedProjects.filter((project) => {
       return project._id != projectId;
     });
@@ -579,7 +607,12 @@ const likeComment = async (req, res) => {
       $inc: { likes: 1 },
     },
     { new: true }
-  );
+  )
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id");
 
   return res.status(200).send(likedProject);
 };
@@ -591,7 +624,12 @@ const incrementViews = async (req, res) => {
       $inc: { views: 1 },
     },
     { new: true }
-  );
+  )
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id");
 
   if (!project) return res.status(404).json({ err: "No project found" });
 
@@ -644,7 +682,12 @@ const awardBadge = async (req, res) => {
       badges: badge._id,
     },
     { new: true }
-  );
+  )
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id");
 
   if (!project) return res.status(404).json({ err: "No project found" });
 
