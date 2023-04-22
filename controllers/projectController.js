@@ -554,15 +554,23 @@ const likeComment = async (req, res) => {
     const likedProjects = usersLikedProjects.filter((project) => {
       return project._id != projectId;
     });
-    await User.findByIdAndUpdate(currentId, { likedProjects: likedProjects });
+    await User.findByIdAndUpdate(
+      currentId,
+      { likedProjects: likedProjects },
+      { new: true }
+    );
     return res.status(200).send(updateProject);
   }
 
   //If false
   //Add the project Id to user
-  await User.findByIdAndUpdate(currentId, {
-    $push: { likedProjects: projectId },
-  });
+  await User.findByIdAndUpdate(
+    currentId,
+    {
+      $push: { likedProjects: projectId },
+    },
+    { new: true }
+  );
 
   //Increment project.likes
   const likedProject = await Project.findByIdAndUpdate(
