@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
+import { Link as reactLink } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -18,24 +19,6 @@ import Logo from "../assets/Logo.svg";
 import { useAuth } from "../customHooks/useAuth";
 import { Divider } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-//Copyright (Bottom of Screen)
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="capitalise.space">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 //Theme
 const theme = createTheme();
 
@@ -191,6 +174,7 @@ function SignInSide() {
 
               <Divider></Divider>
               <Button
+                href="https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google"
                 fullWidth
                 variant="outlined"
                 startIcon={<GoogleIcon />}

@@ -19,6 +19,7 @@ type TAuthReturnType = {
   getToken: () => string | null; // For restricted api calls.
   error: string; // Set with server message if signin or signout fails.
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
+  googleAuth: () => void;
 };
 
 function useProvideAuth(): TAuthReturnType {
@@ -65,6 +66,14 @@ function useProvideAuth(): TAuthReturnType {
         }
       });
     }
+  }
+  function googleAuth() {
+    setUser(null);
+    setIsLoading(true);
+    setError("");
+    const queryParameters = new URLSearchParams(window.location.search);
+    const token = queryParameters.get("token");
+    localStorage.setItem("jwtToken", token as string);
   }
 
   // signs in user from given username and password
@@ -176,6 +185,7 @@ function useProvideAuth(): TAuthReturnType {
     getToken,
     error,
     isLoading,
+    googleAuth,
   };
 }
 
@@ -192,6 +202,7 @@ const authContext = createContext<TAuthReturnType>({
   getToken: () => null,
   error: "",
   isLoading: false,
+  googleAuth: () => {},
 });
 
 export function AuthProvider({ children }: { children: any }) {

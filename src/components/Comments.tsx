@@ -28,7 +28,6 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   const auth = useAuth();
 
   const [backendComments, setBackendComments] = useState<TComment[]>([]);
-  // console.log("backend comments", backendComments);
 
   // set the backend comments array when we mount the Components comment
   useEffect(() => {
@@ -38,7 +37,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     } else {
       console.log("We have an empty comment array");
     }
-  }, comments);
+  }, [comments]);
 
   // Function to handle comment submission
   const addComment = async (text: string) => {

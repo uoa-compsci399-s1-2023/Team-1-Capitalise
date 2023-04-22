@@ -10,6 +10,7 @@ import {
   Toolbar,
   Tooltip,
   styled,
+  useRadioGroup,
 } from "@mui/material";
 
 import { useNavigate, Link } from "react-router-dom";
@@ -26,7 +27,12 @@ import { SearchFilterProps } from "./search/DesktopSearchFilters";
 import { useState } from "react";
 
 const pages = ["About", "Projects"];
-const NoNavPages = ["/register", "/login"];
+const NoNavPages = [
+  "/register",
+  "/login",
+  "/googleSuccessRedirect",
+  "/googleFailure",
+];
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",
@@ -134,7 +140,10 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
             {/* Check if User is logged in */}
             {uCheck ? (
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src="" />
+                <Avatar alt="Logged In" src={auth.user?.profilePicture}>
+                  {" "}
+                  <img referrerPolicy="no-referrer" />
+                </Avatar>
               </IconButton>
             ) : (
               <>
@@ -231,7 +240,10 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src="" />
+                <Avatar alt="Logged In" src={auth.user?.profilePicture}>
+                  {" "}
+                  <img referrerPolicy="no-referrer" />
+                </Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -282,7 +294,8 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
                 {/*If User is logged in, render his name*/}
                 {uCheck ? (
                   <>
-                    <Avatar src="" /> {auth.user?.name}{" "}
+                    <Avatar src={auth.user?.profilePicture} />{" "}
+                    <img referrerPolicy="no-referrer" /> {auth.user?.name}{" "}
                   </>
                 ) : (
                   "Guest"

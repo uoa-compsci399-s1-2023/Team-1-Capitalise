@@ -24,6 +24,9 @@ import { AuthProvider } from "./customHooks/useAuth";
 // Project page
 import Project from "./routes/Project";
 
+import GoogleSuccessRedirect from "./routes/googleSuccessRedirect";
+import GoogleFailure from "./routes/googleFailure";
+
 // Represents curr state of filters
 export type TFiltersState = {
   keywords: string;
@@ -85,6 +88,11 @@ export default function App() {
               <Route path="/project/:projectId" element={<Project />} />
               <Route path="/login" element={<Login />} />
               <Route path="/Register" element={<Registration />} />
+              <Route
+                path="/googleSuccessRedirect"
+                element={<GoogleSuccessRedirect />}
+              />
+              <Route path="/googleFailure" element={<GoogleFailure />} />
             </Routes>
           </Box>
         </ThemeProvider>
