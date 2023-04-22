@@ -79,7 +79,8 @@ const updateProjectById = async (req, res) => {
   }
 
   //Get members of this project
-  const projectMembers = (await Project.findById(projectId)).members;
+  let myProj = await Project.findById(projectId);
+  const projectMembers = myProj.members;
 
   //Check if user is part of the project
   const userIsMember = projectMembers.includes(currentId);
@@ -88,8 +89,95 @@ const updateProjectById = async (req, res) => {
     return res.status(403).send({ err: "You are not part of this project" });
   }
 
-  //Changes what ever is different
-  //Doesnt add any additional tags
+  if (req.body.semester) {
+    //Check if semester exists in database
+    const sem = await Parameter.findOne({
+      value: req.body.semester,
+      parameterType: "semester",
+    });
+    if (!sem) return res.status(400).send("Error: Invalid semester!");
+    req.body.semester = sem._id;
+  }
+
+  if (req.body.category) {
+    //Check if category exists in database
+    const cat = await Parameter.findOne({
+      value: req.body.category,
+      parameterType: "category",
+    });
+    if (!cat) return res.status(400).send("Error: Invalid category!");
+    req.body.category = cat._id;
+  }
+
+  if (req.body.badges) {
+    //Check if user is an admin
+    if (req.user.userType != "admin")
+      return res
+        .status(403)
+        .send("Error: Only admins can update project badges!");
+    //Check if semester exists in database
+    const award = await Parameter.findOne({
+      value: req.body.badges,
+      parameterType: "award",
+    });
+    if (!award) return res.status(400).send("Error: Invalid award!");
+    req.body.badges = award._id;
+  }
+
+  //Create or fetch tag objects.
+  let myTagIdArr = [];
+  if (req.body.tags) {
+    for (const tagName of req.body.tags) {
+      const tag = await Tag.findOne({ name: tagName });
+      if (!tag) {
+        let tag = new Tag({
+          name: tagName,
+          mentions: 1,
+          projects: [
+            {
+              _id: myProj._id,
+            },
+          ],
+        });
+        tag = await tag.save();
+        console.log(tag.name + " was created.");
+        myTagIdArr.push(tag._id);
+      } else {
+        //Check if tag already belongs to the project
+        if (!myProj.tags.includes(tag._id)) {
+          const tag2 = await Tag.findByIdAndUpdate(tag._id, {
+            $inc: { mentions: 1 },
+            $push: { projects: myProj._id },
+          });
+          myTagIdArr.push(tag2._id);
+        } else {
+          myTagIdArr.push(tag._id);
+        }
+      }
+    }
+
+    //Get tag objects to delete
+    let existingTagArr = [];
+    for (const tagId of myProj.tags) {
+      tag = await Tag.findById(tagId);
+      existingTagArr.push(tag.name);
+    }
+    let difference = existingTagArr.filter((x) => !req.body.tags.includes(x));
+    //console.log(existingTagArr, req.body.tags, difference);
+
+    for (const tagName of difference) {
+      const tag2 = await Tag.findOneAndUpdate(
+        { name: tagName },
+        {
+          $inc: { mentions: -1 },
+          $pull: { projects: myProj._id },
+        }
+      );
+    }
+
+    req.body.tags = myTagIdArr;
+  }
+
   const project = await Project.findOneAndUpdate(
     { _id: projectId },
     { ...req.body },
