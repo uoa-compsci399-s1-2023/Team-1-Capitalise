@@ -28,11 +28,7 @@ function useProvideAuth(): TAuthReturnType {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
-  const getGoogleToken = () => {
-    return fetch(`${API_URL}/api/auth/protected`, {
-      method: "GET"
-    })
-  }
+
 
   const getUserPromise = (savedToken: string | null) => {
     return fetch(`${API_URL}/api/users/getCurrentUser/me`, {
@@ -78,21 +74,10 @@ function useProvideAuth(): TAuthReturnType {
     setUser(null);
     setIsLoading(true);
     setError('');
-    getGoogleToken().then(resp => {
-        console.log(resp.text())
-        if (!resp.ok) {
-          // Set login error
-          resp.text().then(err => {setError(err); setIsLoading(false)} );
-          console.log(error)
-        } else {
-          // Otherwise save token and signin.
-          resp.text().then(token => {
-            console.log(token)
-            localStorage.setItem('jwtToken', token);
-            signinWithSavedToken();
-          })
-        }
-      })
+    const queryParameters = new URLSearchParams(window.location.search);
+    const token = queryParameters.get('token');
+    localStorage.setItem('jwtToken', token as string);
+
   }
 
   // signs in user from given username and password

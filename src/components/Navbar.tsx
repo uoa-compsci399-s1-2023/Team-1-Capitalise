@@ -145,7 +145,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
             {/* Check if User is logged in */}
             { (uCheck) ?
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src="" />
+                <Avatar alt="Logged In" src={auth.user?.profilePicture} />
               </IconButton>
             :
               
@@ -284,7 +284,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               {/*The dropdown options*/}
               <MenuItem onClick={handleCloseUserMenu}>
               {/*If User is logged in, render his name*/}
-              {(uCheck) ? <><Avatar src = ""/> {auth.user?.name} </> : "Guest" }
+              {(uCheck) ? <><Avatar src ={auth.user?.profilePicture}/> {auth.user?.name} </> : "Guest" }
               </MenuItem>
 
               <Divider />

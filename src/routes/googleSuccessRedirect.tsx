@@ -13,8 +13,8 @@ export default function GoogleSuccessRedirect() {
     const [color, setColor] = useState("#22d55f");
     useEffect(() => {
         setLoading(true)
+        auth.googleAuth();
         setTimeout(() => {
-            auth.googleAuth();
             navigate("/");
             setLoading(false);
             
@@ -38,7 +38,7 @@ export default function GoogleSuccessRedirect() {
                     data-testid="loader" />
             </Grid>
             <Grid item >
-                <Typography fontWeight={500} color={"#22d55f"} sx={{mt: 6}}>Successfully linked with Google! Redirecting...</Typography>
+                <Typography fontWeight={500} color={"#22d55f"} sx={{mt: 6}}>Successfully linked with Google! Redirecting back to Homepage...</Typography>
             </Grid>
         </Grid>
        </>
