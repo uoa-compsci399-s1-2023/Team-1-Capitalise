@@ -4,8 +4,10 @@ import TeamMember from '../TeamMember'
 import { ProjectContext } from '../ProjectPage'
 import { TUser } from '../../../model/TUser';
 import { getUser } from '../../../api/getUser';
+import EditButton from '../EditButton';
 
 export default function MembersField() {
+  const 
   const { project, setProject } = useContext(ProjectContext);
   const [members, setMembers] = useState<TUser[]>([]);
 
@@ -25,11 +27,6 @@ export default function MembersField() {
         <TeamMember key={i} name={m.name} avatar={m.profilePicture} />
 
       ))}
-      {/* <TeamMember name='Rowan Woods' avatar='src/components/projectPage/dps/brooke-cagle-wKOKidNT14w-unsplash.jpg' />
-      <TeamMember name='Jesse Pinkman' avatar='src/components/projectPage/dps/harps-joseph-tAvpDE7fXgY-unsplash.jpg' />
-      <TeamMember name='Annie Edison' avatar='src/components/projectPage/dps/tiktok-profile-picture-idea-4--1--1.jpeg' />
-      <TeamMember name='Troy Barnes' avatar='src/components/projectPage/dps/brooke-cagle-wKOKidNT14w-unsplash.jpg' />
-      <TeamMember name='Isabelle Gonzalez' avatar='src/components/projectPage/dps/matheus-ferrero-W7b3eDUb_2I-unsplash.jpg' /> */}
     </Box>
   )
 }

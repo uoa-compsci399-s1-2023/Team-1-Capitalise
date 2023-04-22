@@ -31,7 +31,7 @@ function useProvideAuth(): TAuthReturnType {
     // Auto sigin in on mount
     signinWithSavedToken()
     // Validates token every 5 seconds.
-    setInterval(validateToken, 5000);
+    // setInterval(validateToken, 5000);
   }, [])
 
   const getUserPromise = (savedToken: string | null) => {

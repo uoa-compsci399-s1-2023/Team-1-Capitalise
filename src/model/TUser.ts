@@ -10,7 +10,7 @@ export type TUser = {
     userType: "graduate" | "visitor" | "admin";
     project: {_id: string; name: string;}
     isGoogleCreated: boolean
-    profilePicture?: string
+    profilePicture: string
 }
 
 // export const mockUser: TUser = {

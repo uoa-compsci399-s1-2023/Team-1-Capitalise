@@ -6,36 +6,23 @@ import { FormControl, MenuItem, InputLabel, SelectChangeEvent } from '@mui/mater
 import EditIcon from '@mui/icons-material/Edit';
 import { ProjectContext } from '../ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
+import EditButton from '../EditButton';
 
 export default function SemesterField() {
 
+  const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false);
-  const btnRef = useRef<HTMLButtonElement>(null);
   const { project, setProject } = useContext(ProjectContext)
   const [value, setValue] = useState<string>(project.semester.value);
   const theme = useTheme();
   const searchParams = useSearchParams();
 
-  const EditButton = styled(Button)({
-    height: "100%",
-    visibility: 'hidden',
-    paddingLeft: '0',
-    paddingRight: '0',
-    minWidth: '64px',
-    marginLeft: '5px',
-    ':hover': {
-      backgroundColor: theme.customColors.DividerGrey
-    }
-  });
-
   const handleMouseIn = () => {
-    console.log('in')
-    btnRef.current && (btnRef.current.style.visibility = 'visible');
+    setIsHovering(true);
   }
 
   const handleMouseOut = () => {
-    console.log('out')
-    btnRef.current && (btnRef.current.style.visibility = 'hidden');
+    setIsHovering(false);
   }
 
   const handleOpen = () => {
@@ -54,7 +41,8 @@ export default function SemesterField() {
   const handleSave = () => {
     setProject({
       ...project,
-      ['semester']: { value: value }
+      ['semester']: { value: value },
+      ['isBeingEdited']: false  // Important! Or no one else can edit the project.
     })
     setIsOpen(false);
   };
@@ -92,6 +80,7 @@ export default function SemesterField() {
       <Box
         width='100%'
         display='flex'
+        minHeight={'40px'}
         flexDirection={'row'}
         alignItems={'center'}
         onMouseEnter={handleMouseIn}
@@ -100,13 +89,7 @@ export default function SemesterField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Semester:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.semester.value}</Typography>
 
-        <EditButton
-          ref={btnRef}
-          onClick={handleOpen}
-          color='editBtnGrey'
-        >
-          <EditIcon fontSize='small' />
-        </EditButton>
+        <EditButton clickHandler={handleOpen} isShow={isHovering} />
       </Box>
     </>
   )

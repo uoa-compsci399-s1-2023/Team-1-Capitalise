@@ -1,16 +1,16 @@
 import { API_URL } from "./config";
+import { useAuth } from "../customHooks/useAuth";
 
-export async function postNewProject() {
-
-    const response = await fetch(`${API_URL}/api/users/getCurrentUser/me`, {
-        headers: {
-            'x-auth-token': auth.getToken() as string
-        }
-    });
-    if (response.status === 404 || response.status === 400) {
-      return null
-    }
-    return response.json();
+export async function patchProject(pId: string, body: {}, token: string) {
+  const resp = fetch(`${API_URL}/api/projects/${pId}`, {
+    method: 'PATCH',
+    headers: {
+      'x-auth-token': token,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  })
+  return resp
   }
 
 

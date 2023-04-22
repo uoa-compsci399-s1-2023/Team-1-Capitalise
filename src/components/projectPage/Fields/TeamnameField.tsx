@@ -5,10 +5,12 @@ import { styled, Button, Typography, useTheme, Box } from '@mui/material'
 import { FormControl, OutlinedInput, InputLabel, FormHelperText } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
 import { ProjectContext } from '../ProjectPage';
+import EditButton from '../EditButton';
 
 
 export default function TeamnameField() {
 
+  const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const { project, setProject } = useContext(ProjectContext)
@@ -16,24 +18,13 @@ export default function TeamnameField() {
   const [error, setError] = useState<string>('');
   const theme = useTheme();
 
-  const EditButton = styled(Button)({
-    height: "100%",
-    visibility: 'hidden',
-    paddingLeft: '0',
-    paddingRight: '0',
-    minWidth: '64px',
-    marginLeft: '5px',
-    ':hover': {
-      backgroundColor: theme.customColors.DividerGrey
-    }
-  });
 
   const handleMouseIn = () => {
-    btnRef.current && (btnRef.current.style.visibility = 'visible');
+    setIsHovering(true);
   }
 
   const handleMouseOut = () => {
-    btnRef.current && (btnRef.current.style.visibility = 'hidden');
+    setIsHovering(false);
   }
 
   const handleOpen = () => {
@@ -41,6 +32,7 @@ export default function TeamnameField() {
     setIsOpen(true);
   }
 
+  // Team name can't be more than 30 characters
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
     if (value.length > 30) {
@@ -94,6 +86,7 @@ export default function TeamnameField() {
 
       <Box
         width='100%'
+        minHeight={'40px'}
         display='flex'
         flexDirection={'row'}
         alignItems={'center'}
@@ -103,13 +96,7 @@ export default function TeamnameField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Team name:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.teamname}</Typography>
 
-        <EditButton
-          ref={btnRef}
-          onClick={handleOpen}
-          color='editBtnGrey'
-        >
-          <EditIcon fontSize='small' />
-        </EditButton>
+        <EditButton clickHandler={handleOpen} isShow={isHovering}/>
       </Box>
     </>
   )

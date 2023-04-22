@@ -25,7 +25,7 @@ export default function AwardBadge({ value, image }: TBadge) {
     case 'Community Impact':
       color = theme.customColors.communityImpact
       break;
-    case 'People\'s Choice':
+    case 'Peoples Choice':
       color = theme.customColors.peoplesChoice
   }
 
