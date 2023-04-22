@@ -32,10 +32,11 @@ export default function EditButton({ clickHandler, isShow }: EditButtonProps) {
   // If isBeingEdit set to true then user can't edit.
   // Else set isBeingEdited to true.
   const handleClick = () => {
+    // clickHandler();
     getProject(project._id)
       .then((proj) => {
         if (proj) {
-          setProject(proj)
+          // setProject(proj)
           if (proj.isBeingEdited) {
             console.log('Project is already being edited!')
           } else {

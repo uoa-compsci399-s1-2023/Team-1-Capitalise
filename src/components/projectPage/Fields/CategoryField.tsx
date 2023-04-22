@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useState } from 'react'
+import React, { useRef, useContext, useState, useEffect } from 'react'
 
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select } from '@mui/material';
 import { styled, Button, Typography, useTheme, Box } from '@mui/material'
@@ -10,15 +10,17 @@ import { TProject } from '../../../model/TProject';
 
 export default function CategoryField() {
 
-  const { project, setProject } = useContext(ProjectContext) // Project context
+  const { project, setProjectChanges } = useContext(ProjectContext) // Project context
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false); // For opening dialog box
-  const [value, setValue] = useState<string>(project.category.value); // For onchange input validation
+  const [value, setValue] = useState<TProject['category']['value']>(project.category.value); // For onchange input validation
   const theme = useTheme();
   const searchParams = useSearchParams();
 
-
+  useEffect(() => {
+    setValue(project.category.value);
+  }, [project])
 
   const handleMouseIn = () => {
     setIsHovering(true);
@@ -42,9 +44,8 @@ export default function CategoryField() {
   };
 
   const handleSave = () => {
-    setProject({
-      ...project,
-      ['category']: { value: value as TProject['category']['value'] }
+    setProjectChanges({
+      ['category']: value
     })
     setIsOpen(false);
   };

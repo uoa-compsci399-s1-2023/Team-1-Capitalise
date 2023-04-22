@@ -70,7 +70,7 @@ const About = () => {
           <input type="submit" onClick={auth.signout} value={'signup'} />
         </form>
       </Box>
-
+{/* 
       <Box mb={6}>
         <h1>Example 1: Something everyone sees. But only logged in users can use.</h1>
         <input type="button" onClick={handleLike} value={'Like'} />
@@ -84,7 +84,7 @@ const About = () => {
       <Box mb={6}>
         <h1>Example 3: Something only visitors, and graduates can see but only graduates can use</h1>
         {auth.isAllowed(['visitor', 'graduate'], ['6432f8a46cce2fc1706572db', '6432f85f6cce2fc1706572cf']) && <input type="button" onClick={handleNotAllowed} value={'idk use case'} />}
-      </Box>
+      </Box> */}
     </div>
 
 

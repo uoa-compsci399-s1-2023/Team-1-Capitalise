@@ -18,7 +18,7 @@ import { ProjectContext } from './ProjectPage'
 export default function ProjectDetails() {
 
   const theme = useTheme()
-  const {project, setProject} = useContext(ProjectContext);
+  const { project, setProjectChanges } = useContext(ProjectContext);
 
   return (
     <Stack

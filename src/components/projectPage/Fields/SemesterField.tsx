@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useState } from 'react'
+import React, { useRef, useContext, useState, useEffect } from 'react'
 
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select } from '@mui/material';
 import { styled, Button, Typography, useTheme, Box } from '@mui/material'
@@ -8,22 +8,18 @@ import { ProjectContext } from '../ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
 
-export default function SemesterField() {
+export default function SemesterField({ initialValue }: { initialValue: string }) {
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false);
-  const { project, setProject } = useContext(ProjectContext)
-  const [value, setValue] = useState<string>(project.semester.value);
+  const { project, setProjectChanges } = useContext(ProjectContext);
+  const [value, setValue] = useState<string>('');
   const theme = useTheme();
   const searchParams = useSearchParams();
 
-  const handleMouseIn = () => {
-    setIsHovering(true);
-  }
-
-  const handleMouseOut = () => {
-    setIsHovering(false);
-  }
+  useEffect(() => {
+    setValue(project.semester.value)
+  }, [project])
 
   const handleOpen = () => {
     setValue(project.semester.value);
@@ -39,10 +35,8 @@ export default function SemesterField() {
   };
 
   const handleSave = () => {
-    setProject({
-      ...project,
-      ['semester']: { value: value },
-      ['isBeingEdited']: false  // Important! Or no one else can edit the project.
+    setProjectChanges({
+      ['semester']: value,
     })
     setIsOpen(false);
   };
@@ -64,9 +58,9 @@ export default function SemesterField() {
               onChange={handleChange}
             >
               { // Skip index 0, which has the default category.
-              searchParams.semester.slice(1).map(
-                (s, i) => <MenuItem key={i} value={s.value}>{s.value}</MenuItem>
-              )}
+                searchParams.semester.slice(1).map(
+                  (s, i) => <MenuItem key={i} value={s.value}>{s.value}</MenuItem>
+                )}
             </Select>
           </FormControl>
 
@@ -83,8 +77,8 @@ export default function SemesterField() {
         minHeight={'40px'}
         flexDirection={'row'}
         alignItems={'center'}
-        onMouseEnter={handleMouseIn}
-        onMouseLeave={handleMouseOut}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
       >
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Semester:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.semester.value}</Typography>

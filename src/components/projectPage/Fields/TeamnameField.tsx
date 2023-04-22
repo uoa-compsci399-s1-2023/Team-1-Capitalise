@@ -13,7 +13,7 @@ export default function TeamnameField() {
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { project, setProject } = useContext(ProjectContext)
+  const { project, setProjectChanges } = useContext(ProjectContext)
   const [value, setValue] = useState<string>(project.teamname);
   const [error, setError] = useState<string>('');
   const theme = useTheme();
@@ -49,8 +49,7 @@ export default function TeamnameField() {
 
   const handleSave = () => {
     if (!error) {
-      setProject({
-        ...project,
+      setProjectChanges({
         ['teamname']: value
       })
       setIsOpen(false);

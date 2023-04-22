@@ -7,8 +7,8 @@ import { getUser } from '../../../api/getUser';
 import EditButton from '../EditButton';
 
 export default function MembersField() {
-  const 
-  const { project, setProject } = useContext(ProjectContext);
+  // const 
+  const { project, setProjectChanges } = useContext(ProjectContext);
   const [members, setMembers] = useState<TUser[]>([]);
 
   useEffect(() => {

@@ -1,31 +1,7 @@
 import { TProject } from '../model/TProject'
 import { TUser, mockUser } from './TUser';
 
-export type TProjectPost = {
-  name: string;
-  blurb?: string;
-  teamname?: string;
-  banner?: string;
-  thumbnail?: string;
-  semester: string
-  category: TProject['category']['value']
-  links?: {
-    type: 'github' | 'codesandbox' | 'deployedSite' | 'codepen' | 'notion' | 'kaggle'
-    value: string
-  }[];
-  content?:
-  {
-    tabName: string
-    tabContent:
-    {
-      type: "gallery" | "poster" | "text" | "video" | "codeBlock" | "quote" | "image"
-      subHeading?: string
-      value: string[]
-    }[],
-  }[]
-  badges?: TProject['badges'][0]['value']
-  tags?: string[]
-};
+
 
 export type TMockProject = {
   _id: string;
