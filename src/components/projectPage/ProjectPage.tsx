@@ -18,7 +18,7 @@ type TabContent = {
 }
 
 export interface ProjectProps {
-  project: TProject // No setter. Displayed project is always in sync with backend.
+  project: TProject
   setProject: React.Dispatch<SetStateAction<TProject>>
   // projectChanges: Partial<TProject | null>;
   setProjectChanges: React.Dispatch<SetStateAction<TProjectPost | null>> // No getter. Displayed project is always in sync with backend.

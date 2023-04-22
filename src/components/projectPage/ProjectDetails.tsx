@@ -35,7 +35,6 @@ export default function ProjectDetails() {
       <CategoryField />
       <SemesterField />
       <TeamnameField />
-      {/* <TeamnameField type='text' name='' label='Team:' text={`${project.teamname}`} /> */}
       <MembersField />
       <Box>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Links:</Typography>
@@ -43,7 +42,8 @@ export default function ProjectDetails() {
         <CodeSandboxBtn />
       </Box>
 
-      <Stack flexDirection={'row'} gap={1}>
+      <Stack flexDirection={'row'} gap={1} flexWrap={'wrap'}>
+        {/* Need to change with api call. */}
         <Chip size='small' label='#ML' />
         <Chip size='small' label='#Artificial Intelligence' />
         <Chip size='small' label='#Data Science' />

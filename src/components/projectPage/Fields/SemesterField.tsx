@@ -8,7 +8,7 @@ import { ProjectContext } from '../ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
 
-export default function SemesterField({ initialValue }: { initialValue: string }) {
+export default function SemesterField() {
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false);

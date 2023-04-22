@@ -52,13 +52,17 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
           >
             {`Like (${likes})`}
           </Button>
-          <Button
+
+          {/* Design change, don't need tab button */}
+          {/* <Button
             variant='outlined'
             color='neutral'
             startIcon={<ChatOutlinedIcon />}
           >
             Comment
-          </Button>
+          </Button> */}
+
+
         </Stack>
       </Stack>
 
