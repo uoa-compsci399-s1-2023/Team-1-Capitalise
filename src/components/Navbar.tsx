@@ -10,6 +10,7 @@ import {
   Toolbar,
   Tooltip,
   styled,
+  useRadioGroup,
 } from "@mui/material";
 
 import { useNavigate, Link } from "react-router-dom";
@@ -145,7 +146,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
             {/* Check if User is logged in */}
             { (uCheck) ?
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src={auth.user?.profilePicture} />
+                <Avatar alt="Logged In" src={auth.user?.profilePicture}> <img referrerPolicy="no-referrer" /></Avatar>
               </IconButton>
             :
               
@@ -234,7 +235,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src="" />
+                <Avatar alt="Logged In" src={auth.user?.profilePicture}> <img referrerPolicy="no-referrer" /></Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -284,7 +285,7 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               {/*The dropdown options*/}
               <MenuItem onClick={handleCloseUserMenu}>
               {/*If User is logged in, render his name*/}
-              {(uCheck) ? <><Avatar src ={auth.user?.profilePicture}/> {auth.user?.name} </> : "Guest" }
+              {(uCheck) ? <><Avatar src ={auth.user?.profilePicture}/> <img referrerPolicy="no-referrer" /> {auth.user?.name} </> : "Guest" }
               </MenuItem>
 
               <Divider />
