@@ -548,17 +548,17 @@ const likeComment = async (req, res) => {
   //Decrement likes on project
   //Remove the liked project from users.LikedProjects
   if (usersLikedProjects.includes(projectId)) {
-    const updateProject = await Project.findByIdAndUpdate(projectId, {
-      $inc: { likes: -1 },
-    });
+    const updateProject = await Project.findByIdAndUpdate(
+      projectId,
+      {
+        $inc: { likes: -1 },
+      },
+      { new: true }
+    );
     const likedProjects = usersLikedProjects.filter((project) => {
       return project._id != projectId;
     });
-    await User.findByIdAndUpdate(
-      currentId,
-      { likedProjects: likedProjects },
-      { new: true }
-    );
+    await User.findByIdAndUpdate(currentId, { likedProjects: likedProjects });
     return res.status(200).send(updateProject);
   }
 
