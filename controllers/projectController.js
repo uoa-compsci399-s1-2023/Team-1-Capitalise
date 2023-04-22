@@ -9,7 +9,7 @@ const { Parameter, validateParameter } = require("../models/parameter");
 const getAllProjects = async (req, res) => {
   //Populate the project members attribute with id and names of users.
   const projects = await Project.find()
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -21,7 +21,7 @@ const getAllProjects = async (req, res) => {
 //get all projects by likes
 const getProjectsByLikes = async (req, res) => {
   const projects = await Project.find()
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -58,7 +58,7 @@ const getProject = async (req, res) => {
   }
 
   const project = await Project.findById(projectId)
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -185,7 +185,7 @@ const updateProjectById = async (req, res) => {
     { ...req.body },
     { new: true }
   )
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -282,7 +282,7 @@ const addNewProject = async (req, res) => {
   project = await project.save();
 
   populated = await Project.findById(project._id)
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -399,7 +399,7 @@ const addUserToProject = async (req, res) => {
     },
     { new: true }
   )
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -522,7 +522,7 @@ const searchProjects = async (req, res) => {
   const projects = await Project.find(query)
     .skip(req.query.startIndex)
     .limit(req.query.numProjects)
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -578,7 +578,7 @@ const likeComment = async (req, res) => {
       },
       { new: true }
     )
-      .populate("members", "_id, name")
+      //.populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
       .populate("badges", "value -_id")
@@ -608,7 +608,7 @@ const likeComment = async (req, res) => {
     },
     { new: true }
   )
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -625,7 +625,7 @@ const incrementViews = async (req, res) => {
     },
     { new: true }
   )
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -683,7 +683,7 @@ const awardBadge = async (req, res) => {
     },
     { new: true }
   )
-    .populate("members", "_id, name")
+    //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
