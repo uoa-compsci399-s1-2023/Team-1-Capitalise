@@ -9,7 +9,7 @@ const { Parameter, validateParameter } = require("../models/parameter");
 const getAllProjects = async (req, res) => {
   //Populate the project members attribute with id and names of users.
   const projects = await Project.find()
-    //.populate("members", "_id, name")
+    .populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
