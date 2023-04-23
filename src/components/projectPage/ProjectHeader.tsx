@@ -21,8 +21,6 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
   const isExtraSmall = theme.breakpoints.down("sm");
 
 
-
-
   const headerStyle = {
     padding: '0 20px',
     width: '100%',
@@ -71,8 +69,7 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
           </Typography>
         </Box>
 
-        <Stack flexDirection={'row'} gap={2}>
-        { auth.user && !auth.isAllowed(undefined, project.members) && <LikeBtn /> }
+        { <LikeBtn /> }
 
           {/* Design change, no more comment button */}
           {/* <Button
@@ -83,7 +80,6 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
             Comment
           </Button> */}
 
-        </Stack>
       </Stack>
 
     </>
