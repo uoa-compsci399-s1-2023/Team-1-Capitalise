@@ -7,6 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { ProjectContext } from '../ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
+import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "../../search/AvailableParams";
+
 
 export default function SemesterField() {
 
@@ -15,11 +17,13 @@ export default function SemesterField() {
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [value, setValue] = useState<string>('');
   const theme = useTheme();
-  const searchParams = useSearchParams();
+  
+  // const searchParams = useSearchParams();
 
   useEffect(() => {
     setValue(project.semester.value)
   }, [project])
+
 
   const handleOpen = () => {
     setValue(project.semester.value);
@@ -58,7 +62,7 @@ export default function SemesterField() {
               onChange={handleChange}
             >
               { // Skip index 0, which has the default category.
-                searchParams.semester.slice(1).map(
+                searchFilterParams.semester.slice(1).map(
                   (s, i) => <MenuItem key={i} value={s.value}>{s.value}</MenuItem>
                 )}
             </Select>

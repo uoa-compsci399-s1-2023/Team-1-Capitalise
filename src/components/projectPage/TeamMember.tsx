@@ -27,7 +27,7 @@ export default function TeamMember({ name, avatar, role }: FieldProps) {
 
   return (
     <Box width='100%' display='flex' flexDirection={'row'} >
-      
+      {/* Needs to redirect to user page onclick */}
       <Member
         startIcon={<Avatar sizes='small' alt={name} src={avatar} sx={{ width: 30, height: 30 }} />}
         variant='text'

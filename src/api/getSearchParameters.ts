@@ -13,7 +13,7 @@ export default async function getSearchParams() {
     if (r.ok) {
       return r.json()
     } else {
-      console.log(`failed to fetch parameter ${r.text()}`)
+      r.text().then(err => console.log(`failed to fetch parameter ${err}`))
     }
     }));
 }

@@ -34,7 +34,7 @@ export type TProject = {
   }[];
   likes: number;
   comments: string[]; // array of ids
-  tags: { value: string }[];
+  tags: { name: string }[];
   badges: { value: "Peoples Choice" | "Top Excellence" | "Community Impact" }; // There should be an apostrophe in people's choice!
   isBeingEdited: false;
   createdAt: string;

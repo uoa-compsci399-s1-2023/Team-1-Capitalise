@@ -1,6 +1,5 @@
 import React, { SetStateAction, useContext } from 'react'
 import { Box, Stack, Typography, useTheme, Chip } from '@mui/material'
-import { styled } from '@mui/material/styles'
 
 
 import TeamnameField from './Fields/TeamnameField'
@@ -43,10 +42,9 @@ export default function ProjectDetails() {
       </Box>
 
       <Stack flexDirection={'row'} gap={1} flexWrap={'wrap'}>
-        {/* Need to change with api call. */}
-        <Chip size='small' label='#ML' />
-        <Chip size='small' label='#Artificial Intelligence' />
-        <Chip size='small' label='#Data Science' />
+        {project.tags.map( (tag, i) => (
+          <Chip key={i} size='small' label={tag.name} />
+        ))}
       </Stack>
     </Stack>
 

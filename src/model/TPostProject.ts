@@ -1,6 +1,6 @@
 import { TProject } from "./TProject";
 
-// Backend accepts a different object when POST/PATCH compared to GET
+// Backend accepts a different project object when POST/PATCH compared to GET
 
 export type TProjectPost = {
   name?: TProject['name']; // Max 100 characters
@@ -13,5 +13,5 @@ export type TProjectPost = {
   links?: TProject['links']
   content?: TProject['content']
   badges?: TProject['badges']['value']
-  tags?: TProject['badges']['value'][]
+  tags?: TProject['badges']['value'][] // Max 20 characters
 }

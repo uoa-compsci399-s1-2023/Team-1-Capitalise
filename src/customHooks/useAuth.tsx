@@ -17,6 +17,7 @@ type TAuthReturnType = {
   onlyAuthenticated: () => void;
   isAllowed: (aRoles?: TUser['userType'][], aIds?: string[]) => boolean;
   getToken: () => string | null;
+  getLatestUser: () => void;
   error: string;
   isLoading: boolean;
 };
@@ -29,7 +30,7 @@ function useProvideAuth(): TAuthReturnType {
 
   useEffect(() => {
     // Auto sigin in on mount
-    signinWithSavedToken()
+    getLatestUser()
     // Validates token every 5 seconds.
     // setInterval(validateToken, 5000);
   }, [])
@@ -88,13 +89,14 @@ function useProvideAuth(): TAuthReturnType {
           // Otherwise save token and signin.
           resp.text().then(token => {
             localStorage.setItem('jwtToken', token);
-            signinWithSavedToken();
+            getLatestUser();
           })
         }
       })
   }
 
-  function signinWithSavedToken() {
+  // Can use this to get latest user updates.
+  function getLatestUser() {
     setError('')
     const savedToken = localStorage.getItem('jwtToken');
     if (savedToken) {
@@ -171,6 +173,7 @@ function useProvideAuth(): TAuthReturnType {
     onlyAuthenticated,
     isAllowed,
     getToken,
+    getLatestUser,
     error,
     isLoading,
   };

@@ -1,6 +1,10 @@
 import { Box, Stack, Typography, useTheme, Button, Chip } from '@mui/material'
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+
+import { likeProject } from '../../api/likeProject';
+import { ProjectContext } from './ProjectPage';
+import { useContext } from 'react';
+import { useAuth } from '../../customHooks/useAuth';
+import LikeBtn from './LikeBtn';
 
 interface ProjectHeaderProps {
   name: string
@@ -8,26 +12,49 @@ interface ProjectHeaderProps {
   likes: number
 }
 
-
 export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps) {
 
-  const theme = useTheme()
+  const theme = useTheme();
+  const { project, setProject } = useContext(ProjectContext);
+  const auth = useAuth();
+
+  const isExtraSmall = theme.breakpoints.down("sm");
+
+
+
+
+  const headerStyle = {
+    padding: '0 20px',
+    width: '100%',
+    mt: 4,
+
+    // Only apply in desktop mode
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 0,
+
+    // Only apply in phone mode
+    [isExtraSmall]: {
+      flexDirection: 'column',
+      justifyContent: 'normal',
+      alignItems: 'start',
+      gap: 3,
+      mb: 2
+    }
+
+  }
 
   return (
     <>
       <Stack
-        // style={theme.contentBlock}
-        padding={'0 20px'}
-        width={'100%'}
-        mt={4}
-        flexDirection={'row'}
-        justifyContent={'space-between'}
-        alignItems={'center'}
+
+        sx={headerStyle}
       >
         <Box>
-          <Typography 
-            variant="h1" 
-            color="initial" 
+          <Typography
+            variant="h1"
+            color="initial"
             mt={1}
             fontWeight={600}
             alignSelf={'center'}
@@ -45,15 +72,9 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
         </Box>
 
         <Stack flexDirection={'row'} gap={2}>
-          <Button
-            variant='contained'
-            color='error'
-            startIcon={<FavoriteIcon />}
-          >
-            {`Like (${likes})`}
-          </Button>
+        { auth.user && !auth.isAllowed(undefined, project.members) && <LikeBtn /> }
 
-          {/* Design change, don't need tab button */}
+          {/* Design change, no more comment button */}
           {/* <Button
             variant='outlined'
             color='neutral'
@@ -61,7 +82,6 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
           >
             Comment
           </Button> */}
-
 
         </Stack>
       </Stack>

@@ -7,7 +7,7 @@ import { getUser } from '../../../api/getUser';
 import EditButton from '../EditButton';
 
 export default function MembersField() {
-  // const 
+
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [members, setMembers] = useState<TUser[]>([]);
 
@@ -25,7 +25,6 @@ export default function MembersField() {
       <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>
       {members.map((m, i) => (
         <TeamMember key={i} name={m.name} avatar={m.profilePicture} />
-
       ))}
     </Box>
   )

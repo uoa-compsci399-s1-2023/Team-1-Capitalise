@@ -7,6 +7,8 @@ import { ProjectContext } from '../ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
 import { TProject } from '../../../model/TProject';
+import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "../../search/AvailableParams";
+
 
 export default function CategoryField() {
 
@@ -14,13 +16,17 @@ export default function CategoryField() {
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false); // For opening dialog box
-  const [value, setValue] = useState<TProject['category']['value']>(project.category.value); // For onchange input validation
+  const [value, setValue] = useState<string>(''); // For onchange input validation
   const theme = useTheme();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
-  useEffect(() => {
-    setValue(project.category.value);
-  }, [project])
+  useEffect( () => {
+    fetchCurrentParameters()
+  },[])
+
+  // useEffect(() => {
+  //   setValue(project.category.value);
+  // }, [project])
 
   const handleMouseIn = () => {
     setIsHovering(true);
@@ -39,7 +45,10 @@ export default function CategoryField() {
     setValue(e.target.value);
   }
 
-  const handleClose = () => {
+  const handleClose = (evt: React.SyntheticEvent, reason: string='') => {
+    if (reason && reason === 'backdropClick') {
+      return;
+    }
     setIsOpen(false);
   };
 
@@ -53,6 +62,7 @@ export default function CategoryField() {
   return (
     <>
       <Dialog
+        keepMounted
         open={isOpen}
         onClose={handleClose}
         fullWidth
@@ -67,7 +77,7 @@ export default function CategoryField() {
               onChange={handleChange}
             >
               { // Skip index 0, which has the default category.
-                searchParams.category.slice(1).map(
+                searchFilterParams.category.slice(1).map(
                   (c, i) => <MenuItem key={i} value={c.value}>{c.value}</MenuItem>
                 )}
             </Select>

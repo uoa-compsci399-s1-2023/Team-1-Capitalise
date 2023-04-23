@@ -50,12 +50,11 @@ export default function ProjectPage({ projectId }: { projectId: string }) {
   // Perhaps we need to implement a session timer to release the lock on fail?
   useEffect(() => {
     if (projectChanges) {
-      setIsLoading(true)
       patchProject(
         project._id,
         { 
           ...projectChanges,
-          ["isBeingEdited"]: false // Will not go through if patch fails.
+          ["isBeingEdited"]: false
         },
         auth.getToken() as string,
       ).then(resp => {
@@ -67,7 +66,6 @@ export default function ProjectPage({ projectId }: { projectId: string }) {
           resp.text().then(err => console.log(err))
         }
       }).finally(() => {
-        setIsLoading(false)
         setProjectChanges(null) // Clears changes. Won't cause loop because of null check at start.
       })
     }
