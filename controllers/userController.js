@@ -304,15 +304,8 @@ const getCurrentUser = async (req, res) => {
 
 //search for users
 const searchUsers = async (req, res) => {
-  //console.log(req.query.name.split(" "));
-  //let myArr = req.query.name.split(" ");
-  //let myQueryArr = [];
-  //for (let i = 0; i < myArr.length; i++) {
-  //  myQueryArr.push({ name: { $regex: myArr[i], $options: "i" } });
-  //}
-  //console.log(myQueryArr);
+  if (!req.query.name) req.query.name="";
   const users = await User.find({
-    //$or: myQueryArr,
     name: { $regex: req.query.name, $options: "i" },
   });
   res.send(users);
