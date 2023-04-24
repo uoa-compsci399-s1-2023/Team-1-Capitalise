@@ -115,15 +115,17 @@ function SignInSide() {
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
+            
             sx={{
               my: 8,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              
             }}
           >
-            <Box sx={{mt: 20, mb: 3}}>
+            <Box sx={{mb: 3, mt: "11vh"}}>
             <Box
               padding="0 30px"
               component="img"
@@ -141,7 +143,7 @@ function SignInSide() {
             <Typography component="h1" variant="h5" sx={{fontWeight: 500}}>
               Login
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit}>
+            <Box component="form" noValidate onSubmit={handleSubmit} >
               <TextField
                 margin="normal"
                 required
