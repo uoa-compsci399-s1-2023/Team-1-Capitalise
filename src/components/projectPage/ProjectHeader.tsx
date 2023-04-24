@@ -18,7 +18,7 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
   const { project, setProject } = useContext(ProjectContext);
   const auth = useAuth();
 
-  const isExtraSmall = theme.breakpoints.down("sm");
+  const isSmall = theme.breakpoints.down("md");
 
 
   const headerStyle = {
@@ -33,7 +33,7 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
     gap: 0,
 
     // Only apply in phone mode
-    [isExtraSmall]: {
+    [isSmall]: {
       flexDirection: 'column',
       justifyContent: 'normal',
       alignItems: 'start',

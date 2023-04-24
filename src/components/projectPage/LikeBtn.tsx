@@ -18,9 +18,10 @@ export default function LikeBtn() {
   const theme = useTheme();
 
   const InfoBox = styled(Typography)({
-    padding: '10px 20px',
+    padding: '5px 10px',
     border: `1px solid ${theme.palette.neutral.main}`,
-    borderRadius: '10px'
+    borderRadius: '10px',
+    whiteSpace: 'nowrap'
   })
 
   const handleLike = () => {
@@ -45,14 +46,17 @@ export default function LikeBtn() {
       || auth.isAllowed(['admin'])
     ) ?
 
-      // If member or admin, show likes but disable liking
+      // If member or admin, show likes, views, and comments info
 
-      <Stack flexDirection={'row'} gap={2}>
+      <Stack flexDirection={'row'} gap={2} flexWrap={'wrap'}>
         <InfoBox>
           {pluralize('likes', project.likes, true)}
         </InfoBox>
         <InfoBox>
           {pluralize('views', project.views, true)}
+        </InfoBox>
+        <InfoBox>
+          {pluralize('comments', project.comments.length, true)}
         </InfoBox>
       </Stack>
 

@@ -35,13 +35,13 @@ export default function ProjectDetails() {
       <SemesterField />
       <TeamnameField />
       <MembersField />
-      <Box>
+      <Box mt={1}>
         <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Links:</Typography>
         <GithubBtn />
         <CodeSandboxBtn />
       </Box>
 
-      <Stack flexDirection={'row'} gap={1} flexWrap={'wrap'}>
+      <Stack mt={8} flexDirection={'row'} gap={1} flexWrap={'wrap'}>
         {project.tags.map( (tag, i) => (
           <Chip key={i} size='small' label={tag.name} />
         ))}

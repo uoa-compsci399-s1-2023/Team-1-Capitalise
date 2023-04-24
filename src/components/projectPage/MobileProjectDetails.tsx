@@ -4,9 +4,14 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ProjectContext } from './ProjectPage';
+import EditButton from './EditButton';
+import { Box } from '@mui/material';
 
-export default function ControlledAccordions() {
+export default function ProjectDetailsAccordian() {
   const [expanded, setExpanded] = React.useState<string | false>(false);
+  const { project, setProject } = React.useContext(ProjectContext)
+
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -14,34 +19,28 @@ export default function ControlledAccordions() {
     };
 
   return (
-    <div>
-      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+    <Box>
+      <Accordion expanded={expanded === 'panel1'}>
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          // disabled
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
           <Typography sx={{ width: '33%', flexShrink: 0 }}>
-            General settings
+            Category:
           </Typography>
-          <Typography sx={{ color: 'text.secondary' }}>I am an accordion</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{project.category.value}</Typography>
+          <EditButton isShow clickHandler={()=>{}} />
         </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.
-            Aliquam eget maximus est, id dignissim quam.
-          </Typography>
-        </AccordionDetails>
       </Accordion>
-      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+      <Accordion expanded={expanded === 'panel2'}>
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2bh-content"
           id="panel2bh-header"
         >
-          <Typography sx={{ width: '33%', flexShrink: 0 }}>Users</Typography>
+          <Typography sx={{ width: '33%', flexShrink: 0 }}>Semester:</Typography>
           <Typography sx={{ color: 'text.secondary' }}>
-            You are currently not an owner
+            {project.semester.value}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -87,6 +86,6 @@ export default function ControlledAccordions() {
           </Typography>
         </AccordionDetails>
       </Accordion>
-    </div>
+    </Box>
   );
 }

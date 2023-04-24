@@ -7,6 +7,7 @@ import { ProjectContext } from '../ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
 import { TProject } from '../../../model/TProject';
+import { TProjectPost } from '../../../model/TPostProject';
 import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "../../search/AvailableParams";
 
 
@@ -54,7 +55,7 @@ export default function CategoryField() {
 
   const handleSave = () => {
     setProjectChanges({
-      ['category']: value
+      ['category']: value as TProjectPost['category']
     })
     setIsOpen(false);
   };
@@ -96,6 +97,7 @@ export default function CategoryField() {
         display='flex'
         flexDirection={'row'}
         alignItems={'center'}
+        mt={2}
         onMouseEnter={handleMouseIn}
         onMouseLeave={handleMouseOut}
       >

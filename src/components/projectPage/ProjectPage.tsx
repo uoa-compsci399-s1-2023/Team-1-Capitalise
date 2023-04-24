@@ -10,6 +10,7 @@ import { TProject } from '../../model/TProject';
 import { TProjectPost } from '../../model/TPostProject';
 import { patchProject } from '../../api/patchProject';
 import { useAuth } from '../../customHooks/useAuth';
+import ProjectDetailsAccordian from './MobileProjectDetails';
 
 
 type TabContent = {
@@ -94,11 +95,15 @@ export default function ProjectPage({ projectId }: { projectId: string }) {
           maxWidth={'1600px'}
           mx={'auto'}
         >
+
           <ProjectHeader
             name={project.name}
             blurb={project.blurb}
             likes={project.likes}
-          />
+            />
+
+          <ProjectDetailsAccordian/>
+          
           <Stack
             sx={{
               flexDirection: { md: 'row', sm: 'column' },
