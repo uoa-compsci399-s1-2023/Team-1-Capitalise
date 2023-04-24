@@ -10,17 +10,16 @@ interface SignUpProps {
 }
 
 type TAuthReturnType = {
-  user: TUser | null; // Current user object. You can access everything from this, role, username, profile pic, etc. If no one is signed in it is set to null.
-  signin: (username: TUser["username"], password: string) => void; // Signs in user. Mostly for the sign in form.
-  signup: (newUser: SignUpProps) => void; // Signs up user
-  signout: () => void; // Deletes saved token and set user to null.
-  onlyAuthenticated: () => void; // Use this redirect users to sign in page.
-  isAllowed: (aRoles?: TUser["userType"][], aIds?: string[]) => boolean; // For role and id based authorization.
-  getToken: () => string | null; // For restricted api calls.
-  getLatestUser: () => void; // Fetches latest user from backend
-  error: string; // Set with server message if signin or signout fails.
-  isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
-  googleAuth: () => void;
+  user: TUser | null;
+  signin: (username: TUser["username"], password: string) => void;
+  signup: (newUser: SignUpProps) => void;
+  signout: () => void;
+  onlyAuthenticated: () => void;
+  isAllowed: (aRoles?: TUser['userType'][], aIds?: string[]) => boolean;
+  getToken: () => string | null;
+  getLatestUser: () => void;
+  error: string;
+  isLoading: boolean;
 };
 
 function useProvideAuth(): TAuthReturnType {
@@ -74,16 +73,6 @@ function useProvideAuth(): TAuthReturnType {
     }
   }
 
-  function googleAuth() {
-    setUser(null);
-    setIsLoading(true);
-    setError("");
-    const queryParameters = new URLSearchParams(window.location.search);
-    const token = queryParameters.get("token");
-    localStorage.setItem("jwtToken", token as string);
-  }
-  
-
   // signs in user from given username and password
   // saves token locally
   // Any errors are set in the error state variable.
@@ -95,10 +84,7 @@ function useProvideAuth(): TAuthReturnType {
       .then(resp => {
         if (!resp.ok) {
           // Set login error
-          resp.text().then(err => {
-            setError(err); 
-            setIsLoading(false)
-          });
+          resp.text().then(err => {setError(err); setIsLoading(false)} );
         } else {
           // Otherwise save token and signin.
           resp.text().then(token => {
@@ -119,10 +105,9 @@ function useProvideAuth(): TAuthReturnType {
           if (resp.ok) {
             resp.json().then((jsonData) => setUser(jsonData));
           } else {
-            resp.text().then((err) => setError(err));
+            resp.text().then(err => setError(err))
           }
-        })
-        .finally(() => setIsLoading(false));
+        }).finally(() => setIsLoading(false))
     }
   }
 
@@ -139,15 +124,13 @@ function useProvideAuth(): TAuthReturnType {
         "Content-Type": "application/json",
       },
       body: postBody,
-    })
-      .then((resp) => {
-        if (resp.ok) {
-          signin(newUser.email, newUser.password); // signin user if signup successful
-        } else {
-          resp.text().then((err) => setError(err));
-        }
-      })
-      .finally(() => setIsLoading(false));
+    }).then(resp => {
+      if (resp.ok) {
+        signin(newUser.email, newUser.password);
+      } else {
+        resp.text().then(err => setError(err));
+      }
+    }).finally(() => setIsLoading(false));
   }
 
   // Deletes token and sets user to null
@@ -160,21 +143,18 @@ function useProvideAuth(): TAuthReturnType {
   function onlyAuthenticated() {
     validateToken(); // checks if current user is valid.
     if (!user) {
-      navigate("/projects");
+      navigate('/projects')
     }
   }
 
   // Returns the currently saved token.
   // Useful for api calls that need authorisation.
   function getToken() {
-    return localStorage.getItem("jwtToken");
+    return localStorage.getItem('jwtToken')
   }
 
   // Checks if the current user is authorised based on given roles and ids
-  function isAllowed(
-    allowedRoles?: TUser["userType"][],
-    allowedIds?: string[] | null
-  ) {
+  function isAllowed(allowedRoles?: TUser['userType'][], allowedIds?: string[]) {
     if (!user) {
       return false;
     } else if (allowedIds && !allowedIds.includes(user._id)) {
@@ -182,7 +162,7 @@ function useProvideAuth(): TAuthReturnType {
     } else if (allowedRoles && !allowedRoles.includes(user.userType)) {
       return false;
     }
-    return true;
+    return true
   }
 
   return {
@@ -196,7 +176,6 @@ function useProvideAuth(): TAuthReturnType {
     getLatestUser,
     error,
     isLoading,
-    googleAuth,
   };
 }
 
@@ -209,7 +188,7 @@ export function AuthProvider({ children }: { children: any }) { // Gave any type
     <authContext.Provider value={useProvideAuth()}>
       {children}
     </authContext.Provider>
-  );
+  )
 }
 
 export const useAuth = () => useContext(authContext);

@@ -13,8 +13,6 @@ import topExcellence from "../../assets/topExcellence.svg";
 
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 
-import { useNavigate } from "react-router-dom";
-
 interface Props {
   title: string;
   semester: string;
@@ -23,7 +21,6 @@ interface Props {
   category: string;
   likes: number;
   badges: string;
-  projectId: string;
 }
 
 const ProjectCard = ({
@@ -34,7 +31,6 @@ const ProjectCard = ({
   category,
   likes,
   badges,
-  projectId,
 }: Props) => {
   const handleDefaultImage = (e: any) => {
     e.target.onerror = null;
@@ -62,19 +58,8 @@ const ProjectCard = ({
 
   setBadge(badges);
 
-  const navigate = useNavigate();
-
-  const handleCardClick = () => {
-    // console.log("clicked");
-    console.log(projectId);
-    // when project card is clicked, redirect to project details.
-    // we pass the project id to the ProjectDetails page.
-    navigate(`/project/${projectId}`);
-  };
-
   return (
     <Card
-      onClick={handleCardClick}
       sx={{
         minWidth: 320,
         maxWidth: 320,

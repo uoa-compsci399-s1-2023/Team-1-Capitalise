@@ -13,7 +13,7 @@ const About = () => {
     e.preventDefault();
     const uname = e.target.username.value;
     const password = e.target.password.value;
-    auth.signin(uname, password);
+    auth.signin(uname, password)
   }
 
   const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {

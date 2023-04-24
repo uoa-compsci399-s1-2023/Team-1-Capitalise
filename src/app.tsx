@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
 import { Box } from "@mui/material";
-import { Home, Projects, About, Registration, Login } from "./routes";
+import { Home, Projects, About } from "./routes";
 import customTheme1 from "./themes/custom1";
 
 // Apis
@@ -11,45 +11,37 @@ import { TProject } from "./api/getProjects";
 import { getProjectsSearch } from "./api/getSearchProjects";
 
 // Other
-import {
-  searchFilterParams,
-  TAvailParameters,
-} from "./components/search/AvailableParams";
-import ProjectPage from "./components/projectPage/ProjectPage";
+import { searchFilterParams, TAvailParameters } from "./components/search/AvailableParams";
+import ProjectPage from './components/projectPage/ProjectPage';
 import Navbar from "./components/Navbar";
-import { TUser } from "./model/TUser";
+import { TUser } from './model/TUser';
 import { AuthProvider } from "./customHooks/useAuth";
 
-// Project page
-import Project from "./routes/Project";
-
-import GoogleSuccessRedirect from "./routes/googleSuccessRedirect";
-import GoogleFailure from "./routes/googleFailure";
 
 // Represents curr state of filters
 export type TFiltersState = {
-  keywords: string;
-  category: TAvailParameters["category"][0];
-  semester: TAvailParameters["semester"][0];
-  award: TAvailParameters["award"][0];
-  sortBy: TAvailParameters["sortBy"][0];
+  keywords: string,
+  category: TAvailParameters['category'][0],
+  semester: TAvailParameters['semester'][0],
+  award: TAvailParameters['award'][0],
+  sortBy: TAvailParameters['sortBy'][0],
   // These two are for pagination
-  currPage: number;
-  projectsPerPage: number;
-};
+  currPage: number,
+  projectsPerPage: number,
+}
 
 export default function App() {
 
 
   const [currFilters, setFilters] = useState<TFiltersState>({
-    keywords: "",
+    keywords: '',
     category: searchFilterParams.category[0],
     semester: searchFilterParams.semester[0],
     award: searchFilterParams.award[0],
     sortBy: searchFilterParams.sortBy[0],
     currPage: 1,
-    projectsPerPage: 6,
-  });
+    projectsPerPage: 6
+  })
 
 
   return (
@@ -67,19 +59,10 @@ export default function App() {
               } />
               <Route path="/projectpage" element={<ProjectPage projectId="6442068f7297a06fc1659115"/>} />
               <Route path="/About" element={<About />} />
-              <Route path="/project/:projectId" element={<Project />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/Register" element={<Registration />} />
-              <Route
-                path="/googleSuccessRedirect"
-                element={<GoogleSuccessRedirect />}
-              />
-              <Route path="/googleFailure" element={<GoogleFailure />} />
-
             </Routes>
           </Box>
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
-  );
+  )
 }

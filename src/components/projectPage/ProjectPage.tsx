@@ -5,25 +5,13 @@ import ProjectHeader from './ProjectHeader';
 import TabButton from './TabButton';
 import { TMockProject, mockProject } from '../../model/MockProject';
 import { getProject } from '../../api/getProject'
+import { Stack, Box, useTheme, Container, Typography, Button, Divider } from '@mui/material';
 import { TProject } from '../../model/TProject';
 import { TProjectPost } from '../../model/TPostProject';
 import { patchProject } from '../../api/patchProject';
 import { useAuth } from '../../customHooks/useAuth';
 import ProjectDetailsAccordian from './MobileProjectDetails';
 
-
-import Comment from "../MyComment";
-import Comments from "../../components/Comments";
-
-import {
-  Stack,
-  Box,
-  useTheme,
-  Container,
-  Typography,
-  Button,
-  Divider,
-} from "@mui/material";
 
 type TabContent = {
   type: "gallery" | "poster" | "text" | "sectionHeading" | "video" | "codeBlock" | "quote"
