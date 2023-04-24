@@ -38,7 +38,12 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
     <div key={comment._id} className="comment">
       <div className="comment-image-container">
         {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
-        <img src={comment.user.profilePicture} width="30" height="30" />
+        <img
+          src={comment.user.profilePicture}
+          width="30"
+          height="30"
+          referrerPolicy="no-referrer"
+        />
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
