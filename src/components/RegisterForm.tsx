@@ -119,32 +119,26 @@ export default function SignUp() {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+
         <Box
           sx={{
-            marginTop: 8,
+            mt: "16vh",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
           <Box
-            padding="0 30px"
             component="img"
             src={Logo}
             alt="logo"
             sx={{
-              mt: 10,
               width: "300px",
-              height: "auto",
               flexGrow: 1,
               display: { xs: "flex", md: "flex" },
             }}
           ></Box>
-          <Typography
-            sx={{ fontWeight: "700", mt: 2 }}
-            component="h1"
-            variant="h6"
-          >
+          <Typography sx={{ fontWeight: "700" }} component="h1" variant="h6">
             Register
           </Typography>
           <Box

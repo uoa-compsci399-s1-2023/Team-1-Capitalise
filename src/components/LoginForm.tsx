@@ -116,7 +116,7 @@ function SignInSide() {
               alignItems: "center",
             }}
           >
-            <Box sx={{ mt: 20, mb: 3 }}>
+            <Box sx={{ mb: 3, mt: "11vh" }}>
               <Box
                 padding="0 30px"
                 component="img"
