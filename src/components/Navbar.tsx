@@ -12,7 +12,7 @@ import {
   styled,
   useRadioGroup,
 } from "@mui/material";
-
+import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
 import SearchBar from "./SearchBar";
@@ -143,11 +143,14 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
           >
             
             <SearchBar {...filterProps} />
+            <Button variant="contained" onClick = {() => {goToPage("upload")}}>Upload</Button>
             {/* Check if User is logged in */}
-            { (uCheck) ?
+            { (uCheck) ? <>
+              
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Logged In" src={auth.user?.profilePicture}> <img referrerPolicy="no-referrer" /></Avatar>
               </IconButton>
+              </>
             :
               
               <><AuthButton onClick={() => { goToPage("login"); } }
@@ -285,24 +288,34 @@ function ResponsiveAppBar(filterProps: SearchFilterProps) {
               {/*The dropdown options*/}
               <MenuItem onClick={handleCloseUserMenu}>
               {/*If User is logged in, render his name*/}
-              {(uCheck) ? <><Avatar src ={auth.user?.profilePicture}/> <img referrerPolicy="no-referrer" /> {auth.user?.name} </> : "Guest" }
+              {(uCheck) ? <><Avatar src ={auth.user?.profilePicture}/> <img referrerPolicy="no-referrer" /> {auth.user?.name} </> : "Not Logged In" }
               </MenuItem>
 
               <Divider />
               {/*Display settings based on login status*/}
                 {(uCheck) ? 
-               <MenuItem 
-               
-               onClick={() => {
-                handleCloseUserMenu(); 
-                auth.signout(); 
-                navigate("/home");}} 
-                >
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Log Out
-              </MenuItem>
+              <>
+                <MenuItem onClick={() => { handleCloseUserMenu(); goToPage("")
+                }}>
+                  <ListItemIcon><PersonIcon fontSize="small"/></ListItemIcon>
+                
+                  Profile
+                
+                </MenuItem>
+                <MenuItem 
+                
+                onClick={() => {
+                  handleCloseUserMenu(); 
+                  auth.signout(); 
+                  navigate("/home");}} 
+                  >
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Log Out
+                </MenuItem>
+                
+              </>
               :  //Or display guest (not logged in details)
               <><MenuItem onClick={() => {
                 handleCloseUserMenu(); 
