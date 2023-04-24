@@ -2,7 +2,7 @@ import React, { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { Box, TextField, SelectChangeEvent, Typography } from '../../mui'
 import FilterDropdown from './FilterDropdown'
 import { searchFilterParams, TAvailParameters } from './AvailableParams'
-import { TFiltersState } from '../../app';
+import { TFiltersState } from '../../App';
 
 
 
