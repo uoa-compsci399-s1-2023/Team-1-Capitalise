@@ -71,7 +71,7 @@ export default function App() {
           />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/user/:userName" element={<UserProfile />} />
+          <Route path="/user/:userID" element={<UserProfile />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/projects/:projectID" element={<Home />} />
         </Routes>

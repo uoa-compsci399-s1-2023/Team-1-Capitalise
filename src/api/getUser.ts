@@ -14,10 +14,11 @@ export type TUser = {
     name: string;
   };
   profilePicture: string;
+  bio: string;
 };
 
-export async function getUser(userName: string): Promise<TUser | undefined> {
-  const response = await fetch(`${API_URL}/api/users/${userName}`);
+export async function getUser(userID: string): Promise<TUser | undefined> {
+  const response = await fetch(`${API_URL}/api/users/user/${userID}`);
   if (response.ok) {
     return response.json();
   }

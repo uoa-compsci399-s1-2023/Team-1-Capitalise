@@ -12,7 +12,7 @@ const UserProfile = () => {
   const [user, setUser] = useState<TUser | undefined>();
   const [project, setProject] = useState<TProject | undefined>();
   const [likedProjects, setLikedProjects] = useState<TProject[]>([]);
-  let { userName } = useParams();
+  let { userID } = useParams();
   const theme = useTheme();
   const userTabs = [
     {
@@ -22,7 +22,11 @@ const UserProfile = () => {
         <Stack height="100%">
           <Box height="30%" padding="0px 24px 10px 24px">
             <Typography variant="h6">Bio</Typography>
-            <Typography>Hi</Typography>
+            {typeof user != "undefined" && (
+              <Typography>
+                {typeof user.bio != "undefined" ? user.bio : ""}
+              </Typography>
+            )}
           </Box>
           <Divider />
           {typeof project != "undefined" && (
@@ -65,12 +69,12 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (!userName) return;
-      const newUser = await getUser(userName);
+      if (!userID) return;
+      const newUser = await getUser(userID);
       setUser(newUser);
     };
     fetchUser();
-  }, [userName]);
+  }, [userID]);
 
   useEffect(() => {
     if (typeof user === "undefined") return;
@@ -101,7 +105,7 @@ const UserProfile = () => {
         minHeight="92vh"
         mt="8vh"
       >
-        <Typography>{userName} does not exist</Typography>
+        <Typography>{userID} does not exist</Typography>
       </Box>
     );
   }
@@ -141,7 +145,6 @@ const UserProfile = () => {
             >
               {user.name}
             </Typography>
-            <Typography>{user.username}</Typography>
           </Box>
         </Box>
       </Stack>
