@@ -24,7 +24,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import { AppRegistration, Login } from "@mui/icons-material";
 
-import { SearchFilterProps } from "./search/DesktopSearchFilters";
+import { SearchProps } from "./MyPagination";
 
 const pages = ["About", "Projects"];
 
@@ -53,7 +53,7 @@ const AuthButton = styled(Button)({
 {
   /*Navigation Bar*/
 }
-function ResponsiveAppBar(filterProps: SearchFilterProps) {
+function ResponsiveAppBar( filterProps: SearchProps ) {
   {
     /*Functionality for opening/closing sidebar*/
   }

@@ -51,7 +51,7 @@ const ProjectCard = ({
       awardText = "Community Impact Award";
       awardIcon = communityImpact;
     } else if (badges === "Top Excellence") {
-      colour = theme.customColors.topExcellence;
+      colour = theme.customColors.excellenceAward;
       awardText = "Top Excellence Award";
       awardIcon = topExcellence;
     } else if (badges === "Peoples Choice") {

@@ -1,12 +1,12 @@
 import { Box, Stack } from '@mui/material'
 import FilterButton from './FilterButton'
-import { SearchFilterProps } from './DesktopSearchFilters'
+import { SearchProps } from './DesktopSearchFilters'
 import SearchBar from '../SearchBar'
 import { searchFilterParams } from './AvailableParams'
 
 
 
-export default function MobileSearchFilters({ currFilters, setFilters }: SearchFilterProps) {
+export default function MobileSearchFilters({ currFilters, setFilters }: SearchProps) {
 
   return (
     <Stack

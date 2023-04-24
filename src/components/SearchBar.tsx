@@ -1,20 +1,19 @@
 
 import React, { ChangeEvent, FormEvent } from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
-import { InputAdornment } from "@mui/material";
-import { SearchFilterProps } from "./search/DesktopSearchFilters";
-import { useNavigate } from "react-router-dom";//12/04/2023 - 11pm Daniel - Added navigate to /projects when searching from any other page.
+import { Box, TextField, InputAdornment } from "@mui/material";
+import { SearchProps } from "./MyPagination";
+import { useNavigate } from "react-router-dom";
 
 // Yathi - Added event handler for search bar to make searches.
 // Changed wrapper element to div instead of form so the searchbar can take up more space.
 
-const SearchBar = ({ currFilters, setFilters }: SearchFilterProps) => {
+const SearchBar = ({ currFilters, setFilters }: SearchProps) => {
   const navigate = useNavigate();
-  const handleKeyDown = (e: any) => {
-    // Check if enter key is pressed
-    if (e.keyCode === 13) {
+
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
       setFilters({
         ...currFilters,
         keywords: (e.target as HTMLTextAreaElement).value
@@ -26,7 +25,7 @@ const SearchBar = ({ currFilters, setFilters }: SearchFilterProps) => {
 
   return (
     // <Box component="form" noValidate autoComplete="off">
-    <Box width='80%'> 
+    <Box width='80%'>
       <TextField
         onKeyDown={handleKeyDown}
         fullWidth

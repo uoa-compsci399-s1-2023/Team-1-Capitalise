@@ -2,21 +2,17 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
-import { Home, Projects, About, Registration, Login } from "./routes";
+import { Box } from "@mui/material";
+import { Home, Projects, About, Login, Registration } from "./routes";
 import customTheme1 from "./themes/custom1";
 
-// Apis
-import { TProject } from "./api/getProjects";
-import { getProjectsSearch } from "./api/getSearchProjects";
-
 // Other
-import {
-  searchFilterParams,
-  TAvailParameters,
-  fetchCurrentParameters,
-} from "./components/search/AvailableParams";
+import { searchFilterParams, TAvailParameters } from "./components/search/AvailableParams";
+import ProjectPage from './components/projectPage/ProjectPage';
 import Navbar from "./components/Navbar";
 import UserProfile from "./routes/UserProfile";
+import { AuthProvider } from "./customHooks/useAuth";
+
 
 // Represents curr state of filters
 export type TFiltersState = {
@@ -26,15 +22,15 @@ export type TFiltersState = {
   award: TAvailParameters["award"][0];
   sortBy: TAvailParameters["sortBy"][0];
   // These two are for pagination
-  currPage: number;
-  projectsPerPage: number;
-};
+  currPage: number,
+  projectsPerPage: number,
+}
 
 export default function App() {
-  const [projects, setProjects] = useState<TProject[]>([]);
-  const [totalNumProjects, setTotalNumProjects] = useState(0);
-  const [searchFilters, setSearchFilters] = useState<TFiltersState>({
-    keywords: "",
+
+
+  const [currFilters, setFilters] = useState<TFiltersState>({
+    keywords: '',
     category: searchFilterParams.category[0],
     semester: searchFilterParams.semester[0],
     award: searchFilterParams.award[0],
@@ -43,39 +39,30 @@ export default function App() {
     projectsPerPage: 6,
   });
 
-  // Fetch required number of projects based on given parameters
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const respData = await getProjectsSearch({ ...searchFilters });
-      setTotalNumProjects(respData.searchTotal);
-      setProjects(respData.projects);
-    };
-    fetchProjects();
-  }, [searchFilters]);
 
   return (
     <BrowserRouter>
-      <ThemeProvider theme={customTheme1}>
-        <Navbar currFilters={searchFilters} setFilters={setSearchFilters} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/projects"
-            element={
-              <Projects
-                currFilters={searchFilters}
-                setFilters={setSearchFilters}
-                {...{ totalNumProjects, projects }}
-              />
-            }
-          />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/user/:userID" element={<UserProfile />} />
-          <Route path="/register" element={<Registration />} />
-          <Route path="/projects/:projectID" element={<Home />} />
-        </Routes>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider theme={customTheme1}>
+          <Navbar {...{ currFilters, setFilters }} />
+          <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey} >
+            <Routes >
+              <Route path="/" element={<Home />} />
+              <Route path="/projects/*" element={
+                <Projects
+                  {...{ currFilters, setFilters }}
+                />
+              } />
+              <Route path="/projectpage" element={<ProjectPage projectId="6442068f7297a06fc1659115" />} />
+              <Route path="/About" element={<About />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/user/:userID" element={<UserProfile />} />
+              <Route path="/register" element={<Registration />} />
+              <Route path="/projects/:projectID" element={<Home />} />
+            </Routes>
+          </Box>
+        </ThemeProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import ProjectCard from "./ProjectCard";
-import { TProject } from "../../api/getProjects";
+import { TProject } from "../../model/TProject";
 interface props {
   projects: TProject[];
   justifyContent?: string;

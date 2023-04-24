@@ -1,4 +1,4 @@
-import { Select, FormControl, InputLabel, MenuItem } from '../../mui'
+import { Select, FormControl, InputLabel, MenuItem } from '@mui/material'
 import { TAvailParameters } from './AvailableParams'
 
 export type FilterDpdownProps = { 

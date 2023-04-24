@@ -1,5 +1,5 @@
 import { API_URL } from "./config";
-import { TProject } from "./getProjects";
+import { TProject } from "../model/TProject";
 import { TFiltersState } from "../App";
 
 interface SearchProjectsResponse {

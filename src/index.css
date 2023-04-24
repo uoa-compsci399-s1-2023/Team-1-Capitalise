@@ -39,7 +39,7 @@ a {
 
 /* This is supposed to stop the scroll bar from shifting content. */
 body {
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-gutter: stable;
 }
 
