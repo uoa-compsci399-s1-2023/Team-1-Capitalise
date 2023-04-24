@@ -29,22 +29,19 @@ function Home() {
   //dw about this just the spinny logo END
 
   return (
-    <Box width="100%">
-      {/* <Navbar /> */}
-      <Stack
+    <Box mt="8vh">
+      <Box
+        minHeight="92vh"
         display="flex"
-        direction="column"
-        height="100%"
+        justifyContent="center"
         alignItems="center"
       >
-        <Box flex={1} display="flex" justifyItems="center" alignItems="center">
-          <AnimatedImg
-            src={Logo}
-            alt="logo"
-            onClick={handleImageClick}
-          ></AnimatedImg>
-        </Box>
-      </Stack>
+        <AnimatedImg
+          src={Logo}
+          alt="logo"
+          onClick={handleImageClick}
+        ></AnimatedImg>
+      </Box>
     </Box>
   );
 }

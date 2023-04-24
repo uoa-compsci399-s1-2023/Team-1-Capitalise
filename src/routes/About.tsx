@@ -1,12 +1,12 @@
-import React from "react";
-import Navbar from "../components/Navbar";
+import { Box, Typography } from "@mui/material";
 
 const About = () => {
   return (
-    <div className="About">
-      {/* <Navbar /> */}
-      <h1>About</h1>
-    </div>
+    <Box mt="8vh">
+      <Box minHeight="92vh" display="flex">
+        <Typography variant="h2">About</Typography>
+      </Box>
+    </Box>
   );
 };
 

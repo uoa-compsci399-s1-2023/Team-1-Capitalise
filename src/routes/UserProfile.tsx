@@ -113,12 +113,13 @@ const UserProfile = () => {
       spacing={0}
       minHeight="92vh"
       margin="8vh 0vh auto"
+      paddingTop="20px"
     >
       <Stack
         display="flex"
         direction="column"
         alignItems="start"
-        width={{ xs: "100%", md: "300px" }}
+        width={{ xs: "100%", md: "305px" }}
         padding="24px"
       >
         <Box display={{ xs: "flex", md: "block" }} width="100%">
