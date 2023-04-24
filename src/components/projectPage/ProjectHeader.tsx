@@ -1,15 +1,14 @@
 import { Box, Stack, Typography, useTheme, Button, Chip } from '@mui/material'
 
-import { likeProject } from '../../api/likeProject';
 import { ProjectContext } from './ProjectPage';
 import { useContext } from 'react';
 import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';
 
 interface ProjectHeaderProps {
-  name: string
-  blurb?: string
-  likes: number
+  name: string;
+  blurb?: string;
+  likes: number;
 }
 
 export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps) {
@@ -46,7 +45,6 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
   return (
     <>
       <Stack
-
         sx={headerStyle}
       >
         <Box>
@@ -55,16 +53,11 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
             color="initial"
             mt={1}
             fontWeight={600}
-            alignSelf={'center'}
+            alignSelf={"center"}
           >
             {name}
           </Typography>
-          <Typography
-            component='p'
-            variant='body2'
-            fontSize={16}
-            mt={1}
-          >
+          <Typography component="p" variant="body2" fontSize={16} mt={1}>
             {blurb}
           </Typography>
         </Box>
@@ -81,7 +74,6 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
           </Button> */}
 
       </Stack>
-
     </>
-  )
+  );
 }
