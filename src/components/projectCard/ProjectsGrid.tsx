@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import ProjectCard from "./ProjectCard";
 import { TProject } from "../../model/TProject";
 interface props {
-  projects: TProject[];
+  projects: TProject[] ;
   justifyContent?: string;
 }
 export default function ProjectsGrid({

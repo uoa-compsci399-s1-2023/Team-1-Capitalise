@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 
 import { Button, Chip, Avatar, useTheme, Box, Icon } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { Link } from 'react-router-dom'
 
 
 interface FieldProps {
   name: string
   avatar: string
   role?: string
+  userId: string
 }
 
-export default function TeamMember({ name, avatar, role }: FieldProps) {
+export default function TeamMember({ name, avatar, userId }: FieldProps) {
 
   const [fieldState, setFieldState] = useState('')
   const theme = useTheme()
@@ -19,8 +21,8 @@ export default function TeamMember({ name, avatar, role }: FieldProps) {
     borderRadius: '5px',
     textTransform: 'capitalize',
     fontWeight: 300,
-    display: "flex", 
-    justifyContent: "flex-start", 
+    display: "flex",
+    justifyContent: "flex-start",
     paddingLeft: "40px",
     color: 'black'
   })
@@ -28,17 +30,18 @@ export default function TeamMember({ name, avatar, role }: FieldProps) {
   return (
     <Box width='100%' display='flex' flexDirection={'row'} >
       {/* Needs to redirect to user page onclick */}
-      <Member
-        startIcon={<Avatar sizes='small' alt={name} src={avatar} sx={{ width: 30, height: 30 }} />}
-        variant='text'
-        color='neutral' // Ignore type error.
-        size='large'
-        fullWidth
-        style={{}}
-      >
+      <Link to={`../user/${userId}`}>
+        <Member
+          startIcon={<Avatar sizes='small' alt={name} src={avatar} sx={{ width: 30, height: 30 }} />}
+          variant='text'
+          sx={{color: 'neutral'}} // Ignore type error.
+          size='large'
+          fullWidth
+          style={{}}
+        >
           {name}
-      </Member>
-
+        </Member>
+      </Link>
     </Box>
-  ) 
+  )
 }

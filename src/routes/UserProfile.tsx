@@ -1,10 +1,12 @@
 import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { getUser, TUser } from "../api/getUser";
+import { getUser } from "../api/getUser";
+import { TUser } from "../model/TUser";
+import { TProject } from "../model/TProject";
 import { useEffect, useState } from "react";
 import MyTabs from "../components/MyTabs";
 import ProjectCard from "../components/projectCard/ProjectCard";
-import { TProject, getProject } from "../api/getProject";
+import { getProject } from "../api/getProject";
 
 import ProjectsGrid from "../components/projectCard/ProjectsGrid";
 
@@ -85,10 +87,12 @@ const UserProfile = () => {
       setProject(newProject);
     };
     const fetchLikes = async () => {
-      let likedProjects = [];
+      let likedProjects: TProject[] = [];
       for (const projectId of user.likedProjects) {
         const newProject = await getProject(projectId);
-        likedProjects.push(newProject);
+        if (newProject) {
+          likedProjects.push(newProject);
+        }
       }
       setLikedProjects(likedProjects);
     };

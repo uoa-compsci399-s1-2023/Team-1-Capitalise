@@ -12,7 +12,7 @@ export default function MembersField() {
   const [members, setMembers] = useState<TUser[]>([]);
 
   useEffect(() => {
-    const promises: Promise<Promise<TUser>|null>[] = []
+    const promises: Promise<Promise<TUser> | undefined>[] = []
     for (const mId of project.members) {
       promises.push(getUser(mId));
     }
@@ -24,7 +24,7 @@ export default function MembersField() {
     <Box>
       <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>
       {members.map((m, i) => (
-        <TeamMember key={i} name={m.name} avatar={m.profilePicture} />
+        <TeamMember key={i} name={m.name} avatar={m.profilePicture} userId={m._id} />
       ))}
     </Box>
   )
