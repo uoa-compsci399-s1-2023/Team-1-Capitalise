@@ -4,7 +4,7 @@ import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@m
 import { styled, Button, Typography, useTheme, Box } from '@mui/material'
 import { FormControl, OutlinedInput, InputLabel, FormHelperText } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
-import { ProjectContext } from '../ProjectPage';
+import { ProjectContext } from '../../../routes/ProjectPage';
 import EditButton from '../EditButton';
 
 

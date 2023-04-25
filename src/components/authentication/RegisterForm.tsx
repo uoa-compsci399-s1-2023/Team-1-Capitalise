@@ -8,8 +8,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useAuth } from '../customHooks/useAuth';
-import Logo from "../assets/Logo.svg";
+import { useAuth } from '../../customHooks/useAuth';
+import Logo from "../../assets/Logo.svg";
 import { Alert, Divider, Fade } from '@mui/material';
 import {useEffect, useState} from 'react';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -120,13 +120,14 @@ export default function SignUp() {
   
 
   return (
-    <ThemeProvider theme={theme}>
+    // Yathi - Don't need to recreate theme. It's already in App.tsx
+    // <ThemeProvider theme={theme}> 
       <Container component="main" maxWidth="xs">
         <CssBaseline />
     
         <Box
           sx={{
-            mt: "16vh",
+            // mt: "16vh",  Yathi - don't need this. Margin added in parent component
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -219,7 +220,7 @@ export default function SignUp() {
    
        
       </Container>
-    </ThemeProvider>
+    // </ThemeProvider>
   );
             }          
             

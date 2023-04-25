@@ -23,7 +23,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import { AppRegistration, Login, Logout } from "@mui/icons-material";
 import { useAuth } from '../customHooks/useAuth'; 
-import { SearchProps } from "./MyPagination";
 import { useState } from "react";
 
 const pages = ["About", "Projects"];
@@ -53,7 +52,7 @@ const AuthButton = styled(Button)({
 {
   /*Navigation Bar*/
 }
-function ResponsiveAppBar(filterProps: SearchProps) {
+function ResponsiveAppBar() {
   
   //Auth Header
   const auth = useAuth();
@@ -142,7 +141,7 @@ function ResponsiveAppBar(filterProps: SearchProps) {
             }}
           >
             
-            <SearchBar {...filterProps} />
+            <SearchBar />
             {/* Check if User is logged in */}
             { (uCheck) ?
               [<IconButton key="profilepic" onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -288,8 +287,13 @@ function ResponsiveAppBar(filterProps: SearchProps) {
               <MenuItem onClick={handleCloseUserMenu}>
               {/*If User is logged in, render his name*/}
               {(uCheck) ? [
-                <Avatar key= "userAva" src ={auth.user?.profilePicture}/>, 
-                <img key="refPolicy" referrerPolicy="no-referrer" /> ,
+                <Avatar 
+                  key= "userAva" 
+                  // Yathi - Added referrerPolicy for google
+                  imgProps={{referrerPolicy: "no-referrer"}}
+                  src ={auth.user?.profilePicture}
+                />, 
+                // <img key="refPolicy" referrerPolicy="no-referrer" /> ,
                 auth.user?.name]
                 : "Guest" }
               </MenuItem>

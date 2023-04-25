@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/authentication/LoginForm";
 import { useEffect } from "react";
 import { useAuth } from "../customHooks/useAuth";
 import { useNavigate, Link, Navigate } from "react-router-dom";
@@ -21,7 +21,8 @@ export default function Login() {
       })
 
     return (
-    <Box mt={'-8vh'}> // Yathi 25/04 - Added negative margin as there is no header.
+    // Yathi 25/04 - Added negative margin as there is no header.
+    <Box mt={'-8vh'}> 
         <LoginForm />
     </Box>
     );

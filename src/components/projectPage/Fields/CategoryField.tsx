@@ -3,7 +3,7 @@ import React, { useRef, useContext, useState, useEffect } from 'react'
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select } from '@mui/material';
 import { styled, Button, Typography, useTheme, Box } from '@mui/material'
 import { FormControl, MenuItem, InputLabel, SelectChangeEvent } from '@mui/material'
-import { ProjectContext } from '../ProjectPage';
+import { ProjectContext } from '../../../routes/ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
 import { TProject } from '../../../model/TProject';

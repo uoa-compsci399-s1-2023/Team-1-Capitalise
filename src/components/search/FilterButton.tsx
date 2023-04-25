@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { SearchProps } from '../MyPagination';
+import { SearchProps } from '../projects/MyPagination';
 import { TAvailParameters } from './AvailableParams'
 
 

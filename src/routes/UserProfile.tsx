@@ -5,9 +5,9 @@ import { TUser } from "../model/TUser";
 import { TProject } from "../model/TProject";
 import { useEffect, useState } from "react";
 import MyTabs from "../components/MyTabs";
-import ProjectCard from "../components/projectCard/ProjectCard";
+import ProjectCard from "../components/projects/ProjectCard";
 import { getProject } from "../api/getProject";
-import ProjectsGrid from "../components/projectCard/ProjectsGrid";
+import ProjectsGrid from "../components/projects/ProjectsGrid";
 import MyButton from "../components/MyButton";
 
 const UserProfile = () => {

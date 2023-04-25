@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from 'react'
-import { SearchProps } from '../MyPagination'
+import React, { ChangeEvent, useContext } from 'react'
+import { SearchContext } from '../../App'
 import { Box, TextField, SelectChangeEvent, Typography } from '@mui/material'
 import FilterDropdown from './FilterDropdown'
 import { searchFilterParams, TAvailParameters } from './AvailableParams'
@@ -9,7 +9,9 @@ import { searchFilterParams, TAvailParameters } from './AvailableParams'
 // represents props taken by DesktopSearchFilters and MobileSearchFilters
 
 
-export default function DesktopSearchFilters({ currFilters, setFilters }: SearchProps) {
+export default function DesktopSearchFilters() {
+
+  const { currFilters, setFilters } = useContext(SearchContext);
 
   const size = 'small';
   const variant = 'outlined';
@@ -21,7 +23,8 @@ export default function DesktopSearchFilters({ currFilters, setFilters }: Search
     const param = searchFilterParams[key].find(p => p.value === e.target.value)
     setFilters({
       ...currFilters,
-      [name]: param
+      [name]: param,
+      currPage: 1
     })
   }
 
