@@ -93,7 +93,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   // make use of the auth.isAllowed?
   const deleteComment = async (commentId: string) => {
     const token = auth.getToken();
-    if (token && auth.isAllowed(["admin"])) {
+    if (token) {
       if (window.confirm("Are you sure you want to remove comment?")) {
         fetch(`${API_URL}/api/projects/comment/${commentId}`, {
           method: "DELETE",
@@ -117,7 +117,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   };
 
   return (
-    <div className="comments" style={{width: '100%', marginLeft: ''}}>
+    <div className="comments" style={{ width: "100%", marginLeft: "" }}>
       <Typography variant="body1" color="initial" fontWeight={"light"}>
         Project Discussion ({backendComments.length})
       </Typography>
