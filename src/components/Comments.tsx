@@ -81,9 +81,20 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     }
   };
 
+  // set condition for admin being allowed to
+  const handleNotAllowed = () => {
+    if (auth.isAllowed(["admin"])) {
+      alert("allowed");
+    } else {
+      alert("not allowed");
+    }
+  };
+
+  // only users who are the author of the comment OR are admin can delete comments.
+  // make use of the auth.isAllowed?
   const deleteComment = async (commentId: string) => {
     const token = auth.getToken();
-    if (token) {
+    if (token && auth.isAllowed(["admin"])) {
       if (window.confirm("Are you sure you want to remove comment?")) {
         fetch(`${API_URL}/api/projects/comment/${commentId}`, {
           method: "DELETE",
