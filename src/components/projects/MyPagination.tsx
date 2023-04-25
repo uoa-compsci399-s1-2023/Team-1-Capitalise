@@ -21,12 +21,6 @@ import { TFiltersState } from '../../App';
 import { SearchContext } from "../../App";
 
 
-// export interface SearchProps {
-//   currFilters: TFiltersState,
-//   setFilters: Dispatch<SetStateAction<TFiltersState>>
-// }
-
-
 const MyPagination = () => {
 
   const [projects, setProjects] = useState<TProject[]>([]);
