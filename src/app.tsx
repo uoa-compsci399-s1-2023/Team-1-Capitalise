@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
 import { Box } from "@mui/material";
@@ -12,7 +12,8 @@ import ProjectPage from './components/projectPage/ProjectPage';
 import Navbar from "./components/Navbar";
 import UserProfile from "./routes/UserProfile";
 import { AuthProvider } from "./customHooks/useAuth";
-
+import GoogleSuccessRedirect from './routes/googleSuccessRedirect';
+import GoogleFailure from './routes/googleFailure';
 
 // Represents curr state of filters
 export type TFiltersState = {
@@ -57,7 +58,9 @@ export default function App() {
               <Route path="/About" element={<About />} />
               <Route path="/login" element={<Login />} />
               <Route path="/user/:userID" element={<UserProfile />} />
-              <Route path="/register" element={<Registration />} />
+              <Route path="/Register" element={<Registration />} />
+              <Route  path="/googleSuccessRedirect" element={<GoogleSuccessRedirect/>} />
+              <Route  path="/googleFailure" element={<GoogleFailure/>} />
             </Routes>
           </Box>
         </ThemeProvider>
