@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import { useEffect, useState, useContext } from "react";
 import { Box, Stack, keyframes, styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { SearchContext, getDefaultFilters } from "../App";
+import { SearchContext, getDefaultFilters } from "../app";
 
 function Home() {
   //dw about this just the spinny logo START

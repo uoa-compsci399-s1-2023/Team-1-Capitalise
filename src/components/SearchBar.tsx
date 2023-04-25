@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, TextField, InputAdornment } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { SearchContext, getDefaultFilters } from "../App";
+import { SearchContext, getDefaultFilters } from "../app";
 import { searchFilterParams } from "./search/AvailableParams";
 
 // Yathi - Added event handler for search bar to make searches.

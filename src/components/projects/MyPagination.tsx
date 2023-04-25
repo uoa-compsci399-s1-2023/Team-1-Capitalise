@@ -14,11 +14,9 @@ import {
 } from "../search";
 
 // Other
-// import { TProject } from "../api/getProjects";
 import { TProject } from "../../model/TProject";
 import { getProjectsSearch } from "../../api/getSearchProjects";
-import { TFiltersState } from '../../App';
-import { SearchContext } from "../../App";
+import { SearchContext } from '../../app';
 
 
 const MyPagination = () => {

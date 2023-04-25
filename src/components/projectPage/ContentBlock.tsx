@@ -1,7 +1,6 @@
 import React, { useState, FC, useRef } from 'react'
 import { Box, Stack, Typography, useTheme, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { TMockProject } from '../../model/MockProject'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TProject } from '../../model/TProject';
