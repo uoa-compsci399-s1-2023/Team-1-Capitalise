@@ -17,7 +17,7 @@ import { TComment } from "../../../model/TComment";
 
 interface CommentProps {
   comment: TComment;
-  deleteComment: (commentId: string) => void;
+  deleteComment: (commentId: TComment) => void;
 }
 
 // try passing the deleteComment function into the MyComment prop
@@ -63,7 +63,8 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
                 <Button
                   variant="outlined"
                   startIcon={<DeleteOutlineIcon />}
-                  onClick={() => deleteComment(comment._id)}
+                  // onClick={() => deleteComment(comment._id)}
+                  onClick={() => deleteComment(comment)}
                   size="small"
                   color="error"
                 >

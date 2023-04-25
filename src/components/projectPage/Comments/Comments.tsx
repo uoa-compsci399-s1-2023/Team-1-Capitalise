@@ -3,18 +3,11 @@ import { useState, useEffect } from "react";
 import { Container, Box, Typography } from "@mui/material";
 import MyComment from "./MyComment";
 import CommentForm from "./CommentForm";
-
-// import createComment() from api (need to handle POST API request there)
-// import { createComment } from "../../api/createComment";
-
 import { useAuth } from "../../../customHooks/useAuth";
-// import { getCurrentUser } from "../api/getCurrentUser";
-// import { create } from "@mui/material/styles/createTransitions";
+
 
 import { API_URL } from "../../../api/config";
 import { TComment } from "../../../model/TComment";
-// import { getUserbyId, TUser } from "../api/getUserbyId";
-// import { useParams } from "react-router-dom";
 
 interface CommentsProps {
   comments: TComment[];
@@ -91,33 +84,35 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
   // only users who are the author of the comment OR are admin can delete comments.
   // make use of the auth.isAllowed?
-  const deleteComment = async (commentId: string) => {
+  const deleteComment = async (comment: TComment) => {
     const token = auth.getToken();
-    if (token && auth.isAllowed(["admin"])) {
-      if (window.confirm("Are you sure you want to remove comment?")) {
-        fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+    if (token) {
+      // Yathi - Need to replace with a mui modal.
+      // if (window.confirm("Are you sure you want to remove comment?")) {
+        fetch(`${API_URL}/api/projects/comment/${comment._id}`, {
           method: "DELETE",
+          // Yathi - This endpoint doesn't need a body
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            // Accept: "application/json",
+            // "Content-Type": "application/json",
             "x-auth-token": token,
           },
-          body: JSON.stringify({
-            commentId: commentId,
-          }),
+          // body: JSON.stringify({
+          //   commentId: comment._id,
+          // }),
         }).then(() => {
           // we need to update the backend comments list
           const updatedBackendComments = backendComments.filter(
-            (backendComment) => backendComment._id != commentId
+            (backendComment) => backendComment._id != comment._id
           );
           setBackendComments(updatedBackendComments);
         });
-      }
+      // }
     }
   };
 
   return (
-    <div className="comments" style={{width: '100%', marginLeft: ''}}>
+    <div className="comments" style={{width: '100%', marginLeft: '20px'}}>
       <Typography variant="body1" color="initial" fontWeight={"light"}>
         Project Discussion ({backendComments.length})
       </Typography>

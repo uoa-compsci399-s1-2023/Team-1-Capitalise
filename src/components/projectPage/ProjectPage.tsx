@@ -54,7 +54,6 @@ export default function ProjectPage() {
           // We are using the get all comments endpoint to test rendering
           getProjectComments(projectId!)
             .then((respData) => {
-              console.log(respData);
               setComments(respData);
             })
         }
