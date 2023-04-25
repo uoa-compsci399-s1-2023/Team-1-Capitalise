@@ -84,6 +84,8 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
   // only users who are the author of the comment OR are admin can delete comments.
   // make use of the auth.isAllowed?
+  // Yathi - Probably don't need to do another auth check as the delete button only renders for authorised users
+  // ...and backend will also do another check.
   const deleteComment = async (commentId: string) => {
     const token = auth.getToken();
     if (token) {
@@ -113,10 +115,14 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
   return (
     <div className="comments" style={{width: '100%', marginLeft: '20px'}}>
-      <Typography variant="body1" color="initial" fontWeight={"light"}>
-        Project Discussion ({backendComments.length})
+
+      {/* Yathi - Changed variant from body1 to h4 and made component h2 */}
+      <Typography variant="h4" component={"h2"} color="initial" fontWeight={"light"} mb={4}>
+        Discussion ({backendComments.length})
       </Typography>
+
       <CommentForm submitLabel="Post" handleSubmit={addComment} />
+
       <div className="comments-container">
         {backendComments.map((backendComment) => (
           <MyComment

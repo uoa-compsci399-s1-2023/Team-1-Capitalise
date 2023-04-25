@@ -3,7 +3,6 @@ import ProjectDetails from './ProjectDetails';
 import ContentBlock, { ContentBlockProps } from './ContentBlock';
 import ProjectHeader from './ProjectHeader';
 import TabButton from './TabButton';
-import { TMockProject, mockProject } from '../../model/MockProject';
 import { getProject } from '../../api/getProject'
 import { Stack, Box, useTheme, Container, Typography, Button, Divider } from '@mui/material';
 import { TProject } from '../../model/TProject';
@@ -91,7 +90,8 @@ export default function ProjectPage() {
   if (!isLoading) {
     return (
       <ProjectContext.Provider value={{ project, setProject, setProjectChanges }}>
-        {/* banner */}
+      
+      {/* Banner */}
         <img
           src={project.banner}
           alt='Project cover photo'
@@ -101,7 +101,8 @@ export default function ProjectPage() {
             objectFit: 'cover'
           }}
         />
-        {/* everything else */}
+      
+      {/* Everything else */}
         <Stack
           bgcolor={'white'}
           minHeight={'92vh'}
@@ -110,13 +111,14 @@ export default function ProjectPage() {
           maxWidth={'1600px'}
           mx={'auto'}
         >
-
+          {/* Includes title, blurb, like button, etc */}
           <ProjectHeader
             name={project.name}
             blurb={project.blurb}
             likes={project.likes}
           />
 
+          {/* Project header for mobile view */}
           <ProjectDetailsAccordian />
 
           <Stack
@@ -125,7 +127,7 @@ export default function ProjectPage() {
             }}
             mt={2}>
 
-              {/* Tab content and comments  */}
+            {/* Tab content and comments  */}
             <Stack flex={1} alignItems={'center'} mr={1} mb={10} >
 
               {/* Only render tab buttons if there's more than one tab */}
@@ -155,10 +157,19 @@ export default function ProjectPage() {
                 <ContentBlock key={index} {...cb as ContentBlockProps} />
               ))}
 
-              {comments && <Comments comments={comments} projectId={projectId} />}
+
+
+
             </Stack>
             <ProjectDetails />
           </Stack>
+
+        {/* Comments Section */}
+          {comments &&
+            <Box mt={10} width={'100%'}>
+              <Comments comments={comments} projectId={projectId} />
+            </Box>}
+
         </Stack>
       </ProjectContext.Provider>
     )
