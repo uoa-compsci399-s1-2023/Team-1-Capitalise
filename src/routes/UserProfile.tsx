@@ -139,6 +139,7 @@ const UserProfile = () => {
             referrerPolicy="no-referrer"
             borderRadius="50%"
             alignSelf="center"
+            sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
           ></Box>
           <Box paddingLeft={{ xs: "24px", md: "0px" }}>
             <Typography>{user.userType}</Typography>
