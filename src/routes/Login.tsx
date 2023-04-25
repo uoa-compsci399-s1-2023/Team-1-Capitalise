@@ -21,7 +21,8 @@ export default function Login() {
       })
 
     return (
-    <Box mt={'-8vh'}> // Yathi 25/04 - Added negative margin as there is no header.
+    // Yathi 25/04 - Added negative margin as there is no header.
+    <Box mt={'-8vh'}> 
         <LoginForm />
     </Box>
     );

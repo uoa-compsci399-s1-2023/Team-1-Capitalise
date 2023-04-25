@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Typography, emphasize } from '@mui/material'
 import TeamMember from '../TeamMember'
-import { ProjectContext } from '../ProjectPage'
+import { ProjectContext } from '../../../routes/ProjectPage'
 import { TUser } from '../../../model/TUser';
 import { getUser } from '../../../api/getUser';
 import EditButton from '../EditButton';

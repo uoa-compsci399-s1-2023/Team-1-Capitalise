@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import EditIcon from '@mui/icons-material/Edit';
 import { styled, Button, useTheme } from '@mui/material';
-import { ProjectContext } from './ProjectPage';
+import { ProjectContext } from '../../routes/ProjectPage';
 import { patchProject } from '../../api/patchProject';
 import { useAuth } from '../../customHooks/useAuth';
 import { getProject } from '../../api/getProject';

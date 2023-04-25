@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { likeProject } from '../../api/likeProject';
-import { ProjectContext } from './ProjectPage';
+import { ProjectContext } from '../../routes/ProjectPage';
 import { useAuth } from '../../customHooks/useAuth';
 import { styled } from '@mui/material/styles'
 import pluralize from 'pluralize';

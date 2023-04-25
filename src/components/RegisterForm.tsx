@@ -120,13 +120,14 @@ export default function SignUp() {
   
 
   return (
-    <ThemeProvider theme={theme}>
+    // Yathi - Don't need to recreate theme. It's already in App.tsx
+    // <ThemeProvider theme={theme}> 
       <Container component="main" maxWidth="xs">
         <CssBaseline />
     
         <Box
           sx={{
-            mt: "16vh",
+            // mt: "16vh",  Yathi - don't need this. Margin added in parent component
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -219,7 +220,7 @@ export default function SignUp() {
    
        
       </Container>
-    </ThemeProvider>
+    // </ThemeProvider>
   );
             }          
             

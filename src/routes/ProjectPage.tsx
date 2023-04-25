@@ -1,19 +1,19 @@
 import React, { useState, SetStateAction, useContext, createContext, useEffect } from 'react'
-import ProjectDetails from './ProjectDetails';
-import ContentBlock, { ContentBlockProps } from './ContentBlock';
-import ProjectHeader from './ProjectHeader';
-import TabButton from './TabButton';
-import { getProject } from '../../api/getProject'
+import ProjectDetails from '../components/projectPage/ProjectDetails';
+import ContentBlock, { ContentBlockProps } from '../components/projectPage/ContentBlock';
+import ProjectHeader from '../components/projectPage/ProjectHeader';
+import TabButton from '../components/projectPage/TabButton';
+import { getProject } from '../api/getProject'
 import { Stack, Box, useTheme, Container, Typography, Button, Divider } from '@mui/material';
-import { TProject } from '../../model/TProject';
-import { TProjectPost } from '../../model/TPostProject';
-import { patchProject } from '../../api/patchProject';
-import { useAuth } from '../../customHooks/useAuth';
-import ProjectDetailsAccordian from './MobileProjectDetails';
+import { TProject } from '../model/TProject';
+import { TProjectPost } from '../model/TPostProject';
+import { patchProject } from '../api/patchProject';
+import { useAuth } from '../customHooks/useAuth';
+import ProjectDetailsAccordian from '../components/projectPage/MobileProjectDetails';
 import { useParams } from 'react-router-dom';
-import { TComment } from '../../model/TComment';
-import Comments from './Comments/Comments';
-import { getProjectComments } from '../../api/getProjectComments';
+import { TComment } from '../model/TComment';
+import Comments from '../components/projectPage/Comments/Comments';
+import { getProjectComments } from '../api/getProjectComments';
 
 
 type TabContent = {

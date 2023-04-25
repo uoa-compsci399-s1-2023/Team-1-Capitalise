@@ -7,9 +7,8 @@ import CategoryField from './Fields/CategoryField'
 import SemesterField from './Fields/SemesterField'
 import MembersField from './Fields/MembersField'
 import ExternalLinkBtn from './ExternalLinkBtn'
-import CodeSandboxBtn from './CodeSandbox'
 import AwardBadge from './AwardBadge'
-import { ProjectContext } from './ProjectPage'
+import { ProjectContext } from '../../routes/ProjectPage'
 
 
 

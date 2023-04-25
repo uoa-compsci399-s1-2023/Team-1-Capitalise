@@ -8,7 +8,7 @@ import customTheme1 from "./themes/custom1";
 
 // Other
 import { searchFilterParams, TAvailParameters } from "./components/search/AvailableParams";
-import ProjectPage from './components/projectPage/ProjectPage';
+import ProjectPage from './routes/ProjectPage';
 import Navbar from "./components/Navbar";
 import UserProfile from "./routes/UserProfile";
 import { AuthProvider } from "./customHooks/useAuth";

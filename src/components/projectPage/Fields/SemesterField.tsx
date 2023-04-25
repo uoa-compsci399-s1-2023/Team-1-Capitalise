@@ -4,7 +4,7 @@ import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select } 
 import { styled, Button, Typography, useTheme, Box } from '@mui/material'
 import { FormControl, MenuItem, InputLabel, SelectChangeEvent } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
-import { ProjectContext } from '../ProjectPage';
+import { ProjectContext } from '../../../routes/ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
 import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "../../search/AvailableParams";

@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, useTheme, Button, Chip } from '@mui/material'
 
 import { likeProject } from '../../api/likeProject';
-import { ProjectContext } from './ProjectPage';
+import { ProjectContext } from '../../routes/ProjectPage';
 import { useContext } from 'react';
 import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';

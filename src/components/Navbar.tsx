@@ -288,8 +288,13 @@ function ResponsiveAppBar(filterProps: SearchProps) {
               <MenuItem onClick={handleCloseUserMenu}>
               {/*If User is logged in, render his name*/}
               {(uCheck) ? [
-                <Avatar key= "userAva" src ={auth.user?.profilePicture}/>, 
-                <img key="refPolicy" referrerPolicy="no-referrer" /> ,
+                <Avatar 
+                  key= "userAva" 
+                  // Yathi - Added referrerPolicy for google
+                  imgProps={{referrerPolicy: "no-referrer"}}
+                  src ={auth.user?.profilePicture}
+                />, 
+                // <img key="refPolicy" referrerPolicy="no-referrer" /> ,
                 auth.user?.name]
                 : "Guest" }
               </MenuItem>
