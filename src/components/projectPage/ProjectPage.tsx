@@ -118,16 +118,17 @@ export default function ProjectPage() {
             likes={project.likes}
           />
 
-          {/* Project header for mobile view */}
+          {/* Project details for mobile view */}
           <ProjectDetailsAccordian />
 
+          {/* Tab content and detail sidebar */}
           <Stack
             sx={{
               flexDirection: { md: 'row', sm: 'column' },
             }}
             mt={2}>
 
-            {/* Tab content and comments  */}
+            {/* Tab content */}
             <Stack flex={1} alignItems={'center'} mr={1} mb={10} >
 
               {/* Only render tab buttons if there's more than one tab */}
@@ -153,12 +154,13 @@ export default function ProjectPage() {
                 }
               </Stack>}
 
-              {project.content[selectedTab].tabContent.map((cb, index) => (
-                <ContentBlock key={index} {...cb as ContentBlockProps} />
-              ))}
-
-
-
+              {project.content[selectedTab] ?
+                project.content[selectedTab].tabContent.map((cb, index) => (
+                  <ContentBlock key={index} {...cb as ContentBlockProps} />
+                ))
+                :
+                <Typography variant="body2" color="neutral">No content to display.</Typography>
+              }
 
             </Stack>
             <ProjectDetails />
