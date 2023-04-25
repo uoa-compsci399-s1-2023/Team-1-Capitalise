@@ -154,6 +154,7 @@ export default function ProjectPage() {
                 }
               </Stack>}
 
+              {/* If content is not empty, otherwise show "no content msg" */}
               {project.content[selectedTab] ?
                 project.content[selectedTab].tabContent.map((cb, index) => (
                   <ContentBlock key={index} {...cb as ContentBlockProps} />

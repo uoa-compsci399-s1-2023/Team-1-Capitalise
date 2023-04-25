@@ -37,7 +37,8 @@ export default function ProjectDetails() {
       <TeamnameField />
       <MembersField />
 
-      {project.links &&
+      {/* If there are links to show */}
+      {project.links[0] &&
         <Box
           mt={1}
           gap={2}
