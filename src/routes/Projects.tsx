@@ -7,10 +7,10 @@ import MyPagination from "../components/projects/MyPagination";
 
 // Other
 import { fetchCurrentParameters } from "../components/search/AvailableParams";
-import { SearchProps } from "../components/projects/MyPagination"
 
 
-const Projects = (props: SearchProps) => {
+
+const Projects = () => {
 
   const theme = useTheme();
 
@@ -21,9 +21,7 @@ const Projects = (props: SearchProps) => {
 
   return (
     <Box bgcolor={theme.customColors.bgGrey} width="100%" minHeight="92vh">
-      <MyPagination
-        {...props}
-      />
+      <MyPagination />
     </Box>
   );
 };

@@ -21,17 +21,13 @@ import { TFiltersState } from '../../App';
 import { SearchContext } from "../../App";
 
 
-export interface SearchProps {
-  currFilters: TFiltersState,
-  setFilters: Dispatch<SetStateAction<TFiltersState>>
-}
+// export interface SearchProps {
+//   currFilters: TFiltersState,
+//   setFilters: Dispatch<SetStateAction<TFiltersState>>
+// }
 
 
-const MyPagination = ({
-  currFilters: blah,
-  setFilters: blahblah,
-}: SearchProps
-) => {
+const MyPagination = () => {
 
   const [projects, setProjects] = useState<TProject[]>([]);
   const [totalNumProjects, setTotalNumProjects] = useState(0)
@@ -62,9 +58,10 @@ const MyPagination = ({
 
   return (
     <Box>
-      <DesktopSearchFilters
-        {...{ currFilters, setFilters }}
-      />
+      
+      {/* Search sidebar for desktop */}
+      <DesktopSearchFilters />
+
       <Stack
         display="flex"
         minHeight="92vh"
@@ -72,7 +69,10 @@ const MyPagination = ({
         sx={{ ml: { xs: "0", md: "340px" } }}
         paddingBottom="0px" // changed from 100
       >
-        <MobileSearchFilters {...{ currFilters, setFilters }} />
+        
+        {/* Search section for mobile */}
+        <MobileSearchFilters />
+
         <Typography
           my={4}
           variant="h1"
