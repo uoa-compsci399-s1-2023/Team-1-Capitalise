@@ -33,6 +33,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
   // Function to handle comment submission
   const addComment = async (text: string) => {
+    auth.onlyAuthenticated();
     const token = auth.getToken();
     if (token) {
       const comment = {} as TComment;
@@ -68,9 +69,12 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
           setBackendComments([comment, ...backendComments]);
         });
-    } else {
-      alert("You must be logged in to leave a comment");
-    }
+      }
+
+    // Yathi - replaced with onlyAuthenticated() to redirect user.
+    // } else {
+    //   alert("You must be logged in to leave a comment");
+    // }
   };
 
   // set condition for admin being allowed to

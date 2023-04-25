@@ -150,7 +150,7 @@ function useProvideAuth(): TAuthReturnType {
   function onlyAuthenticated() {
     validateToken(); // checks if current user is valid.
     if (!user) {
-      navigate('/projects')
+      navigate('/login')
     }
   }
 
