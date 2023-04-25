@@ -98,7 +98,7 @@ const protected = async (req, res) => {
   const token = user.generateAuthToken();
   res
     .redirect(
-      `http://capitalise.space/googleSuccessRedirect?token=${token}`
+      `capitalise.space/googleSuccessRedirect?token=${token}`
     );
   req.session.destroy();
 };
@@ -113,7 +113,7 @@ const nextPage = async (req, res) => {
   res.header("user", req.user);
   //res.user = req.user;
   //console.log(res.user);
-  res.redirect("http://capitalise.space/googleSuccessRedirect");
+  res.redirect("capitalise.space/googleSuccessRedirect");
 };
 
 module.exports = {
