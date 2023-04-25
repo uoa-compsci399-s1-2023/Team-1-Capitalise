@@ -1,40 +1,43 @@
-import { Container, Box } from "@mui/material";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import { Box } from "@mui/material";
 import ProjectCard from "./ProjectCard";
-import { TProject } from "../../api/getProjects";
+import { TProject } from "../../model/TProject";
 interface props {
-  projects: TProject[];
+  projects: TProject[] ;
+  justifyContent?: string;
 }
-export default function ProjectsGrid({ projects }: props) {
+export default function ProjectsGrid({
+  projects,
+  justifyContent = "center",
+}: props) {
   return (
-    <Box
-      display="grid"
-      gridTemplateColumns="repeat(auto-fill, 320px)"
-      flexDirection="row"
-      flexWrap="wrap"
-      gap="50px"
-      justifyContent="center"
-      flex={1} // Grows grid to push pagination to bottom
-    >
-      {projects.map((project) => (
-        <Box key={project._id}>
-          <ProjectCard
-            title={project.name}
-             semester={project.semester.value}
-             image={
-               typeof project.content[0] != "undefined"
-                 ? project.content[0].tab[0].banner
-                 : ""
-             }
-            teamname={project.teamname ? project.teamname : "teamname"}
-            category={project.category.value}
-            likes={project.likes}
-            badges={
-              typeof project.badges != "undefined" ? project.badges.value : ""
-            }
-          ></ProjectCard>
-        </Box>
-      ))}
+    <Box flex={1}>
+      <Box
+        display="grid"
+        gridTemplateColumns="repeat(auto-fill, 320px)"
+        flexDirection="row"
+        flexWrap="wrap"
+        gap="50px"
+        justifyContent={justifyContent}
+      >
+        {projects.map((project) => (
+          <Box key={project._id}>
+            <ProjectCard
+              title={project.name}
+              semester={project.semester.value}
+              image={
+                typeof project.thumbnail != "undefined" ? project.thumbnail : ""
+              }
+              teamname={project.teamname ? project.teamname : "teamname"}
+              category={project.category.value}
+              likes={project.likes}
+              badges={
+                typeof project.badges != "undefined" ? project.badges.value : ""
+              }
+              projectID={project._id}
+            ></ProjectCard>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 }

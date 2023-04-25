@@ -1,80 +1,70 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material";
-import { Home, Projects, About, Registration, Login } from "./routes";
+import { Box } from "@mui/material";
+import { Home, Projects, About, Login, Registration } from "./routes";
 import customTheme1 from "./themes/custom1";
 
-// Apis
-import { TProject } from "./api/getProjects";
-import { getProjectsSearch } from "./api/getSearchProjects";
-
 // Other
-import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "./components/search/AvailableParams";
+import { searchFilterParams, TAvailParameters } from "./components/search/AvailableParams";
+import ProjectPage from './components/projectPage/ProjectPage';
 import Navbar from "./components/Navbar";
-import { AuthProvider } from './customHooks/useAuth';
-
+import UserProfile from "./routes/UserProfile";
+import { AuthProvider } from "./customHooks/useAuth";
+import GoogleSuccessRedirect from './routes/googleSuccessRedirect';
+import GoogleFailure from './routes/googleFailure';
 
 // Represents curr state of filters
 export type TFiltersState = {
-  keywords: string,
-  category: TAvailParameters['category'][0],
-  semester: TAvailParameters['semester'][0],
-  award: TAvailParameters['award'][0],
-  sortBy: TAvailParameters['sortBy'][0],
+  keywords: string;
+  category: TAvailParameters["category"][0];
+  semester: TAvailParameters["semester"][0];
+  award: TAvailParameters["award"][0];
+  sortBy: TAvailParameters["sortBy"][0];
   // These two are for pagination
   currPage: number,
   projectsPerPage: number,
 }
 
-
 export default function App() {
 
-  const [projects, setProjects] = useState<TProject[]>([]);
-  const [totalNumProjects, setTotalNumProjects] = useState(0)
-  const [searchFilters, setSearchFilters] = useState<TFiltersState>({
+
+  const [currFilters, setFilters] = useState<TFiltersState>({
     keywords: '',
     category: searchFilterParams.category[0],
     semester: searchFilterParams.semester[0],
     award: searchFilterParams.award[0],
     sortBy: searchFilterParams.sortBy[0],
     currPage: 1,
-    projectsPerPage: 6
-  })
+    projectsPerPage: 6,
+  });
 
-  // Fetch required number of projects based on given parameters
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const respData = await getProjectsSearch({ ...searchFilters });
-      setTotalNumProjects(respData.searchTotal)
-      setProjects(respData.projects);
-    };
-    fetchProjects();
-  }, [searchFilters]);
 
   return (
     <BrowserRouter>
       <AuthProvider>
         <ThemeProvider theme={customTheme1}>
-          <Navbar
-            currFilters={searchFilters}
-            setFilters={setSearchFilters}
-          />
-          <Routes >
-            <Route path="/" element={<Home />} />
-            <Route path="/projects/*" element={
-              <Projects
-                currFilters={searchFilters}
-                setFilters={setSearchFilters}
-                {...{ totalNumProjects, projects }}
-              />}
-            />
-            <Route path="/About" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/Register" element={<Registration />} />
-          </Routes>
+          <Navbar {...{ currFilters, setFilters }} />
+          <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey} >
+            <Routes >
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={
+                <Projects
+                  {...{ currFilters, setFilters }}
+                />
+              } />
+              <Route path="/projects/:projectId" element={<ProjectPage />} />
+              <Route path="/About" element={<About />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/user/:userID" element={<UserProfile />} />
+              <Route path="/Register" element={<Registration />} />
+              <Route  path="/googleSuccessRedirect" element={<GoogleSuccessRedirect/>} />
+              <Route  path="/googleFailure" element={<GoogleFailure/>} />
+            </Routes>
+          </Box>
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
-  )
+  );
 }

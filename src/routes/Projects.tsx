@@ -7,17 +7,10 @@ import MyPagination from "../components/MyPagination";
 
 // Other
 import { fetchCurrentParameters } from "../components/search/AvailableParams";
-import { SearchFilterProps } from "../components/search/DesktopSearchFilters";
-import { TProject } from "../api/getProjects";
+import { SearchProps } from "../components/MyPagination"
 
 
-interface TProjectsRouteProps extends SearchFilterProps {
-  projects: TProject[]
-  totalNumProjects: number
-}
-
-
-const Projects = (props: TProjectsRouteProps) => {
+const Projects = (props: SearchProps) => {
 
   const theme = useTheme();
 

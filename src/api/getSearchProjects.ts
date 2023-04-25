@@ -1,6 +1,6 @@
 import { API_URL } from "./config";
-import { TProject } from "./getProjects";
-import { TFiltersState } from "../app";
+import { TProject } from "../model/TProject";
+import { TFiltersState } from "../App";
 
 interface SearchProjectsResponse {
   projects: TProject[];

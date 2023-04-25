@@ -17,8 +17,10 @@ type TAuthReturnType = {
   onlyAuthenticated: () => void; // Use this redirect users to sign in page.
   isAllowed: (aRoles?: TUser['userType'][], aIds?: string[]) => boolean;  // For role and id based authorization.
   getToken: () => string | null; // For restricted api calls.
+  getLatestUser: () => void;
   error: string; // Set with server message if signin or signout fails.
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
+  googleAuth: () => void;
 };
 
 function useProvideAuth(): TAuthReturnType {
@@ -26,6 +28,13 @@ function useProvideAuth(): TAuthReturnType {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Auto sigin in on mount
+    getLatestUser()
+    // Validates token every 5 seconds.
+    // setInterval(validateToken, 5000);
+  }, [])
 
   const getUserPromise = (savedToken: string | null) => {
     return fetch(`${API_URL}/api/users/getCurrentUser/me`, {
@@ -46,12 +55,6 @@ function useProvideAuth(): TAuthReturnType {
     })
   }
 
-  useEffect(() => {
-    // Auto sigin in on mount
-    signinWithSavedToken()
-    // Validates token every 5 seconds.
-    setInterval(validateToken, 5000);
-  }, [])
 
   // validates token
   function validateToken() {
@@ -66,6 +69,15 @@ function useProvideAuth(): TAuthReturnType {
           } 
         })
     }
+  }
+  function googleAuth() {
+    setUser(null);
+    setIsLoading(true);
+    setError('');
+    const queryParameters = new URLSearchParams(window.location.search);
+    const token = queryParameters.get('token');
+    localStorage.setItem('jwtToken', token as string);
+
   }
 
   // signs in user from given username and password
@@ -84,13 +96,14 @@ function useProvideAuth(): TAuthReturnType {
           // Otherwise save token and signin.
           resp.text().then(token => {
             localStorage.setItem('jwtToken', token);
-            signinWithSavedToken();
+            getLatestUser();
           })
         }
       })
   }
 
-  function signinWithSavedToken() {
+  // Can use this to get latest user updates.
+  function getLatestUser() {
     setError('')
     const savedToken = localStorage.getItem('jwtToken');
     if (savedToken) {
@@ -162,7 +175,6 @@ function useProvideAuth(): TAuthReturnType {
     return true
   }
 
-
   return {
     user,
     signin,
@@ -171,25 +183,16 @@ function useProvideAuth(): TAuthReturnType {
     onlyAuthenticated,
     isAllowed,
     getToken,
+    getLatestUser,
     error,
     isLoading,
+    googleAuth
   };
 }
 
 // Create context with default value.
-// The value isn't important it's just there cause createContext
-// needs an initial value.
-const authContext = createContext<TAuthReturnType>({
-  user: null,
-  signin: (username: TUser["username"], password: string) => { },
-  signup: (newUser: SignUpProps) => { },
-  signout: () => { },
-  onlyAuthenticated: () => { },
-  isAllowed: (aRoles?: TUser['userType'][], aIds?: string[]) => false,
-  getToken: () => null,
-  error: '',
-  isLoading: false,
-});
+// The default value is never used so I'm just gonna cast a empty object as the desired type.
+const authContext = createContext<TAuthReturnType>({} as TAuthReturnType);
 
 export function AuthProvider({ children }: { children: any }) { // Gave any type but might need to be React.ReactNode
   return (

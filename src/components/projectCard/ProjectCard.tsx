@@ -5,6 +5,7 @@ import {
   CardContent,
   CardMedia,
   Typography,
+  useTheme,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import communityImpact from "../../assets/communityImpact.svg";
@@ -12,6 +13,7 @@ import peoplesChoice from "../../assets/peoplesChoice.svg";
 import topExcellence from "../../assets/topExcellence.svg";
 
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
+import { Link } from "react-router-dom";
 
 interface Props {
   title: string;
@@ -21,6 +23,7 @@ interface Props {
   category: string;
   likes: number;
   badges: string;
+  projectID: string;
 }
 
 const ProjectCard = ({
@@ -31,26 +34,28 @@ const ProjectCard = ({
   category,
   likes,
   badges,
+  projectID,
 }: Props) => {
   const handleDefaultImage = (e: any) => {
     e.target.onerror = null;
     e.target.src = DefaultProjectImage;
   };
+  const theme = useTheme();
   let colour = "lightgrey";
   let awardText = "";
   let awardIcon = null;
 
   const setBadge = (badges: string) => {
     if (badges === "Community Impact") {
-      colour = "#00E676";
+      colour = theme.customColors.communityImpact;
       awardText = "Community Impact Award";
       awardIcon = communityImpact;
     } else if (badges === "Top Excellence") {
-      colour = "#FFCA28";
+      colour = theme.customColors.excellenceAward;
       awardText = "Top Excellence Award";
       awardIcon = topExcellence;
     } else if (badges === "Peoples Choice") {
-      colour = "#F44336";
+      colour = theme.customColors.peoplesChoice;
       awardText = "People's Choice Award";
       awardIcon = peoplesChoice;
     }
@@ -69,7 +74,7 @@ const ProjectCard = ({
         },
       }}
     >
-      <CardActionArea>
+      <CardActionArea component={Link} to={`${projectID}`}>
         <CardMedia
           component="img"
           alt="error loading image"
@@ -141,10 +146,13 @@ const ProjectCard = ({
               gap="2px"
               paddingBottom="0.35em"
             >
-              <FavoriteIcon color="error" fontSize="small" />
+              <FavoriteIcon
+                sx={{ color: theme.customColors.likes }}
+                fontSize="small"
+              />
               <Typography
                 variant="body2"
-                color="error"
+                color={theme.customColors.likes}
                 fontSize="1.25em"
                 lineHeight={1}
               >

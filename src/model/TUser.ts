@@ -1,15 +1,13 @@
-import { TMockProject } from "./TMockProject";
-
 export type TUser = {
     _id: string;
     name: string;
     email: string;
+    bio: string;
     username: string;
-    // password: string; // not in getCurrentUser api
     likedProjects: string[]
     myComments: string[]
     userType: "graduate" | "visitor" | "admin";
-    project: string[]
+    project: {_id: string; name: string;}
     isGoogleCreated: boolean
-    profilePicture?: string
+    profilePicture: string
 }
