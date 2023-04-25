@@ -12,6 +12,9 @@ import { patchProject } from '../../api/patchProject';
 import { useAuth } from '../../customHooks/useAuth';
 import ProjectDetailsAccordian from './MobileProjectDetails';
 import { useParams } from 'react-router-dom';
+import { TComment } from '../../model/TComment';
+import Comments from './Comments/Comments';
+import { getProjectComments } from '../../api/getProjectComments';
 
 
 type TabContent = {
@@ -39,12 +42,23 @@ export default function ProjectPage() {
   // Holds modified project that needs to patched in backend
   const [projectChanges, setProjectChanges] = useState<TProjectPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [comments, setComments] = useState<TComment[] | undefined>();
 
   // Sets inital project on mount
   useEffect(() => {
     setIsLoading(true)
     getProject(projectId!)
-      .then((data) => { data && setProject(data) })
+      .then((data) => {
+        if (data) {
+          setProject(data);
+          // We are using the get all comments endpoint to test rendering
+          getProjectComments(projectId!)
+            .then((respData) => {
+              console.log(respData);
+              setComments(respData);
+            })
+        }
+      })
       .finally(() => setIsLoading(false));
   }, [])
 
@@ -111,6 +125,8 @@ export default function ProjectPage() {
               flexDirection: { md: 'row', sm: 'column' },
             }}
             mt={2}>
+
+              {/* Tab content and comments  */}
             <Stack flex={1} alignItems={'center'} mr={1} mb={10} >
 
               {/* Only render tab buttons if there's more than one tab */}
@@ -135,9 +151,12 @@ export default function ProjectPage() {
                   ))
                 }
               </Stack>}
+
               {project.content[selectedTab].tabContent.map((cb, index) => (
                 <ContentBlock key={index} {...cb as ContentBlockProps} />
               ))}
+
+              {comments && <Comments comments={comments} projectId={projectId} />}
             </Stack>
             <ProjectDetails />
           </Stack>

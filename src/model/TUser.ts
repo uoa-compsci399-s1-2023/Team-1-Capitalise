@@ -18,8 +18,8 @@ export type TUser = {
       | "github"
       | "codesandbox"
       | "deployedSite"
-      | "codepen"
-      | "notion"
-      | "kaggle";
+      // | "codepen"
+      // | "notion"
+      // | "kaggle";
   }[];
 };
