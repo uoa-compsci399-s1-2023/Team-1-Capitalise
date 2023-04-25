@@ -3,7 +3,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Box, TextField, InputAdornment } from "@mui/material";
 import { SearchContext } from "../../App";
 
-const SearchBar = () => {
+const MobileSearchBar = () => {
   const { currFilters, setFilters } = useContext(SearchContext);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -37,4 +37,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default MobileSearchBar;

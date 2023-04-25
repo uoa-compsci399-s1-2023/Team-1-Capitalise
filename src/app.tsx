@@ -33,10 +33,8 @@ interface TSearchContext {
 
 export const SearchContext = createContext<TSearchContext>({} as TSearchContext)
 
-export default function App() {
-
-  // Represents curr state of filters
-  const [currFilters, setFilters] = useState<TFiltersState>({
+export function getDefaultFilters(): TFiltersState {
+  return {
     keywords: '',
     category: searchFilterParams.category[0],
     semester: searchFilterParams.semester[0],
@@ -44,7 +42,13 @@ export default function App() {
     sortBy: searchFilterParams.sortBy[0],
     currPage: 1,
     projectsPerPage: 6,
-  });
+  }
+}
+
+export default function App() {
+
+  // Represents curr state of filters
+  const [currFilters, setFilters] = useState<TFiltersState>(getDefaultFilters());
 
 
   return (
@@ -52,7 +56,7 @@ export default function App() {
       <AuthProvider>
         <SearchContext.Provider value={{ currFilters, setFilters }}>
           <ThemeProvider theme={customTheme1}>
-            <Navbar {...{ currFilters, setFilters }} />
+            <Navbar />
             <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey} >
               <Routes >
                 <Route path="/" element={<Home />} />

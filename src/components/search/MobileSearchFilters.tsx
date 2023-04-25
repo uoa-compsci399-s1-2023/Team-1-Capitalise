@@ -2,7 +2,8 @@ import { useContext } from 'react'
 import { Box, Stack } from '@mui/material'
 import FilterButton from './FilterButton'
 import { SearchContext } from '../../App'
-import SearchBar from '../SearchBar'
+// import SearchBar from '../SearchBar'
+import MobileSearchBar from './MobileSearchBar'
 import { searchFilterParams } from './AvailableParams'
 
 
@@ -24,7 +25,7 @@ export default function MobileSearchFilters() {
         display: { xs: "flex", md: "none" },
       }}
     >
-      <SearchBar currFilters={currFilters} setFilters={setFilters} />
+      <MobileSearchBar />
       <Box
         sx={{
           display: "flex",

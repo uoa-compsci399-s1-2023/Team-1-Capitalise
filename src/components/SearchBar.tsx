@@ -1,9 +1,9 @@
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, TextField, InputAdornment } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { SearchContext } from "../App";
+import { SearchContext, getDefaultFilters } from "../App";
 import { searchFilterParams } from "./search/AvailableParams";
 
 // Yathi - Added event handler for search bar to make searches.
@@ -12,17 +12,20 @@ import { searchFilterParams } from "./search/AvailableParams";
 const SearchBar = () => {
   const navigate = useNavigate();
   const { currFilters, setFilters } = useContext(SearchContext);
+  const [value, setValue] = useState<string>('');
+
+  // Clear keyword on mount
+  useEffect(() => {
+    setValue('')
+  }, [])
+
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter') {
+      // reset all filters except keyword
       setFilters({
+        ...getDefaultFilters(),
         keywords: (e.target as HTMLTextAreaElement).value,
-        category: searchFilterParams.category[0],
-        semester: searchFilterParams.semester[0],
-        award: searchFilterParams.award[0],
-        sortBy: searchFilterParams.sortBy[0],
-        currPage: 1,
-        projectsPerPage: 6,
       });
       navigate("/projects");//12/04/2023 - 11pm Daniel - Added navigate to /projects when searching from any other page.
     }
@@ -34,6 +37,8 @@ const SearchBar = () => {
     <Box width='80%'>
       <TextField
         onKeyDown={handleKeyDown}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         fullWidth
         id="global-searchbar"
         label=""
