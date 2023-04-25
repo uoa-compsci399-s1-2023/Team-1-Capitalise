@@ -47,8 +47,8 @@ const About = () => {
       {/* {auth.isLoading && <h1>Loading...</h1>} */}
 
       {/* <Navbar /> */}
-      <h1>About {auth.user?.name} </h1>
-      {auth.error && <h3>{auth.error}</h3>}
+      <h1>About</h1>
+      {/* {auth.error && <h3>{auth.error}</h3>}
 
       <Box mb={6}>
         <form onSubmit={handleSignin}>
@@ -66,7 +66,7 @@ const About = () => {
           password: <input type="text" name="password" />
           <input type="submit" onClick={auth.signout} value={'signup'} />
         </form>
-      </Box>
+      </Box> */}
     </div>
 
 

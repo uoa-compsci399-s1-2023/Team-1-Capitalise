@@ -1,23 +1,24 @@
 // Yathi - margin on top of projects box to clear fixed position header.
 // Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
 
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction, useContext } from "react";
 
 // Components
 import { Box, Stack, Typography } from "@mui/material";
 import { Pagination as MuiPagination } from "@mui/material";
-import ProjectsGrid from "./projectCard/ProjectsGrid";
+import ProjectsGrid from "./ProjectsGrid";
 
 import {
   DesktopSearchFilters,
   MobileSearchFilters
-} from "./search";
+} from "../search";
 
 // Other
 // import { TProject } from "../api/getProjects";
-import { TProject } from "../model/TProject";
-import { getProjectsSearch } from "../api/getSearchProjects";
-import { TFiltersState } from '../App';
+import { TProject } from "../../model/TProject";
+import { getProjectsSearch } from "../../api/getSearchProjects";
+import { TFiltersState } from '../../App';
+import { SearchContext } from "../../App";
 
 
 export interface SearchProps {
@@ -27,13 +28,14 @@ export interface SearchProps {
 
 
 const MyPagination = ({
-  currFilters,
-  setFilters,
+  currFilters: blah,
+  setFilters: blahblah,
 }: SearchProps
 ) => {
 
   const [projects, setProjects] = useState<TProject[]>([]);
   const [totalNumProjects, setTotalNumProjects] = useState(0)
+  const { currFilters, setFilters } = useContext(SearchContext);
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {

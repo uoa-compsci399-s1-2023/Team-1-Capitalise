@@ -2,7 +2,7 @@
 import React, { ChangeEvent, FormEvent } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, TextField, InputAdornment } from "@mui/material";
-import { SearchProps } from "./MyPagination";
+import { SearchProps } from "./projects/MyPagination";
 import { useNavigate } from "react-router-dom";
 
 // Yathi - Added event handler for search bar to make searches.

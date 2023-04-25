@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/authentication/LoginForm";
 import { useEffect } from "react";
 import { useAuth } from "../customHooks/useAuth";
 import { useNavigate, Link, Navigate } from "react-router-dom";

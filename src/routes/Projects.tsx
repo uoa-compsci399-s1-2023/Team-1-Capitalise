@@ -3,11 +3,11 @@ import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 // Components
-import MyPagination from "../components/MyPagination";
+import MyPagination from "../components/projects/MyPagination";
 
 // Other
 import { fetchCurrentParameters } from "../components/search/AvailableParams";
-import { SearchProps } from "../components/MyPagination"
+import { SearchProps } from "../components/projects/MyPagination"
 
 
 const Projects = (props: SearchProps) => {

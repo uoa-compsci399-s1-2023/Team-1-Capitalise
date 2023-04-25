@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { SearchProps } from '../MyPagination'
+import { SearchProps } from '../projects/MyPagination'
 import { Box, TextField, SelectChangeEvent, Typography } from '@mui/material'
 import FilterDropdown from './FilterDropdown'
 import { searchFilterParams, TAvailParameters } from './AvailableParams'

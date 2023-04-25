@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Box } from "@mui/material";
-import SignUp from "../components/RegisterForm";
+import SignUp from "../components/authentication/RegisterForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../customHooks/useAuth";
 import { useTheme } from "@emotion/react";

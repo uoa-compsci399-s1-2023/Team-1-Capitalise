@@ -15,8 +15,8 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 //Project Files
-import Logo from "../assets/Logo.svg";
-import { useAuth } from '../customHooks/useAuth';
+import Logo from "../../assets/Logo.svg";
+import { useAuth } from '../../customHooks/useAuth';
 import { Divider } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 //Theme
