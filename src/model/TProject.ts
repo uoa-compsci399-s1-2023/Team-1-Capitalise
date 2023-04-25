@@ -1,3 +1,5 @@
+import { TComment } from "./TComment";
+
 export type TProject = {
   _id: string;
   name: string;

@@ -3,7 +3,6 @@ import ProjectDetails from './ProjectDetails';
 import ContentBlock, { ContentBlockProps } from './ContentBlock';
 import ProjectHeader from './ProjectHeader';
 import TabButton from './TabButton';
-import { TMockProject, mockProject } from '../../model/MockProject';
 import { getProject } from '../../api/getProject'
 import { Stack, Box, useTheme, Container, Typography, Button, Divider } from '@mui/material';
 import { TProject } from '../../model/TProject';
@@ -12,6 +11,9 @@ import { patchProject } from '../../api/patchProject';
 import { useAuth } from '../../customHooks/useAuth';
 import ProjectDetailsAccordian from './MobileProjectDetails';
 import { useParams } from 'react-router-dom';
+import { TComment } from '../../model/TComment';
+import Comments from './Comments/Comments';
+import { getProjectComments } from '../../api/getProjectComments';
 
 
 type TabContent = {
@@ -39,12 +41,22 @@ export default function ProjectPage() {
   // Holds modified project that needs to patched in backend
   const [projectChanges, setProjectChanges] = useState<TProjectPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [comments, setComments] = useState<TComment[] | undefined>();
 
   // Sets inital project on mount
   useEffect(() => {
     setIsLoading(true)
     getProject(projectId!)
-      .then((data) => { data && setProject(data) })
+      .then((data) => {
+        if (data) {
+          setProject(data);
+          // We are using the get all comments endpoint to test rendering
+          getProjectComments(projectId!)
+            .then((respData) => {
+              setComments(respData);
+            })
+        }
+      })
       .finally(() => setIsLoading(false));
   }, [])
 
@@ -78,7 +90,8 @@ export default function ProjectPage() {
   if (!isLoading) {
     return (
       <ProjectContext.Provider value={{ project, setProject, setProjectChanges }}>
-        {/* banner */}
+      
+      {/* Banner */}
         <img
           src={project.banner}
           alt='Project cover photo'
@@ -88,7 +101,8 @@ export default function ProjectPage() {
             objectFit: 'cover'
           }}
         />
-        {/* everything else */}
+      
+      {/* Everything else */}
         <Stack
           bgcolor={'white'}
           minHeight={'92vh'}
@@ -97,20 +111,24 @@ export default function ProjectPage() {
           maxWidth={'1600px'}
           mx={'auto'}
         >
-
+          {/* Includes title, blurb, like button, etc */}
           <ProjectHeader
             name={project.name}
             blurb={project.blurb}
             likes={project.likes}
           />
 
+          {/* Project details for mobile view */}
           <ProjectDetailsAccordian />
 
+          {/* Tab content and detail sidebar */}
           <Stack
             sx={{
               flexDirection: { md: 'row', sm: 'column' },
             }}
             mt={2}>
+
+            {/* Tab content */}
             <Stack flex={1} alignItems={'center'} mr={1} mb={10} >
 
               {/* Only render tab buttons if there's more than one tab */}
@@ -135,12 +153,26 @@ export default function ProjectPage() {
                   ))
                 }
               </Stack>}
-              {project.content[selectedTab].tabContent.map((cb, index) => (
-                <ContentBlock key={index} {...cb as ContentBlockProps} />
-              ))}
+
+              {/* If content is not empty, otherwise show "no content msg" */}
+              {project.content[selectedTab] ?
+                project.content[selectedTab].tabContent.map((cb, index) => (
+                  <ContentBlock key={index} {...cb as ContentBlockProps} />
+                ))
+                :
+                <Typography variant="body2" color="neutral">No content to display.</Typography>
+              }
+
             </Stack>
             <ProjectDetails />
           </Stack>
+
+        {/* Comments Section */}
+          {comments &&
+            <Box mt={10} width={'100%'}>
+              <Comments comments={comments} projectId={projectId} />
+            </Box>}
+
         </Stack>
       </ProjectContext.Provider>
     )

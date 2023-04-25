@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import MyTabs from "../components/MyTabs";
 import ProjectCard from "../components/projectCard/ProjectCard";
 import { getProject } from "../api/getProject";
-
 import ProjectsGrid from "../components/projectCard/ProjectsGrid";
+import MyButton from "../components/MyButton";
 
 const UserProfile = () => {
   const [user, setUser] = useState<TUser | undefined>();
@@ -68,7 +68,6 @@ const UserProfile = () => {
       ),
     },
   ];
-
   useEffect(() => {
     const fetchUser = async () => {
       if (!userID) return;
@@ -99,6 +98,10 @@ const UserProfile = () => {
     fetchProject();
     fetchLikes();
   }, [user]);
+
+  const handleLinkButton = (url: string) => {
+    window.open(url, "_blank", "noreferrer");
+  };
 
   if (typeof user === "undefined") {
     return (
@@ -150,6 +153,17 @@ const UserProfile = () => {
             >
               {user.name}
             </Typography>
+            <Stack direction={{ xs: "row", md: "column" }} spacing={1}>
+              {user.links.map((link) => (
+                <MyButton
+                  variant="contained"
+                  onClick={() => handleLinkButton(link.value)}
+                  key={link._id}
+                >
+                  {link.type}
+                </MyButton>
+              ))}
+            </Stack>
           </Box>
         </Box>
       </Stack>
