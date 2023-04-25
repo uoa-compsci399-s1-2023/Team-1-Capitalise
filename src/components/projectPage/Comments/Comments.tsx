@@ -84,12 +84,12 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
   // only users who are the author of the comment OR are admin can delete comments.
   // make use of the auth.isAllowed?
-  const deleteComment = async (comment: TComment) => {
+  const deleteComment = async (commentId: string) => {
     const token = auth.getToken();
     if (token) {
       // Yathi - Need to replace with a mui modal.
       // if (window.confirm("Are you sure you want to remove comment?")) {
-        fetch(`${API_URL}/api/projects/comment/${comment._id}`, {
+        fetch(`${API_URL}/api/projects/comment/${commentId}`, {
           method: "DELETE",
           // Yathi - This endpoint doesn't need a body
           headers: {
@@ -103,7 +103,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
         }).then(() => {
           // we need to update the backend comments list
           const updatedBackendComments = backendComments.filter(
-            (backendComment) => backendComment._id != comment._id
+            (backendComment) => backendComment._id != commentId
           );
           setBackendComments(updatedBackendComments);
         });

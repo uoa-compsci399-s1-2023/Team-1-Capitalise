@@ -11,13 +11,11 @@ import { API_URL } from "../../../api/config";
 import ReplyIcon from "@mui/icons-material/Reply";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-// import { TComment } from "../api/getComments";
-import deleteComment from "./Comments";
 import { TComment } from "../../../model/TComment";
 
 interface CommentProps {
   comment: TComment;
-  deleteComment: (commentId: TComment) => void;
+  deleteComment: (commentId: string) => void;
 }
 
 // try passing the deleteComment function into the MyComment prop
@@ -63,8 +61,7 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
                 <Button
                   variant="outlined"
                   startIcon={<DeleteOutlineIcon />}
-                  // onClick={() => deleteComment(comment._id)}
-                  onClick={() => deleteComment(comment)}
+                  onClick={() => deleteComment(comment._id)}
                   size="small"
                   color="error"
                 >
