@@ -19,7 +19,7 @@ export default function ProjectDetailsAccordian() {
     };
 
   return (
-    <Box>
+    <Box sx={{display: {md: 'none', sm: 'block'}}} >
       <Accordion expanded={expanded === 'panel1'}>
         <AccordionSummary
           // disabled

@@ -21,7 +21,7 @@ export default function MembersField() {
   }, [])
 
   return (
-    <Box>
+    <Box width={'100%'}>
       <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Members:</Typography>
       {members.map((m, i) => (
         <TeamMember key={i} name={m.name} avatar={m.profilePicture} userId={m._id} />

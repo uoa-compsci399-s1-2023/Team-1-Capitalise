@@ -86,16 +86,6 @@ const MyPagination = ({
         </Typography>
         {/* Render project data into the ProjectsGrid component */}
         {checkProjects && <ProjectsGrid projects={projects} />}
-        {/* <Box
-          sx={{
-            minWidth: 300,
-            height: '100%',
-            // minHeight: 700,
-            // maxHeight: 700,
-          }}
-        >
-          
-        </Box> */}
 
         <Stack spacing={2} alignItems="center" padding={5}>
           <Box>

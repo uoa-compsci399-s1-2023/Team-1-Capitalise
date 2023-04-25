@@ -6,7 +6,7 @@ import TeamnameField from './Fields/TeamnameField'
 import CategoryField from './Fields/CategoryField'
 import SemesterField from './Fields/SemesterField'
 import MembersField from './Fields/MembersField'
-import GithubBtn from './GithubBtn'
+import ExternalLinkBtn from './ExternalLinkBtn'
 import CodeSandboxBtn from './CodeSandbox'
 import AwardBadge from './AwardBadge'
 import { ProjectContext } from './ProjectPage'
@@ -31,18 +31,31 @@ export default function ProjectDetails() {
       {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
       {project.badges && <AwardBadge {...project.badges} />}
+
       <CategoryField />
       <SemesterField />
       <TeamnameField />
       <MembersField />
-      <Box mt={1}>
-        <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Links:</Typography>
-        <GithubBtn />
-        <CodeSandboxBtn />
-      </Box>
+
+      {project.links &&
+        <Box
+          mt={1}
+          gap={2}
+        >
+          <Typography fontWeight={400} width={'100px'} variant="body1" mb={2}>Links:</Typography>
+          <Stack
+            gap={2}
+            alignItems={'center'}
+          >
+            {project.links.map((link, i) => (
+              <ExternalLinkBtn {...link} key={i} />
+            ))}
+          </Stack>
+
+        </Box>}
 
       <Stack mt={8} flexDirection={'row'} gap={1} flexWrap={'wrap'}>
-        {project.tags.map( (tag, i) => (
+        {project.tags.map((tag, i) => (
           <Chip key={i} size='small' label={tag.name} />
         ))}
       </Stack>

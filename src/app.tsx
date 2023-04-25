@@ -48,17 +48,16 @@ export default function App() {
           <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey} >
             <Routes >
               <Route path="/" element={<Home />} />
-              <Route path="/projects/*" element={
+              <Route path="/projects" element={
                 <Projects
                   {...{ currFilters, setFilters }}
                 />
               } />
-              <Route path="/projectpage" element={<ProjectPage projectId="6442068f7297a06fc1659115" />} />
+              <Route path="/projects/:projectId" element={<ProjectPage />} />
               <Route path="/About" element={<About />} />
               <Route path="/login" element={<Login />} />
               <Route path="/user/:userID" element={<UserProfile />} />
               <Route path="/register" element={<Registration />} />
-              <Route path="/projects/:projectID" element={<Home />} />
             </Routes>
           </Box>
         </ThemeProvider>

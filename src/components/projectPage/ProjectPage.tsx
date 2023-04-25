@@ -11,6 +11,7 @@ import { TProjectPost } from '../../model/TPostProject';
 import { patchProject } from '../../api/patchProject';
 import { useAuth } from '../../customHooks/useAuth';
 import ProjectDetailsAccordian from './MobileProjectDetails';
+import { useParams } from 'react-router-dom';
 
 
 type TabContent = {
@@ -28,20 +29,21 @@ export interface ProjectProps {
 export const ProjectContext = createContext<ProjectProps>({} as ProjectProps)
 
 
-export default function ProjectPage({ projectId }: { projectId: string }) {
-  const theme = useTheme()
-  const auth = useAuth()
+export default function ProjectPage() {
+  const { projectId } = useParams();
+  const theme = useTheme();
+  const auth = useAuth();
   const [selectedTab, setSelectedTab] = useState(0);
   // Holds currently displaying project
   const [project, setProject] = useState<TProject>({} as TProject);
   // Holds modified project that needs to patched in backend
   const [projectChanges, setProjectChanges] = useState<TProjectPost | null>(null);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   // Sets inital project on mount
   useEffect(() => {
     setIsLoading(true)
-    getProject(projectId)
+    getProject(projectId!)
       .then((data) => { data && setProject(data) })
       .finally(() => setIsLoading(false));
   }, [])
@@ -53,7 +55,7 @@ export default function ProjectPage({ projectId }: { projectId: string }) {
     if (projectChanges) {
       patchProject(
         project._id,
-        { 
+        {
           ...projectChanges,
           ["isBeingEdited"]: false
         },
@@ -100,10 +102,10 @@ export default function ProjectPage({ projectId }: { projectId: string }) {
             name={project.name}
             blurb={project.blurb}
             likes={project.likes}
-            />
+          />
 
-          <ProjectDetailsAccordian/>
-          
+          <ProjectDetailsAccordian />
+
           <Stack
             sx={{
               flexDirection: { md: 'row', sm: 'column' },

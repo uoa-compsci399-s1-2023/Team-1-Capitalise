@@ -30,11 +30,19 @@ export default function TeamMember({ name, avatar, userId }: FieldProps) {
   return (
     <Box width='100%' display='flex' flexDirection={'row'} >
       {/* Needs to redirect to user page onclick */}
-      <Link to={`../user/${userId}`}>
+      <Link to={`../user/${userId}`} style={{width: '100%'}}>
         <Member
-          startIcon={<Avatar sizes='small' alt={name} src={avatar} sx={{ width: 30, height: 30 }} />}
+          startIcon={
+            <Avatar
+              imgProps={{ referrerPolicy: "no-referrer" }}
+              sizes='small'
+              alt={name}
+              src={avatar}
+              sx={{ width: 30, height: 30 }}
+            />
+          }
           variant='text'
-          sx={{color: 'neutral'}} // Ignore type error.
+          color='neutral' // Ignore type error.
           size='large'
           fullWidth
           style={{}}

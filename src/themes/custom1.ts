@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes, Palette } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes, Palette, PaletteColorOptions } from "@mui/material/styles";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -33,18 +33,36 @@ declare module "@mui/material/styles" {
 
   }
 
-  interface Palette {
-    neutral: Palette['primary']
-    black: Palette['primary']
-    editBtnGrey: Palette['primary']
-  }
+  // interface Palette {
+  //   neutral: Palette['primary']
+  //   black: Palette['primary']
+  //   editBtnGrey: Palette['primary']
+  // }
 
-  interface PaletteOptions {
-    neutral: PaletteOptions['primary']
-    black: PaletteOptions['primary']
-    editBtnGrey: PaletteOptions['primary']
-  }
+  // interface PaletteOptions {
+  //   neutral: PaletteOptions['primary']
+  //   black: PaletteOptions['primary']
+  //   editBtnGrey: PaletteOptions['primary']
+  // }
 
+  interface CustomPalette {
+    neutral: PaletteColorOptions;
+    black: PaletteColorOptions;
+    editBtnGrey: PaletteColorOptions;
+    githubBtn: PaletteColorOptions;
+  }
+  interface Palette extends CustomPalette {}
+  interface PaletteOptions extends CustomPalette {}
+
+}
+
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    neutral: true
+    black: true
+    editBtnGrey: true
+    githubBtn: true
+  }
 }
 
 
@@ -61,6 +79,9 @@ let theme = createTheme({
       },
       editBtnGrey: {
         main: '#b7b7b7',
+      },
+      githubBtn: {
+        main: '#6e5494'
       }
     },
     typography: {
