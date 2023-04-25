@@ -1,58 +1,27 @@
-import { Box, Container, Stack } from "@mui/material";
-import Navbar from "../components/Navbar";
-import { useEffect, useState } from "react";
-import ProjectCard from "../components/ProjectCard";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { TProject, getProjects } from "../api/getProjects";
+import { useEffect } from "react";
+import { Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
+// Components
+import MyPagination from "../components/projects/MyPagination";
+
+// Other
+import { fetchCurrentParameters } from "../components/search/AvailableParams";
+
+
 
 const Projects = () => {
-  const [projects, setProjects] = useState<TProject[]>([]);
 
+  const theme = useTheme();
+
+  // Fetch available search parameters on initial render
   useEffect(() => {
-    async function fetchProjects() {
-      const newProjects = await getProjects();
-      setProjects(newProjects);
-    }
-    fetchProjects();
-  }, []);
+    fetchCurrentParameters();
+  }, [])
 
   return (
-    <Box bgcolor="#f9f9f9">
-      <Stack display="flex" direction="column" height="100%">
-        <Navbar />
-        <Stack display="flex" direction="row" height="100%">
-          <Box bgcolor="white" minWidth="220px">
-            Search :)
-          </Box>
-          <Container maxWidth={false}>
-            <Box display="flex" justifyContent="center" padding=" 30px 0px">
-              <h1>Projects</h1>
-            </Box>
-            <Grid2
-              container
-              gap="50px"
-              justifyContent="center"
-              sx={{ margin: "px" }}
-            >
-              {projects.map((project) => (
-                <Grid2 key={project._id}>
-                  <ProjectCard
-                    title={project.name}
-                    semester={project.semester.value}
-                    image={
-                      typeof project.content[0] != "undefined"
-                        ? project.content[0].tab[0].photo
-                        : ""
-                    }
-                    teamname={project.teamname ? project.teamname : "teamname"}
-                    category={project.category.value}
-                  ></ProjectCard>
-                </Grid2>
-              ))}
-            </Grid2>
-          </Container>
-        </Stack>
-      </Stack>
+    <Box bgcolor={theme.customColors.bgGrey} width="100%" minHeight="92vh">
+      <MyPagination />
     </Box>
   );
 };
