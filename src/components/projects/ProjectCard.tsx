@@ -41,21 +41,24 @@ const ProjectCard = ({
     e.target.src = DefaultProjectImage;
   };
   const theme = useTheme();
-  let colour = "lightgrey";
+  
+  // Yathi - Have to properly define type or build fails.
+  let colour: typeof theme['customColors'] | string = "lightgrey";
+  
   let awardText = "";
   let awardIcon = null;
 
   const setBadge = (badges: string) => {
     if (badges === "Community Impact") {
-      colour = theme.customColors.communityImpact;
+      colour = theme.customColors.communityImpact!;
       awardText = "Community Impact Award";
       awardIcon = communityImpact;
     } else if (badges === "Top Excellence") {
-      colour = theme.customColors.excellenceAward;
+      colour = theme.customColors.excellenceAward!;
       awardText = "Top Excellence Award";
       awardIcon = topExcellence;
     } else if (badges === "Peoples Choice") {
-      colour = theme.customColors.peoplesChoice;
+      colour = theme.customColors.peoplesChoice!;
       awardText = "People's Choice Award";
       awardIcon = peoplesChoice;
     }

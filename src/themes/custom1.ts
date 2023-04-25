@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes, Palette, PaletteColorOptions } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes, Palette, PaletteColorOptions, SimplePaletteColorOptions } from "@mui/material/styles";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -34,7 +34,7 @@ declare module "@mui/material/styles" {
   }
 
   interface CustomPalette {
-    neutral: PaletteColorOptions;
+    neutral: SimplePaletteColorOptions;
     black: PaletteColorOptions;
     editBtnGrey: PaletteColorOptions;
     githubBtn: PaletteColorOptions;

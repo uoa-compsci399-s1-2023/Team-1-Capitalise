@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useContext } from 'react'
-import { SearchContext } from '../../App'
+import { SearchContext } from '../../app'
 import { Box, TextField, SelectChangeEvent, Typography } from '@mui/material'
 import FilterDropdown from './FilterDropdown'
 import { searchFilterParams, TAvailParameters } from './AvailableParams'

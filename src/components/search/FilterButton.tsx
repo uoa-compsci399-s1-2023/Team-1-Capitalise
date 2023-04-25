@@ -2,7 +2,8 @@
 import * as React from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { SearchProps } from '../projects/MyPagination';
+// import { SearchProps } from '../projects/MyPagination';
+import { SearchContext } from '../../app';
 import { TAvailParameters } from './AvailableParams'
 
 
@@ -13,22 +14,22 @@ const CustomButton = styled(Button)({
 })
 
 
-export type FilterChipProps = { 
+export type FilterChipProps = {
   // value: string, 
-  label: string, 
-  name: string, 
+  label: string,
+  name: string,
   options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
-  filtersState: SearchProps }
+}
 
 
-export default function FilterButton({name, label, options, filtersState}: FilterChipProps) {
+export default function FilterButton({ name, label, options }: FilterChipProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  const {currFilters, setFilters} = filtersState;
+  const { currFilters, setFilters } = React.useContext(SearchContext);
 
   const open = Boolean(anchorEl);
-  
+
   const handleClickButton = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -37,7 +38,7 @@ export default function FilterButton({name, label, options, filtersState}: Filte
     // event: React.MouseEvent<HTMLElement>,
     index: number,
     selectedOption: TAvailParameters[keyof TAvailParameters][0]
-    ) => {
+  ) => {
     setSelectedIndex(index);
     setAnchorEl(null);
     setFilters({

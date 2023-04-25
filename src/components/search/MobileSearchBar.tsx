@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, TextField, InputAdornment } from "@mui/material";
-import { SearchContext } from "../../App";
+import { SearchContext } from "../../app";
 
 const MobileSearchBar = () => {
   const { currFilters, setFilters } = useContext(SearchContext);

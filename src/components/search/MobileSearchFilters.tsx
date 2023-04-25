@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Box, Stack } from '@mui/material'
 import FilterButton from './FilterButton'
-import { SearchContext } from '../../App'
+import { SearchContext } from '../../app'
 // import SearchBar from '../SearchBar'
 import MobileSearchBar from './MobileSearchBar'
 import { searchFilterParams } from './AvailableParams'
@@ -37,10 +37,10 @@ export default function MobileSearchFilters() {
         }}
 
       >
-        <FilterButton label='Category' name='category' options={searchFilterParams.category} filtersState={{ currFilters, setFilters }} />
-        <FilterButton label='Semester' name='semester' options={searchFilterParams.semester} filtersState={{ currFilters, setFilters }} />
-        <FilterButton label='Award' name='award' options={searchFilterParams.award} filtersState={{ currFilters, setFilters }} />
-        <FilterButton label='Sort by' name='sortBy' options={searchFilterParams.sortBy} filtersState={{ currFilters, setFilters }} />
+        <FilterButton label='Category' name='category' options={searchFilterParams.category} />
+        <FilterButton label='Semester' name='semester' options={searchFilterParams.semester} />
+        <FilterButton label='Award' name='award' options={searchFilterParams.award} />
+        <FilterButton label='Sort by' name='sortBy' options={searchFilterParams.sortBy} />
       </Box>
     </Stack>
 
