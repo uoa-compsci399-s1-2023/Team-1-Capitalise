@@ -301,7 +301,7 @@ function ResponsiveAppBar(filterProps: SearchProps) {
                onClick={() => {
                 handleCloseUserMenu(); 
                 auth.signout(); 
-                navigate("/home");}} 
+                navigate("/");}} 
                 >
                 <ListItemIcon>
                   <Logout fontSize="small" />

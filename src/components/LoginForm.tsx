@@ -22,17 +22,22 @@ import GoogleIcon from '@mui/icons-material/Google';
 //Theme
 const theme = createTheme();
 
+import { useNavigate } from "react-router-dom";
+
+
 //Sign In Function
 function SignInSide() {
   // Auth Provider - important for calling sign in api
   const auth = useAuth();
-  useEffect(() => {
-    if (auth.error == 'Invalid username or password.') {
-      setEmailErrorText('Incorrect email or password! Re-enter your details.');
-      setPasswordErrorText(' ');
-      auth.error = "";
-    }
-  })
+  const nav = useNavigate();
+
+  // useEffect(() => {
+  //   if (auth.error == 'Invalid username or password.') {
+  //     setEmailErrorText('Incorrect email or password! Re-enter your details.');
+  //     setPasswordErrorText(' ');
+  //     auth.error = "";
+  //   }
+  // })
   //Email Pattern Checker
   const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
@@ -42,6 +47,8 @@ function SignInSide() {
   const [emailErrorText, setEmailErrorText] = useState("");
   const [passwordErrorText, setPasswordErrorText] = useState("");
   // Validation Checks - are the given inputs appropriate?
+
+
   
   useEffect(() => {
     if (auth.error === 'Invalid username or password.') {
@@ -49,8 +56,7 @@ function SignInSide() {
       setPasswordErrorText(" ");
     }
   }, [auth.error])
-  
-  
+
   const validateEmail = () => {
     if (!email) {
       setEmailErrorText("Please enter email.");

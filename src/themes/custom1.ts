@@ -33,18 +33,6 @@ declare module "@mui/material/styles" {
 
   }
 
-  // interface Palette {
-  //   neutral: Palette['primary']
-  //   black: Palette['primary']
-  //   editBtnGrey: Palette['primary']
-  // }
-
-  // interface PaletteOptions {
-  //   neutral: PaletteOptions['primary']
-  //   black: PaletteOptions['primary']
-  //   editBtnGrey: PaletteOptions['primary']
-  // }
-
   interface CustomPalette {
     neutral: PaletteColorOptions;
     black: PaletteColorOptions;
@@ -64,7 +52,6 @@ declare module '@mui/material/Button' {
     githubBtn: true
   }
 }
-
 
 let theme = createTheme({
     palette: {
