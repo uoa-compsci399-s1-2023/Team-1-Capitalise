@@ -77,7 +77,7 @@ const ProjectCard = ({
         },
       }}
     >
-      <CardActionArea component={Link} to={`${projectID}`}>
+      <CardActionArea component={Link} to={`../projects/${projectID}`}>
         <CardMedia
           component="img"
           alt="error loading image"

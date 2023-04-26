@@ -24,13 +24,18 @@ interface LinkBtnProps {
 }
 
 function LinkBtn({ startIcon, color, text, link, textColor, variant }: LinkBtnProps) {
+
+  const handleClick = () => {
+    window.open(link, "_blank", "noreferrer")
+  }
+
   return (
     <Button
       // color='black' // Ignore type error
       // startIcon={<SquareOutlinedIcon />}
       {...{ startIcon, color }}
-      href={link}
-      target='_blank'
+      onClick={handleClick}
+      // target='_blank'
       endIcon={<LaunchOutlinedIcon />}
       variant={variant}
       style={{
