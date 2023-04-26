@@ -1,14 +1,14 @@
-import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
+import { getProject } from "../api/getProject";
 import { getUser } from "../api/getUser";
 import { TUser } from "../model/TUser";
 import { TProject } from "../model/TProject";
-import { useEffect, useState } from "react";
-import MyTabs from "../components/MyTabs";
 import ProjectCard from "../components/projects/ProjectCard";
-import { getProject } from "../api/getProject";
 import ProjectsGrid from "../components/projects/ProjectsGrid";
-import MyButton from "../components/MyButton";
+import MyTabs from "../components/MyTabs";
+import ExternalLinkBtn from "../components/projectPage/ExternalLinkBtn";
 
 const UserProfile = () => {
   const [user, setUser] = useState<TUser | undefined>();
@@ -155,13 +155,13 @@ const UserProfile = () => {
             </Typography>
             <Stack direction={{ xs: "row", md: "column" }} spacing={1}>
               {user.links.map((link) => (
-                <MyButton
-                  variant="contained"
-                  onClick={() => handleLinkButton(link.value)}
-                  key={link._id}
-                >
-                  {link.type}
-                </MyButton>
+                <Box key={link._id}>
+                  <ExternalLinkBtn
+                    type={link.type}
+                    value={link.value}
+                    _id={link._id}
+                  />
+                </Box>
               ))}
             </Stack>
           </Box>
