@@ -24,8 +24,9 @@ import Typography from "@mui/material/Typography";
 import { AppRegistration, Login, Logout } from "@mui/icons-material";
 import { useAuth } from '../customHooks/useAuth'; 
 import { useState } from "react";
-
+//Navigation Tabs
 const pages = ["About", "Projects"];
+//Pages without Navigation Bars
 const NoNavPages = ["/register", "/login", "/googleSuccessRedirect", "/googleFailure"];
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
@@ -144,14 +145,16 @@ function ResponsiveAppBar() {
             <SearchBar />
             {/* Check if User is logged in */}
             { (uCheck) ?
-              [<IconButton key="profilepic" onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              [
+              <Button sx={{padding: "0 25px"}} key="upload" variant="contained" onClick={() => {goToPage("upload")}}>Upload</Button>,
+              <IconButton key="profilepic" onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt="Logged In" src={auth.user?.profilePicture}> <img referrerPolicy="no-referrer" /></Avatar>
                 </IconButton>]
               
             :
               [
               <AuthButton key="login" onClick={() => { goToPage("login"); } }
-                variant="outlined"> Log In </AuthButton>,
+                variant="outlined"> Log In</AuthButton>,
                 <AuthButton key="register" onClick={() => { goToPage("register"); } } variant="contained"> Sign Up </AuthButton>
               ]
               
