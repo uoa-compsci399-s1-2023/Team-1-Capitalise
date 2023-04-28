@@ -65,14 +65,17 @@ function LinkBtn({
       {...{ startIcon, color }}
       onClick={handleClick}
       // target='_blank'
-      endIcon={<LaunchOutlinedIcon />}
+      endIcon={
+        <LaunchOutlinedIcon sx={{ display: { xs: "none", md: "block" } }} />
+      }
       variant={variant}
       style={{
         fontWeight: 400,
       }}
       sx={{
-        px: 3,
-        width: 180,
+        px: { xs: 1, md: 3 },
+        minWidth: "28px",
+        width: { xs: 0, md: 180 },
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -80,7 +83,7 @@ function LinkBtn({
         color: textColor, // Text color
       }}
     >
-      {text}
+      <Box display={{ xs: "none", md: "block" }}>{text}</Box>
     </Button>
   );
 }
