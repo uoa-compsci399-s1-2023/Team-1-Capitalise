@@ -13,34 +13,22 @@ const getAllUsers = async (req, res) => {
   res.send(users);
 };
 
-//Get user by username
-const getUserByName = async (req, res) => {
-  const { username } = req.params;
-
-  const user = await User.findOne({ username: username }).populate(
-    "project",
-    "_id, name"
-  );
-  if (!user) {
-    return res.status(404).json({ fail: `no user with ${username} found` });
-  }
-
-  res.send(user);
-};
-
 //Get user by Id
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
-  const username = await User.findOne({ _id: id }).populate(
+  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ fail: `${id} is not a valid ID!` });
+
+  const user = await User.findOne({ _id: id }).populate(
     "project",
     "_id, name"
   );
-  if (!username) {
-    return res.status(404).json({ fail: `no user with ${id} found` });
+
+  if (!user) {
+    return res.status(404).json({ fail: `no user with id ${id} found!` });
   }
 
-  res.send(username);
+  res.send(user);
 };
 
 //Adds new user
@@ -51,7 +39,7 @@ const postUser = async (req, res) => {
   //Check if the email already exists
   let checkExistingEmail = await User.findOne({ email: req.body.email });
   if (checkExistingEmail)
-    return res.status(400).send("Email already registered.");
+    return res.status(400).json({ fail: `Email ${checkExistingEmail.email} already exists!` });
 
   //Check if the username already exists
   if (req.body.username) {
@@ -313,7 +301,6 @@ const searchUsers = async (req, res) => {
 
 module.exports = {
   getAllUsers,
-  getUserByName,
   getUserById,
   postUser,
   updateUserDetails,

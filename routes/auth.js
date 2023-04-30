@@ -6,7 +6,7 @@ const { googleAuth } = require("../middleware/auth");
 const {
   authenticateUser,
   googleOAuth,
-  protected,
+  protected2,
   failure,
   nextPage,
 } = require("../controllers/authController");
@@ -33,6 +33,6 @@ router.get("/failure", failure);
 
 router.get("/nextPage", nextPage);
 
-router.get("/protected", googleAuth, protected);
+router.get("/protected", googleAuth, protected2);
 
 module.exports = router;

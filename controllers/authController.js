@@ -92,7 +92,7 @@ const googleOAuth = async (req, res) => {
 };
 
 //Endpoint which is called once callback has occured. Provides a JSON Web Token in the response header. Session is destroyed, so can only be called once.
-const protected = async (req, res) => {
+const protected2 = async (req, res) => {
   let user = await User.findOne({ email: req.user.email });
   if (!user) return res.status(400).send("Error: No user provided!");
   const token = user.generateAuthToken();
@@ -119,7 +119,7 @@ const nextPage = async (req, res) => {
 module.exports = {
   authenticateUser,
   googleOAuth,
-  protected,
+  protected2,
   failure,
   nextPage,
 };

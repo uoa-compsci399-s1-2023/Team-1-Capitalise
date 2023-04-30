@@ -5,7 +5,6 @@ const admin = require('../middleware/admin');
 
 const {
   getAllUsers,
-  getUserByName,
   getUserById,
   postUser,
   updateUserDetails,
@@ -20,8 +19,6 @@ const {
 router.get('/', getAllUsers);
 
 router.get('/search', searchUsers);
-
-router.get('/:username', getUserByName);
 
 router.delete('/user/:id', auth, deleteUserById);
 
