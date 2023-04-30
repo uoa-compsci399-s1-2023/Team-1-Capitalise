@@ -1,7 +1,7 @@
 import Logo from "../assets/Logo.svg";
 import Navbar from "../components/Navbar";
 import { useEffect, useState, useContext } from "react";
-import { Box, Stack, keyframes, styled } from "@mui/material";
+import { Box, Button, Container, Stack, Typography, keyframes, styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { SearchContext, getDefaultFilters } from "../app";
 
@@ -55,7 +55,15 @@ function Home() {
     setFilters(getDefaultFilters());
     nav('/Projects')
   }, [])
-  return (<></>)
+  return (
+  <Container maxWidth="md">
+    <Box py={8} textAlign="center">
+    <Typography variant="overline" component="span">Welcome new Opportunities</Typography>
+    <Typography variant="h3" component="h2">Upload your Project!</Typography>
+    <Box mt={4}>
+        <Button color="primary" >Check it out now!</Button>
+    </Box>
+  </Box> </Container>)
 }
 
 export default Home;
