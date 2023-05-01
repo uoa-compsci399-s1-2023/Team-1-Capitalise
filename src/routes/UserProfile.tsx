@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { getProject } from "../api/getProject";
 import { getUser } from "../api/getUser";
 import { TUser } from "../model/TUser";
@@ -9,11 +16,14 @@ import ProjectCard from "../components/projects/ProjectCard";
 import ProjectsGrid from "../components/projects/ProjectsGrid";
 import MyTabs from "../components/MyTabs";
 import ExternalLinkBtn from "../components/projectPage/ExternalLinkBtn";
+import { useAuth } from "../customHooks/useAuth";
+import EditUser from "../components/editUser";
 
 const UserProfile = () => {
   const [user, setUser] = useState<TUser | undefined>();
   const [project, setProject] = useState<TProject | undefined>();
   const [likedProjects, setLikedProjects] = useState<TProject[]>([]);
+  const [open, setOpen] = useState(false);
   let { userID } = useParams();
   const theme = useTheme();
   const userTabs = [
@@ -22,10 +32,10 @@ const UserProfile = () => {
       index: "1",
       Component: (
         <Stack height="100%">
-          <Box height="30%" padding="0px 24px 10px 24px">
+          <Box padding="0px 24px 24px 24px">
             <Typography variant="h6">Bio</Typography>
             {typeof user != "undefined" && (
-              <Typography>
+              <Typography whiteSpace="pre">
                 {typeof user.bio != "undefined" ? user.bio : ""}
               </Typography>
             )}
@@ -77,6 +87,16 @@ const UserProfile = () => {
     fetchUser();
   }, [userID]);
 
+  let isLoggedIn = false;
+  let token = "";
+  const auth = useAuth();
+  if (auth.user) {
+    if (auth.user._id === user?._id) {
+      isLoggedIn = true;
+      token = auth.getToken() as string;
+    }
+  }
+
   useEffect(() => {
     if (typeof user === "undefined") return;
 
@@ -99,8 +119,12 @@ const UserProfile = () => {
     fetchLikes();
   }, [user]);
 
-  const handleLinkButton = (url: string) => {
-    window.open(url, "_blank", "noreferrer");
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   if (typeof user === "undefined") {
@@ -164,6 +188,23 @@ const UserProfile = () => {
                 </Box>
               ))}
             </Stack>
+            {isLoggedIn && (
+              <Box>
+                <Button
+                  onClick={handleClickOpen}
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                >
+                  Edit Profile
+                </Button>
+                <EditUser
+                  open={open}
+                  handleClose={handleClose}
+                  user={user}
+                  token={token}
+                />
+              </Box>
+            )}
           </Box>
         </Box>
       </Stack>
