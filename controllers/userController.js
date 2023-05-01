@@ -185,19 +185,13 @@ const updateUserDetails = async (req, res) => {
   //look through request body. Also assumes frontend will only give vistor or graduate options
   // to visitor and only admin can update a user and give them admin userType
   //For now, no authorization
-  const { name, password, email, username, userType } = req.body;
-  const encrypted = await bcrypt.hash(password, 10);
+  //const { name, email, username, userType } = req.body;
+  //const encrypted = await bcrypt.hash(password, 10);
   var updateUser;
-  if (userType != "admin") {
+  if (req.user.userType != "admin") {
     updateUser = await User.findByIdAndUpdate(
       id,
-      {
-        name: name,
-        password: encrypted,
-        email: email,
-        username: username,
-        userType: userType,
-      },
+      { ...req.body },
       { new: true }
     );
   } else {
