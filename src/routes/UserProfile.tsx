@@ -17,7 +17,7 @@ import ProjectsGrid from "../components/projects/ProjectsGrid";
 import MyTabs from "../components/MyTabs";
 import ExternalLinkBtn from "../components/projectPage/ExternalLinkBtn";
 import { useAuth } from "../customHooks/useAuth";
-import EditUser from "../components/editUser";
+import EditUser from "../components/EditUser";
 
 const UserProfile = () => {
   const [user, setUser] = useState<TUser | undefined>();
@@ -32,7 +32,7 @@ const UserProfile = () => {
       index: "1",
       Component: (
         <Stack height="100%">
-          <Box padding="0px 24px 24px 24px">
+          <Box padding="0px 24px 10px 24px">
             <Typography variant="h6">Bio</Typography>
             {typeof user != "undefined" && (
               <Typography whiteSpace="pre">
@@ -189,7 +189,7 @@ const UserProfile = () => {
               ))}
             </Stack>
             {isLoggedIn && (
-              <Box>
+              <Box paddingTop="10px">
                 <Button
                   onClick={handleClickOpen}
                   variant="outlined"
