@@ -14,18 +14,6 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ProjectInfoForm from '../components/upload/ProjectInfo';
 import ProjectReview from '../components/upload/ProjectReview';
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const steps = ['Project Details', 'Review your Project'];
 
@@ -55,9 +43,7 @@ export default function Checkout() {
 
   return (
 
-     
-  
-      <Container component="main" maxWidth="sm"  sx={{mt: 20, mb: 4 }}>
+      <Container component="main" maxWidth="md"  sx={{mt: 20, mb: 4 }}>
         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <Typography component="h1" variant="h4" align="center">
             Upload your Project
