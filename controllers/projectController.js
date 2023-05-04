@@ -689,6 +689,8 @@ const getCommentsByProjectId = async (req, res) => {
   res.status(200).json(project.comments.reverse());
 };
 
+}
+
 const awardBadge = async (req, res) => {
   //get Award
   const badge = await Parameter.findOne({
@@ -733,4 +735,4 @@ module.exports = {
   getAllComments,
   getCommentsByProjectId,
   awardBadge,
-};
+}
