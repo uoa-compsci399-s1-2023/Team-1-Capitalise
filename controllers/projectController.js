@@ -300,18 +300,24 @@ const addNewProject = async (req, res) => {
 
 const writeComment = async (req, res) => {
   const { error } = validateComment(req.body);
+  const projectId = req.body.projectId
+
+  if(!projectId){
+    return res.status(400).send({project:null, msg: "No projectId given"})
+  }
+  
   if (error) return res.status(400).send({project: null, msg: error.details[0].message});
 
   if(!checkUser(req.user._id)){
     return res.status(404).send({user: null, msg: "No user found" });
   }
 
-  if (!checkProject(req.body.projectId)) {
+  if (!checkProject(projectId)) {
     return res.status(404).send({project:null, msg: "No project found" });
   }
 
   let comment = new Comment({
-    project: req.body.projectId,
+    project: projectId,
     user: req.user._id,
     commentBody: req.body.commentBody,
     parentComment: req.body.parentComment,
@@ -323,7 +329,7 @@ const writeComment = async (req, res) => {
   });
 
 
-  const project = await Project.findByIdAndUpdate(req.body.projectId, {
+  const project = await Project.findByIdAndUpdate(projectId, {
     //Appends
     $push: { comments: comment._id },
   });
@@ -495,7 +501,7 @@ const searchProjects = async (req, res) => {
       parameterType: "award",
     });
     if (!myAward)
-      return res.status(404).send({ err: `Award ${req.query.award} found` });
+      return res.status(404).send({project: null, msg: `Award ${req.query.award} found` });
     query.badges = {
       _id: myAward._id,
     };
@@ -568,10 +574,7 @@ const likeComment = async (req, res) => {
 
   if(!checkProject(projectId)){
     return res.status(404).send({project: null, msg: "Project not found"})
-  
-  //check if project exist
-  const project = await Project.findById(projectId);
-
+  }
 
   //Get members of this project
   const projectMembers = (await Project.findById(projectId)).members;
@@ -583,7 +586,7 @@ const likeComment = async (req, res) => {
   if (userIsMember) {
     return res
       .status(403)
-      .send({ err: "You are not allowed to like your own project" });
+      .send({project:null, msg: "You are not allowed to like your own project" });
   }
   const usersLikedProjects = (await User.findById(currentId)).likedProjects;
 
@@ -608,8 +611,8 @@ const likeComment = async (req, res) => {
     const likedProjects = usersLikedProjects.filter((project) => {
       return project._id != projectId;
     });
-    await User.findByIdAndUpdate(currentId, { likedProjects: likedProjects });
-    return res.status(200).send(updateProject);
+    const user = await User.findByIdAndUpdate(currentId, { likedProjects: likedProjects });
+    return res.status(200).send({project: updateProject, user:user});
   }
 
   //If false
@@ -636,7 +639,7 @@ const likeComment = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-  return res.status(200).send(likedProject);
+  return res.status(200).send({project: likedProject});
 };
 
 const incrementViews = async (req, res) => {
@@ -653,24 +656,24 @@ const incrementViews = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-  if (!project) return res.status(404).json({ err: "No project found" });
+  if (!project) return res.status(404).send({project:null, msg: "No project found" });
 
-  return res.status(200).send(project);
+  return res.status(200).send({project: project});
 };
 
 //Get all projects
 const getAllComments = async (req, res) => {
   //Populate the project members attribute with id and names of users.
   const comments = await Comment.find().sort({ createdAt: -1 });
-  res.send(comments);
+  return res.status(200).send({comments: comments});
 };
 
 const getCommentsByProjectId = async (req, res) => {
   const { projectId } = req.params;
 
   //Checks if the paramter projectId is a valid Id i.e long enough
-  if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    return res.status(404).json({ err: "No projectid found" });
+  if (!checkProject(projectId)) {
+    return res.status(404).send({project:null, msg: "No project found" });
   }
 
   const project = await Project.findById(projectId).populate({
@@ -681,27 +684,32 @@ const getCommentsByProjectId = async (req, res) => {
     },
   });
 
-  //If no project exist
-  if (!project) {
-    return res.status(404).json({ err: "No project found" });
-  }
-  //If a project exist
-  res.status(200).json(project.comments.reverse());
-};
 
+  return res.status(200).send({comments: project.comments.reverse()});
 }
 
+
 const awardBadge = async (req, res) => {
+  const projectId = req.body.projectId
+
+  if(!projectId){
+    return res.status(400).send({project: null, msg: "Please give a projectId"})
+  }
+  
+  if(!checkProject(projectId)){
+    return res.status(404).send({project:null, msg: "No project found" });
+  }
+
   //get Award
   const badge = await Parameter.findOne({
     value: req.body.award,
     parameterType: "award",
   });
-  if (!badge) return res.status(400).send("Error: Invalid award!");
+  if (!badge) return res.status(400).send({project: null, msg: "Error: Invalid award!"});
 
   //Update the provided project
   const project = await Project.findByIdAndUpdate(
-    req.body.projectId,
+    projectId,
     {
       badges: badge._id,
     },
@@ -713,9 +721,8 @@ const awardBadge = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-  if (!project) return res.status(404).json({ err: "No project found" });
 
-  return res.status(200).send(project);
+  return res.status(200).send({project: project});
 };
 
 module.exports = {
