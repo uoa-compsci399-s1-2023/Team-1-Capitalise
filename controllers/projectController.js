@@ -60,7 +60,7 @@ const getProject = async (req, res) => {
   const { projectId } = req.params;
 
   //Checks if projectId is valid and if projectExist
-  if (!checkProject(projectId)) {
+  if (!(await checkProject(projectId))) {
     return res.status(404).send({ project:null, msg: "No project found with that projectId." });
   }
 
@@ -79,13 +79,13 @@ const updateProjectById = async (req, res) => {
   const currentId = req.user._id;
 
   //Checks if user id is valid and exist
-  if(!checkUser(req.user._id)){
+  if(!(await checkUser(req.user._id))){
     return res.status(404).send({user: null, msg: "No user found with that id"})
   }
 
   const { projectId } = req.params;
   //Check if projectId is valid and a project exist
-  if (!checkProject(projectId)) {
+  if (!(await checkProject(projectId))) {
     return res.status(404).send({project: null,  msg: "No project found with that projectId" });
   }
 
@@ -308,11 +308,11 @@ const writeComment = async (req, res) => {
   
   if (error) return res.status(400).send({project: null, msg: error.details[0].message});
 
-  if(!checkUser(req.user._id)){
+  if(!(await checkUser(req.user._id))){
     return res.status(404).send({user: null, msg: "No user found" });
   }
 
-  if (!checkProject(projectId)) {
+  if (!(await checkProject(projectId))) {
     return res.status(404).send({project:null, msg: "No project found" });
   }
 
@@ -349,7 +349,7 @@ const deleteComment = async (req, res) => {
   const { commentId } = req.params;
 
   //different Id type from db id
-  if (!checkComment(commentId)){
+  if (!( await checkComment(commentId))){
     return res.status(404).send({comment:null, msg:'No comment exist'})
   }
 
@@ -376,12 +376,12 @@ const deleteComment = async (req, res) => {
 const addUserToProject = async (req, res) => {
   const {id, userid} = req.params
 
-  if(!checkUser(userid)){
+  if(!(await checkUser(userid))){
     return res.status(404).send({user: null, msg: "No user found" });
   }
 
 
-  if (!checkProject(id)) {
+  if (!(await checkProject(id))) {
     return res.status(404).send({project:null, msg: "No project found" });
   }
 
@@ -438,7 +438,7 @@ const addUserToProject = async (req, res) => {
 const deleteProject = async (req, res) => {
   const { projectId } = req.params;
 
-  if (!checkProject(projectId)) {
+  if (!(await checkProject(projectId))) {
     return res.status(404).send({project:null, msg: "No project found" });
   }
 
@@ -572,7 +572,7 @@ const likeComment = async (req, res) => {
   const currentId = req.user._id;
   const { projectId } = req.params;
 
-  if(!checkProject(projectId)){
+  if(!(await checkProject(projectId))){
     return res.status(404).send({project: null, msg: "Project not found"})
   }
 
@@ -672,7 +672,7 @@ const getCommentsByProjectId = async (req, res) => {
   const { projectId } = req.params;
 
   //Checks if the paramter projectId is a valid Id i.e long enough
-  if (!checkProject(projectId)) {
+  if (!(await checkProject(projectId))) {
     return res.status(404).send({project:null, msg: "No project found" });
   }
 
@@ -696,7 +696,7 @@ const awardBadge = async (req, res) => {
     return res.status(400).send({project: null, msg: "Please give a projectId"})
   }
   
-  if(!checkProject(projectId)){
+  if(!(await checkProject(projectId))){
     return res.status(404).send({project:null, msg: "No project found" });
   }
 

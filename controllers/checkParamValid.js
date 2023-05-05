@@ -14,8 +14,8 @@ const checkProject = async (projectId) => {
     const checkProject = await Project.findById(projectId);
     if (!checkProject) {
         return false
-    }
 
+    }
     return true
 }
 
