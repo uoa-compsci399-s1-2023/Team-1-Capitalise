@@ -122,7 +122,6 @@ describe("GET Current User", () => {
   });
 });
 
-/*
 describe("POST user", () => {
   it("POSTS a user of type VISITOR and checks if the response matches AND the db is consistent", async () => {
     const data = {
@@ -351,10 +350,13 @@ describe("POST user", () => {
       .expect(400)
       .then(async (response) => {});
   });
-});*/
+});
 
 describe("PATCH Current User", () => {
   it("Sends a 200 response if the user with a valid x-auth-token is succesfully updated", async () => {
+    const OriginalUser = await User.findOne({
+      _id: "6432fc317b09c2f91d48a0e3",
+    });
     await request(app)
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
@@ -365,13 +367,13 @@ describe("PATCH Current User", () => {
         name: "Alexis Qin",
       })
       .expect(200)
-      .then((response) => {
+      .then(async (response) => {
         expect(response.body.name).toBe("Alexis Qin");
+        const user = await User.findOne({ _id: response.body._id });
+        expect(user).toBeTruthy();
+        expect(user.name).toBe("Alexis Qin");
+        expect(user.name).not.toBe(OriginalUser.name);
       });
-
-    const user = await User.findOne({ _id: response.body._id });
-    expect(user).toBeTruthy();
-    expect(user.name).toBe("Alexis Qin");
   });
   it("Sends a 400 response if the x-auth-token is invalid", async () => {
     await request(app)
