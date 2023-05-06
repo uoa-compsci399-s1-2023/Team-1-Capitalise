@@ -215,12 +215,13 @@ const addNewProject = async (req, res) => {
     parameterType: "semester",
   });
   if (!sem) return res.status(400).send({project:null, msg: "Invalid semester!"});
-  //Check if category exists in database
+
+  //No need to check if category exist as joi will take care of it
   const cat = await Parameter.findOne({
     value: req.body.category,
     parameterType: "category",
   });
-  if (!cat) return res.status(400).send({project:null, msg: "Invalid category!"});
+
 
   let project = new Project({
     name: req.body.name,
@@ -241,13 +242,12 @@ const addNewProject = async (req, res) => {
     ],
   });
 
-  //Check if award exists in database
+  //No need to check if category exist as joi will take care of it
   if (req.body.badges) {
     const badge = await Parameter.findOne({
       value: req.body.badges,
       parameterType: "award",
     });
-    if (!badge) return res.status(400).send({project:null, msg: "Invalid award!"});
     project.badges = { _id: badge._id };
   }
 

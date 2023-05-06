@@ -26,10 +26,17 @@ const {
 } = require("../controllers/projectController");
 
 //Get all projects
-router.get("/", getAllProjects);
+router.get("/", getAllProjects);                            //Tested
+
+//Find a project by id
+router.get("/:projectId", getProject);        
 
 //Add new project. Requires authorization.
 router.post("/", [auth, graduate], addNewProject);
+
+
+//Increments the view counter of a page
+router.patch("/:projectId/incrementViews", incrementViews);
 
 //Need to add more projects to properly test this
 router.get("/likes", getProjectsByLikes);
@@ -37,14 +44,11 @@ router.get("/likes", getProjectsByLikes);
 //Need to add more projects to properly test this
 router.get("/search", searchProjects);
 
-//Find a project by id
-router.get("/:projectId", getProject);
 
 //Update a project
 router.patch("/:projectId", [auth, graduate], updateProjectById);
 
-//Delete the project. Will carry out general authorization first, before admin authorization.
-router.delete("/:projectId", [auth, admin], deleteProject);
+
 
 //Get projects with :badge whatever
 router.get("/badges/:badge", getProjectByBadge);
@@ -52,8 +56,6 @@ router.get("/badges/:badge", getProjectByBadge);
 //This put call appends a user to a project. It is not great.
 router.put("/:id/:userid", [auth, graduate], addUserToProject);
 
-//Writes a comment. Appends it to the relevant user and project.
-router.post("/comment", auth, writeComment);
 
 //Create a route that likes or unlikes a project
 router.patch("/:projectId/like", auth, likeComment);
@@ -61,8 +63,9 @@ router.patch("/:projectId/like", auth, likeComment);
 //Delete a comment. Removes comment from relevant user and project.
 router.delete("/comment/:commentId", auth, deleteComment);
 
-//Increments the view counter of a page
-router.patch("/:projectId/incrementViews", incrementViews);
+
+//Writes a comment. Appends it to the relevant user and project.
+router.post("/comment", auth, writeComment);
 
 //Get all projects
 router.get("/comments/all", getAllComments);
@@ -70,9 +73,12 @@ router.get("/comments/all", getAllComments);
 //Get all comments by projectId
 router.get("/comments/:projectId", getCommentsByProjectId);
 
+
+
+//Delete the project. Will carry out general authorization first, before admin authorization.
+router.delete("/:projectId", [auth, admin], deleteProject);
+
 //Adds a badge to a project
 router.patch("/badges/award", [auth, admin], awardBadge);
-
-
 
 module.exports = router;
