@@ -17,12 +17,10 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ fail: `${id} is not a valid ID!` });
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(400).json({ fail: `${id} is not a valid ID!` });
 
-  const user = await User.findOne({ _id: id }).populate(
-    "project",
-    "_id, name"
-  );
+  const user = await User.findOne({ _id: id }).populate("project", "_id, name");
 
   if (!user) {
     return res.status(404).json({ fail: `no user with id ${id} found!` });
@@ -39,7 +37,9 @@ const postUser = async (req, res) => {
   //Check if the email already exists
   let checkExistingEmail = await User.findOne({ email: req.body.email });
   if (checkExistingEmail)
-    return res.status(400).json({ fail: `Email ${checkExistingEmail.email} already exists!` });
+    return res
+      .status(400)
+      .json({ fail: `Email ${checkExistingEmail.email} already exists!` });
 
   //Check if the username already exists
   if (req.body.username) {
@@ -57,16 +57,21 @@ const postUser = async (req, res) => {
     req.body.email.indexOf("@") + 1
   );
   let myUserType = "";
-  gradEmailDomain != "aucklanduni.ac.nz"
-    ? (myUserType = "visitor")
-    : (myUserType = "graduate");
+  if (req.body.email === "asma.shakil@auckland.ac.nz") {
+    myUserType = "admin";
+  } else if (gradEmailDomain != "aucklanduni.ac.nz") {
+    myUserType = "visitor";
+  } else {
+    myUserType = "graduate";
+  }
 
   let user = "";
   let password = await bcrypt.hash(req.body.password, 10);
 
   if (req.body.projectId) {
     const project = await Project.findById(req.body.projectId);
-    if (!project) return res.status(400).send("Invalid project.");
+    if (!project) return res.status(400).json({ fail: `Invalid projectId provided!` });
+    
 
     user = new User({
       name: req.body.name,
@@ -117,7 +122,7 @@ const postUser = async (req, res) => {
 
   const token = user.generateAuthToken();
 
-  res.header("x-auth-token", token).send(user);
+  res.header("x-auth-token", token).status(201).send(user);
 };
 
 //Adds new user from Google
@@ -126,9 +131,13 @@ const postGoogleUser = async (profile) => {
     profile.email.indexOf("@") + 1
   );
   let myUserType = "";
-  gradEmailDomain != "aucklanduni.ac.nz"
-    ? (myUserType = "visitor")
-    : (myUserType = "graduate");
+  if (req.body.email === "asma.shakil@auckland.ac.nz") {
+    myUserType = "admin";
+  } else if (gradEmailDomain != "aucklanduni.ac.nz") {
+    myUserType = "visitor";
+  } else {
+    myUserType = "graduate";
+  }
 
   //Create the user
 
@@ -173,19 +182,13 @@ const updateUserDetails = async (req, res) => {
   //look through request body. Also assumes frontend will only give vistor or graduate options
   // to visitor and only admin can update a user and give them admin userType
   //For now, no authorization
-  const { name, password, email, username, userType } = req.body;
-  const encrypted = await bcrypt.hash(password, 10);
+  //const { name, email, username, userType } = req.body;
+  //const encrypted = await bcrypt.hash(password, 10);
   var updateUser;
-  if (userType != "admin") {
+  if (req.user.userType != "admin") {
     updateUser = await User.findByIdAndUpdate(
       id,
-      {
-        name: name,
-        password: encrypted,
-        email: email,
-        username: username,
-        userType: userType,
-      },
+      { ...req.body },
       { new: true }
     );
   } else {
@@ -203,6 +206,7 @@ const updateUserDetails = async (req, res) => {
 
   res.send(updateUser);
 };
+
 
 const deleteUserById = async (req, res) => {
   const { id } = req.params;
@@ -292,7 +296,7 @@ const getCurrentUser = async (req, res) => {
 
 //search for users
 const searchUsers = async (req, res) => {
-  if (!req.query.name) req.query.name="";
+  if (!req.query.name) req.query.name = "";
   const users = await User.find({
     name: { $regex: req.query.name, $options: "i" },
   });

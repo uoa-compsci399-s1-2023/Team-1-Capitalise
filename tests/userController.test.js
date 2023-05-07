@@ -90,6 +90,38 @@ describe("GET user via Search", () => {
   });
 });
 
+describe("GET Current User", () => {
+  it("Sends a 200 response if the user with a valid x-auth-token is found", async () => {
+    await request(app)
+      .get("/api/users/getCurrentUser/me")
+      .set(
+        "x-auth-token",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDNlMGMyYjZlMmUxYTQwNTZhNWQ1ZDYiLCJ1c2VybmFtZSI6InRlc3RAbWFub3guY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MjMyNjE5MSwiZXhwIjoxNjg0OTE4MTkxfQ.ymW7Tzg9M8qA5_hjfzQhAvvT8_XL8h10r7jBklwNCMA"
+      )
+      .expect(200)
+      .then((response) => {
+        expect(response.body.username).toBe("test@manox.com");
+      });
+  });
+  it("Sends a 400 response if the x-auth-token is invalid", async () => {
+    await request(app)
+      .get("/api/users/getCurrentUser/me")
+      .set("x-auth-token", "No Bueno")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.fail).toBe("Invalid token provided!");
+      });
+  });
+  it("Sends a 401 response if no x-auth-token is provided", async () => {
+    await request(app)
+      .get("/api/users/getCurrentUser/me")
+      .expect(401)
+      .then((response) => {
+        expect(response.body.fail).toBe("Access denied. No token provided.");
+      });
+  });
+});
+
 describe("POST user", () => {
   it("POSTS a user of type VISITOR and checks if the response matches AND the db is consistent", async () => {
     const data = {
@@ -108,7 +140,7 @@ describe("POST user", () => {
     await request(app)
       .post("/api/users")
       .send(data)
-      .expect(200)
+      .expect(201)
       .then(async (response) => {
         // Check the response
         expect(response.body._id).toBeTruthy();
@@ -120,7 +152,6 @@ describe("POST user", () => {
         expect(response.body.profilePicture).toBeTruthy();
         expect(response.body.userType).toEqual("visitor");
         expect(response.body.isGoogleCreated).toBe(false);
-
 
         // Check the data in the database
         const user = await User.findOne({ _id: response.body._id });
@@ -134,12 +165,146 @@ describe("POST user", () => {
         expect(user.userType).toEqual("visitor");
         expect(user.isGoogleCreated).toBe(false);
 
+        //Check if there is an x-auth-token
+        expect(response.headers["x-auth-token"]).toBeTruthy();
+      });
+  });
+  it("POSTS a user of type GRADUATE and checks if the response matches AND the db is consistent", async () => {
+    const data = {
+      name: "My New Graduate Test User",
+      email: "testuser12@aucklanduni.ac.nz",
+      password: "test",
+      links: [
+        {
+          type: "github",
+          value: "https://www.github.com/testuser12",
+        },
+      ],
+      skills: ["C#", "Cooking Pancakes"],
+    };
+
+    await request(app)
+      .post("/api/users")
+      .send(data)
+      .expect(201)
+      .then(async (response) => {
+        // Check the response
+        expect(response.body._id).toBeTruthy();
+        expect(response.body.name).toEqual(data.name);
+        expect(response.body.email).toEqual(data.email);
+        expect(response.body.username).toEqual(data.email);
+        expect(response.body.password).not.toEqual(data.password);
+        expect(response.body.skills).toEqual(data.skills);
+        expect(response.body.profilePicture).toBeTruthy();
+        expect(response.body.userType).toEqual("graduate");
+        expect(response.body.isGoogleCreated).toBe(false);
+
+        // Check the data in the database
+        const user = await User.findOne({ _id: response.body._id });
+        expect(user).toBeTruthy();
+        expect(user.name).toEqual(data.name);
+        expect(user.email).toEqual(data.email);
+        expect(user.username).toEqual(data.email);
+        expect(user.password).not.toEqual(data.password);
+        expect(user.skills).toEqual(data.skills);
+        expect(user.profilePicture).toBeTruthy();
+        expect(user.userType).toEqual("graduate");
+        expect(user.isGoogleCreated).toBe(false);
+
+        //Check if there is an x-auth-token
+        expect(response.headers["x-auth-token"]).toBeTruthy();
+      });
+  });
+  it("POSTS a user of type ADMIN and checks if the response matches AND the db is consistent", async () => {
+    const data = {
+      name: "Asma Shakil",
+      email: "asma.shakil@auckland.ac.nz",
+      password: "test",
+      links: [
+        {
+          type: "github",
+          value: "https://github.com/asma-shakil",
+        },
+      ],
+      skills: ["C#", "Cooking Pancakes"],
+    };
+
+    await request(app)
+      .post("/api/users")
+      .send(data)
+      .expect(201)
+      .then(async (response) => {
+        // Check the response
+        expect(response.body._id).toBeTruthy();
+        expect(response.body.name).toEqual(data.name);
+        expect(response.body.email).toEqual(data.email);
+        expect(response.body.username).toEqual(data.email);
+        expect(response.body.password).not.toEqual(data.password);
+        expect(response.body.skills).toEqual(data.skills);
+        expect(response.body.profilePicture).toBeTruthy();
+        expect(response.body.userType).toEqual("admin");
+        expect(response.body.isGoogleCreated).toBe(false);
+
+        // Check the data in the database
+        const user = await User.findOne({ _id: response.body._id });
+        expect(user).toBeTruthy();
+        expect(user.name).toEqual(data.name);
+        expect(user.email).toEqual(data.email);
+        expect(user.username).toEqual(data.email);
+        expect(user.password).not.toEqual(data.password);
+        expect(user.skills).toEqual(data.skills);
+        expect(user.profilePicture).toBeTruthy();
+        expect(user.userType).toEqual("admin");
+        expect(user.isGoogleCreated).toBe(false);
+
+        //Check if there is an x-auth-token
+        expect(response.headers["x-auth-token"]).toBeTruthy();
+      });
+  });
+  it("Succesfully appends a project to a user where a valid projectId is provided", async () => {
+    const data = {
+      name: "My Next Test User",
+      email: "testuser222@aucklanduni.ac.nz",
+      password: "test",
+      projectId: "6432fe877b09c2f91d48a162",
+    };
+
+    await request(app)
+      .post("/api/users")
+      .send(data)
+      .expect(201)
+      .then(async (response) => {
+        // Check the response
+        expect(response.body._id).toBeTruthy();
+        expect(response.body.name).toEqual(data.name);
+        expect(response.body.email).toEqual(data.email);
+        expect(response.body.username).toEqual(data.email);
+        expect(response.body.password).not.toEqual(data.password);
+        expect(response.body.profilePicture).toBeTruthy();
+        expect(response.body.userType).toEqual("graduate");
+        expect(response.body.isGoogleCreated).toBe(false);
+        expect(response.body.project.toString()).toEqual(data.projectId);
+
+        // Check the data in the database
+        const user = await User.findOne({ _id: response.body._id });
+        expect(user).toBeTruthy();
+        expect(user.name).toEqual(data.name);
+        expect(user.email).toEqual(data.email);
+        expect(user.username).toEqual(data.email);
+        expect(user.password).not.toEqual(data.password);
+        expect(user.profilePicture).toBeTruthy();
+        expect(user.userType).toEqual("graduate");
+        expect(user.isGoogleCreated).toBe(false);
+        expect(user.project.toString()).toEqual(data.projectId);
+
+        //Check if there is an x-auth-token
+        expect(response.headers["x-auth-token"]).toBeTruthy();
       });
   });
   it("Returns a 400 error if the email already exists in the database", async () => {
     const data = {
-      name: "My New Test User",
-      email: "testuser12@gmail.com",
+      name: "My Second Asma Shakil",
+      email: "asma.shakil@auckland.ac.nz",
       password: "test",
       links: [
         {
@@ -156,8 +321,75 @@ describe("POST user", () => {
       .expect(400)
       .then(async (response) => {
         expect(response.body.fail).toBe(
-            "Email testuser12@gmail.com already exists!"
-          );
+          "Email asma.shakil@auckland.ac.nz already exists!"
+        );
+      });
+  });
+  it("Returns a 400 error if a projectId is given which is invalid", async () => {
+    const data = {
+      name: "testtttt",
+      email: "testttttt@aucklanduni.ac.nz",
+      password: "test",
+      projectId: "6432ze877b09c2f91d18a162",
+    };
+
+    await request(app)
+      .post("/api/users")
+      .send(data)
+      .expect(400)
+      .then(async (response) => {});
+  });
+  it("Returns a 400 error if the request.body is invalid", async () => {
+    const data = {
+      random_attribute: "random",
+    };
+
+    await request(app)
+      .post("/api/users")
+      .send(data)
+      .expect(400)
+      .then(async (response) => {});
+  });
+});
+
+describe("PATCH Current User", () => {
+  it("Sends a 200 response if the user with a valid x-auth-token is succesfully updated", async () => {
+    const OriginalUser = await User.findOne({
+      _id: "6432fc317b09c2f91d48a0e3",
+    });
+    await request(app)
+      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .set(
+        "x-auth-token",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzM3NTA1NSwiZXhwIjoxNjg1OTY3MDU1fQ.6-TL3vffkig9vAWt0a8IfQKrUbe2tmEh4VtYOeFsP5A"
+      )
+      .send({
+        name: "Alexis Qin",
+      })
+      .expect(200)
+      .then(async (response) => {
+        expect(response.body.name).toBe("Alexis Qin");
+        const user = await User.findOne({ _id: response.body._id });
+        expect(user).toBeTruthy();
+        expect(user.name).toBe("Alexis Qin");
+        expect(user.name).not.toBe(OriginalUser.name);
+      });
+  });
+  it("Sends a 400 response if the x-auth-token is invalid", async () => {
+    await request(app)
+      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .set("x-auth-token", "No Bueno")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.fail).toBe("Invalid token provided!");
+      });
+  });
+  it("Sends a 401 response if no x-auth-token is provided", async () => {
+    await request(app)
+      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .expect(401)
+      .then((response) => {
+        expect(response.body.fail).toBe("Access denied. No token provided.");
       });
   });
 });
