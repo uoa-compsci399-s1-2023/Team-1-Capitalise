@@ -75,6 +75,8 @@ const getProject = async (req, res) => {
   return res.status(200).send({project: project});
 };
 
+
+//Could be changed so that joi validates the body, which will cut the category and badge checks out
 const updateProjectById = async (req, res) => {
   const currentId = req.user._id;
 
@@ -402,10 +404,10 @@ const addUserToProject = async (req, res) => {
     return res.status(400).send({project:null, msg: "You already belong to the project!"});
   } 
   //If the person user is trying to add is already added
-  else if (myProj.members.includes(req.user._id)) {
+  else if (myProj.members.includes(userid)) {
     return res
       .status(400)
-      .send("This user already belongs to the project!");
+      .send({project:null, msg: "This user already belongs to the project!"});
   }
 
   //Adds the project to the User.

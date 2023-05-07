@@ -56,28 +56,24 @@ router.delete("/comment/:commentId", auth, deleteComment);
 
 //Create a route that likes or unlikes a project
 router.patch("/:projectId/like", auth, likeComment);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //Update a project
 router.patch("/:projectId", [auth, graduate], updateProjectById);
+
+//This put call appends a user to a project. It is not great.
+router.put("/:id/:userid", [auth, graduate], addUserToProject);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
 //Need to add more projects to properly test this
 router.get("/search", searchProjects);
 
-
-
 //Get projects with :badge whatever
 router.get("/badges/:badge", getProjectByBadge);
-
-//This put call appends a user to a project. It is not great.
-router.put("/:id/:userid", [auth, graduate], addUserToProject);
-
-
-
-
 
 //Delete the project. Will carry out general authorization first, before admin authorization.
 router.delete("/:projectId", [auth, admin], deleteProject);
