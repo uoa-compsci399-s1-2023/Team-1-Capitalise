@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { Autocomplete, Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, styled } from '@mui/material';
+import { Autocomplete, Box, Button, Chip, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, styled } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useState } from 'react';
 import ProjectLinksForm from '../upload/ProjectLinks';
@@ -16,16 +16,29 @@ const projectTags = [
 
 
 export default function ProjectInfoForm() {
-  
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [semester, setSemester] = React.useState('');
+  const handleFileChange = (event: any) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUploadClick = () => {
+    // handle file upload logic here
+    console.log(selectedFile);
+  };
+
+  const handleSemesterChange = (event: SelectChangeEvent) => {
+    setSemester(event.target.value);
+  };
 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
         1. Project Details
       </Typography>
-      
-      <Grid container spacing={2}>
       <Box component="form">
+      <Grid container spacing={2}>
+     
         <Grid item xs={12}>
       
           <TextField
@@ -36,6 +49,27 @@ export default function ProjectInfoForm() {
             fullWidth
             variant="outlined"
           />
+        </Grid>
+        {/*Semester Selector*/}
+        
+        <Grid item xs={12}> 
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+          <InputLabel id="demo-select-small-label">Semester</InputLabel>
+          <Select
+            labelId="demo-select-small-label"
+            id="select-semester"
+            value={semester}
+            label="Semester"
+            onChange={handleSemesterChange}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+        </FormControl>
         </Grid>
         <Grid item xs={12} >
        
@@ -75,30 +109,38 @@ export default function ProjectInfoForm() {
           />
         </Grid>
         
-       
-        <Grid item xs={12} sm={6}>
+        {/* Upload Attach Banner */}
+        <Grid item>
         <Typography variant="subtitle2" gutterBottom>
-        Attach a Project Banner
-      </Typography>
-        <label htmlFor="upload-banner">
-            <input
-              style={{ display: 'none' }}
-              id="upload-banner"
-              name="upload-banner"
-              type="file"
-            />
-
+            Attach a Project Banner
+          </Typography>
+        </Grid>
+        <Grid item xs={10} >
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          <TextField
+            disabled
+            value={selectedFile ? selectedFile.name : ''}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={2}><label htmlFor="fileInput">
             <Button variant="contained" component="span">
-              Upload button
+              Upload
             </Button>
           </label>
         </Grid>
 
         <ProjectLinksForm/>
-        <Button variant="outlined" color="secondary" type="submit">Login</Button>
-        </Box>
+
+
+      
       </Grid>
-        
+      </Box>
       
     </React.Fragment>
   );
