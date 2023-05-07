@@ -61,7 +61,7 @@ const getProject = async (req, res) => {
 
   //Checks if projectId is valid and if projectExist
   if (!(await checkProject(projectId))) {
-    return res.status(404).send({ project:null, msg: "No project found with that projectId." });
+    return res.status(404).send({ project:null, msg: "No project found" });
   }
 
   const project = await Project.findById(projectId)
@@ -80,13 +80,13 @@ const updateProjectById = async (req, res) => {
 
   //Checks if user id is valid and exist
   if(!(await checkUser(req.user._id))){
-    return res.status(404).send({user: null, msg: "No user found with that id"})
+    return res.status(404).send({user: null, msg: "No user found"})
   }
 
   const { projectId } = req.params;
   //Check if projectId is valid and a project exist
   if (!(await checkProject(projectId))) {
-    return res.status(404).send({project: null,  msg: "No project found with that projectId" });
+    return res.status(404).send({project: null,  msg: "No project found" });
   }
 
   //Get members of this project
@@ -342,7 +342,7 @@ const writeComment = async (req, res) => {
     "name email username profilePicture"
   );
 
-  return res.status(200).send({project: justCreated});
+  return res.status(200).send({comment: justCreated});
 };
 
 const deleteComment = async (req, res) => {
@@ -573,7 +573,7 @@ const likeComment = async (req, res) => {
   const { projectId } = req.params;
 
   if(!(await checkProject(projectId))){
-    return res.status(404).send({project: null, msg: "Project not found"})
+    return res.status(404).send({project: null, msg: "No project found"})
   }
 
   //Get members of this project

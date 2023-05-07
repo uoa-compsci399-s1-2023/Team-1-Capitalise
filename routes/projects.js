@@ -26,7 +26,7 @@ const {
 } = require("../controllers/projectController");
 
 //Get all projects
-router.get("/", getAllProjects);                            //Tested
+router.get("/", getAllProjects);                         
 
 //Find a project by id
 router.get("/:projectId", getProject);        
@@ -41,12 +41,31 @@ router.patch("/:projectId/incrementViews", incrementViews);
 //Need to add more projects to properly test this
 router.get("/likes", getProjectsByLikes);
 
-//Need to add more projects to properly test this
-router.get("/search", searchProjects);
+//Writes a comment. Appends it to the relevant user and project.
+router.post("/comment", auth, writeComment);
+
+//Get all projects
+router.get("/comments/all", getAllComments);
+
+//Get all comments by projectId
+router.get("/comments/:projectId", getCommentsByProjectId);
+
+
+//Delete a comment. Removes comment from relevant user and project.
+router.delete("/comment/:commentId", auth, deleteComment);
+
+//Create a route that likes or unlikes a project
+router.patch("/:projectId/like", auth, likeComment);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //Update a project
 router.patch("/:projectId", [auth, graduate], updateProjectById);
+
+
+
+//Need to add more projects to properly test this
+router.get("/search", searchProjects);
 
 
 
@@ -57,21 +76,6 @@ router.get("/badges/:badge", getProjectByBadge);
 router.put("/:id/:userid", [auth, graduate], addUserToProject);
 
 
-//Create a route that likes or unlikes a project
-router.patch("/:projectId/like", auth, likeComment);
-
-//Delete a comment. Removes comment from relevant user and project.
-router.delete("/comment/:commentId", auth, deleteComment);
-
-
-//Writes a comment. Appends it to the relevant user and project.
-router.post("/comment", auth, writeComment);
-
-//Get all projects
-router.get("/comments/all", getAllComments);
-
-//Get all comments by projectId
-router.get("/comments/:projectId", getCommentsByProjectId);
 
 
 

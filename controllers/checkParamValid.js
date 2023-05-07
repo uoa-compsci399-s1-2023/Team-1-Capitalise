@@ -1,5 +1,6 @@
 const { User} = require('../models/user');
 const { Project } = require('../models/project');
+const { Comment } = require('../models/comment');
 const mongoose = require('mongoose')
 
 
@@ -34,7 +35,7 @@ const checkComment = async (commentId) => {
     if (!mongoose.Types.ObjectId.isValid(commentId)) {
         return false
     }
-    const comment = await User.findById(commentId)
+    const comment = await Comment.findById(commentId)
     if(!comment){
         return false
     }

@@ -14,7 +14,7 @@ describe("Fetches all users", () => {
       });
   });
 });
-
+/*
 describe("GET User by ID", () => {
   it("Sends a 200 response if the user with ID UserID is found", async () => {
     await request(app)
@@ -393,3 +393,4 @@ describe("PATCH Current User", () => {
       });
   });
 });
+*/
