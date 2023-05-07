@@ -694,9 +694,6 @@ const getCommentsByProjectId = async (req, res) => {
 const awardBadge = async (req, res) => {
   const projectId = req.body.projectId
 
-  if(!projectId){
-    return res.status(400).send({project: null, msg: "Please give a projectId"})
-  }
   
   if(!(await checkProject(projectId))){
     return res.status(404).send({project:null, msg: "No project found" });
@@ -707,7 +704,7 @@ const awardBadge = async (req, res) => {
     value: req.body.award,
     parameterType: "award",
   });
-  if (!badge) return res.status(400).send({project: null, msg: "Error: Invalid award!"});
+  if (!badge) return res.status(400).send({project: null, msg: "Invalid award!"});
 
   //Update the provided project
   const project = await Project.findByIdAndUpdate(

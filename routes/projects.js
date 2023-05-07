@@ -63,6 +63,12 @@ router.patch("/:projectId", [auth, graduate], updateProjectById);
 //This put call appends a user to a project. It is not great.
 router.put("/:id/:userid", [auth, graduate], addUserToProject);
 
+
+//Delete the project. Will carry out general authorization first, before admin authorization.
+router.delete("/:projectId", [auth, admin], deleteProject);
+
+//Adds a badge to a project
+router.patch("/badges/award", [auth, admin], awardBadge);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -75,10 +81,5 @@ router.get("/search", searchProjects);
 //Get projects with :badge whatever
 router.get("/badges/:badge", getProjectByBadge);
 
-//Delete the project. Will carry out general authorization first, before admin authorization.
-router.delete("/:projectId", [auth, admin], deleteProject);
-
-//Adds a badge to a project
-router.patch("/badges/award", [auth, admin], awardBadge);
 
 module.exports = router;

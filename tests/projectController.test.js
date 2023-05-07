@@ -5,6 +5,8 @@ const { Project, validate} = require("../models/project");
 const mongoose = require("mongoose");
 const { User } = require('../models/user');
 const { Comment } = require('../models/comment');
+const { urlencoded } = require('express');
+const admin = require('../middleware/admin');
 const cors = require('dotenv').config()
 
 const URLstring = '/api/projects/'
@@ -17,6 +19,8 @@ const notGraduate = 'Access Denied. You do not have the relevant permissions to 
 const notYourComment = "Not your comment!"
 const invalidSemester = 'Invalid semester!'
 const noUser = 'No user found'
+const invalidAward = 'Invalid award!'
+const notAdmin = 'Access Denied.'
 const visitorData = {
   name: "project test visitor",
   email: "testProjectVisitor@gmail.com",
@@ -83,6 +87,10 @@ var userSignIn2 = {
   "password": data2.password
 }
 
+const adminSignin = {
+  "username":process.env.USERADMIN,
+  "password":process.env.USERADMINPASSWORD
+}
 
 const getToken = async (signIn) => {
   const token = await request(app)
@@ -117,7 +125,7 @@ afterAll(async () => {
 
 
 
-describe("Test that fetches projects", () => {
+describe("Test that fetches projects GET", () => {
   /********************************** 
   *           TEST / ROUTE          *
   **********************************/ 
@@ -177,7 +185,7 @@ describe("Test that fetches projects", () => {
   })
 
 //Last bracket
-});
+})
 
 
 describe('POST Project from endpoint /api/projects/ using addNewProject', () => {
@@ -351,7 +359,7 @@ describe('POST Project from endpoint /api/projects/ using addNewProject', () => 
 
 
 
-describe('Test the endpoint to see if a projects views is incremented using incrementViews', () => {
+describe('Test the /:projectId/incrementViews PATCH endpoint  using incrementViews', () => {
   
   it('Expects statusCode 200 and a project to be returned', async () => {
     const project = await Project.findById(projectId)
@@ -457,8 +465,8 @@ describe('Test the POST comment ~ /comment using writeComment', () => {
 })
 
 
-describe('Test that retrieves comments', () => {
-  it('Expects statusCode 200 and all comments from the /comments/all endpoint using getAllComments', async () => {
+describe('Test that retrieves comments using GET endoiunbt /comments/all using getAllComments', () => {
+  it('Expects statusCode 200 and all comments from all projects', async () => {
     const response = await request(app)
     .get(URLstring + 'comments/all')
     expect(response.statusCode).toEqual(200)
@@ -481,7 +489,7 @@ describe('Test that retrieves comments', () => {
 })
 
 
-describe('Test the deleteComment endpoint ~ /comment/:commentId using deleteComment', () => {
+describe('Test the deleteComment DELETE endpoint ~ /comment/:commentId using deleteComment', () => {
   
   it('Expects statusCode 404 with err msg when given non-existant commentId', async () => {
     const xToken = await getToken(visitorSignIn)
@@ -547,7 +555,7 @@ describe('Test the deleteComment endpoint ~ /comment/:commentId using deleteComm
 })
 
 
-describe('Test the like project endpoint using likeComment ', () => {
+describe('Test the like project PATCH endpoint using likeComment ', () => {
 
   it('Expects statusCode 401 with no token given ', async () => {
     const response = await request(app)
@@ -617,7 +625,7 @@ describe('Test the like project endpoint using likeComment ', () => {
 })
 
 
-describe('Test the Patch /:projectId route where it uses updateProjectById endpoint', () => {
+describe('Test the PATCH /:projectId route where it uses updateProjectById endpoint', () => {
   it('Expects statusCode 200 and updated project', async() => {
     const xToken = await getToken(userSignIn)
     const patchBody = {
@@ -785,10 +793,7 @@ describe('Test the Patch /:projectId route where it uses updateProjectById endpo
   
 
   it('Expects statusCode 400 when a user is admin and tries to award an invalid badge', async () => {
-    const xToken = await getToken({
-      "username":process.env.USERADMIN,
-      "password":process.env.USERADMINPASSWORD
-    })
+    const xToken = await getToken(adminSignin)
 
     const patchBody = {
       "name" : 'testProject',
@@ -800,7 +805,7 @@ describe('Test the Patch /:projectId route where it uses updateProjectById endpo
     .send(patchBody)
 
     expect(response.statusCode).toEqual(400)
-    expect(response.body.msg).toEqual("Invalid award!")
+    expect(response.body.msg).toEqual(invalidAward)
   })
   
 })
@@ -810,7 +815,7 @@ describe('Test the Patch /:projectId route where it uses updateProjectById endpo
 
 
 
-describe('Adds user to project using route /:id/:userid using addUserToProject', () =>{
+describe('Adds user to project using PUT endpoint /:id/:userid using addUserToProject', () =>{
   
   it('Expects statusCode 404 for invalid userId ', async () => {
     const xToken = await getToken(userSignIn)
@@ -895,11 +900,190 @@ describe('Adds user to project using route /:id/:userid using addUserToProject',
 
 })
 
-describe('Test the search endpoint /search with searchProjects', () =>{
-  it('', async () => {
 
+
+describe('test the award badge PATCH endpoint badges/award using awardBadge', () =>{
+
+  it('Expects statusCode 404 from invalid projectId', async () => {
+    const awardProject = {
+      "projectId" : 'wrongProjectId',
+      "award": 'Top Excellence'
+    }
+
+    const xToken = await getToken(adminSignin)
+    const response = await request(app)
+    .patch(URLstring + 'badges/award')
+    .set('x-auth-token', xToken)
+    .send(awardProject)
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(noProject)
+  })
+
+  it('Expects statusCode 404 from non existant project', async () => {
+    const xToken = await getToken(adminSignin)
+    const awardProject = {
+      "projectId" : '6432f8826cce2fc1706572d3',
+      "award": 'Top Excellence'
+    }
+
+    const response = await request(app)
+    .patch(URLstring + 'badges/award')
+    .set('x-auth-token', xToken)
+    .send(awardProject)
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(noProject)
+  })
+
+  it('Expects statusCode 401 When x-auth-token is not set',  async() => {
+    const awardProject = {
+      "projectId" : `${projectId}`,
+      "award": 'Top Excellence'
+    }
+    const response = await request(app)
+    .patch(URLstring + 'badges/award')
+    .send(awardProject)
+    expect(response.statusCode).toEqual(401)
+    expect(response.body.fail).toEqual(noToken)
+    
+  })
+
+  it('Expects statusCode 400 When token is invalid ',  async() => {
+    const awardProject = {
+      "projectId" : `${projectId}`,
+      "award": 'Top Excellence'
+    }
+    const response = await request(app)
+    .patch(URLstring + 'badges/award')
+    .set('x-auth-token', 'xToken')
+    .send(awardProject)
+
+    expect(response.statusCode).toEqual(400)
+  
+    expect(response.body.fail).toEqual(invalidToken)
+  })
+
+  it('Expects statusCode 403 user is not admin',  async() => {
+    const awardProject = {
+      "projectId" : `${projectId}`,
+      "award": 'Top Excellence'
+    }
+    const xToken = await getToken(visitorSignIn)
+
+    const response = await request(app)
+    .patch(URLstring + 'badges/award')
+    .set('x-auth-token', xToken)
+    .send(awardProject)
+
+    expect(response.statusCode).toEqual(403)
+    expect(response.body.fail).toEqual(notAdmin)
+    
+  })
+
+  it('Expects statusCode 400 when badge is invalid',  async() => {
+    const awardProject = {
+      "projectId" : `${projectId}`,
+      "badges": 'Top Excell'
+    }
+    const xToken = await getToken(adminSignin)
+    const response = await request(app)
+    .patch(URLstring + 'badges/award')
+    .set('x-auth-token', xToken)
+    .send(awardProject)
+    expect(response.statusCode).toEqual(400)
+    expect(response.body.msg).toEqual(invalidAward)
+    
+  })
+
+  it('Expects statusCode 200 when badge is valid',  async() => {
+    const awardProject = {
+      "projectId" : `${projectId}`,
+      "award": 'Top Excellence'
+    }
+    const xToken = await getToken(adminSignin)
+    const response = await request(app)
+    .patch(URLstring + 'badges/award')
+    .set('x-auth-token', xToken)
+    .send(awardProject)
+    expect(response.statusCode).toEqual(200)
+    
   })
 })
+
+
+
+
+
+/*******************************************************************
+*                 PLACE DELETE ENDPOINT AT BOTTOM                  *
+*******************************************************************/
+describe('Test the delete endpoint /:projectId using deleteProject', () =>{
+
+  it('Expects statusCode 404 from invalid projectId', async () => {
+    const xToken = await getToken(adminSignin)
+    const response = await request(app)
+    .delete(URLstring + `projectId`)
+    .set('x-auth-token', xToken)
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(noProject)
+  })
+
+  it('Expects statusCode 404 from non existant project', async () => {
+    const xToken = await getToken(adminSignin)
+
+    const response = await request(app)
+    .delete(URLstring + `6432f8826cce2fc1706572d3`)
+    .set('x-auth-token', xToken)
+    
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(noProject)
+  })
+
+  it('Expects statusCode 401 When x-auth-token is not set',  async() => {
+    const response = await request(app)
+    .delete(URLstring + `6432f8826cce2fc1706572d3`)
+  
+    expect(response.statusCode).toEqual(401)
+    expect(response.body.fail).toEqual(noToken)
+    
+  })
+
+  it('Expects statusCode 403 user is not admin',  async() => {
+    const xToken = await getToken(userSignIn)
+    const response = await request(app)
+    .delete(URLstring + `${projectId}`)
+    .set('x-auth-token', xToken)
+
+    expect(response.statusCode).toEqual(403)
+    expect(response.body.fail).toEqual(notAdmin)
+    
+  })
+
+  it('Expects statusCode 400 When token is invalid ',  async() => {
+    const response = await request(app)
+    .delete(URLstring + `${projectId}`)
+    .set('x-auth-token', 'xToken')
+
+    expect(response.statusCode).toEqual(400)  
+    expect(response.body.fail).toEqual(invalidToken)
+  })
+
+    
+  it('Expects statusCode 200 and project deleted',  async() => {
+    const lengthOfProjects = (await Project.find()).length
+
+    const xToken = await getToken(adminSignin)
+    const response = await request(app)
+    .delete(URLstring + `${projectId}`)
+    .set('x-auth-token', xToken)
+    
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length == lengthOfProjects - 1)
+    const findProject = await Project.findById(projectId)
+    expect(findProject).toEqual(null)
+  })
+})
+
 
 /* 
 
