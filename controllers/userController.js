@@ -183,6 +183,21 @@ const deleteUserById = async (req, res) => {
     await Project.findByIdAndUpdate(project, { $pull: { members: id } });
   }
 
+  if (user.myComments) {
+      user.myComments.forEach(deleteComments);
+  }
+
+  async function deleteComments(commentId) {
+
+    const comment = await Comment.findById({ _id: commentId });
+
+    const project = await Project.findByIdAndUpdate(comment.project, {
+      $pull: { comments: commentId },
+    });
+  
+    const deleted = await Comment.findByIdAndDelete(commentId);
+  }
+
   await User.findByIdAndDelete(id);
   res.json({ removed: `${username} removed` });
 };
