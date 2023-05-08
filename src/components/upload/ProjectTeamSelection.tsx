@@ -12,10 +12,22 @@ export default function ProjectTeamSelectionForm() {
  
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" sx = {{marginBottom: 4}} gutterBottom>
         1. Team Details
       </Typography>
+      {/*This is the Team Name Field */}
+      <Grid item xs={12}>
       
+        <TextField
+          helperText= "*This will create the team and allow you to add other team members after"
+          id="teamName"
+          name="teamName"
+          label="Team Name"
+          fullWidth
+          variant="outlined"
+      
+        />
+      </Grid>
       
     </React.Fragment>
   );

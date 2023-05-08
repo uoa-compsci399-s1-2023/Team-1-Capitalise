@@ -14,14 +14,17 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ProjectInfoForm from '../components/upload/ProjectInfo';
 import ProjectUploadFileForm from '../components/upload/ProjectUploadFile';
+import ProjectTeamSelectionForm from '../components/upload/ProjectTeamSelection';
 
-const steps = ['Project Details', 'Project Files', 'Upload'];
+const steps = ['Team Details', 'Project Details', 'Project Files', 'Upload'];
 
 function getStepContent(step: number) {
   switch (step) {
-    case 0:
+    case 0: 
+      return <ProjectTeamSelectionForm/>;
+    case 1:
       return <ProjectInfoForm />;
-    case 1: 
+    case 2: 
       return <ProjectUploadFileForm />; 
     default:
       throw new Error('Unknown step');
