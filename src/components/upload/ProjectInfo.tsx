@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { Autocomplete, Box, Button, Chip, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, styled } from '@mui/material';
+import { Autocomplete, Box, Button, Chip, FormControl, FormHelperText, Input, InputLabel, MenuItem, Select, SelectChangeEvent, styled } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useState } from 'react';
 import ProjectLinksForm from '../upload/ProjectLinks';
@@ -38,22 +38,11 @@ export default function ProjectInfoForm() {
       </Typography>
       <Box component="form">
       <Grid container spacing={2}>
-     
-        <Grid item xs={12}>
-      
-          <TextField
-            required
-            id="projectName"
-            name="projectName"
-            label="Project Name"
-            fullWidth
-            variant="outlined"
-          />
-        </Grid>
         {/*Semester Selector*/}
         
-        <Grid item xs={12}> 
-            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+        <Grid item xs={4}> 
+      
+            <FormControl sx={{minWidth: 120 }} size="small">
           <InputLabel id="demo-select-small-label">Semester</InputLabel>
           <Select
             labelId="demo-select-small-label"
@@ -69,8 +58,60 @@ export default function ProjectInfoForm() {
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
+          <FormHelperText> * When did you complete this project?</FormHelperText>
         </FormControl>
         </Grid>
+        
+        {/*Category Selector*/}
+        
+        <Grid item xs={8}> 
+      
+            <FormControl sx={{minWidth: 120 }} size="small">
+          <InputLabel id="demo-select-small-label">Category</InputLabel>
+          <Select
+            labelId="demo-select-small-label"
+            id="select-semester"
+            value={semester}
+            label="Semester"
+            onChange={handleSemesterChange}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+          <FormHelperText> * What does this project specialise in?</FormHelperText>
+        </FormControl>
+        </Grid> 
+        {/*This is the Team Name Field */}
+        <Grid item xs={12}>
+      
+          <TextField
+        
+            id="teamName"
+            name="teamName"
+            label="Team Name"
+            fullWidth
+            variant="outlined"
+         
+          />
+        </Grid>
+        {/*This is the Project Name Field*/}
+        <Grid item xs={12}>
+      
+          <TextField
+            required
+            id="projectName"
+            name="projectName"
+            label="Project Name"
+            fullWidth
+            variant="outlined"
+          />
+        </Grid>
+       
+        
         <Grid item xs={12} >
        
         <Autocomplete
@@ -109,33 +150,7 @@ export default function ProjectInfoForm() {
           />
         </Grid>
         
-        {/* Upload Attach Banner */}
-        <Grid item>
-        <Typography variant="subtitle2" gutterBottom>
-            Attach a Project Banner
-          </Typography>
-        </Grid>
-        <Grid item xs={10} >
-          <input
-            type="file"
-            id="fileInput"
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-          />
-          <TextField
-            disabled
-            value={selectedFile ? selectedFile.name : ''}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={2}><label htmlFor="fileInput">
-            <Button variant="contained" component="span">
-              Upload
-            </Button>
-          </label>
-        </Grid>
-
-        <ProjectLinksForm/>
+        
 
 
       

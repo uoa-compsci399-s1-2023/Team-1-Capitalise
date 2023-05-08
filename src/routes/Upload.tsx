@@ -13,16 +13,16 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ProjectInfoForm from '../components/upload/ProjectInfo';
-import ProjectReview from '../components/upload/ProjectReview';
+import ProjectUploadFileForm from '../components/upload/ProjectUploadFile';
 
-const steps = ['Project Details', 'Review your Project'];
+const steps = ['Project Details', 'Project Files', 'Upload'];
 
 function getStepContent(step: number) {
   switch (step) {
     case 0:
       return <ProjectInfoForm />;
-    case 1:
-      return <ProjectReview />;
+    case 1: 
+      return <ProjectUploadFileForm />; 
     default:
       throw new Error('Unknown step');
   }
@@ -55,15 +55,13 @@ export default function Checkout() {
               </Step>
             ))}
           </Stepper>
-          {activeStep === steps.length ? (
+          {activeStep === steps.length - 1 ? (
             <React.Fragment>
               <Typography variant="h5" gutterBottom>
-                Thank you for your order.
+                Your Project has been uploaded.
               </Typography>
               <Typography variant="subtitle1">
-                Your order number is #2001539. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
+                Redirecting now to your new project page...
               </Typography>
             </React.Fragment>
           ) : (

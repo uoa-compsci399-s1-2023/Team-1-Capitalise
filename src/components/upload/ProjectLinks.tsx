@@ -4,14 +4,17 @@ import React, { useState } from "react";
 
 
 const LinkForm = styled(FormControl)({
-    margin: 8,
-    minWidth: 200,
+    marginBottom: 8,
+    minWidth: 150,
+    maxWidth: 300
+    
   }
 );
 
 const SocialLinkField = styled(TextField)({
-  margin: 8,
-  minWidth: 200,
+  marginLeft: 8,
+  maxWidth: 250
+
 }
 );
 const options = [
@@ -84,7 +87,8 @@ export default function ProjectLinksForm() {
 
       {selectedOption.option !== '' && (
         <SocialLinkField
-          label="Insert a link here..."
+          fullWidth
+          label="Insert a Link"
           value={selectedOption.text}
           onChange={(event) => handleTextChange(index, event)}
         />
