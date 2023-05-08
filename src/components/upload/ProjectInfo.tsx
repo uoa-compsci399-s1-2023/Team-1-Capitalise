@@ -22,10 +22,12 @@ export default function ProjectInfoForm() {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleUploadClick = () => {
-    // handle file upload logic here
-    console.log(selectedFile);
-  };
+  const handleNext = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+  
+  
+  }
 
   const handleSemesterChange = (event: SelectChangeEvent) => {
     setSemester(event.target.value);
@@ -36,126 +38,131 @@ export default function ProjectInfoForm() {
       <Typography variant="h6" gutterBottom>
         1. Project Details
       </Typography>
-      <Box component="form">
       <Grid container spacing={2}>
-        {/*Semester Selector*/}
+        <Box component="form" noValidate onSubmit={handleNext}>
+          {/*Semester Selector*/}
+          <Grid item xs={4}> 
+              <FormControl sx={{minWidth: 120 }} size="small">
+            <InputLabel id="demo-select-small-label">Semester</InputLabel>
+            <Select
+              labelId="demo-select-small-label"
+              id="select-semester"
+              value={semester}
+              label="Semester"
+              onChange={handleSemesterChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+            <FormHelperText> * When did you complete this project?</FormHelperText>
+          </FormControl>
+          </Grid>
+          
+          {/*Category Selector*/}
+          
+          <Grid item xs={8}> 
         
-        <Grid item xs={4}> 
-      
-            <FormControl sx={{minWidth: 120 }} size="small">
-          <InputLabel id="demo-select-small-label">Semester</InputLabel>
-          <Select
-            labelId="demo-select-small-label"
-            id="select-semester"
-            value={semester}
-            label="Semester"
-            onChange={handleSemesterChange}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-          <FormHelperText> * When did you complete this project?</FormHelperText>
-        </FormControl>
-        </Grid>
+              <FormControl sx={{minWidth: 120 }} size="small">
+            <InputLabel id="demo-select-small-label">Category</InputLabel>
+            <Select
+              labelId="demo-select-small-label"
+              id="select-semester"
+              value={semester}
+              label="Semester"
+              onChange={handleSemesterChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+            <FormHelperText> * What does this project specialise in?</FormHelperText>
+          </FormControl>
+          </Grid> 
+          {/*This is the Team Name Field */}
+          <Grid item xs={12}>
         
-        {/*Category Selector*/}
+            <TextField
+          
+              id="teamName"
+              name="teamName"
+              label="Team Name"
+              fullWidth
+              variant="outlined"
+          
+            />
+          </Grid>
+          {/*This is the Project Name Field*/}
+          <Grid item xs={12}>
         
-        <Grid item xs={8}> 
-      
-            <FormControl sx={{minWidth: 120 }} size="small">
-          <InputLabel id="demo-select-small-label">Category</InputLabel>
-          <Select
-            labelId="demo-select-small-label"
-            id="select-semester"
-            value={semester}
-            label="Semester"
-            onChange={handleSemesterChange}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-          <FormHelperText> * What does this project specialise in?</FormHelperText>
-        </FormControl>
-        </Grid> 
-        {/*This is the Team Name Field */}
-        <Grid item xs={12}>
-      
-          <TextField
+            <TextField
+              required
+              id="projectName"
+              name="projectName"
+              label="Project Name"
+              fullWidth
+              variant="outlined"
+            />
+          </Grid>
         
-            id="teamName"
-            name="teamName"
-            label="Team Name"
-            fullWidth
-            variant="outlined"
-         
-          />
-        </Grid>
-        {/*This is the Project Name Field*/}
-        <Grid item xs={12}>
-      
-          <TextField
-            required
-            id="projectName"
-            name="projectName"
-            label="Project Name"
-            fullWidth
-            variant="outlined"
-          />
-        </Grid>
-       
+          
+          <Grid item xs={12} >
         
-        <Grid item xs={12} >
-       
-        <Autocomplete
-        multiple
-        
-        id="tags-filled"
+          <Autocomplete
+          multiple
+          
+          id="tags-filled"
 
-        options={projectTags.map((option) => option.tag)}
-        freeSolo
-        renderTags={(value: readonly string[], getTagProps) =>
-          value.map((option: string, index: number) => (
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-          ))
-        }
-        renderInput={(params) => (
-          <TextField 
-            {...params}
-            variant="outlined"
-            label="Project Tags"
-    
-          />
-        )}
-      />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            id="projectDesc"
-            name="projectDesc"
-            label="Project Description"
-            fullWidth
-            variant="outlined"
-            
-            multiline={true}
-            rows={10}
-          />
-        </Grid>
-        
-        
-
-
+          options={projectTags.map((option) => option.tag)}
+          freeSolo
+          renderTags={(value: readonly string[], getTagProps) =>
+            value.map((option: string, index: number) => (
+              <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+            ))
+          }
+          renderInput={(params) => (
+            <TextField 
+              {...params}
+              variant="outlined"
+              label="Project Tags"
       
+            />
+          )}
+        />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              id="projectDesc"
+              name="projectDesc"
+              label="Project Description"
+              fullWidth
+              variant="outlined"
+              
+              multiline={true}
+              rows={10}
+            />
+          </Grid>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{ mt: 3, ml: 1 }}
+          > Next </Button>
+          </Box>
+          
+          
+
+
+        </Box>
       </Grid>
-      </Box>
+        
       
     </React.Fragment>
   );

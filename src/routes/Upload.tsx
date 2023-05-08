@@ -15,27 +15,18 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ProjectInfoForm from '../components/upload/ProjectInfo';
 import ProjectUploadFileForm from '../components/upload/ProjectUploadFile';
 import ProjectTeamSelectionForm from '../components/upload/ProjectTeamSelection';
+import { useState } from 'react';
 
 const steps = ['Team Details', 'Project Details', 'Project Files', 'Upload'];
 
-function getStepContent(step: number) {
-  switch (step) {
-    case 0: 
-      return <ProjectTeamSelectionForm/>;
-    case 1:
-      return <ProjectInfoForm />;
-    case 2: 
-      return <ProjectUploadFileForm />; 
-    default:
-      throw new Error('Unknown step');
-  }
-}
 
-const theme = createTheme();
 
-export default function Checkout() {
-  const [activeStep, setActiveStep] = React.useState(0);
 
+
+export default function Upload() {
+  const [activeStep, setActiveStep] = useState(0);
+  const[team, setTeam] = useState('');
+  const[projectInfo, setProjectInfo] = useState('');
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -43,11 +34,38 @@ export default function Checkout() {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  const teamToUpload = (teamData: any) => {
+    //Stores Team Info into Team State
+    setTeam(teamData);
+    //Navigates to next page
+    handleNext();
+    
+  }
+
+  const projectInfoToUpload = (projectInfoData: any) => {
+    //Stores Project Info into Project State
+  
+    //Navigates to next page
+    handleNext();
+    
+  }
+  function getStepContent(step: number) {
+    switch (step) {
+      case 0: 
+        return <ProjectTeamSelectionForm teamToUpload={teamToUpload}/>;
+      case 1:
+        return <ProjectInfoForm  />;
+      case 2: 
+        return <ProjectUploadFileForm />; 
+      default:
+        throw new Error('Unknown step');
+    }
+  }
 
   return (
 
-      <Container component="main" maxWidth="md"  sx={{mt: 20, mb: 4 }}>
-        <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+      <Container maxWidth="md"  sx={{mt: 20, mb: 4}}>
+        <Paper variant="outlined" sx={{my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <Typography component="h1" variant="h4" align="center">
             Upload your Project
           </Typography>
