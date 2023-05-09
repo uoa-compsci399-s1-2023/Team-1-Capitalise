@@ -15,6 +15,7 @@ export default function ProjectTeamSelectionForm({teamToUpload}: any) {
     const data = new FormData(event.currentTarget);
     const t = String(data.get('teamName'));
     setTeamName(t);
+    console.log(t);
     teamToUpload(t);
     
 
@@ -28,8 +29,9 @@ export default function ProjectTeamSelectionForm({teamToUpload}: any) {
         1. Team Details
       </Typography>
       {/*This is the Team Name Field */}
+      <Box component="form" noValidate onSubmit={handleNext}>
       <Grid container spacing={1}>
-        <Box component="form" noValidate onSubmit={handleNext}>
+       
           <Grid item xs={12}>
           
             <TextField
@@ -43,16 +45,17 @@ export default function ProjectTeamSelectionForm({teamToUpload}: any) {
             />
             
           </Grid>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+         
+        
+      </Grid>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             variant="contained"
             type="submit"
             sx={{ mt: 3, ml: 1 }}
           > Next </Button>
           </Box>
-        </Box>
-      </Grid>
-     
+      </Box>
     </React.Fragment>
 
 

@@ -16,6 +16,7 @@ import ProjectInfoForm from '../components/upload/ProjectInfo';
 import ProjectUploadFileForm from '../components/upload/ProjectUploadFile';
 import ProjectTeamSelectionForm from '../components/upload/ProjectTeamSelection';
 import { useState } from 'react';
+import UploadComplete from '../components/upload/UploadComplete';
 
 const steps = ['Team Details', 'Project Details', 'Project Files', 'Upload'];
 
@@ -44,7 +45,17 @@ export default function Upload() {
 
   const projectInfoToUpload = (projectInfoData: any) => {
     //Stores Project Info into Project State
-  
+    setProjectInfo(projectInfoData);  
+    //Navigates to next page
+    handleNext();
+    
+  }
+
+  const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
+    //Stores Project Info into Project State
+    console.log(banner?.name);
+    console.log(images);
+    console.log(thumbnail?.name);
     //Navigates to next page
     handleNext();
     
@@ -54,9 +65,11 @@ export default function Upload() {
       case 0: 
         return <ProjectTeamSelectionForm teamToUpload={teamToUpload}/>;
       case 1:
-        return <ProjectInfoForm  />;
+        return <ProjectInfoForm  projectInfoToUpload={projectInfoToUpload} handleBack={handleBack}/>;
       case 2: 
-        return <ProjectUploadFileForm />; 
+        return <ProjectUploadFileForm projectFileToUpload={projectFileToUpload} />; 
+      case 3:
+        return <UploadComplete />;
       default:
         throw new Error('Unknown step');
     }
@@ -76,35 +89,13 @@ export default function Upload() {
               </Step>
             ))}
           </Stepper>
-          {activeStep === steps.length - 1 ? (
-            <React.Fragment>
-              <Typography variant="h5" gutterBottom>
-                Your Project has been uploaded.
-              </Typography>
-              <Typography variant="subtitle1">
-                Redirecting now to your new project page...
-              </Typography>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {getStepContent(activeStep)}
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                {activeStep !== 0 && (
-                  <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                    Back
-                  </Button>
-                )}
-
-                <Button
-                  variant="contained"
-                  onClick={handleNext}
-                  sx={{ mt: 3, ml: 1 }}
-                >
-                  {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                </Button>
-              </Box>
-            </React.Fragment>
-          )}
+        
+          
+            {/*This renders the components for each page depending on step*/}
+            {getStepContent(activeStep)}
+          
+           
+    
         </Paper>
 
       </Container>
