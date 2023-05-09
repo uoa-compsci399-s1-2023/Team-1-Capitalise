@@ -3,6 +3,7 @@ const request = require("supertest");
 const { User, validate } = require("../models/user");
 const { Project } = require("../models/project");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
 describe("Fetches all users", () => {
   it("Sends a 200 response if all users are fetched", async () => {
@@ -97,7 +98,7 @@ describe("GET Current User", () => {
       .get("/api/users/getCurrentUser/me")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDNlMGMyYjZlMmUxYTQwNTZhNWQ1ZDYiLCJ1c2VybmFtZSI6InRlc3RAbWFub3guY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MjMyNjE5MSwiZXhwIjoxNjg0OTE4MTkxfQ.ymW7Tzg9M8qA5_hjfzQhAvvT8_XL8h10r7jBklwNCMA"
+        process.env.VISITORTOKEN
       )
       .expect(200)
       .then((response) => {
@@ -366,7 +367,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzM3NTA1NSwiZXhwIjoxNjg1OTY3MDU1fQ.6-TL3vffkig9vAWt0a8IfQKrUbe2tmEh4VtYOeFsP5A"
+        process.env.ALEXTOKEN
       )
       .send({
         name: "Alexis Qin",
@@ -388,7 +389,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzM3NTA1NSwiZXhwIjoxNjg1OTY3MDU1fQ.6-TL3vffkig9vAWt0a8IfQKrUbe2tmEh4VtYOeFsP5A"
+        process.env.ALEXTOKEN
       )
       .send({
         name: "Alex Qin",
@@ -402,7 +403,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZjgzZjZjY2UyZmMxNzA2NTcyYzciLCJ1c2VybmFtZSI6ImFsb2g1OTZAYXVja2xhbmR1bmkuYWMubnoiLCJ1c2VyVHlwZSI6ImFkbWluIiwiaWF0IjoxNjgzNDUyOTkzLCJleHAiOjE2ODYwNDQ5OTN9.i1jQ34UmEpkfElbXyMbpUwHfYQaik1GrkrluDX0M-ZY"
+        process.env.ALEXTOKEN
       )
       .send({
         name: "Alexis Qin",
@@ -424,7 +425,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzM3NTA1NSwiZXhwIjoxNjg1OTY3MDU1fQ.6-TL3vffkig9vAWt0a8IfQKrUbe2tmEh4VtYOeFsP5A"
+        process.env.ALEXTOKEN
       )
       .send({
         name: "Alex Qin",
@@ -444,7 +445,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f89d48a1f3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZjgzZjZjY2UyZmMxNzA2NTcyYzciLCJ1c2VybmFtZSI6ImFsb2g1OTZAYXVja2xhbmR1bmkuYWMubnoiLCJ1c2VyVHlwZSI6ImFkbWluIiwiaWF0IjoxNjgzNDUyOTkzLCJleHAiOjE2ODYwNDQ5OTN9.i1jQ34UmEpkfElbXyMbpUwHfYQaik1GrkrluDX0M-ZY"
+        process.env.ANDREWTOKEN
       )
       .expect(400)
       .then((response) => {
@@ -464,7 +465,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432f8826cce2fc1706572d3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZjg1ZjZjY2UyZmMxNzA2NTcyY2YiLCJ1c2VybmFtZSI6InJ3dTA1MEBhdWNrbGFuZHVuaS5hYy5ueiIsInVzZXJUeXBlIjoiZ3JhZHVhdGUiLCJpYXQiOjE2ODM0NDc4MzEsImV4cCI6MTY4NjAzOTgzMX0.O6YpKLnwOQQELt2-XGOU23gGZDmhnSei2gbTAkyENAQ"
+        process.env.RACHELTOKEN
       )
       .expect(403)
       .then((response) => {
@@ -476,7 +477,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzQ1NTg2NCwiZXhwIjoxNjg2MDQ3ODY0fQ.aJlt5D3xoLxtvpLK2x4kZyoA-R2lkk-AkhGwk2X6gec"
+        process.env.ALEXTOKEN
       )
       .send({
         name: "Alexis Qin",
@@ -500,7 +501,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzM3NTA1NSwiZXhwIjoxNjg1OTY3MDU1fQ.6-TL3vffkig9vAWt0a8IfQKrUbe2tmEh4VtYOeFsP5A"
+        process.env.ALEXTOKEN
       )
       .send({
         name: "Alex Qin",
@@ -511,7 +512,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzM3NTA1NSwiZXhwIjoxNjg1OTY3MDU1fQ.6-TL3vffkig9vAWt0a8IfQKrUbe2tmEh4VtYOeFsP5A"
+        process.env.ALEXTOKEN
       )
       .send({
         email: "alex.qin@aucklanduni.ac.nz",
@@ -534,7 +535,7 @@ describe("PATCH Current User", () => {
       .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZmMzMTdiMDljMmY5MWQ0OGEwZTMiLCJ1c2VybmFtZSI6ImFsZXhxaW5AZ21haWwuY29tIiwidXNlclR5cGUiOiJncmFkdWF0ZSIsImlhdCI6MTY4MzM3NTA1NSwiZXhwIjoxNjg1OTY3MDU1fQ.6-TL3vffkig9vAWt0a8IfQKrUbe2tmEh4VtYOeFsP5A"
+        process.env.ALEXTOKEN
       )
       .send({
         email: "alexqin@gmail.com",
@@ -558,7 +559,7 @@ describe("DELETE a User", () => {
     user2 = await User.findOne({ email: "testuser12@aucklanduni.ac.nz" });
     await request(app)
       .delete(`/api/users/user/${user2._id}`)
-      .set("x-auth-token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZjgzZjZjY2UyZmMxNzA2NTcyYzciLCJ1c2VybmFtZSI6ImFsb2g1OTZAYXVja2xhbmR1bmkuYWMubnoiLCJ1c2VyVHlwZSI6ImFkbWluIiwiaWF0IjoxNjgzNDUyOTkzLCJleHAiOjE2ODYwNDQ5OTN9.i1jQ34UmEpkfElbXyMbpUwHfYQaik1GrkrluDX0M-ZY")
+      .set("x-auth-token", user2xtoken)
       .expect(200)
       .then((response) => {
         expect(response.body.removed).toBe(
@@ -619,7 +620,7 @@ describe("DELETE a User", () => {
       .delete("/api/users/user/6432f8826cce2fc1706572d3")
       .set(
         "x-auth-token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDMyZjg1ZjZjY2UyZmMxNzA2NTcyY2YiLCJ1c2VybmFtZSI6InJ3dTA1MEBhdWNrbGFuZHVuaS5hYy5ueiIsInVzZXJUeXBlIjoiZ3JhZHVhdGUiLCJpYXQiOjE2ODM0NDc4MzEsImV4cCI6MTY4NjAzOTgzMX0.O6YpKLnwOQQELt2-XGOU23gGZDmhnSei2gbTAkyENAQ"
+        process.env.RACHELTOKEN
       )
       .expect(403)
       .then((response) => {

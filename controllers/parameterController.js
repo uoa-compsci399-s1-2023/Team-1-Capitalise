@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const { Parameter, validateParameter } = require('../models/parameter');
 
+semesterRegex = new RegExp(/(S|s)\d{1} (19|20)\d{2}$/);
 
+String.prototype.capitalize = function () {
+    return this.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
+};
 
 //Gets all categories and sorts by name
 const getCategories = async (req, res) => {
@@ -43,20 +47,26 @@ const createParameter = async (req, res) => {
 
     //Check if parameter already exists
     const existingParam = await Parameter.findOne({
-        value: req.body.value,
+        value: req.body.value.capitalize(),
         parameterType: req.body.parameterType
     });
 
+
     if (existingParam) return res.status(400).send("Error - This parameter already exists!");
 
+    //Check the semester format
+    if (req.body.parameterType == "semester" && !semesterRegex.test(req.body.value)) {
+        return res.status(400).json({ fail: "Semesters must take on the form of SX 20YY" });
+    }
+
     let parameter = new Parameter({
-        value: req.body.value,
+        value: req.body.value.capitalize(),
         parameterType: req.body.parameterType
     });
 
     parameter = await parameter.save();
 
-    res.send(parameter);
+    res.status(201).json(parameter);
 }
 
 module.exports = {
