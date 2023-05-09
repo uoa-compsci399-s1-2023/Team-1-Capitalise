@@ -21,11 +21,13 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { AppRegistration, Login, Logout } from "@mui/icons-material";
+import { AppRegistration, Login, Logout, AdminPanelSettings } from "@mui/icons-material";
 import { useAuth } from '../customHooks/useAuth'; 
 import { useState } from "react";
+
 //Navigation Tabs
 const pages = ["About", "Projects"];
+
 //Pages without Navigation Bars
 const NoNavPages = ["/register", "/login", "/googleSuccessRedirect", "/googleFailure"];
 const StyledToolBar = styled(Toolbar)({
@@ -57,8 +59,10 @@ function ResponsiveAppBar() {
   
   //Auth Header
   const auth = useAuth();
+  
   //Fetch Current User (Check if Logged in)
   const uCheck = (auth.user != null);
+  
   //Functionality for opening/closing sidebar
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(
     null
@@ -88,6 +92,7 @@ function ResponsiveAppBar() {
   const goToPage = (pageName: any) => {
     navigate("/" + pageName);
   };
+  
 // App bar
   if (NoNavPages.includes(window.location.pathname) ) {
     return null
@@ -157,14 +162,7 @@ function ResponsiveAppBar() {
                 variant="outlined"> Log In</AuthButton>,
                 <AuthButton key="register" onClick={() => { goToPage("register"); } } variant="contained"> Sign Up </AuthButton>
               ]
-              
-
-        
             }
-              
-            
-            
-            
           </Box>
 
           {/*This is the side bar for mobile*/}
@@ -302,21 +300,33 @@ function ResponsiveAppBar() {
               </MenuItem>
 
               <Divider />
-              {/*Display settings based on login status*/}
-                {(uCheck) ? 
-                [<MenuItem  key ="logout"
-               onClick={() => {
-                handleCloseUserMenu(); 
-                auth.signout(); 
-                navigate("/");}} 
-                >
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Log Out
-              </MenuItem>]
               
-              :  //Or display guest (not logged in details)
+              {/*Display settings based on login status*/}
+              {/*Will need to do additional checks so that only admin can access the dashboard - TODO*/}
+                {(uCheck) ? 
+                  [<MenuItem  key ="admin"
+                    onClick={() => { 
+                    handleCloseUserMenu(); 
+                    navigate("/adminDashboard");}}>
+                  <ListItemIcon>
+                    <AdminPanelSettings fontSize="small" />
+                  </ListItemIcon>
+                    Admin Dashboard
+                  </MenuItem>,
+                  
+                  <MenuItem  key ="logout"
+                     onClick={() => { 
+                      handleCloseUserMenu(); 
+                      auth.signout(); 
+                      navigate("/");}}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                    Log Out
+                  </MenuItem>
+                  ]
+              
+              :   // Or display guest (not logged in details)
               
               [<MenuItem  key="register2" onClick={() => {
                 handleCloseUserMenu(); 

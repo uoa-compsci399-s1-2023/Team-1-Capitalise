@@ -15,6 +15,7 @@ import { AuthProvider } from "./customHooks/useAuth";
 import GoogleSuccessRedirect from './routes/googleSuccessRedirect';
 import GoogleFailure from './routes/googleFailure';
 import Upload from './routes/Upload';
+import AdminDashboard from './routes/AdminDashboard';
 
 export type TFiltersState = {
   keywords: string;
@@ -70,6 +71,7 @@ export default function App() {
                 <Route path="/googleSuccessRedirect" element={<GoogleSuccessRedirect />} />
                 <Route path="/googleFailure" element={<GoogleFailure />} />
                 <Route path="/upload" element={<Upload/>} />
+                <Route path="/adminDashboard" element={<AdminDashboard />} />
               </Routes>
             </Box>
           </ThemeProvider>
