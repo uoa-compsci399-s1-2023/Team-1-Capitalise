@@ -32,6 +32,7 @@ const getProjectsByLikes = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id")
     .sort("likes");
+    
     return res.status(200).send({projects: projects});
 };
 
@@ -491,7 +492,7 @@ const searchProjects = async (req, res) => {
       if (!mySem)
         return res
           .status(404)
-          .send({project:null, msg: `Semester ${req.query.semester} not found` });
+          .send({project:null, msg: 'Invalid semester!' });
     }
     query.semester = {
       _id: mySem._id,
@@ -505,7 +506,7 @@ const searchProjects = async (req, res) => {
       parameterType: "award",
     });
     if (!myAward)
-      return res.status(404).send({project: null, msg: `Award ${req.query.award} found` });
+      return res.status(404).send({project: null, msg: 'Invalid award!' });
     query.badges = {
       _id: myAward._id,
     };
@@ -520,7 +521,7 @@ const searchProjects = async (req, res) => {
     if (!myCategory)
       return res
         .status(404)
-        .send({project:null,  msg: `Category ${req.query.category} not found` });
+        .send({project:null,  msg: 'Invalid category!' });
     query.category = {
       _id: myCategory._id,
     };
@@ -546,11 +547,16 @@ const searchProjects = async (req, res) => {
   // Create a JSON object which stores the sort query.
   sortQuery = {};
   if (req.query.sortBy) {
+    if(['semester', 'category', 'name', 'awards', 'likes'].includes(req.query.sortBy.toLowerCase())){
     const mySortRequest = req.query.sortBy.toLowerCase();
     mySortRequest == "likes"
       ? (sortQuery = { [mySortRequest]: -1 })
       : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending.
   }
+    else{
+      return res.status(400).send({projects: null, msg: 'invalid query'})
+    }
+}
 
   //Find relevant projects.
   const projects = await Project.find(query)

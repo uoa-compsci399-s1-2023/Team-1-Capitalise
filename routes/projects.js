@@ -25,6 +25,12 @@ const {
   awardBadge,
 } = require("../controllers/projectController");
 
+//Need to add more projects to properly test this
+router.get("/search", searchProjects);
+
+//Need to add more projects to properly test this
+router.get("/likes", getProjectsByLikes);
+
 //Get all projects
 router.get("/", getAllProjects);                         
 
@@ -38,8 +44,6 @@ router.post("/", [auth, graduate], addNewProject);
 //Increments the view counter of a page
 router.patch("/:projectId/incrementViews", incrementViews);
 
-//Need to add more projects to properly test this
-router.get("/likes", getProjectsByLikes);
 
 //Writes a comment. Appends it to the relevant user and project.
 router.post("/comment", auth, writeComment);
@@ -79,8 +83,7 @@ router.get("/badges/:badge", getProjectByBadge);
 
 
 
-//Need to add more projects to properly test this
-router.get("/search", searchProjects);
+
 
 
 module.exports = router;

@@ -18,10 +18,11 @@ const noToken = 'Access denied. No token provided.'
 const notGraduate = 'Access Denied. You do not have the relevant permissions to access this resource!'
 const notYourComment = "Not your comment!"
 const invalidSemester = 'Invalid semester!'
+const invalidCategory = 'Invalid category!'
 const noUser = 'No user found'
 const invalidAward = 'Invalid award!'
 const notAdmin = 'Access Denied.'
-const noBadge = "No badge found!"
+
 
 const visitorData = {
   name: "project test visitor",
@@ -78,6 +79,13 @@ const data2 = {
   ],
   skills: ["spelling"],
 }
+
+const projectData = {
+  "name": "testProjectForwardSlash", 
+  "semester": "S1 2023",
+  "category": "Mobile Development",
+  "tags": ["superCool"]
+}    
 
 var userSignIn = {
   "username": data.email, 
@@ -178,13 +186,14 @@ describe("Test that fetches projects GET", () => {
   *        TEST /likes ROUTE        *
   **********************************/
 
-  //Not working?
+
   it('Sends status code 200 and projects sorted by likes in ascending order using getProjectsByLikes', async () => {
     const response = await request(app)
     .get(URLstring + 'likes')
 
     expect(response.statusCode).toEqual(200)
   })
+
 
 //Last bracket
 })
@@ -195,11 +204,7 @@ describe('POST Project from endpoint /api/projects/ using addNewProject', () => 
   it('Post a project successfully and expects statusCode 200 ', async () => {
     const xToken = await getToken(userSignIn)
     //Create test project
-    const testProject = {
-      "name": "testProjectForwardSlash", 
-      "semester": "S1 2023",
-      "category": "Mobile Development"
-    }    
+    const testProject = projectData
     
     const response = await request(app)
     .post(URLstring)
@@ -1015,6 +1020,415 @@ describe('test the award badge PATCH endpoint badges/award using awardBadge', ()
 
 
 
+//This endpoint 200 test may change depending on projects which have awards
+describe('Test the GET /badges/:badge endpoint using getProjectByBadge', () =>{
+
+  it('Expects 204 from an invalid badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Top Excellenc`)
+    
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual("No badge found!")
+  })
+
+
+  it('Expects 204 from an invalid badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/TopExcellence`)
+    
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual("No badge found!")
+  })
+
+
+  it('Expects 200 from an Top Excellence badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Top Excellence`)
+    
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from an Peoples Choice badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Peoples Choice`)
+    
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from an Community Impact badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Community Impact`)
+    
+    expect(response.statusCode).toEqual(200)
+  })
+})
+
+
+
+
+/**********************************************************************************************
+*
+*                                         TEST THE SEARCH ENDPOINT 
+* 
+***********************************************************************************************/
+describe('Test the GET search function using /search with keyword using searchProjects', () =>{
+  it('Expects 200 and at least 1 project to be returned when query is keyword : projectName', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({keyword: projectData.name})
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length == 1)
+  })
+
+  it('Expects 200 and at least 1 project to be returned when query is keyword : tag superCool', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({keyword: 'superCool'})
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length == 1)
+  })
+
+
+})
+
+describe('Test the GET search function using /search with query parameters being category', () =>{
+  it('Expects 200 and at least 1 project to be returned when query is category : Mobile development', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({category: projectData.category})
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length > 0 )
+  })
+
+  it('Expects 200 and at least 1 project to be returned when query is category : mo', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({category: 'mo'})
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length > 0)
+  })
+
+  it('Expects 404 when query is category and invalid', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({category: 'wrong'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidCategory)
+  })
+  
+  it('Expects 404 when query is category and invalid', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({category: 'mobiledevelopment'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidCategory)
+  })
+})
+
+describe('Test the GET search function using /search with query parameters being semester', () =>{
+  it('Expects 200 and at least 1 project to be returned when query is semester : s1 2023', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({semester: projectData.semester})
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length > 0 )
+  })
+  it('Expects 200 when query is semester : s12023', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({semester: 's12023'})
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length > 0 )
+  })
+
+  it('Expects 404 when query is semester and invalid', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({semester: 'wrong'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidSemester)
+  })
+
+  it('Expects 404 when query is semester and invalid', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({semester: 's1'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidSemester)
+  })
+
+    it('Expects 404 when query is semester and invalid', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({semester: '2023'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidSemester)
+  })
+
+})
+
+describe('Test the GET search function using /search with query parameters being award', () =>{
+  it('Expects 200 when query is award : Top Excellence', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({award: 'Top Excellence'})
+
+    expect(response.statusCode).toEqual(200)
+    expect(response.body.projects.length > 0)
+  })
+
+  it('Expects 404 when query is award : TopExcellence', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({award: 'TopExcellence'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidAward)
+  })
+
+  it('Expects 404 when query is award : Top Excellenc', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({award: 'Top Excellenc'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidAward)
+  })
+
+  it('Expects 404 when query is award : Top', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({award: 'Top'})
+
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual(invalidAward)
+  })
+})
+
+describe('Test the sortBy query parameter', () =>{
+  it('Expects 200 from sortBy=name', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'name'})
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from sortBy=category', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'category'})
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from sortBy=awards', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'awards'})
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from sortBy=likes', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'awards'})
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from sortBy=semester', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'semester'})
+    expect(response.statusCode).toEqual(200)
+  })
+
+
+  it('Expects 200 from sortBy=SEMESTER', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'awards'})
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from sortBy=seMesTeR', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'awards'})
+    expect(response.statusCode).toEqual(200)
+  })
+
+
+  it('Expects 400 from sortBy= some invalid query', async () => {
+    const response = await request(app)
+    .get(URLstring + `search`)
+    .query({sortBy: 'swag'})
+    expect(response.statusCode).toEqual(400)
+    expect(response.body.msg).toEqual('invalid query')
+  })
+
+})
+
+
+describe('Test the startIndex as query', () =>{
+  it('Expects 200 when start index is 0 and all projects', async () => {
+    const projectCount = (await request(app)
+    .get(URLstring)).body.projects.length
+
+    if(projectCount > 0){    
+      const response = await request(app)
+      .get(URLstring + 'search')
+      .query({startIndex: 0})
+
+      expect(response.statusCode).toEqual(200)
+      expect(response.body.projects.length == projectCount)
+    }
+  })
+
+  it('Expects 200 when start index is valid and is length of projects which gives only one project', async () => {
+    const projectCount = (await request(app)
+    .get(URLstring)).body.projects.length
+
+    if(projectCount > 0){    
+      const response = await request(app)
+      .get(URLstring + 'search')
+      .query({startIndex: projectCount-1})
+
+      expect(response.statusCode).toEqual(200)
+      expect(response.body.projects.length == 1)
+    }
+  })
+
+  it('Expects 200 when start index is valid and is length of projects which gives only one project', async () => {
+    
+    const projectCount = (await request(app)
+    .get(URLstring)).body.projects.length
+
+    if(projectCount > 0){    
+      const response = await request(app)
+      .get(URLstring + 'search')
+      .query({startIndex: projectCount-1})
+
+      expect(response.statusCode).toEqual(200)
+      expect(response.body.projects.length == 1)
+    }
+  })
+
+  it('Expects 200 when start index is valid and is > length of projects ', async () => {
+    const projectCount = (await request(app)
+    .get(URLstring)).body.projects.length
+
+      const response = await request(app)
+      .get(URLstring + 'search')
+      .query({startIndex: projectCount})
+
+      expect(response.statusCode).toEqual(200)
+      expect(response.body.projects).toEqual([projectCount])
+  })
+})
+
+//array return includes number of projects
+describe('Test when /search query is numProjects', () =>{
+  it('Expects 5 projects if there are 5 projects', async () => {
+    const projectCount = (await request(app)
+    .get(URLstring)).body.projects.length
+
+    if(projectCount >= 5){
+      const response = await request(app)
+      .get(URLstring + 'search')
+      .query({numProjects: 5})
+
+      expect(response.statusCode).toEqual(200)
+      expect(response.body.projects.length).toEqual(6)
+    }
+  })
+
+    it('Expects all projects if query specifies more than projectCount', async () => {
+      const projectCount = (await request(app)
+      .get(URLstring)).body.projects.length
+  
+      if(projectCount >= 1){
+        const response = await request(app)
+        .get(URLstring + 'search')
+        .query({numProjects: projectCount})
+  
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.projects.length).toEqual(projectCount+1)
+      }
+  })
+
+  it('Expects all projects if query = 0', async () => {
+    const projectCount = (await request(app)
+    .get(URLstring)).body.projects.length
+
+    if(projectCount >= 1){
+      const response = await request(app)
+      .get(URLstring + 'search')
+      .query({numProjects: 0})
+
+      expect(response.statusCode).toEqual(200)
+      expect(response.body.projects.length).toEqual(projectCount+1)
+    }
+   })
+
+  })
+
+describe('Test the category, semester and award', () => {
+  it('Expects 200 with at least 1 project', async () => {
+      const response = await request(app)
+      .get(URLstring + 'search')
+      .query({
+        category: 'Mobile Development',
+        semester: 'S1 2023',
+        award: 'Top Excellence'
+    })
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 404 with one query is invalid', async () => {
+    const response = await request(app)
+    .get(URLstring + 'search')
+    .query({
+      category: 'Mobile Development',
+      semester: 'S1 2023',
+      award: 'Top Excellenc'
+  })
+  expect(response.statusCode).toEqual(404)
+  })
+
+  it('Expects 200 when semester has no space and lowercase', async () => {
+    const response = await request(app)
+    .get(URLstring + 'search')
+    .query({
+      category: 'Mobile Development',
+      semester: 's12023',
+      award: 'Top Excellence'
+  })
+  expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 when category has no space and missing a word', async () => {
+    const response = await request(app)
+    .get(URLstring + 'search')
+    .query({
+      category: 'mobile',
+      semester: 's12023',
+      award: 'Top Excellence'
+  })
+  expect(response.statusCode).toEqual(200)
+  })
+
+
+})
 
 /*******************************************************************
 *                 PLACE DELETE ENDPOINT AT BOTTOM                  *
@@ -1083,58 +1497,10 @@ describe('Test the delete endpoint /:projectId using deleteProject', () =>{
     expect(response.body.projects.length == lengthOfProjects - 1)
     const findProject = await Project.findById(projectId)
     expect(findProject).toEqual(null)
+    const userInProject = await User.findById(userId)
+    expect(userInProject.project).toEqual(null)
   })
 })
-
-//This endpoint 200 test may change depending on projects which have awards
-describe('Test the GET /badges/:badge endpoint using getProjectByBadge', () =>{
-
-  it('Expects 204 from an invalid badge', async () => {
-    const response = await request(app)
-    .get(URLstring + `badges/Top Excellenc`)
-    
-    expect(response.statusCode).toEqual(404)
-    expect(response.body.msg).toEqual("No badge found!")
-  })
-
-
-  it('Expects 204 from an invalid badge', async () => {
-    const response = await request(app)
-    .get(URLstring + `badges/TopExcellence`)
-    
-    expect(response.statusCode).toEqual(404)
-    expect(response.body.msg).toEqual("No badge found!")
-  })
-
-
-  it('Expects 200 from an Top Excellence badge', async () => {
-    const response = await request(app)
-    .get(URLstring + `badges/Top Excellence`)
-    
-    expect(response.statusCode).toEqual(200)
-  })
-
-  it('Expects 200 from an Peoples Choice badge', async () => {
-    const response = await request(app)
-    .get(URLstring + `badges/Peoples Choice`)
-    
-    expect(response.statusCode).toEqual(200)
-  })
-
-  it('Expects 200 from an Community Impact badge', async () => {
-    const response = await request(app)
-    .get(URLstring + `badges/Community Impact`)
-    
-    expect(response.statusCode).toEqual(200)
-  })
-})
-
-/*
-
-https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/projects/search?keyword=:keyword&category=:category&semester=:semester&award=:award&sortBy=:sortBy&startIndex=:startIndex&numProjects=:numProjects
-
-
-*/
 
 
 
