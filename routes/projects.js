@@ -69,6 +69,10 @@ router.delete("/:projectId", [auth, admin], deleteProject);
 
 //Adds a badge to a project
 router.patch("/badges/award", [auth, admin], awardBadge);
+
+//Get projects with :badge whatever
+router.get("/badges/:badge", getProjectByBadge);
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -77,9 +81,6 @@ router.patch("/badges/award", [auth, admin], awardBadge);
 
 //Need to add more projects to properly test this
 router.get("/search", searchProjects);
-
-//Get projects with :badge whatever
-router.get("/badges/:badge", getProjectByBadge);
 
 
 module.exports = router;

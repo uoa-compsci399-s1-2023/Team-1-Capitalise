@@ -21,6 +21,8 @@ const invalidSemester = 'Invalid semester!'
 const noUser = 'No user found'
 const invalidAward = 'Invalid award!'
 const notAdmin = 'Access Denied.'
+const noBadge = "No badge found!"
+
 const visitorData = {
   name: "project test visitor",
   email: "testProjectVisitor@gmail.com",
@@ -540,7 +542,7 @@ describe('Test the deleteComment DELETE endpoint ~ /comment/:commentId using del
 
 
   it('Expects statusCode 200 with the comment being null ', async () => {
-    const xToken = await getToken(visitorSignIn)
+    const xToken = await getToken(adminSignin)
 
     const response = await request(app)
     .delete(URLstring +`comment/${commentId}`)
@@ -1083,6 +1085,58 @@ describe('Test the delete endpoint /:projectId using deleteProject', () =>{
     expect(findProject).toEqual(null)
   })
 })
+
+//This endpoint 200 test may change depending on projects which have awards
+describe('Test the GET /badges/:badge endpoint using getProjectByBadge', () =>{
+
+  it('Expects 204 from an invalid badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Top Excellenc`)
+    
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual("No badge found!")
+  })
+
+
+  it('Expects 204 from an invalid badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/TopExcellence`)
+    
+    expect(response.statusCode).toEqual(404)
+    expect(response.body.msg).toEqual("No badge found!")
+  })
+
+
+  it('Expects 200 from an Top Excellence badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Top Excellence`)
+    
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from an Peoples Choice badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Peoples Choice`)
+    
+    expect(response.statusCode).toEqual(200)
+  })
+
+  it('Expects 200 from an Community Impact badge', async () => {
+    const response = await request(app)
+    .get(URLstring + `badges/Community Impact`)
+    
+    expect(response.statusCode).toEqual(200)
+  })
+})
+
+/*
+
+https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/projects/search?keyword=:keyword&category=:category&semester=:semester&award=:award&sortBy=:sortBy&startIndex=:startIndex&numProjects=:numProjects
+
+
+*/
+
+
 
 
 /* 

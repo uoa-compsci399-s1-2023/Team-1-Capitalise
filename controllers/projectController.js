@@ -41,13 +41,15 @@ const getProjectByBadge = async (req, res) => {
     value: req.params.badge,
     parameterType: "award",
   });
-  if (!myBadge) return res.status(204).send({project: null, msg: "No badge found!" })
+  if (!myBadge) {
+    return res.status(404).send({ project: null, msg: "No badge found!" });
+  }
   //need to check badge
   const projects = await Project.find({ badges: { _id: myBadge._id } })
 
   if (projects.length == 0) {
     return res
-      .status(204)
+      .status(404)
       .send({projects: null, msg: `${myBadge.value} has not been given out` })
   }
   return res.status(200).send({projects: projects});
