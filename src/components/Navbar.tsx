@@ -139,6 +139,7 @@ function ResponsiveAppBar() {
             {/* Check if User is logged in */}
             {uCheck
               ? [
+                <Button sx={{padding: "0 25px"}} key="upload" variant="contained" onClick={() => {goToPage("upload")}}>Upload</Button>,
                   <IconButton
                     key="profilepic"
                     onClick={handleOpenUserMenu}
