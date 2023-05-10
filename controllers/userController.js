@@ -5,6 +5,7 @@ const dotenv = require("dotenv").config();
 const { User, validate } = require("../models/user");
 const { Project } = require("../models/project");
 const { Comment, validateComment } = require("../models/comment");
+const { checkUser } = require("./checkParamValid");
 
 
 async function deleteComments(commentId) {
@@ -294,6 +295,26 @@ const searchUsers = async (req, res) => {
   }
 };
 
+
+const getUserComments = async (req, res) => {
+  const {id} = req.params
+  if(!(await checkUser(id))){
+    return res.status(404).send({iser: null, msg: "No user found"})
+  }
+
+
+  try{
+    const myComments = await Comment.find({user: id})
+    if(!myComments || myComments == []){
+      return res.status(404).send({comments: null, msg: "No Comments made"})
+    }
+    return res.status(200).send({comments: myComments})
+  }
+  catch(err){
+    res.status(500).send({ error: "Server error" });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -305,4 +326,5 @@ module.exports = {
   adminUpdateUserDetails,
   postGoogleUser,
   searchUsers,
+  getUserComments,
 };

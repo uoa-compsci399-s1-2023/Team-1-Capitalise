@@ -13,6 +13,7 @@ const {
   adminDeleteUserById,
   adminUpdateUserDetails,
   searchUsers,
+  getUserComments
 } = require('../controllers/userController')
 
 
@@ -30,6 +31,7 @@ router.post('/', postUser);
 
 router.get('/getCurrentUser/me', auth, getCurrentUser);
 
+router.get('/myComments/:id', getUserComments)
 
 router.delete('/admin/:id', [auth, admin], adminDeleteUserById);
 router.patch('/admin/:id', [auth, admin], adminUpdateUserDetails);
