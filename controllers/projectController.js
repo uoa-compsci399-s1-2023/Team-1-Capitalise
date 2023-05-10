@@ -440,6 +440,8 @@ const addUserToProject = async (req, res) => {
   return res.status(200).send({project: project});
 };
 
+
+
 const deleteProject = async (req, res) => {
   const { projectId } = req.params;
 
@@ -450,7 +452,6 @@ const deleteProject = async (req, res) => {
   const project = await Project.findById({ _id: projectId });
   //differenet Id type from db id
 
-
   const members = await project.members;
   members.forEach(async (id) => {
     //Need to properly check and test this method
@@ -458,14 +459,30 @@ const deleteProject = async (req, res) => {
   });
   await Project.findByIdAndDelete(projectId);
 
+
   const projects = await Project.find()
     .populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
     .populate("tags", "name -_id")
-    .sort("name");
+    .sort("name")
     
+  const commentsInProject = await Comment.find({project: projectId})
+
+  
+
+  //Deletes comments in the Comments table and removes the comment from the user who commented
+  if(commentsInProject.length > 0){
+    const deleteComments = []
+    const deleteCommentsInUser = []
+    commentsInProject.forEach(comment => {
+      deleteCommentsInUser.push(User.findByIdAndUpdate({$pull : {myComments: comment._id}}))
+      deleteComments.push(Comment.findByIdAndDelete(comment._id)
+    )})
+    await Promise.all(deleteComments, deleteCommentsInUser)
+  }
+
   return res.status(200).send({projects: projects});
 
 };

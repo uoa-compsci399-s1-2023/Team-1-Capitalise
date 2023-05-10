@@ -50,7 +50,7 @@ var userId2 = ''
 var visitorId = ''
 var projectId = ''
 var commentId = ''
-
+var commentUser = ''
 //Create a test user
 const data = {
   name: "project test user",
@@ -392,6 +392,23 @@ describe('Test the POST comment ~ /comment using writeComment', () => {
   
   it('Expects statusCode 200 and a project with the comment added', async () => {
   const xToken = await getToken(visitorSignIn)
+
+  const commentResponse = await request(app)
+  .post(URLstring + 'comment')
+  .set('x-auth-token', xToken)
+  .send({
+    "projectId": projectId,
+    "commentBody": "comment1"
+  })
+  commentUser = commentResponse.body.comment._id
+  await request(app)
+  .post(URLstring + 'comment')
+  .set('x-auth-token', xToken)
+  .send({
+    "projectId": projectId,
+    "commentBody": "comment2"
+  })
+
   const response = await request(app)
   .post(URLstring + 'comment')
   .set('x-auth-token', xToken)
@@ -1491,13 +1508,20 @@ describe('Test the delete endpoint /:projectId using deleteProject', () =>{
     .delete(URLstring + `${projectId}`)
     .set('x-auth-token', xToken)
     
+
+    const findProject = await Project.findById(projectId)
+    
+    const userInProject = await User.findById(userId)
+    const commentsInProject = await Comment.find({project: projectId})
+
     expect(response.statusCode).toEqual(200)
     expect(response.body.projects.length == lengthOfProjects - 1)
-    const findProject = await Project.findById(projectId)
     expect(findProject).toEqual(null)
-    const userInProject = await User.findById(userId)
     expect(userInProject.project).toEqual(null)
+    expect(commentsInProject).toEqual([])
+    expect(userInProject.myComments.includes(commentUser)).toEqual(false)
   })
+  
 })
 
 /* 
