@@ -20,13 +20,22 @@ const FileInputField = styled(TextField) ({
 export default function ProjectUploadFileForm({projectFileToUpload}: any, {handleBack}: any) {
   const [banner, setBanner] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<File[] | []>([]);
+
+  
   const handleBannerFile = (event: any) => {
     setBanner(event.target.files[0]);
     
   };
+  
+  
   const handleProjectImages = (event: any) => {
+    if (Array.from(event.target.files).length > 5) {
+      alert(`Only 5 files are allowed to upload.`);
+      return;
+    }
     setImages(Array.from(event.target.files));
+
     
   };
   const handleThumbnail= (event: any) => {
@@ -57,6 +66,7 @@ export default function ProjectUploadFileForm({projectFileToUpload}: any, {handl
           <input
             type="file"
             id="bannerInput"
+            accept="image/*"
             style={{ display: 'none' }}
             onChange={handleBannerFile} 
           />
@@ -64,12 +74,13 @@ export default function ProjectUploadFileForm({projectFileToUpload}: any, {handl
             disabled
             value={banner ? banner.name : ''}
             fullWidth
+            helperText= "*This features at the top of your project page!"
           />
           
         </Grid>
         <Grid item xs={12}> <label htmlFor="bannerInput">
             <Button variant="contained" component="span" size="small">
-              Select file
+              Select File
             </Button>
           </label></Grid>
       
@@ -77,12 +88,13 @@ export default function ProjectUploadFileForm({projectFileToUpload}: any, {handl
         {/* Upload Images for Page */}
         <Grid item>
         <Typography variant="subtitle2">
-            Upload any Project images
+            Upload any Project images for your Gallery
           </Typography>
         </Grid>
         <Grid item xs={12} >
           <input
             type="file"
+            accept="image/*"
             id="projectImagesInput"
             multiple
             style={{ display: 'none' }}
@@ -92,14 +104,16 @@ export default function ProjectUploadFileForm({projectFileToUpload}: any, {handl
           />
           <FileInputField
             disabled
-            value={images ? "Successful" : ''}
+            helperText='*Select images you would like to feature on the gallery'
+            value={images.length ? 
+              `The number of files uploaded: ${images.length}` : ""}
             fullWidth
           />
           
         </Grid>
         <Grid item xs={12}> <label htmlFor="projectImagesInput">
             <Button variant="contained" component="span" size="small">
-              Select files
+              Select Files
             </Button>
           </label></Grid>
     
@@ -112,6 +126,7 @@ export default function ProjectUploadFileForm({projectFileToUpload}: any, {handl
         <Grid item xs={12} >
           <input
             type="file"
+            accept="image/*"
             id="projectCardImageInput"
             style={{ display: 'none' }}
             onChange={handleThumbnail} 
@@ -121,6 +136,7 @@ export default function ProjectUploadFileForm({projectFileToUpload}: any, {handl
             disabled
             value={thumbnail? thumbnail.name : ''}
             fullWidth
+            helperText="*What people see when looking for your project!"
           />
         </Grid>
         <Grid item xs={12}> <label htmlFor="projectCardImageInput">

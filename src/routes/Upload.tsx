@@ -84,10 +84,10 @@ export default function Upload() {
         return <ProjectTeamSelectionForm teamToUpload={teamToUpload}/>;
       //Project Information - project name, semester, category, tags, description
       case 1:
-        return <ProjectInfoForm  projectInfoToUpload={projectInfoToUpload} handleBack={handleBack}/>;
+        return <ProjectInfoForm  projectInfoToUpload={projectInfoToUpload} goBack={handleBack}/>;
       //Project File  Upload - Banner, thumbnail, and any related imags.
       case 2: 
-        return <ProjectUploadFileForm projectFileToUpload={projectFileToUpload} handleBack={handleBack}/>; 
+        return <ProjectUploadFileForm projectFileToUpload={projectFileToUpload} goBack={handleBack}/>; 
       //An API call screen. Shows a successful response for Users.
       case 3:
         return <UploadComplete />;
@@ -98,8 +98,8 @@ export default function Upload() {
 
   return (
 
-      <Container maxWidth="md"  sx={{mt: 20, mb: 4}}>
-        <Paper variant="outlined" sx={{my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+      <Container maxWidth="md"  sx={{mt: 20, mb: 4}} >
+        <Paper variant="outlined" sx={{my: { xs: 3, md: 6 }, p: { xs:   2, md: 3 }}}>
           <Typography component="h1" variant="h4" align="center">
             Upload your Project
           </Typography>

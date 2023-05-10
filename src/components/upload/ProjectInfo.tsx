@@ -166,7 +166,7 @@ export default function ProjectInfoForm( {projectInfoToUpload}: any, {handleBack
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button variant="outlined" sx={{ mt: 3, ml: 1 }} 
-            onClick={()=>handleBack()}
+            onClick={() => handleBack()}
             >Back</Button>
             <Button
               variant="contained"
