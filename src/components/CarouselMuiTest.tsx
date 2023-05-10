@@ -4,11 +4,13 @@ import ProjectCard from "./projects/ProjectCard";
 import { Box, Typography } from "@mui/material";
 
 interface Props {
+  category: string;
   items: TProject[];
   numProjDisp: number;
+  bgcolor: string;
 }
 
-const CarouselMuiTest = ({ items, numProjDisp }: Props) => {
+const CarouselMuiTest = ({ category, items, numProjDisp, bgcolor }: Props) => {
   const sliderItems: number =
     items.length > numProjDisp ? numProjDisp : items.length;
   const cards: Array<any> = [];
@@ -54,12 +56,10 @@ const CarouselMuiTest = ({ items, numProjDisp }: Props) => {
     }
   }
 
-  console.log(cards);
-
   return (
-    <Box bgcolor="white">
+    <Box bgcolor={bgcolor}>
       <Box padding="70px 0px 0px 70px">
-        <Typography variant="h5">hihihi</Typography>
+        <Typography variant="h5">{category}</Typography>
       </Box>
       <Carousel animation="slide">{cards}</Carousel>
     </Box>

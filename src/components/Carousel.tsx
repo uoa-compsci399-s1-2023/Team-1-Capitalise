@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { TProject } from "../model/TProject";
 import ProjectCard from "./projects/ProjectCard";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -11,6 +11,20 @@ interface Props {
 }
 
 const Carousel = ({ items, backgroundColor, category }: Props) => {
+  const slideRight = () => {
+    const element = document.getElementById(category);
+    if (element) {
+      element.scrollLeft = element.scrollLeft - 420;
+    }
+  };
+
+  const slideLeft = () => {
+    const element = document.getElementById(category);
+    if (element) {
+      element.scrollLeft = element.scrollLeft + 420;
+    }
+  };
+
   return (
     <Box
       display="flex"
@@ -28,13 +42,24 @@ const Carousel = ({ items, backgroundColor, category }: Props) => {
       </Box>
 
       <Box position="absolute" zIndex={1} left="20px">
-        <ArrowBackIosIcon />
+        <IconButton onClick={slideRight}>
+          <ArrowBackIosIcon />
+        </IconButton>
       </Box>
       <Box
+        id={category}
         display="flex"
         gap="100px"
-        overflow="scroll"
         padding={{ xs: "90px 45px", md: "90px 90px" }}
+        sx={{
+          scrollBehavior: "smooth",
+          scrollbarWidth: "none",
+          overflowX: "scroll",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": {
+            width: 0,
+          },
+        }}
       >
         {items.map((project) => (
           <ProjectCard
@@ -55,7 +80,9 @@ const Carousel = ({ items, backgroundColor, category }: Props) => {
         ))}
       </Box>
       <Box position="absolute" zIndex={1} right="20px">
-        <ArrowForwardIosIcon />
+        <IconButton onClick={slideLeft}>
+          <ArrowForwardIosIcon />
+        </IconButton>
       </Box>
     </Box>
   );
