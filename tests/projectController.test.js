@@ -1,11 +1,9 @@
 const request = require('supertest')
 const app = require('../app')
 
-const { Project, validate} = require("../models/project");
-const mongoose = require("mongoose");
+const { Project,} = require("../models/project");
 const { User } = require('../models/user');
 const { Comment } = require('../models/comment');
-const { urlencoded } = require('express');
 const admin = require('../middleware/admin');
 const cors = require('dotenv').config()
 
@@ -1501,9 +1499,6 @@ describe('Test the delete endpoint /:projectId using deleteProject', () =>{
     expect(userInProject.project).toEqual(null)
   })
 })
-
-
-
 
 /* 
 
