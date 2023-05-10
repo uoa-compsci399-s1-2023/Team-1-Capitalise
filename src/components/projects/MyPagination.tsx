@@ -1,35 +1,36 @@
 // Yathi - margin on top of projects box to clear fixed position header.
 // Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
 
-import { useState, useEffect, Dispatch, SetStateAction, useContext } from "react";
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useContext,
+} from "react";
 
 // Components
 import { Box, Stack, Typography } from "@mui/material";
 import { Pagination as MuiPagination } from "@mui/material";
 import ProjectsGrid from "./ProjectsGrid";
 
-import {
-  DesktopSearchFilters,
-  MobileSearchFilters
-} from "../search";
+import { DesktopSearchFilters, MobileSearchFilters } from "../search";
 
 // Other
 import { TProject } from "../../model/TProject";
 import { getProjectsSearch } from "../../api/getSearchProjects";
-import { SearchContext } from '../../app';
-
+import { SearchContext } from "../../app";
 
 const MyPagination = () => {
-
   const [projects, setProjects] = useState<TProject[]>([]);
-  const [totalNumProjects, setTotalNumProjects] = useState(0)
+  const [totalNumProjects, setTotalNumProjects] = useState(0);
   const { currFilters, setFilters } = useContext(SearchContext);
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
     const fetchProjects = async () => {
       const respData = await getProjectsSearch({ ...currFilters });
-      setTotalNumProjects(respData.searchTotal)
+      setTotalNumProjects(respData.searchTotal);
       setProjects(respData.projects);
     };
     fetchProjects();
@@ -42,15 +43,14 @@ const MyPagination = () => {
     });
   };
 
-  const currentPage = currFilters.currPage
-  const totalPages = Math.ceil(totalNumProjects / currFilters.projectsPerPage)
+  const currentPage = currFilters.currPage;
+  const totalPages = Math.ceil(totalNumProjects / currFilters.projectsPerPage);
 
   // check if there are projects to display
   const checkProjects = projects.length > 0;
 
   return (
     <Box>
-      
       {/* Search sidebar for desktop */}
       <DesktopSearchFilters />
 
@@ -61,7 +61,6 @@ const MyPagination = () => {
         sx={{ ml: { xs: "0", md: "340px" } }}
         paddingBottom="0px" // changed from 100
       >
-        
         {/* Search section for mobile */}
         <MobileSearchFilters />
 
