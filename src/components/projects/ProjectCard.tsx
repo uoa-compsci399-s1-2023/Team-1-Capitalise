@@ -41,10 +41,10 @@ const ProjectCard = ({
     e.target.src = DefaultProjectImage;
   };
   const theme = useTheme();
-  
+
   // Yathi - Have to properly define type or build fails.
-  let colour: typeof theme['customColors'] | string = "lightgrey";
-  
+  let colour: (typeof theme)["customColors"] | string = "lightgrey";
+
   let awardText = "";
   let awardIcon = null;
 
@@ -117,6 +117,7 @@ const ProjectCard = ({
               <Typography
                 variant="body2"
                 marginBottom="1.5em"
+                height="4px"
                 sx={{ lineHeight: 0.4, fontSize: "10px", color: colour }}
               >
                 {awardText}
