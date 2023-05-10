@@ -10,12 +10,7 @@ const dotenv = require("dotenv").config();
 const deleteObjects = []
 
 afterAll(async () => {
-    deletePromise = []
-    deleteObjects.forEach(id => {
-        deletePromise.push(Parameter.findByIdAndDelete(id))
-    })
-
-    await Promise.all(deletePromise)
+    await Promise.all(deleteObjects)
 })
 
 
@@ -86,7 +81,7 @@ describe("POST categories", () => {
                 // Check the response
                 expect(response.body.value).toBe("Robotics")
                 expect(response.body.parameterType).toBe("category")
-                deleteObjects.push(response.body._id)
+                deleteObjects.push(await Parameter.findByIdAndDelete(response.body._id))
             });
     });
     it("Capitalises all words in the value parameter", async () => {
@@ -101,7 +96,7 @@ describe("POST categories", () => {
                 // Check the response
                 expect(response.body.value).toBe("Cloud Computing")
                 expect(response.body.parameterType).toBe("category")
-                deleteObjects.push(response.body._id)
+                deleteObjects.push(await Parameter.findByIdAndDelete(response.body._id))
             });
     });
 });
@@ -119,7 +114,7 @@ describe("POST semesters", () => {
                 // Check the response
                 expect(response.body.value).toBe("S2 2023")
                 expect(response.body.parameterType).toBe("semester")
-                deleteObjects.push(response.body._id)
+                deleteObjects.push(await Parameter.findByIdAndDelete(response.body._id))
             });
     });
     it("Capitalises the S in Semester of the value of the semester", async () => {
@@ -134,7 +129,7 @@ describe("POST semesters", () => {
                 // Check the response
                 expect(response.body.value).toBe("S1 2024")
                 expect(response.body.parameterType).toBe("semester")
-                deleteObjects.push(response.body._id)
+                deleteObjects.push(await Parameter.findByIdAndDelete(response.body._id))
             });
     });
     it("Prevents creating semesters of any format other than SX 20YY", async () => {
@@ -166,7 +161,7 @@ describe("POST awards", () => {
                 // Check the response
                 expect(response.body.value).toBe("Deka Award")
                 expect(response.body.parameterType).toBe("award")
-                deleteObjects.push(response.body._id)
+                deleteObjects.push(await Parameter.findByIdAndDelete(response.body._id))
             });
     });
     it("Capitalises all words in the value parameter", async () => {
@@ -181,7 +176,7 @@ describe("POST awards", () => {
                 // Check the response
                 expect(response.body.value).toBe("AWS Award")
                 expect(response.body.parameterType).toBe("award")
-                deleteObjects.push(response.body._id)
+                deleteObjects.push(await Parameter.findByIdAndDelete(response.body._id))
             });
     });
 });
