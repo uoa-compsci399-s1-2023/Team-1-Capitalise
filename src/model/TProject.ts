@@ -18,7 +18,8 @@ export type TProject = {
       | "deployedSite"
       | "codepen"
       | "notion"
-      | "kaggle";
+      | "kaggle"
+      | "linkedin";
     _id: string;
   }[];
   members: string[];
