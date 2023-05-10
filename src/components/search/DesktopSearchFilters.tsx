@@ -20,10 +20,10 @@ export default function DesktopSearchFilters() {
     const name = e.target.name
     const key = name as keyof TAvailParameters
     // find the actual parameter object based on value
-    // const param = searchFilterParams[key].find(p => p.value === e.target.value)
+    const param = searchFilterParams[key].find(p => p.value === e.target.value)
     setFilters({
       ...currFilters,
-      [name]: e.target.value,
+      [name]: param,
       currPage: 1
     })
   }
