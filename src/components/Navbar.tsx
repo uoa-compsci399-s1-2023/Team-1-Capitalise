@@ -22,16 +22,20 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import { AppRegistration, Login, Logout } from "@mui/icons-material";
-import { useAuth } from '../customHooks/useAuth'; 
+import { useAuth } from "../customHooks/useAuth";
 import { useState } from "react";
 
 const pages = ["About", "Projects"];
-const NoNavPages = ["/register", "/login", "/googleSuccessRedirect", "/googleFailure"];
+const NoNavPages = [
+  "/register",
+  "/login",
+  "/googleSuccessRedirect",
+  "/googleFailure",
+];
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",
   color: "black",
-
 });
 
 const NavButton = styled(Button)({
@@ -40,31 +44,25 @@ const NavButton = styled(Button)({
   fontSize: 19,
   fontFamily: "Roboto",
   fontWeight: 400,
-  textTransform: "capitalize"
+  textTransform: "capitalize",
 });
 const AuthButton = styled(Button)({
   whiteSpace: "nowrap",
   overflow: "hidden",
-  padding: "0 25px"
+  padding: "0 25px",
 });
-
 
 {
   /*Navigation Bar*/
 }
 function ResponsiveAppBar() {
-  
   //Auth Header
   const auth = useAuth();
   //Fetch Current User (Check if Logged in)
-  const uCheck = (auth.user != null);
+  const uCheck = auth.user != null;
   //Functionality for opening/closing sidebar
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -79,20 +77,17 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  //Navigation Functionality + Routing
 
-
-//Navigation Functionality + Routing
-  
   const navigate = useNavigate();
   const goToPage = (pageName: any) => {
     navigate("/" + pageName);
   };
-// App bar
-  if (NoNavPages.includes(window.location.pathname) ) {
-    return null
-  } 
+  // App bar
+  if (NoNavPages.includes(window.location.pathname)) {
+    return null;
+  }
   return (
-    
     <AppBar position="fixed" sx={{ bgcolor: "white" }}>
       <Container maxWidth="xl" disableGutters>
         <StyledToolBar disableGutters>
@@ -140,28 +135,43 @@ function ResponsiveAppBar() {
               display: { xs: "none", md: "flex" },
             }}
           >
-            
             <SearchBar />
             {/* Check if User is logged in */}
-            { (uCheck) ?
-              [<IconButton key="profilepic" onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Logged In" src={auth.user?.profilePicture}> <img referrerPolicy="no-referrer" /></Avatar>
-                </IconButton>]
-              
-            :
-              [
-              <AuthButton key="login" onClick={() => { goToPage("login"); } }
-                variant="outlined"> Log In </AuthButton>,
-                <AuthButton key="register" onClick={() => { goToPage("register"); } } variant="contained"> Sign Up </AuthButton>
-              ]
-              
-
-        
-            }
-              
-            
-            
-            
+            {uCheck
+              ? [
+                  <IconButton
+                    key="profilepic"
+                    onClick={handleOpenUserMenu}
+                    sx={{ p: 0 }}
+                  >
+                    <Avatar alt="Logged In" src={auth.user?.profilePicture}>
+                      {" "}
+                      <img referrerPolicy="no-referrer" />
+                    </Avatar>
+                  </IconButton>,
+                ]
+              : [
+                  <AuthButton
+                    key="login"
+                    onClick={() => {
+                      goToPage("login");
+                    }}
+                    variant="outlined"
+                  >
+                    {" "}
+                    Log In{" "}
+                  </AuthButton>,
+                  <AuthButton
+                    key="register"
+                    onClick={() => {
+                      goToPage("register");
+                    }}
+                    variant="contained"
+                  >
+                    {" "}
+                    Sign Up{" "}
+                  </AuthButton>,
+                ]}
           </Box>
 
           {/*This is the side bar for mobile*/}
@@ -208,7 +218,6 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-            
             </Menu>
           </Box>
           {/*Mobile Logo*/}
@@ -236,11 +245,13 @@ function ResponsiveAppBar() {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src={auth.user?.profilePicture}> <img referrerPolicy="no-referrer" /></Avatar>
+                <Avatar alt="Logged In" src={auth.user?.profilePicture}>
+                  {" "}
+                  <img referrerPolicy="no-referrer" />
+                </Avatar>
               </IconButton>
             </Tooltip>
             <Menu
-              
               sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
@@ -284,54 +295,73 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {/*The dropdown options*/}
-              <MenuItem onClick={handleCloseUserMenu}>
-              {/*If User is logged in, render his name*/}
-              {(uCheck) ? [
-                <Avatar 
-                  key= "userAva" 
-                  // Yathi - Added referrerPolicy for google
-                  imgProps={{referrerPolicy: "no-referrer"}}
-                  src ={auth.user?.profilePicture}
-                />, 
-                // <img key="refPolicy" referrerPolicy="no-referrer" /> ,
-                auth.user?.name]
-                : "Guest" }
+              <MenuItem
+                onClick={() => {
+                  handleCloseUserMenu();
+                  navigate(`../user/${auth.user?._id}`);
+                }}
+              >
+                {/*If User is logged in, render his name*/}
+                {uCheck
+                  ? [
+                      <Avatar
+                        key="userAva"
+                        // Yathi - Added referrerPolicy for google
+                        imgProps={{ referrerPolicy: "no-referrer" }}
+                        src={auth.user?.profilePicture}
+                      />,
+                      // <img key="refPolicy" referrerPolicy="no-referrer" /> ,
+                      auth.user?.name,
+                    ]
+                  : "Guest"}
               </MenuItem>
-
               <Divider />
               {/*Display settings based on login status*/}
-                {(uCheck) ? 
-                [<MenuItem  key ="logout"
-               onClick={() => {
-                handleCloseUserMenu(); 
-                auth.signout(); 
-                navigate("/");}} 
-                >
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Log Out
-              </MenuItem>]
-              
-              :  //Or display guest (not logged in details)
-              
-              [<MenuItem  key="register2" onClick={() => {
-                handleCloseUserMenu(); 
-                navigate("register")}}>
-                <ListItemIcon>
-                  <AppRegistration fontSize="small" />
-                </ListItemIcon>
-                Register
-              </MenuItem>,
-              <MenuItem key="login2" onClick={() => {
-                handleCloseUserMenu(); 
-                goToPage("login")}}>
-                <ListItemIcon>
-                  <Login fontSize="small" />
-                </ListItemIcon>
-                Login
-              </MenuItem>]
-              } {/*End of Check condition*/}
+              {uCheck
+                ? [
+                    <MenuItem
+                      key="logout"
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        auth.signout();
+                        navigate("/");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      Log Out
+                    </MenuItem>,
+                  ]
+                : //Or display guest (not logged in details)
+
+                  [
+                    <MenuItem
+                      key="register2"
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        navigate("register");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <AppRegistration fontSize="small" />
+                      </ListItemIcon>
+                      Register
+                    </MenuItem>,
+                    <MenuItem
+                      key="login2"
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        goToPage("login");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Login fontSize="small" />
+                      </ListItemIcon>
+                      Login
+                    </MenuItem>,
+                  ]}{" "}
+              {/*End of Check condition*/}
             </Menu>
           </Box>
         </StyledToolBar>
