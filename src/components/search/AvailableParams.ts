@@ -1,5 +1,5 @@
 import getSearchParams from "../../api/getSearchParameters"
-import { TProject } from "../../api/getProjects";
+import { TProject } from "../../model/TProject";
 
 
 export type TAvailParameters = {
