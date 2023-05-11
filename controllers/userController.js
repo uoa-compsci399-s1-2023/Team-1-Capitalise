@@ -303,13 +303,12 @@ const getUserComments = async (req, res) => {
     return res.status(400).send({iser: null, msg: "No user found"})
   }
 
-
   try{
     const myComments = await Comment.find({user: id})
     if(!myComments || myComments == []){
       return res.status(400).send({comments: null, msg: "No Comments made"})
     }
-    return res.status(200).send({comments: myComments})
+    return res.status(200).send(myComments)
   }
   catch(err){
     res.status(500).send({ error: "Server error" });
