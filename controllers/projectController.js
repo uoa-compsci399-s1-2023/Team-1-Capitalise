@@ -104,11 +104,7 @@ const getFrontPageHeadlines = async (req, res) => {
   myGroup2 = await Project.populate(myGroup, {
     path: "category",
     select: "value -_id",
-  });
-
-  const semesterList = await sortSemesters();
-  myGroup2.unshift(`Award Winning Projects of ${semesterList[0]}`);
-  
+  });  
   return res.status(200).send(myGroup2);
 };
 
