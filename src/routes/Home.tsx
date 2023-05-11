@@ -107,6 +107,7 @@ function Home() {
             </Link>
           </Box>
         </Box>
+
         {projects.map((project, i) => (
           <Carousel
             items={project.value}
