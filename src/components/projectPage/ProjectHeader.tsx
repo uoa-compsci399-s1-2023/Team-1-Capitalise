@@ -5,6 +5,7 @@ import { ProjectContext } from '../../routes/ProjectPage';
 import { useContext } from 'react';
 import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';
+import AdminDeleteBtn from './AdminDeleteBtn';
 
 interface ProjectHeaderProps {
   name: string
@@ -70,6 +71,10 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
         </Box>
 
         { <LikeBtn /> }
+        
+        <Box paddingRight={10}>
+        { <AdminDeleteBtn /> }
+        </Box>
 
           {/* Design change, no more comment button */}
           {/* <Button
