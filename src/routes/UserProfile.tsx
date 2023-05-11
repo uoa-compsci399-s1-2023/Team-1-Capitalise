@@ -12,14 +12,21 @@ import ExternalLinkBtn from "../components/projectPage/ExternalLinkBtn";
 import { useAuth } from "../customHooks/useAuth";
 import EditUser from "../components/EditUser";
 import Error from "../components/Error";
+import MyComment from "../components/projectPage/Comments/MyComment";
+import { TComment } from "../model/TComment";
+import { getUserComments } from "../api/getUserComments";
+import { deleteComment } from "../api/deleteComment";
 
 const UserProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<TUser | undefined>();
   const [project, setProject] = useState<TProject | undefined>();
   const [likedProjects, setLikedProjects] = useState<TProject[]>([]);
+  const [comments, setComments] = useState<TComment[]>([]);
   const [open, setOpen] = useState(false);
   let { userID } = useParams();
+  let token = "";
+  let isLoggedIn = false;
   const userTabs = [
     {
       label: "Overview",
@@ -71,7 +78,35 @@ const UserProfile = () => {
         </Box>
       ),
     },
+    {
+      label: "Comments",
+      index: "3",
+      Component: (
+        <Box height="100%" padding="0px 24px 10px 24px">
+          <Typography variant="h6">Comments</Typography>
+          {comments.map((comment) => (
+            <MyComment
+              key={comment._id}
+              comment={comment}
+              deleteComment={() => userDeleteComment(comment._id, token)}
+            />
+          ))}
+        </Box>
+      ),
+    },
   ];
+
+  const userDeleteComment = async (commentId: string, token: string) => {
+    if (isLoggedIn) {
+      deleteComment(commentId, token).then(() => {
+        const updatedComments = comments.filter(
+          (comment) => comment._id != commentId
+        );
+        setComments(updatedComments);
+      });
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!userID) return;
@@ -82,8 +117,6 @@ const UserProfile = () => {
     fetchUser();
   }, [userID]);
 
-  let isLoggedIn = false;
-  let token = "";
   const auth = useAuth();
   if (auth.user) {
     if (auth.user._id === user?._id || auth.user.userType === "admin") {
@@ -109,8 +142,14 @@ const UserProfile = () => {
       }
       setLikedProjects(likedProjects);
     };
+    const fetchComments = async () => {
+      if (typeof user === "undefined") return;
+      const comments = await getUserComments(user._id);
+      setComments(comments);
+    };
     fetchProject();
     fetchLikes();
+    fetchComments();
   }, [user]);
 
   const handleClickOpen = () => {
@@ -153,7 +192,10 @@ const UserProfile = () => {
             sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
           ></Box>
           <Box paddingLeft={{ xs: "24px", md: "0px" }}>
-            <Typography>{user.userType}</Typography>
+            <Typography>
+              {user.userType.charAt(0).toUpperCase() +
+                user.userType.slice(1).toLowerCase()}
+            </Typography>
             <Typography
               width="100%"
               variant="h6"

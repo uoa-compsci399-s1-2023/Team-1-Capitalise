@@ -132,6 +132,7 @@ body {
 .comment-date {
   font-size: 12px;
   font-family: "Roboto";
+  color: black;
   padding-top: 5px;
   padding-left: 15px;
 }

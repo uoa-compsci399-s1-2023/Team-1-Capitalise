@@ -12,6 +12,7 @@ import { deleteUser } from "../api/deleteUser";
 import { useNavigate } from "react-router-dom";
 import { uploadProfilePicture } from "../api/uploadProfilePicture";
 import { deleteProfilePicture } from "../api/deleteProfilePicture";
+import { useAuth } from "../customHooks/useAuth";
 
 interface Props {
   open: boolean;
@@ -44,7 +45,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [openDelete, setOpenDelete] = useState(false);
   const [validImage, setValidImage] = useState(true);
   const [loading, setLoading] = useState(false);
-
+  const auth = useAuth();
   const navigate = useNavigate();
   let links: any[] = [];
 
@@ -67,6 +68,11 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   };
 
   const handleDelete = () => {
+    if (auth.user) {
+      if (auth.user.userType !== "admin") {
+        auth.signout();
+      }
+    }
     deleteUser(user._id, token).then(() => navigate("../"));
   };
 

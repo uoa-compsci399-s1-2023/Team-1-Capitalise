@@ -55,7 +55,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
         })
         .then((data) => {
           comment._id = data._id;
-          comment.projectId = data.project;
+          comment.project = data.project;
 
           comment.commentBody = data.commentBody;
           comment.parentComment = data.parentComment;
