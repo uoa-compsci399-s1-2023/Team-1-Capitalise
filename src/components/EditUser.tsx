@@ -7,6 +7,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { patchUser } from "../api/patchUser";
 import { TUser } from "../model/TUser";
+import { Box, DialogContentText } from "@mui/material";
+import { deleteUser } from "../api/deleteUser";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
@@ -29,7 +32,22 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [github, setGithub] = useState(getLink("github"));
   const [linkedin, setLinkedin] = useState(getLink("linkedin"));
   const [deployedSite, setDeployedSite] = useState(getLink("deployedSite"));
+  const [openDelete, setOpenDelete] = useState(false);
+  const navigate = useNavigate();
   let links: any[] = [];
+
+  const handleDeleteOpen = () => {
+    setOpenDelete(true);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDelete(false);
+  };
+
+  const handleDelete = () => {
+    deleteUser(user._id, token).then(() => navigate("../"));
+  };
+
   const handleSubmit = () => {
     generateLink();
     const body = {
@@ -38,9 +56,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       bio: bio,
       links: links,
     };
-    const resp = patchUser(user._id, body, token).then(() =>
-      window.location.reload()
-    );
+    patchUser(user._id, body, token).then(() => window.location.reload());
     handleClose();
   };
 
@@ -140,10 +156,43 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit
+        <DialogActions
+          sx={{ justifyContent: "space-between", paddingBottom: "16px" }}
+        >
+          <Box paddingLeft="16px">
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDeleteOpen}
+            >
+              Delete
+            </Button>
+          </Box>
+          <Box paddingRight="16px">
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openDelete} onClose={handleDeleteClose}>
+        <DialogTitle>{"Are you sure?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Deleting your profile is irreversible and all your data will be
+            lost, are you sure?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          sx={{ justifyContent: "space-between", padding: "24px" }}
+        >
+          <Button variant="outlined" onClick={handleDeleteClose}>
+            No
+          </Button>
+          <Button variant="contained" color="error" onClick={handleDelete}>
+            Yes
           </Button>
         </DialogActions>
       </Dialog>

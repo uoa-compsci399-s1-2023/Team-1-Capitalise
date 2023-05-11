@@ -193,7 +193,7 @@ const UserProfile = () => {
                 <Button
                   onClick={handleClickOpen}
                   variant="outlined"
-                  sx={{ width: "100%" }}
+                  sx={{ width: "180px" }}
                 >
                   Edit Profile
                 </Button>
