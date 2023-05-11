@@ -639,7 +639,7 @@ const likeComment = async (req, res) => {
       return project._id != projectId;
     });
     const user = await User.findByIdAndUpdate(currentId, { likedProjects: likedProjects });
-    return res.status(200).send({project: updateProject, user:user});
+    return res.status(200).send(updateProject);
   }
 
   //If false

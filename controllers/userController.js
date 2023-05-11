@@ -135,7 +135,8 @@ const postUser = async (req, res) => {
   name: profile.name,
   email: profile.email,
   username: profile.email,
-  profilePicture: profile.picture,
+  //Grab the full profile pic in Full HD
+  profilePicture: profile.picture.substring(profile.picture.length - 7),
   likedProjects: [],
   myComments: [],
   userType: myUserType,
