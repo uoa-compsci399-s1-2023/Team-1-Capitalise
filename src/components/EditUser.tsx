@@ -43,6 +43,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [deployedSite, setDeployedSite] = useState(getLink("deployedSite"));
   const [openDelete, setOpenDelete] = useState(false);
   const [validImage, setValidImage] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   let links: any[] = [];
@@ -107,6 +108,8 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
         window.location.reload();
       }
     });
+    handleClose();
+    setLoading(true);
   };
 
   const isUrlValid = (url: string, urlWebsite: string) => {
@@ -284,6 +287,9 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             Yes
           </Button>
         </DialogActions>
+      </Dialog>
+      <Dialog open={loading}>
+        <DialogTitle>Hang tight, this takes a few seconds...</DialogTitle>
       </Dialog>
     </div>
   );
