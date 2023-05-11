@@ -23,6 +23,8 @@ const {
   getAllComments,
   getCommentsByProjectId,
   awardBadge,
+  getAwardedProjectByLatestSemester,
+  getFrontPageHeadlines
 } = require("../controllers/projectController");
 
 //Need to add more projects to properly test this
@@ -31,8 +33,14 @@ router.get("/search", searchProjects);
 //Need to add more projects to properly test this
 router.get("/likes", getProjectsByLikes);
 
+//Get lates awarded projects (semester)
+router.get("/awardedProjects", getAwardedProjectByLatestSemester);     
+
 //Get all projects
-router.get("/", getAllProjects);                         
+router.get("/frontPage", getFrontPageHeadlines);    
+
+//Get all projects
+router.get("/", getAllProjects);              
 
 //Find a project by id
 router.get("/:projectId", getProject);        
