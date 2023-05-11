@@ -22,6 +22,7 @@ import { useAuth } from "../customHooks/useAuth";
 import { createProject } from "../api/createProject";
 import { TNewProject } from "../model/TNewProject";
 import { postBanner } from "../api/postBanner";
+import { postThumbnail } from "../api/postThumbnail";
 
 interface TProjectInfo {
   projN: string;
@@ -54,9 +55,6 @@ export default function Upload() {
   const projectSemester = projectInfo?.semesterN as string;
   const projectCategory = projectInfo?.categoryN as string;
   const projectDescription = projectInfo?.projectDescription as string;
-
-  // access the projectId from the returned JSON response.
-  let newProjectId = "";
 
   //let formData = new FormData();
   let bannerData = new FormData();
@@ -158,7 +156,7 @@ export default function Upload() {
       console.log(data._id);
 
       postBanner(data._id, bannerData);
-      // do postThumbnail here too
+      postThumbnail(data._id, thumbnailData);
     });
   };
 
