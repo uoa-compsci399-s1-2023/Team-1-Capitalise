@@ -98,13 +98,13 @@ const getFrontPageHeadlines = async (req, res) => {
         totalQuantity: { $count: {} },
       },
     },
-    { $sort: { totalQuanity: -1 } },
-    { $limit : 5 }
+    { $sort: { totalQuanity: 1 } },
   ]);
   myGroup2 = await Project.populate(myGroup, {
     path: "category",
     select: "value -_id",
-  });  
+  });
+  
   return res.status(200).send(myGroup2);
 };
 
