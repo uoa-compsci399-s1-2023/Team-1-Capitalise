@@ -14,14 +14,14 @@ const Carousel = ({ items, backgroundColor, category }: Props) => {
   const slideRight = () => {
     const element = document.getElementById(category);
     if (element) {
-      element.scrollLeft = element.scrollLeft - 420;
+      element.scrollLeft = element.scrollLeft - 400;
     }
   };
 
   const slideLeft = () => {
     const element = document.getElementById(category);
     if (element) {
-      element.scrollLeft = element.scrollLeft + 420;
+      element.scrollLeft = element.scrollLeft + 400;
     }
   };
 
