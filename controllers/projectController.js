@@ -4,11 +4,7 @@ const { User } = require("../models/user");
 const { Comment, validateComment } = require("../models/comment");
 const { Tag, validateTag } = require("../models/tag");
 const { Parameter, validateParameter } = require("../models/parameter");
-const {
-  checkProject,
-  checkUser,
-  checkComment,
-} = require('./checkParamValid')
+const { checkProject, checkUser, checkComment } = require("./checkParamValid");
 
 //Get all projects
 const getAllProjects = async (req, res) => {
@@ -32,8 +28,8 @@ const getProjectsByLikes = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id")
     .sort("likes");
-    
-    return res.status(200).send(projects)
+
+  return res.status(200).send(projects);
 };
 
 // get projects by badge
@@ -46,17 +42,61 @@ const getProjectByBadge = async (req, res) => {
     return res.status(404).send({ project: null, msg: "No badge found!" });
   }
   //need to check badge
-  const projects = await Project.find({ badges: { _id: myBadge._id } })
+  const projects = await Project.find({ badges: { _id: myBadge._id } });
 
   if (projects.length == 0) {
     return res
       .status(404)
-      .send({projects: null, msg: `${myBadge.value} has not been given out` })
+      .send({ projects: null, msg: `${myBadge.value} has not been given out` });
   }
   return res.status(200).send(projects);
 };
 
+const sortSemesters = async () => {
+  const semesters = await Parameter.find({ parameterType: "semester" });
 
+  const semArray = semesters.map((semester) => semester.value.split(" "));
+
+  semArray.sort((a, b) => {
+    if (b[1] === a[1]) {
+      return b[0] === "S2" ? 1 : -1;
+    } else {
+      return b[1] - a[1];
+    }
+  });
+
+  const newSemArray = semArray.map((arr) => arr.join(" "));
+  return newSemArray;
+};
+
+const getAwardedProjectByLatestSemester = async (req, res) => {
+  const semesterList = await sortSemesters();
+  const mySemester = await Parameter.findOne({
+    value: semesterList[0],
+    parameterType: "semester",
+  });
+
+  if (!mySemester) {
+    return res.status(400).send({ fail: "No semester found!" });
+  }
+
+  const projects = await Project.find({
+    badges: { $ne: null },
+    semester: mySemester._id,
+  });
+
+  return res.status(200).send(projects);
+};
+
+const getFrontPageHeadlines = async (req, res) => {
+  const myCategorys = await Parameter.find({ parameterType: "category" });
+  const myGroup = await Project.aggregate([
+    {
+      $group: { _id: "$category", totalQuantity: { $count: {} } },
+    },
+  ]);
+  return res.status(200).send(myGroup);
+};
 
 //find project by Id
 const getProject = async (req, res) => {
@@ -64,7 +104,7 @@ const getProject = async (req, res) => {
 
   //Checks if projectId is valid and if projectExist
   if (!(await checkProject(projectId))) {
-    return res.status(404).send({ project:null, msg: "No project found" });
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   const project = await Project.findById(projectId)
@@ -78,20 +118,19 @@ const getProject = async (req, res) => {
   return res.status(200).send(project);
 };
 
-
 //Could be changed so that joi validates the body, which will cut the category and badge checks out
 const updateProjectById = async (req, res) => {
   const currentId = req.user._id;
 
   //Checks if user id is valid and exist
-  if(!(await checkUser(req.user._id))){
-    return res.status(404).send({user: null, msg: "No user found"})
+  if (!(await checkUser(req.user._id))) {
+    return res.status(404).send({ user: null, msg: "No user found" });
   }
 
   const { projectId } = req.params;
   //Check if projectId is valid and a project exist
   if (!(await checkProject(projectId))) {
-    return res.status(404).send({project: null,  msg: "No project found" });
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   //Get members of this project
@@ -102,7 +141,9 @@ const updateProjectById = async (req, res) => {
   const userIsMember = projectMembers.includes(currentId);
 
   if (!userIsMember && req.user.userType !== "admin") {
-    return res.status(403).send({project: null,  msg: "You are not part of this project" });
+    return res
+      .status(403)
+      .send({ project: null, msg: "You are not part of this project" });
   }
 
   if (req.body.semester) {
@@ -111,7 +152,8 @@ const updateProjectById = async (req, res) => {
       value: req.body.semester,
       parameterType: "semester",
     });
-    if (!sem) return res.status(400).send({project: null, msg : "Invalid semester!"});
+    if (!sem)
+      return res.status(400).send({ project: null, msg: "Invalid semester!" });
     req.body.semester = sem._id;
   }
 
@@ -121,7 +163,8 @@ const updateProjectById = async (req, res) => {
       value: req.body.category,
       parameterType: "category",
     });
-    if (!cat) return res.status(400).send({project: null, msg : "Invalid category!"});
+    if (!cat)
+      return res.status(400).send({ project: null, msg: "Invalid category!" });
     req.body.category = cat._id;
   }
 
@@ -130,13 +173,14 @@ const updateProjectById = async (req, res) => {
     if (req.user.userType != "admin")
       return res
         .status(403)
-        .send({project: null, msg : "Only admins can update project badges!"});
+        .send({ project: null, msg: "Only admins can update project badges!" });
     //Check if semester exists in database
     const award = await Parameter.findOne({
       value: req.body.badges,
       parameterType: "award",
     });
-    if (!award) return res.status(400).send({project: null, msg : "Invalid award!"});
+    if (!award)
+      return res.status(400).send({ project: null, msg: "Invalid award!" });
     req.body.badges = award._id;
   }
 
@@ -205,28 +249,29 @@ const updateProjectById = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-
   return res.status(200).send(project);
 };
 
-
 const addNewProject = async (req, res) => {
   const { error } = validate(req.body);
-  if (error) return res.status(400).send({project:null, msg: error.details[0].message});
+  if (error)
+    return res
+      .status(400)
+      .send({ project: null, msg: error.details[0].message });
 
   //Check if semester exists in database
   const sem = await Parameter.findOne({
     value: req.body.semester,
     parameterType: "semester",
   });
-  if (!sem) return res.status(400).send({project:null, msg: "Invalid semester!"});
+  if (!sem)
+    return res.status(400).send({ project: null, msg: "Invalid semester!" });
 
   //No need to check if category exist as joi will take care of it
   const cat = await Parameter.findOne({
     value: req.body.category,
     parameterType: "category",
   });
-
 
   let project = new Project({
     name: req.body.name,
@@ -300,25 +345,28 @@ const addNewProject = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-  return res.send({project: populated});
+  return res.send(populated);
 };
 
 const writeComment = async (req, res) => {
   const { error } = validateComment(req.body);
-  const projectId = req.body.projectId
+  const projectId = req.body.projectId;
 
-  if(!projectId){
-    return res.status(400).send({project:null, msg: "No projectId given"})
+  if (!projectId) {
+    return res.status(400).send({ project: null, msg: "No projectId given" });
   }
-  
-  if (error) return res.status(400).send({project: null, msg: error.details[0].message});
 
-  if(!(await checkUser(req.user._id))){
-    return res.status(404).send({user: null, msg: "No user found" });
+  if (error)
+    return res
+      .status(400)
+      .send({ project: null, msg: error.details[0].message });
+
+  if (!(await checkUser(req.user._id))) {
+    return res.status(404).send({ user: null, msg: "No user found" });
   }
 
   if (!(await checkProject(projectId))) {
-    return res.status(404).send({project:null, msg: "No project found" });
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   let comment = new Comment({
@@ -333,12 +381,10 @@ const writeComment = async (req, res) => {
     $push: { myComments: comment._id },
   });
 
-
   const project = await Project.findByIdAndUpdate(projectId, {
     //Appends
     $push: { comments: comment._id },
   });
-
 
   comment = await comment.save();
 
@@ -354,15 +400,15 @@ const deleteComment = async (req, res) => {
   const { commentId } = req.params;
 
   //different Id type from db id
-  if (!( await checkComment(commentId))){
-    return res.status(404).send({comment:null, msg:'No comment exist'})
+  if (!(await checkComment(commentId))) {
+    return res.status(404).send({ comment: null, msg: "No comment exist" });
   }
 
   const comment = await Comment.findById({ _id: commentId });
 
   //Check if user owns the comment they are deleting
   if (req.user._id != comment.user && req.user.userType != "admin")
-    return res.status(403).send({comment: null, msg: "Not your comment!" });
+    return res.status(403).send({ comment: null, msg: "Not your comment!" });
 
   const user = await User.findByIdAndUpdate(comment.user, {
     $pull: { myComments: comment._id },
@@ -374,43 +420,44 @@ const deleteComment = async (req, res) => {
 
   const deleted = await Comment.findByIdAndDelete(commentId);
 
-  return res.status(200).send({user: user, project: project});
+  return res.status(200).send({ user: user, project: project });
 };
 
 //Endpoint is for adding team members only!
 const addUserToProject = async (req, res) => {
-  const {id, userid} = req.params
+  const { id, userid } = req.params;
 
-  if(!(await checkUser(userid))){
-    return res.status(404).send({user: null, msg: "No user found" });
+  if (!(await checkUser(userid))) {
+    return res.status(404).send({ user: null, msg: "No user found" });
   }
 
-
   if (!(await checkProject(id))) {
-    return res.status(404).send({project:null, msg: "No project found" });
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   const myProj = await Project.findById(id);
 
   //If the user does not belong to the project
   if (!myProj.members.includes(req.user._id) && req.user.userType !== "admin") {
-    return res
-      .status(403)
-      .send({
-        project: null, msg: "You do not belong to the project you are appending another user to!"
-  });
-  //If the user is already part of the project
+    return res.status(403).send({
+      project: null,
+      msg: "You do not belong to the project you are appending another user to!",
+    });
+    //If the user is already part of the project
   } else if (
     req.user._id == req.params.userid &&
     myProj.members.includes(req.user._id)
   ) {
-    return res.status(400).send({project:null, msg: "You already belong to the project!"});
-  } 
-  //If the person user is trying to add is already added
-  else if (myProj.members.includes(userid)) {
     return res
       .status(400)
-      .send({project:null, msg: "This user already belongs to the project!"});
+      .send({ project: null, msg: "You already belong to the project!" });
+  }
+  //If the person user is trying to add is already added
+  else if (myProj.members.includes(userid)) {
+    return res.status(400).send({
+      project: null,
+      msg: "This user already belongs to the project!",
+    });
   }
 
   //Adds the project to the User.
@@ -419,7 +466,6 @@ const addUserToProject = async (req, res) => {
       _id: myProj._id,
     },
   });
-
 
   //Appends i.e. pushes the user onto the members.
   const project = await Project.findByIdAndUpdate(
@@ -436,17 +482,14 @@ const addUserToProject = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-
   return res.status(200).send(project);
 };
-
-
 
 const deleteProject = async (req, res) => {
   const { projectId } = req.params;
 
   if (!(await checkProject(projectId))) {
-    return res.status(404).send({project:null, msg: "No project found" });
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   const project = await Project.findById({ _id: projectId });
@@ -459,32 +502,30 @@ const deleteProject = async (req, res) => {
   });
   await Project.findByIdAndDelete(projectId);
 
-
   const projects = await Project.find()
     .populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
     .populate("tags", "name -_id")
-    .sort("name")
-    
-  const commentsInProject = await Comment.find({project: projectId})
+    .sort("name");
 
-  
+  const commentsInProject = await Comment.find({ project: projectId });
 
   //Deletes comments in the Comments table and removes the comment from the user who commented
-  if(commentsInProject.length > 0){
-    const deleteComments = []
-    const deleteCommentsInUser = []
-    commentsInProject.forEach(comment => {
-      deleteCommentsInUser.push(User.findByIdAndUpdate({$pull : {myComments: comment._id}}))
-      deleteComments.push(Comment.findByIdAndDelete(comment._id)
-    )})
-    await Promise.all(deleteComments, deleteCommentsInUser)
+  if (commentsInProject.length > 0) {
+    const deleteComments = [];
+    const deleteCommentsInUser = [];
+    commentsInProject.forEach((comment) => {
+      deleteCommentsInUser.push(
+        User.findByIdAndUpdate({ $pull: { myComments: comment._id } })
+      );
+      deleteComments.push(Comment.findByIdAndDelete(comment._id));
+    });
+    await Promise.all(deleteComments, deleteCommentsInUser);
   }
 
   return res.status(200).send(projects);
-
 };
 
 const searchProjects = async (req, res) => {
@@ -509,7 +550,7 @@ const searchProjects = async (req, res) => {
       if (!mySem)
         return res
           .status(404)
-          .send({project:null, msg: 'Invalid semester!' });
+          .send({ project: null, msg: "Invalid semester!" });
     }
     query.semester = {
       _id: mySem._id,
@@ -523,7 +564,7 @@ const searchProjects = async (req, res) => {
       parameterType: "award",
     });
     if (!myAward)
-      return res.status(404).send({project: null, msg: 'Invalid award!' });
+      return res.status(404).send({ project: null, msg: "Invalid award!" });
     query.badges = {
       _id: myAward._id,
     };
@@ -536,9 +577,7 @@ const searchProjects = async (req, res) => {
       parameterType: "category",
     });
     if (!myCategory)
-      return res
-        .status(404)
-        .send({project:null,  msg: 'Invalid category!' });
+      return res.status(404).send({ project: null, msg: "Invalid category!" });
     query.category = {
       _id: myCategory._id,
     };
@@ -564,16 +603,19 @@ const searchProjects = async (req, res) => {
   // Create a JSON object which stores the sort query.
   sortQuery = {};
   if (req.query.sortBy) {
-    if(['semester', 'category', 'name', 'awards', 'likes'].includes(req.query.sortBy.toLowerCase())){
-    const mySortRequest = req.query.sortBy.toLowerCase();
-    mySortRequest == "likes"
-      ? (sortQuery = { [mySortRequest]: -1 })
-      : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending.
-  }
-    else{
-      return res.status(400).send({projects: null, msg: 'invalid query'})
+    if (
+      ["semester", "category", "name", "awards", "likes"].includes(
+        req.query.sortBy.toLowerCase()
+      )
+    ) {
+      const mySortRequest = req.query.sortBy.toLowerCase();
+      mySortRequest == "likes"
+        ? (sortQuery = { [mySortRequest]: -1 })
+        : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending.
+    } else {
+      return res.status(400).send({ projects: null, msg: "invalid query" });
     }
-}
+  }
 
   //Find relevant projects.
   const projects = await Project.find(query)
@@ -594,13 +636,12 @@ const searchProjects = async (req, res) => {
   return res.status(200).send(projects);
 };
 
-
 const likeComment = async (req, res) => {
   const currentId = req.user._id;
   const { projectId } = req.params;
 
-  if(!(await checkProject(projectId))){
-    return res.status(404).send({project: null, msg: "No project found"})
+  if (!(await checkProject(projectId))) {
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   //Get members of this project
@@ -611,9 +652,10 @@ const likeComment = async (req, res) => {
 
   //If user is part of the project
   if (userIsMember) {
-    return res
-      .status(403)
-      .send({project:null, msg: "You are not allowed to like your own project" });
+    return res.status(403).send({
+      project: null,
+      msg: "You are not allowed to like your own project",
+    });
   }
   const usersLikedProjects = (await User.findById(currentId)).likedProjects;
 
@@ -638,7 +680,9 @@ const likeComment = async (req, res) => {
     const likedProjects = usersLikedProjects.filter((project) => {
       return project._id != projectId;
     });
-    const user = await User.findByIdAndUpdate(currentId, { likedProjects: likedProjects });
+    const user = await User.findByIdAndUpdate(currentId, {
+      likedProjects: likedProjects,
+    });
     return res.status(200).send(updateProject);
   }
 
@@ -683,7 +727,8 @@ const incrementViews = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-  if (!project) return res.status(404).send({project:null, msg: "No project found" });
+  if (!project)
+    return res.status(404).send({ project: null, msg: "No project found" });
 
   return res.status(200).send(project);
 };
@@ -700,7 +745,7 @@ const getCommentsByProjectId = async (req, res) => {
 
   //Checks if the paramter projectId is a valid Id i.e long enough
   if (!(await checkProject(projectId))) {
-    return res.status(404).send({project:null, msg: "No project found" });
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   const project = await Project.findById(projectId).populate({
@@ -711,17 +756,14 @@ const getCommentsByProjectId = async (req, res) => {
     },
   });
 
-
   return res.status(200).send(project.comments.reverse());
-}
-
+};
 
 const awardBadge = async (req, res) => {
-  const projectId = req.body.projectId
+  const projectId = req.body.projectId;
 
-  
-  if(!(await checkProject(projectId))){
-    return res.status(404).send({project:null, msg: "No project found" });
+  if (!(await checkProject(projectId))) {
+    return res.status(404).send({ project: null, msg: "No project found" });
   }
 
   //get Award
@@ -729,7 +771,8 @@ const awardBadge = async (req, res) => {
     value: req.body.award,
     parameterType: "award",
   });
-  if (!badge) return res.status(400).send({project: null, msg: "Invalid award!"});
+  if (!badge)
+    return res.status(400).send({ project: null, msg: "Invalid award!" });
 
   //Update the provided project
   const project = await Project.findByIdAndUpdate(
@@ -744,7 +787,6 @@ const awardBadge = async (req, res) => {
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
-
 
   return res.status(200).send(project);
 };
@@ -766,4 +808,6 @@ module.exports = {
   getAllComments,
   getCommentsByProjectId,
   awardBadge,
-}
+  getAwardedProjectByLatestSemester,
+  getFrontPageHeadlines,
+};
