@@ -347,7 +347,7 @@ const writeComment = async (req, res) => {
     "name email username profilePicture"
   );
 
-  return res.status(200).send({comment: justCreated});
+  return res.status(200).send(justCreated);
 };
 
 const deleteComment = async (req, res) => {
@@ -692,7 +692,7 @@ const incrementViews = async (req, res) => {
 const getAllComments = async (req, res) => {
   //Populate the project members attribute with id and names of users.
   const comments = await Comment.find().sort({ createdAt: -1 });
-  return res.status(200).send({comments: comments});
+  return res.status(200).send(comments);
 };
 
 const getCommentsByProjectId = async (req, res) => {
@@ -712,7 +712,7 @@ const getCommentsByProjectId = async (req, res) => {
   });
 
 
-  return res.status(200).send({comments: project.comments.reverse()});
+  return res.status(200).send(project.comments.reverse());
 }
 
 
