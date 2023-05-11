@@ -3,10 +3,8 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import { getProjectsCategory } from "../api/getProjectsCategory";
 import Carousel from "../components/Carousel";
 import heroImage from "../assets/image-placeholderhomeplaceholder.png";
-import CarouselMuiTest from "../components/CarouselMuiTest";
 import { getCategories } from "../api/getCategories";
 import { TCategory } from "../model/TCategory";
-import { LineWeight } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -48,31 +46,6 @@ function Home() {
     };
     fetchProjectsCategories();
   }, [catergories]);
-
-  //responsiveness for test carousel
-  /*
-  const [numProjDisp, setNumProjDisp] = useState(
-    Math.round((window.innerWidth - 140) / 370)
-  );
-  useEffect(() => {
-    const handleResize = () => {
-      let width = window.innerWidth;
-      if (width < 1470 && width > 1150) {
-        setNumProjDisp(3);
-      } else if (width < 1150 && width > 830) {
-        setNumProjDisp(2);
-      } else if (width < 830) {
-        setNumProjDisp(1);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  */
 
   return (
     <Box mt="8vh">
@@ -119,18 +92,6 @@ function Home() {
           ></Carousel>
         ))}
       </Box>
-
-      {/*
-      {projects.map((project, i) => (
-        <CarouselMuiTest
-          category={project.category}
-          items={project.value}
-          numProjDisp={numProjDisp}
-          bgcolor={carouselColours[i % carouselColours.length] as string}
-          key={i}
-        />
-      ))}
-      */}
     </Box>
   );
 }
