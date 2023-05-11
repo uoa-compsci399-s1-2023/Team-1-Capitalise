@@ -38,10 +38,10 @@ describe("GET User by ID", () => {
         expect(response.body.fail).toBe("notvalid is not a valid ID!");
       });
   });
-  it("Sends a 404 response if the userID is valid but no user exists with userID", async () => {
+  it("Sends a 400 response if the userID is valid but no user exists with userID", async () => {
     await request(app)
       .get("/api/users/user/6432f8826cce2fc1706572d4")
-      .expect(404)
+      .expect(400)
       .then((response) => {
         expect(response.body.fail).toBe(
           "no user with id 6432f8826cce2fc1706572d4 found!"

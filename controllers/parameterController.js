@@ -69,10 +69,23 @@ const createParameter = async (req, res) => {
     res.status(201).json(parameter);
 }
 
+const deleteParameter = async (req, res) => {
+
+    //Check if parameter already exists
+    const existingParam = await Parameter.findById(req.params.id);
+
+    if (!existingParam) return res.status(400).send("Error - The parameter does not exist!");
+
+    await Parameter.findByIdAndDelete(req.params.id);
+    res.json({ removed: `${existingParam.value} removed` });
+
+}
+
 module.exports = {
     getCategories,
     getSemesters,
     getSortBys,
     getAwards,
-    createParameter
+    createParameter,
+    deleteParameter
 }

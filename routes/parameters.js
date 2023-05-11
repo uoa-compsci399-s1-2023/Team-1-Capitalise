@@ -11,6 +11,7 @@ const {
     getSortBys,
     getAwards,
     createParameter,
+    deleteParameter,
 } = require('../controllers/parameterController')
 
 //Fetches all categories
@@ -27,6 +28,9 @@ router.get('/awards', getAwards);
 
 //Add new parameter.
 router.post('/', [auth, admin], createParameter);
+
+//Delete a parameter
+router.delete('/:id', [auth, admin], deleteParameter);
 
 
 

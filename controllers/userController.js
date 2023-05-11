@@ -40,7 +40,7 @@ const getUserById = async (req, res) => {
   const user = await User.findOne({ _id: id }).populate("project", "_id, name");
 
   if (!user) {
-    return res.status(404).json({ fail: `no user with id ${id} found!` });
+    return res.status(400).json({ fail: `no user with id ${id} found!` });
   }
 
   res.send(user);
@@ -186,7 +186,7 @@ const deleteUserById = async (req, res) => {
   const user = await User.findById(id);
 
   if (!user) {
-    return res.status(404).json({ fail: `User with id ${id} not found` });
+    return res.status(400).json({ fail: `User with id ${id} not found` });
   }
 
   if (id !== req.user._id && req.user.userType !== "admin") {
@@ -219,7 +219,7 @@ const adminDeleteUserById = async (req, res) => {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).send({ noUser: `User with id ${id} not found` });
+      return res.status(400).send({ noUser: `User with id ${id} not found` });
     }
 
     const { username, project } = user;
@@ -245,14 +245,14 @@ const adminUpdateUserDetails = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.isValidObjectId(id)) {
-    return res.status(404).send({ fail: "Wrong type of id" });
+    return res.status(400).send({ fail: "Wrong type of id" });
   }
 
   try {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).send({ fail: "No user found" });
+      return res.status(400).send({ fail: "No user found" });
     }
 
     const { name, password, email, username, userType } = req.body;
@@ -299,14 +299,14 @@ const searchUsers = async (req, res) => {
 const getUserComments = async (req, res) => {
   const {id} = req.params
   if(!(await checkUser(id))){
-    return res.status(404).send({iser: null, msg: "No user found"})
+    return res.status(400).send({iser: null, msg: "No user found"})
   }
 
 
   try{
     const myComments = await Comment.find({user: id})
     if(!myComments || myComments == []){
-      return res.status(404).send({comments: null, msg: "No Comments made"})
+      return res.status(400).send({comments: null, msg: "No Comments made"})
     }
     return res.status(200).send({comments: myComments})
   }
