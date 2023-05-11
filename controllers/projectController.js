@@ -666,7 +666,7 @@ const likeComment = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-  return res.status(200).send({project: likedProject});
+  return res.status(200).send(likedProject);
 };
 
 const incrementViews = async (req, res) => {
