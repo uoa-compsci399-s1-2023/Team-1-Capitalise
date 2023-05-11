@@ -111,12 +111,12 @@ export default function Upload() {
     thumbnailData.append("thumbnail", thumbnail);
 
     // go through image files and append as formdata
-    //images.forEach((image: any) => {
-    //  imagesData.append("images", image);
-    //});
+    images.forEach((image: any) => {
+      imagesData.append("gallery", image);
+    });
 
     // or key can be "image"
-    imagesData.append("gallery", images);
+    //imagesData.append("gallery", images);
 
     console.log("banner from form", bannerData.get("banner"));
     console.log("thumbnail from form", thumbnailData.get("thumbnail"));

@@ -29,6 +29,7 @@ export default function ProjectUploadFileForm(
   { projectFileToUpload }: any,
   { handleBack }: any
 ) {
+  // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
   const [banner, setBanner] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const [images, setImages] = useState([]);
