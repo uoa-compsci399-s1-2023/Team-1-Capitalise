@@ -3,9 +3,9 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import { getProjectsCategory } from "../api/getProjectsCategory";
 import Carousel from "../components/Carousel";
 import heroImage from "../assets/image-placeholderhomeplaceholder.png";
-import { getCategories } from "../api/getCategories";
 import { TCategory } from "../model/TCategory";
 import { Link } from "react-router-dom";
+import { getHomeCategories } from "../api/getHomeCategories";
 
 function Home() {
   const theme = useTheme();
@@ -15,7 +15,7 @@ function Home() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const respData = await getCategories();
+      const respData = await getHomeCategories();
       if (respData) {
         setCategories(respData);
       }
@@ -34,10 +34,13 @@ function Home() {
     const fetchProjectsCategories = async () => {
       let projects: any[] = [];
       for (let category of catergories) {
-        await fetchProjects(category.value).then((result) => {
+        await fetchProjects(category.category.value).then((result) => {
           if (result) {
             if (result.length != 0) {
-              projects.push({ category: category.value, value: result });
+              projects.push({
+                category: category.category.value,
+                value: result,
+              });
             }
           }
         });
