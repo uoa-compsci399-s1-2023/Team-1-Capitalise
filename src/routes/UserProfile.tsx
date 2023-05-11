@@ -33,10 +33,13 @@ const UserProfile = () => {
       index: "1",
       Component: (
         <Stack height="100%">
-          <Box padding="0px 24px 10px 24px">
+          <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
             <Typography variant="h6">Bio</Typography>
             {typeof user != "undefined" && (
-              <Typography whiteSpace="pre">
+              <Typography
+                sx={{ wordBreak: "break-word" }}
+                whiteSpace="pre-line"
+              >
                 {typeof user.bio != "undefined" ? user.bio : ""}
               </Typography>
             )}
