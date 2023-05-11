@@ -31,7 +31,7 @@ export default function ProjectUploadFileForm(
 ) {
   const [banner, setBanner] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
-  const [images, setImages] = useState<File[] | []>([]);
+  const [images, setImages] = useState([]);
 
   const handleBannerFile = (event: any) => {
     setBanner(event.target.files[0]);
@@ -45,6 +45,7 @@ export default function ProjectUploadFileForm(
     }
     setImages(Array.from(event.target.files));
   };
+
   const handleThumbnail = (event: any) => {
     setThumbnail(event.target.files[0]);
     //console.log("Thumbnail from form:", thumbnail);

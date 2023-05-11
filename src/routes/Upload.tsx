@@ -23,6 +23,7 @@ import { createProject } from "../api/createProject";
 import { TNewProject } from "../model/TNewProject";
 import { postBanner } from "../api/postBanner";
 import { postThumbnail } from "../api/postThumbnail";
+import { postTab } from "../api/postTab";
 
 interface TProjectInfo {
   projN: string;
@@ -59,6 +60,7 @@ export default function Upload() {
   //let formData = new FormData();
   let bannerData = new FormData();
   let thumbnailData = new FormData();
+  let imagesData = new FormData();
 
   // banner Image (changed from string)
   const [banner, setBanner] = useState<File | null>(null);
@@ -108,8 +110,17 @@ export default function Upload() {
     bannerData.append("banner", banner);
     thumbnailData.append("thumbnail", thumbnail);
 
+    // go through image files and append as formdata
+    //images.forEach((image: any) => {
+    //  imagesData.append("images", image);
+    //});
+
+    // or key can be "image"
+    imagesData.append("gallery", images);
+
     console.log("banner from form", bannerData.get("banner"));
     console.log("thumbnail from form", thumbnailData.get("thumbnail"));
+    console.log("images from form", imagesData.get("gallery"));
 
     // navigates to loading page
     handleNext();
@@ -155,8 +166,10 @@ export default function Upload() {
     ).then((data) => {
       console.log(data._id);
 
+      // will need to perform checks if the data fields are populated, otherwise issue with API call.
       postBanner(data._id, bannerData);
       postThumbnail(data._id, thumbnailData);
+      postTab(data._id, "Overview", imagesData);
     });
   };
 
