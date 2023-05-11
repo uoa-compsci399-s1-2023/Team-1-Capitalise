@@ -90,13 +90,28 @@ const getAwardedProjectByLatestSemester = async (req, res) => {
 
 const getFrontPageHeadlines = async (req, res) => {
   const myCategorys = await Parameter.find({ parameterType: "category" });
-  const myGroup = await Project.aggregate([
+  let myGroup = await Project.aggregate([
     {
-      $group: { _id: "$category", totalQuantity: { $count: {} } },
+      $group: {
+        _id: "$category",
+        category: { $first: "$category" },
+        totalQuantity: { $count: {} },
+      },
     },
+    { $sort: { totalQuanity: -1 } },
+    { $limit : 5 }
   ]);
-  return res.status(200).send(myGroup);
+  myGroup2 = await Project.populate(myGroup, {
+    path: "category",
+    select: "value -_id",
+  });
+
+  const semesterList = await sortSemesters();
+  myGroup2.unshift(`Award Winning Projects of ${semesterList[0]}`);
+  
+  return res.status(200).send(myGroup2);
 };
+
 
 //find project by Id
 const getProject = async (req, res) => {
