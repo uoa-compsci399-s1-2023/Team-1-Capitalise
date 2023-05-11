@@ -20,7 +20,7 @@ const getAllProjects = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id")
     .sort("name");
-  return res.status(200).send({projects: projects});
+  return res.status(200).send(projects);
 };
 
 //get all projects by likes
@@ -33,7 +33,7 @@ const getProjectsByLikes = async (req, res) => {
     .populate("tags", "name -_id")
     .sort("likes");
     
-    return res.status(200).send({projects: projects});
+    return res.status(200).send(projects)
 };
 
 // get projects by badge
@@ -53,7 +53,7 @@ const getProjectByBadge = async (req, res) => {
       .status(404)
       .send({projects: null, msg: `${myBadge.value} has not been given out` })
   }
-  return res.status(200).send({projects: projects});
+  return res.status(200).send(projects);
 };
 
 
@@ -75,7 +75,7 @@ const getProject = async (req, res) => {
     .populate("tags", "name -_id");
 
   //If a project exist
-  return res.status(200).send({project: project});
+  return res.status(200).send(project);
 };
 
 
@@ -206,7 +206,7 @@ const updateProjectById = async (req, res) => {
     .populate("tags", "name -_id");
 
 
-  return res.status(200).send({project: project});
+  return res.status(200).send(project);
 };
 
 
@@ -437,7 +437,7 @@ const addUserToProject = async (req, res) => {
     .populate("tags", "name -_id");
 
 
-  return res.status(200).send({project: project});
+  return res.status(200).send(project);
 };
 
 
@@ -483,7 +483,7 @@ const deleteProject = async (req, res) => {
     await Promise.all(deleteComments, deleteCommentsInUser)
   }
 
-  return res.status(200).send({projects: projects});
+  return res.status(200).send(projects);
 
 };
 
@@ -591,7 +591,7 @@ const searchProjects = async (req, res) => {
   projects.unshift(totalProjectCount);
 
   //Send the projects off.
-  return res.status(200).send({projects: projects});
+  return res.status(200).send(projects);
 };
 
 
@@ -685,7 +685,7 @@ const incrementViews = async (req, res) => {
 
   if (!project) return res.status(404).send({project:null, msg: "No project found" });
 
-  return res.status(200).send({project: project});
+  return res.status(200).send(project);
 };
 
 //Get all projects
@@ -746,7 +746,7 @@ const awardBadge = async (req, res) => {
     .populate("tags", "name -_id");
 
 
-  return res.status(200).send({project: project});
+  return res.status(200).send(project);
 };
 
 module.exports = {
