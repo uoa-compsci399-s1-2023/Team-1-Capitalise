@@ -304,7 +304,11 @@ const getUserComments = async (req, res) => {
   }
 
   try{
-    const myComments = await Comment.find({user: id})
+    const myComments = await Comment.find({user: id}).populate(
+      "user",
+      "name email username profilePicture"
+    );
+    
     if(!myComments || myComments == []){
       return res.status(400).send({comments: null, msg: "No Comments made"})
     }
@@ -314,6 +318,8 @@ const getUserComments = async (req, res) => {
     res.status(500).send({ error: "Server error" });
   }
 }
+
+
 
 module.exports = {
   getAllUsers,
