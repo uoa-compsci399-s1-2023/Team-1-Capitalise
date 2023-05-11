@@ -20,5 +20,3 @@ export async function createProject(newProject: TNewProject, token: string) {
   });
   return response.json();
 }
-
-// might need to return JSON object of the created project so we can access the projectId field needed for S3 endpoints.

@@ -21,6 +21,7 @@ import UploadComplete from "../components/upload/UploadComplete";
 import { useAuth } from "../customHooks/useAuth";
 import { createProject } from "../api/createProject";
 import { TNewProject } from "../model/TNewProject";
+import { postBanner } from "../api/postBanner";
 
 interface TProjectInfo {
   projN: string;
@@ -53,6 +54,13 @@ export default function Upload() {
   const projectSemester = projectInfo?.semesterN as string;
   const projectCategory = projectInfo?.categoryN as string;
   const projectDescription = projectInfo?.projectDescription as string;
+
+  // access the projectId from the returned JSON response.
+  let newProjectId = "";
+
+  //let formData = new FormData();
+  let bannerData = new FormData();
+  let thumbnailData = new FormData();
 
   // banner Image (changed from string)
   const [banner, setBanner] = useState<File | null>(null);
@@ -96,13 +104,14 @@ export default function Upload() {
   const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
     // stores Project Files into respective states
     setBanner(banner);
-    console.log("Banner:", typeof banner);
-
     setProjectImages(images);
-    console.log("Array of images:", images);
-
     setThumbnail(thumbnail);
-    console.log("Project card thumbnail:", typeof thumbnail);
+
+    bannerData.append("banner", banner);
+    thumbnailData.append("thumbnail", thumbnail);
+
+    console.log("banner from form", bannerData.get("banner"));
+    console.log("thumbnail from form", thumbnailData.get("thumbnail"));
 
     // navigates to loading page
     handleNext();
@@ -137,20 +146,20 @@ export default function Upload() {
       ],
     };
 
-    console.log("new project:", newProject);
+    console.log("New project:", newProject);
 
     //console.log(newProject.banner);
     //console.log(newProject.thumbnail);
 
-    // access the projectId from the returned JSON response.
+    const createdProject = createProject(
+      newProject,
+      auth.getToken() as string
+    ).then((data) => {
+      console.log(data._id);
 
-    const createdProject = createProject(newProject, auth.getToken() as string);
-    console.log(createdProject);
-
-    // after we create the project, need to call the s3 banner, thumbnail and images to post.
-    // we call it seperately since the s3 endpoints require a projectId, which is only generated after a project is created.
-
-    // call the s3 upload bannner endpoint to add the banner file (change banner from string to file?)
+      postBanner(data._id, bannerData);
+      // do postThumbnail here too
+    });
   };
 
   // this acts as a Navigator for each of upload pages rendered.

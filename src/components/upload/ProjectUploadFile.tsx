@@ -29,13 +29,13 @@ export default function ProjectUploadFileForm(
   { projectFileToUpload }: any,
   { handleBack }: any
 ) {
-  const [banner, setBanner] = useState<File | null>(null);
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [banner, setBanner] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [images, setImages] = useState<File[] | []>([]);
 
   const handleBannerFile = (event: any) => {
     setBanner(event.target.files[0]);
-    //console.log("Banner from form:", banner);
+    //console.log(event.target.files[0]);
   };
 
   const handleProjectImages = (event: any) => {
