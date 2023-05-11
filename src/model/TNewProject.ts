@@ -18,4 +18,4 @@ export type TNewProject = {
       value: string[];
     }[];
   }[];
-}
+};
