@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Divider,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { getProject } from "../api/getProject";
 import { getUser } from "../api/getUser";
 import { TUser } from "../model/TUser";
@@ -18,14 +11,15 @@ import MyTabs from "../components/MyTabs";
 import ExternalLinkBtn from "../components/projectPage/ExternalLinkBtn";
 import { useAuth } from "../customHooks/useAuth";
 import EditUser from "../components/EditUser";
+import Error from "../components/Error";
 
 const UserProfile = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<TUser | undefined>();
   const [project, setProject] = useState<TProject | undefined>();
   const [likedProjects, setLikedProjects] = useState<TProject[]>([]);
   const [open, setOpen] = useState(false);
   let { userID } = useParams();
-  const theme = useTheme();
   const userTabs = [
     {
       label: "Overview",
@@ -83,6 +77,7 @@ const UserProfile = () => {
       if (!userID) return;
       const newUser = await getUser(userID);
       setUser(newUser);
+      setIsLoading(false);
     };
     fetchUser();
   }, [userID]);
@@ -91,7 +86,7 @@ const UserProfile = () => {
   let token = "";
   const auth = useAuth();
   if (auth.user) {
-    if (auth.user._id === user?._id) {
+    if (auth.user._id === user?._id || auth.user.userType === "admin") {
       isLoggedIn = true;
       token = auth.getToken() as string;
     }
@@ -99,7 +94,6 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (typeof user === "undefined") return;
-
     const fetchProject = async () => {
       if (typeof user.project === "undefined") return;
       const newProject = await getProject(user.project._id);
@@ -128,17 +122,7 @@ const UserProfile = () => {
   };
 
   if (typeof user === "undefined") {
-    return (
-      <Box
-        justifyContent="center"
-        display="flex"
-        width="100%"
-        minHeight="92vh"
-        mt="8vh"
-      >
-        <Typography>{userID} does not exist</Typography>
-      </Box>
-    );
+    return <Box>{isLoading ? <Box /> : <Error />}</Box>;
   }
 
   return (
