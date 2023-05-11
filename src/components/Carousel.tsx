@@ -35,7 +35,7 @@ const Carousel = ({ items, backgroundColor, category }: Props) => {
       margin="auto"
     >
       <Stack padding="45px 0px">
-        <Box paddingLeft="50px">
+        <Box paddingLeft={{ xs: "20px", lg: "60px" }}>
           <Typography variant="h5">{category}</Typography>
         </Box>
 
@@ -52,9 +52,9 @@ const Carousel = ({ items, backgroundColor, category }: Props) => {
           <Box
             id={category}
             display="flex"
-            gap="100px"
-            width={{ xs: "340px", md: "760px", lg: "1180px", xl: "1600px" }}
-            padding="20px 10px 5px 10px"
+            gap="80px"
+            width={{ xs: "360px", md: "760px", lg: "1160px", xl: "1560px" }}
+            padding="20px 20px 30px 20px"
             sx={{
               scrollBehavior: "smooth",
               scrollbarWidth: "none",

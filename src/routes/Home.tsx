@@ -80,14 +80,14 @@ function Home() {
         <Box
           display="flex"
           width="100%"
-          height={{ xs: "350px", md: "500px" }}
+          height={{ xs: "350px", lg: "400px", xl: "500px" }}
           component="img"
           src={heroImage}
           alt="hero"
           alignSelf="center"
           sx={{ objectFit: "cover" }}
         ></Box>
-        <Box position="absolute" zIndex={1} top={0} padding={{ xs: 4, md: 10 }}>
+        <Box position="absolute" zIndex={1} top={0} padding={{ xs: 4, lg: 10 }}>
           <Box width={{ xs: "100%", md: "70%" }}>
             <Typography variant="h1" color="white" fontWeight={8000}>
               Explore the talent at UoA
