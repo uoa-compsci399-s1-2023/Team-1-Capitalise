@@ -46,8 +46,10 @@ const UserProfile = () => {
           </Box>
           <Divider />
           {typeof project != "undefined" && (
-            <Box padding="10px 24px 0px 24px">
-              <Typography variant="h6">Project</Typography>
+            <Box padding="10px 24px 24px 24px">
+              <Typography variant="h6" paddingBottom="10px">
+                Project
+              </Typography>
               <ProjectCard
                 title={project.name}
                 semester={project.semester.value}
