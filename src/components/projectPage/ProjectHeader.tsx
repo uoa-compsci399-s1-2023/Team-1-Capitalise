@@ -70,8 +70,10 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
           </Typography>
         </Box>
 
+        <Box paddingRight={50}>
         { <LikeBtn /> }
-        
+        </Box>
+
         <Box paddingRight={12}>
         { <AdminDeleteBtn /> }
         </Box>

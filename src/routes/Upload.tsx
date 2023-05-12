@@ -24,6 +24,7 @@ import { TNewProject } from "../model/TNewProject";
 import { postBanner } from "../api/postBanner";
 import { postThumbnail } from "../api/postThumbnail";
 import { postTab } from "../api/postTab";
+import { addGallery } from "../api/addGallery";
 
 interface TProjectInfo {
   projN: string;
@@ -110,16 +111,18 @@ export default function Upload() {
     bannerData.append("banner", banner);
     thumbnailData.append("thumbnail", thumbnail);
 
+    let fileCount = 0;
     // go through image files and append as formdata
     images.forEach((image: any) => {
       imagesData.append("gallery", image);
+      console.log(image);
     });
 
     // or key can be "image"
     //imagesData.append("gallery", images);
 
-    console.log("banner from form", bannerData.get("banner"));
-    console.log("thumbnail from form", thumbnailData.get("thumbnail"));
+    //console.log("banner from form", bannerData.get("banner"));
+    //console.log("thumbnail from form", thumbnailData.get("thumbnail"));
     console.log("images from form", imagesData.get("gallery"));
 
     // navigates to loading page
@@ -143,7 +146,7 @@ export default function Upload() {
       category: projectCategory,
       content: [
         {
-          tabName: "Overview", // set as a default first tab name.
+          tabName: "Overview", // first tab name will be "Overview" by default.
           tabContent: [
             {
               type: "text",
@@ -169,7 +172,10 @@ export default function Upload() {
       // need to perform file validation checks to check if images are files or URL.
       postBanner(data._id, bannerData);
       postThumbnail(data._id, thumbnailData);
-      postTab(data._id, "Images", imagesData);
+      
+      //postTab(data._id, "Images", imagesData);
+      //instead of postTab, need to use addGallery.
+      addGallery(data._id, "Overview", imagesData)
     });
   };
 
