@@ -63,14 +63,10 @@ export default function Upload() {
   let thumbnailData = new FormData();
   let imagesData = new FormData();
 
-  // banner Image (changed from string)
-  const [banner, setBanner] = useState<File | null>(null);
+  // to check if form data is empty or not
+  let isBannerEmpty = false;
+  let isThumbnailEmpty = false;
 
-  // thumbnail (changed from string)
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
-
-  // array of Project Images
-  const [projectImages, setProjectImages] = useState<File[]>([]);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -90,13 +86,7 @@ export default function Upload() {
     // stores Project Info into Project State
     setProjectInfo(projectInfoData);
 
-    // console log to check fields are being passed as TProjectInfo interface.
-    //console.log(projectName);
-    //console.log(projectSemester);
-    //console.log(projectCategory);
-    //console.log(projectDescription);
-
-    console.log(projectInfoData);
+    //console.log(projectInfoData);
 
     // navigates to next page
     handleNext();
@@ -106,9 +96,14 @@ export default function Upload() {
     // stores Project Files into respective states
     
     // we want to check if these files are URL or actual files.
-    setBanner(banner);
-    setProjectImages(images);
-    setThumbnail(thumbnail);
+    if (banner == null) {
+      console.log("Banner is null");
+      isBannerEmpty = true;
+    }
+    if (thumbnail == null) {
+      console.log("Thumbnail is null");
+      isThumbnailEmpty = true;
+    }
 
     bannerData.append("banner", banner);
     thumbnailData.append("thumbnail", thumbnail);
@@ -123,11 +118,13 @@ export default function Upload() {
 
     //console.log("banner from form", bannerData.get("banner"));
     //console.log("thumbnail from form", thumbnailData.get("thumbnail"));
-    console.log("images from form", imagesData.get("gallery"));
+    //console.log("images from form", imagesData.get("gallery"));
 
     // navigates to loading page
-    handleNext();
-
+    if (window.confirm("Ready to submit?")) {
+      handleNext();
+    }
+    
     // calls upload function as we have all the information to create a project
     handleUpload();
   };
@@ -160,31 +157,28 @@ export default function Upload() {
 
     console.log("New project:", newProject);
 
-    if (window.confirm("Ready to submit?")) {
-      const createdProject = createProject(
-        newProject,
-        auth.getToken() as string
-      ).then((data) => {
-        console.log(data._id);
+    const createdProject = createProject(
+      newProject,
+      auth.getToken() as string
+    ).then((data) => {
+      console.log(data._id);
 
-        // need to perform file validation checks to check if images are null.
-
-        if (!banner == null) {
-          postBanner(data._id, bannerData);
-          console.log("received a banner");
-        } 
-        if (!thumbnail == null) {
-          postThumbnail(data._id, thumbnailData);
-          console.log("received a thumbnail");
-        } 
+      // need to perform file validation checks to check if images are null.
+      if (!isBannerEmpty) {
+        postBanner(data._id, bannerData);
+        //console.log("received a banner", bannerData);
+      } 
+      if (!isThumbnailEmpty) {
+        postThumbnail(data._id, thumbnailData);
+        //console.log("received a thumbnail", thumbnailData);
+      } 
         
-        //instead of postTab, need to use addGallery.
-        if (projectImages.length > 0) {
-          addGallery(data._id, "Overview", imagesData);
-          console.log("received images");
-        }
-      });
-    }
+      //instead of postTab, need to use addGallery.
+      //if (projectImages.length > 0) {
+      //  //addGallery(data._id, "Overview", imagesData);
+      //  console.log("received images");
+      //}
+    });
   };
 
   // this acts as a Navigator for each of upload pages rendered.
