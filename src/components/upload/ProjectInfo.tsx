@@ -16,7 +16,13 @@ import {
   SelectChangeEvent,
   styled,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { getSemesters } from "../../api/getSemesters";
+import { TSemester } from "../../model/TSemester";
+
+import { getCategories } from "../../api/getCategories";
+import { TCategory } from "../../model/TCategory";
 
 interface TProjectInfo {
   projN: string;
@@ -29,6 +35,37 @@ export default function ProjectInfoForm(
   { projectInfoToUpload }: any,
   { handleBack }: any
 ) {
+
+  // Map the semesters to the MenuItems.
+  const [semesters, setSemesters] = useState<JSX.Element[]>([]);
+  useEffect(() => {
+    // grab the semesters from the API
+    const fetchSemesters = getSemesters().then((data) => {
+      // Map the semesters to the MenuItem components
+      const semesters = data.map(semester => (
+        <MenuItem key={semester._id} value={semester.value}>
+          {semester.value}
+        </MenuItem>
+      ));
+      setSemesters(semesters);
+    })
+  }, []);
+
+  // Map the categories to the MenuItems.
+  const [categories, setCategories] = useState<JSX.Element[]>([]);
+  useEffect(() => {
+    // grab the categories from the API
+    const fetchCategories = getCategories().then((data) => {
+      // Map the categories to the MenuItem components
+      const categories = data.map(category => (
+        <MenuItem key={category._id} value={category.value}>
+          {category.value}
+        </MenuItem>
+      ));
+      setCategories(categories);
+    })
+  }, []);
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedTags, setSelectedTags] = useState([]);
 
@@ -89,13 +126,7 @@ export default function ProjectInfoForm(
                 label="Semester"
                 onChange={handleSemesterChange}
               >
-                {/*Hard coded for now, need to add parameter api*/}
-                <MenuItem value=""></MenuItem>
-                <MenuItem value={"S1 2021"}>S1 2021</MenuItem>
-                <MenuItem value={"S2 2021"}>S2 2021</MenuItem>
-                <MenuItem value={"S1 2022"}>S1 2022</MenuItem>
-                <MenuItem value={"S2 2022"}>S2 2022</MenuItem>
-                <MenuItem value={"S2 2023"}>S2 2023</MenuItem>
+                {semesters}
               </Select>
               <FormHelperText>
                 {" "}
@@ -116,13 +147,7 @@ export default function ProjectInfoForm(
                 label="Cateogry"
                 onChange={handleCategoryChange}
               >
-                {/*Hard coded for now, need to add parameter api*/}
-                <MenuItem value=""></MenuItem>
-                <MenuItem value={"Game Development"}>Game Development</MenuItem>
-                <MenuItem value={"Mobile Development"}>
-                  Mobile Development
-                </MenuItem>
-                <MenuItem value={"Web Development"}>Web Development</MenuItem>
+                {categories}
               </Select>
               <FormHelperText>
                 {" "}

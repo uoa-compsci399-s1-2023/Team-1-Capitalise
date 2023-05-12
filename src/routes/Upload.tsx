@@ -88,6 +88,7 @@ export default function Upload() {
   const projectInfoToUpload = (projectInfoData: any) => {
     // stores Project Info into Project State
     setProjectInfo(projectInfoData);
+    console.log(projectInfoData);
 
     // navigates to next page
     handleNext();
@@ -136,8 +137,8 @@ export default function Upload() {
     const newProject: TNewProject = {
       name: projectName,
       teamname: team,
-      //banner: banner,
-      //thumbnail: thumbnail,
+      //banner: banner,             // these only accept URLs, not files.
+      //thumbnail: thumbnail,       
       semester: projectSemester,
       category: projectCategory,
       content: [
@@ -165,17 +166,14 @@ export default function Upload() {
       // need to perform file validation checks to check if images are null.
       if (!isBannerEmpty) {
         postBanner(data._id, bannerData);
-        //console.log("received a banner", bannerData);
       } 
       if (!isThumbnailEmpty) {
         postThumbnail(data._id, thumbnailData);
-        //console.log("received a thumbnail", thumbnailData);
       } 
         
       //instead of postTab, need to use addGallery.
       if (numImages > 0) {
         addGallery(data._id, "Overview", imagesData);
-      //  console.log("received images");
       }
     });
   };
