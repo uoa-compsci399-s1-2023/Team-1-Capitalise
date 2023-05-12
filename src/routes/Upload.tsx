@@ -67,6 +67,9 @@ export default function Upload() {
   let isBannerEmpty = false;
   let isThumbnailEmpty = false;
 
+  // check how many images are passed
+  let numImages = 0;
+
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -86,8 +89,6 @@ export default function Upload() {
     // stores Project Info into Project State
     setProjectInfo(projectInfoData);
 
-    //console.log(projectInfoData);
-
     // navigates to next page
     handleNext();
   };
@@ -95,7 +96,7 @@ export default function Upload() {
   const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
     // stores Project Files into respective states
     
-    // we want to check if these files are URL or actual files.
+    // we want to check if these files are null or not.
     if (banner == null) {
       console.log("Banner is null");
       isBannerEmpty = true;
@@ -108,19 +109,17 @@ export default function Upload() {
     bannerData.append("banner", banner);
     thumbnailData.append("thumbnail", thumbnail);
 
+    numImages = images.length;
+    console.log("How many images:", numImages);
+
     // go through image files and append as formdata
     images.forEach((image: any) => {
       imagesData.append("gallery", image);
       console.log(image);
     });
 
-    //imagesData.append("gallery", images);
-
-    //console.log("banner from form", bannerData.get("banner"));
-    //console.log("thumbnail from form", thumbnailData.get("thumbnail"));
-    //console.log("images from form", imagesData.get("gallery"));
-
     // navigates to loading page
+    // check if user wants to submit their project, otherwise keep them on this page.
     if (window.confirm("Ready to submit?")) {
       handleNext();
     }
@@ -174,10 +173,10 @@ export default function Upload() {
       } 
         
       //instead of postTab, need to use addGallery.
-      //if (projectImages.length > 0) {
-      //  //addGallery(data._id, "Overview", imagesData);
+      if (numImages > 0) {
+        addGallery(data._id, "Overview", imagesData);
       //  console.log("received images");
-      //}
+      }
     });
   };
 
