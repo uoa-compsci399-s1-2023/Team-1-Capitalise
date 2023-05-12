@@ -1,7 +1,11 @@
 import Logo from "../assets/Logo.svg";
 import { Box, Stack, Typography, styled } from "@mui/material";
 
-const Error = () => {
+interface Props {
+  errorMessage?: string;
+}
+
+const Error = ({ errorMessage = "" }: Props) => {
   const AnimatedImg = styled("img")({
     "@keyframes spin": {
       from: {
@@ -42,8 +46,18 @@ const Error = () => {
           <Typography variant="body1" fontSize="100pt">
             404
           </Typography>
-          <Typography variant="body1" fontSize="25pt">
-            {"Oops, page not found (╥_╥)"}
+          <Typography
+            variant="body1"
+            fontSize="25pt"
+            sx={{ wordWrap: "break-word", textAlign: "center" }}
+          >
+            {"Oops, page not found..."}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{ wordWrap: "break-word", textAlign: "center" }}
+          >
+            {errorMessage}
           </Typography>
         </Stack>
       </Stack>

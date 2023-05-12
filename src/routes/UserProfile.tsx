@@ -166,7 +166,15 @@ const UserProfile = () => {
   };
 
   if (typeof user === "undefined") {
-    return <Box>{isLoading ? <Box /> : <Error />}</Box>;
+    return (
+      <Box>
+        {isLoading ? (
+          <Box />
+        ) : (
+          <Error errorMessage={`User "${userID}" does not exist`} />
+        )}
+      </Box>
+    );
   }
 
   return (
