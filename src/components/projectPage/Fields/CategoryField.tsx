@@ -9,6 +9,7 @@ import EditButton from '../EditButton';
 import { TProject } from '../../../model/TProject';
 import { TProjectPost } from '../../../model/TPostProject';
 import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "../../search/AvailableParams";
+import { useAuth } from '../../../customHooks/useAuth';
 
 
 export default function CategoryField() {
@@ -19,18 +20,16 @@ export default function CategoryField() {
   const [isOpen, setIsOpen] = React.useState(false); // For opening dialog box
   const [value, setValue] = useState<string>(''); // For onchange input validation
   const theme = useTheme();
-  // const searchParams = useSearchParams();
+  const auth = useAuth();
 
   useEffect( () => {
     fetchCurrentParameters()
   },[])
 
-  // useEffect(() => {
-  //   setValue(project.category.value);
-  // }, [project])
-
   const handleMouseIn = () => {
-    setIsHovering(true);
+    if (auth.user && auth.isAllowed(['admin'], project.members)) {
+      setIsHovering(true);
+    }
   }
 
   const handleMouseOut = () => {

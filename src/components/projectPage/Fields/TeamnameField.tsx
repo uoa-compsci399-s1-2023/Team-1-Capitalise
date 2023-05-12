@@ -6,6 +6,7 @@ import { FormControl, OutlinedInput, InputLabel, FormHelperText } from '@mui/mat
 import EditIcon from '@mui/icons-material/Edit';
 import { ProjectContext } from '../../../routes/ProjectPage';
 import EditButton from '../EditButton';
+import { useAuth } from '../../../customHooks/useAuth';
 
 
 export default function TeamnameField() {
@@ -17,10 +18,13 @@ export default function TeamnameField() {
   const [value, setValue] = useState<string>(project.teamname);
   const [error, setError] = useState<string>('');
   const theme = useTheme();
+  const auth = useAuth();
 
 
   const handleMouseIn = () => {
-    setIsHovering(true);
+    if (auth.user && auth.isAllowed(['admin'], project.members)) {
+      setIsHovering(true);
+    }
   }
 
   const handleMouseOut = () => {
@@ -30,6 +34,7 @@ export default function TeamnameField() {
   const handleOpen = () => {
     setValue(project.teamname);
     setIsOpen(true);
+    setIsHovering(false);
   }
 
   // Team name can't be more than 30 characters

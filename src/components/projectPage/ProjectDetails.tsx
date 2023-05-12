@@ -27,7 +27,6 @@ export default function ProjectDetails() {
       gap={1}
       sx={{ display: { xs: 'none', md: 'flex' }, position: 'relative' }}
     >
-      {/* <StatusChip label='Status:' status='Pending Approval' /> */}
 
       {project.badges && <AwardBadge {...project.badges} />}
 
