@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Typography, useTheme } from "@mui/material";
-import { getProjectsCategory } from "../api/getProjectsCategory";
-import Carousel from "../components/Carousel";
-import heroImage from "../assets/image-placeholderhomeplaceholder.png";
+import { Box, useTheme } from "@mui/material";
 import { TCategory } from "../model/TCategory";
-import { Link } from "react-router-dom";
+import { TProject } from "../model/TProject";
 import { getHomeCategories } from "../api/getHomeCategories";
+import { getProjectsCategory } from "../api/getProjectsCategory";
+import Hero from "../components/home/Hero";
+import Carousel from "../components/home/Carousel";
+import { getAwardShowcase } from "../api/getAwardShowcase";
+import ShowcaseCarousel from "../components/home/ShowcaseCarousel";
+import { getProjects } from "../api/getProjects";
 
 function Home() {
   const theme = useTheme();
   const [catergories, setCategories] = useState<TCategory[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
-  const carouselColours = ["white", theme.customColors.bgGrey];
+  const [awardShowcase, setAwardShowcase] = useState<TProject[]>([]);
+  const carouselColours = [theme.customColors.bgGrey, "white"];
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -20,7 +24,14 @@ function Home() {
         setCategories(respData);
       }
     };
+    const fetchAwardShowcase = async () => {
+      const respData = await getProjects();
+      if (respData) {
+        setAwardShowcase(respData);
+      }
+    };
     fetchCategories();
+    fetchAwardShowcase();
   }, []);
 
   useEffect(() => {
@@ -52,49 +63,32 @@ function Home() {
 
   return (
     <Box mt="8vh">
-      <Box position="relative">
-        <Box
-          display="flex"
-          width="100%"
-          height={{ xs: "350px", lg: "400px", xl: "500px" }}
-          component="img"
-          src={heroImage}
-          alt="hero"
-          alignSelf="center"
-          sx={{ objectFit: "cover" }}
-        ></Box>
-        <Box position="absolute" zIndex={1} top={0} padding={{ xs: 4, lg: 10 }}>
-          <Box width={{ xs: "100%", md: "70%" }}>
-            <Typography variant="h1" color="white" fontWeight={8000}>
-              Explore the talent at UoA
-            </Typography>
-            <Typography
-              variant="h4"
-              color="white"
-              paddingTop="50px"
-              fontWeight={200}
-            >
-              We are proud to showcase the exceptional skills of our students.
-            </Typography>
-          </Box>
-          <Box paddingTop="25px">
-            <Link to="../projects">
-              <Button variant="contained">Explore Projects</Button>
-            </Link>
-          </Box>
-        </Box>
+      <Hero />
+      <ShowcaseCarousel
+        items={awardShowcase}
+        backgroundColor={"white"}
+        //title={awardShowcase[0].semester.value Capstone Winners}
+        title={"S1 2023 Capstone Winners"}
+        display={{ xs: "none", md: "flex" }}
+      />
+      <Carousel
+        items={awardShowcase}
+        backgroundColor={"white"}
+        //title={awardShowcase[0].semester.value Capstone Winners}
+        category={"S1 2023 Capstone Winners"}
+        display={{ xs: "flex", md: "none" }}
+      />
 
-        {projects.map((project, i) => (
-          <Carousel
-            items={project.value}
-            backgroundColor={
-              carouselColours[i % carouselColours.length] as string
-            }
-            category={project.category}
-            key={i}
-          ></Carousel>
-        ))}
-      </Box>
+      {projects.map((project, i) => (
+        <Carousel
+          items={project.value}
+          backgroundColor={
+            carouselColours[i % carouselColours.length] as string
+          }
+          category={project.category}
+          key={i}
+        />
+      ))}
     </Box>
   );
 }

@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
-import { TProject } from "../model/TProject";
-import ProjectCard from "./projects/ProjectCard";
+import { TProject } from "../../model/TProject";
+import ProjectCard from "../projects/ProjectCard";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
@@ -8,9 +8,15 @@ interface Props {
   items: TProject[];
   backgroundColor: string;
   category: string;
+  display?: any;
 }
 
-const Carousel = ({ items, backgroundColor, category }: Props) => {
+const Carousel = ({
+  items,
+  backgroundColor,
+  category,
+  display = "flex",
+}: Props) => {
   const slideRight = () => {
     const element = document.getElementById(category);
     if (element) {
@@ -27,7 +33,7 @@ const Carousel = ({ items, backgroundColor, category }: Props) => {
 
   return (
     <Box
-      display="flex"
+      display={display}
       alignItems="center"
       bgcolor={backgroundColor}
       position="relative"
