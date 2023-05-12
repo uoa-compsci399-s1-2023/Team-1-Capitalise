@@ -25,6 +25,30 @@ const MyPagination = () => {
   const [projects, setProjects] = useState<TProject[]>([]);
   const [totalNumProjects, setTotalNumProjects] = useState(0);
   const { currFilters, setFilters } = useContext(SearchContext);
+  const [gridWidth, setGridWidth] = useState("0px");
+
+  const handleResize = () => {
+    let width = window.innerWidth;
+    if (width > 2140) {
+      setGridWidth("1800px");
+    } else if (width < 2140 && width > 1770) {
+      setGridWidth("1430px");
+    } else if (width < 1770 && width > 1400) {
+      setGridWidth("1060px");
+    } else if (width < 1400 && width > 1040) {
+      setGridWidth("690px");
+    } else if (width < 1040) {
+      setGridWidth("320px");
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
@@ -64,19 +88,24 @@ const MyPagination = () => {
         {/* Search section for mobile */}
         <MobileSearchFilters />
 
-        <Typography
-          my={4}
-          variant="h1"
-          // component="h1"
-          sx={{
-            textAlign: { xs: "center", md: "left" },
-            ml: { md: "40px" },
-          }}
+        <Box
+          marginLeft="auto"
+          marginRight="auto"
+          width={{ xs: "100%", md: gridWidth }}
         >
-          {currFilters.keywords
-            ? `Showing results for "${currFilters.keywords}"`
-            : `Projects`}
-        </Typography>
+          <Typography
+            my={4}
+            variant="h1"
+            // component="h1"
+            sx={{
+              textAlign: { xs: "center", md: "left" },
+            }}
+          >
+            {currFilters.keywords
+              ? `Showing results for "${currFilters.keywords}"`
+              : `Projects`}
+          </Typography>
+        </Box>
         {/* Render project data into the ProjectsGrid component */}
         {checkProjects && <ProjectsGrid projects={projects} />}
 
