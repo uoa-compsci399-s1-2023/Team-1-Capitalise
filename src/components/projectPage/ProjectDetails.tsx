@@ -20,7 +20,7 @@ export default function ProjectDetails() {
 
   return (
     <Stack
-      maxWidth={'30%'}
+      width={'300px'}
       bgcolor={'white'}
       style={theme.contentBlock}
       padding={'20px'}

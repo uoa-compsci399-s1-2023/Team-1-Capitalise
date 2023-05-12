@@ -37,6 +37,7 @@ export default function CategoryField() {
   }
 
   const handleOpen = () => {
+    setIsHovering(false);
     setValue(project.category.value);
     setIsOpen(true);
   }
@@ -103,7 +104,7 @@ export default function CategoryField() {
         <Typography fontWeight={400} minWidth={'100px'}  mr={1} variant="body1">Category:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.category.value}</Typography>
 
-        { <EditButton clickHandler={handleOpen} isShow={isHovering} /> }
+        <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small'/> 
       </Box>
     </>
   )

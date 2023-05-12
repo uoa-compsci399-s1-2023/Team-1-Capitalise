@@ -1,10 +1,11 @@
-import React, { useState, FC, useRef } from 'react'
+import React, { useState, FC, useContext } from 'react'
 import { Box, Stack, Typography, useTheme, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TProject } from '../../model/TProject';
-
+import { useAuth } from '../../customHooks/useAuth';
+import { ProjectContext } from '../../routes/ProjectPage';
 
 export interface ContentBlockProps {
   type: TProject['content'][0]['tabContent'][0]['type']
@@ -14,52 +15,38 @@ export interface ContentBlockProps {
 
 
 export default function ContentBlock({ type, value, subHeading }: ContentBlockProps) {
-  
+
   const theme = useTheme();
-  // const [isHovering, setIsHovering] = useState(false);
-  const editBtnRef = useRef<HTMLButtonElement>(null);
-  const deleteBtnRef = useRef<HTMLButtonElement>(null);
-  // const [btnStyle, setBtnStyle] = useState({height: '100%', visibility: 'visible', flex: '1'});
+  const [isHovering, setIsHovering] = useState(false);
+  const auth = useAuth();
+  const { project, setProjectChanges } = useContext(ProjectContext);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    // console.log('hovering')
-    // setIsHovering(true)
-    if (editBtnRef.current) {
-      editBtnRef.current.style.visibility = 'visible'
-    }
-    if (deleteBtnRef.current) {
-      deleteBtnRef.current.style.visibility = 'visible'
+    if (auth.isAllowed(['admin'], project.members)) {
+      setIsHovering(true);
     }
   }
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (editBtnRef.current) {
-      editBtnRef.current.style.visibility = 'hidden'
-    }
-    if (deleteBtnRef.current) {
-      deleteBtnRef.current.style.visibility = 'hidden'
-    }
+    setIsHovering(false);
   }
 
   const ContentStack = styled(Stack)({
     backgroundColor: 'white',
     border: theme.contentBlock?.border,
-    // border: `3px solid ${theme.customColors.DividerGrey}`,
     borderRadius: theme.contentBlock?.borderRadius,
     padding: '40px 0 40px 40px',
-    // paddingBottom: '40px',
-    // paddingLeft: '40px',
-    "&:hover": {
+    width: '100%',
+    "&:hover": auth.isAllowed(['admin'], project.members) && {
       border: `3px solid ${theme.customColors.DividerGrey}`
     },
-    width: '100%'
   })
 
   const EditButton = styled(Button)({
     height: "100%",
     visibility: 'hidden',
     flex: '1',
-    ':hover': {
+    '&:hover': {
       backgroundColor: theme.customColors.DividerGrey
     }
   })
@@ -124,13 +111,17 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
           {/* negative margin counters parent padding */}
           <Stack my={'-40px'}>
 
-            {/* <div style={{flex: 1, width: '40px'}}> */}
-            <EditButton ref={editBtnRef} color='editBtnGrey'>
+            <EditButton
+              sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+              color='editBtnGrey'
+            >
               <EditIcon />
             </EditButton>
-            {/* </div> */}
 
-            <EditButton ref={deleteBtnRef} color='editBtnGrey'>
+            <EditButton
+              sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+              color='editBtnGrey'
+            >
               <DeleteIcon />
             </EditButton>
           </Stack>

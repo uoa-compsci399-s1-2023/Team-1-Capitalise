@@ -39,6 +39,7 @@ export default function SemesterField() {
   const handleOpen = () => {
     setValue(project.semester.value);
     setIsOpen(true);
+    setIsHovering(false);
   }
 
   const handleChange = (e: SelectChangeEvent<any>) => {
@@ -98,7 +99,7 @@ export default function SemesterField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Semester:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.semester.value}</Typography>
 
-        <EditButton clickHandler={handleOpen} isShow={isHovering} />
+        <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
       </Box>
     </>
   )

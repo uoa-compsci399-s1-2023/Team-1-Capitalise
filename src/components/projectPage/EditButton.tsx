@@ -9,9 +9,10 @@ import { getProject } from '../../api/getProject';
 interface EditButtonProps {
   clickHandler: () => void
   isShow: boolean
+  fontSize: "small" | "inherit" | "large" | "medium"
 }
 
-export default function EditButton({ clickHandler, isShow }: EditButtonProps) {
+export default function EditButton({ clickHandler, isShow, fontSize }: EditButtonProps) {
 
   const theme = useTheme();
   const { project, setProject } = useContext(ProjectContext);
@@ -64,7 +65,7 @@ export default function EditButton({ clickHandler, isShow }: EditButtonProps) {
         onClick={handleClick}
         color='editBtnGrey'
       >
-        <EditIcon fontSize='small' />
+        <EditIcon fontSize={fontSize} />
       </EditButton>
     </>
   )
