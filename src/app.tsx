@@ -22,6 +22,7 @@ import UserProfile from "./routes/UserProfile";
 import { AuthProvider } from "./customHooks/useAuth";
 import GoogleSuccessRedirect from "./routes/googleSuccessRedirect";
 import GoogleFailure from "./routes/googleFailure";
+import Upload from "./routes/Upload";
 
 export type TFiltersState = {
   keywords: string;
@@ -94,6 +95,7 @@ export default function App() {
                   element={<GoogleSuccessRedirect />}
                 />
                 <Route path="/googleFailure" element={<GoogleFailure />} />
+                <Route path="/upload" element={<Upload/>} />
               </Routes>
             </Box>
           </ThemeProvider>
