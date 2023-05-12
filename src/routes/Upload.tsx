@@ -166,10 +166,10 @@ export default function Upload() {
     ).then((data) => {
       console.log(data._id);
 
-      // will need to perform checks if the data fields are populated, otherwise issue with API call.
+      // need to perform file validation checks to check if images are files or URL.
       postBanner(data._id, bannerData);
       postThumbnail(data._id, thumbnailData);
-      postTab(data._id, "Overview", imagesData);
+      postTab(data._id, "Images", imagesData);
     });
   };
 
