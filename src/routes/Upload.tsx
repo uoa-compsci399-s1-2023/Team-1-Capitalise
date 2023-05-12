@@ -70,7 +70,7 @@ export default function Upload() {
   const [thumbnail, setThumbnail] = useState<File | null>(null);
 
   // array of Project Images
-  const [projectImages, setProjectImages] = useState("");
+  const [projectImages, setProjectImages] = useState<File[]>([]);
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -104,6 +104,8 @@ export default function Upload() {
 
   const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
     // stores Project Files into respective states
+    
+    // we want to check if these files are URL or actual files.
     setBanner(banner);
     setProjectImages(images);
     setThumbnail(thumbnail);
@@ -111,14 +113,12 @@ export default function Upload() {
     bannerData.append("banner", banner);
     thumbnailData.append("thumbnail", thumbnail);
 
-    let fileCount = 0;
     // go through image files and append as formdata
     images.forEach((image: any) => {
       imagesData.append("gallery", image);
       console.log(image);
     });
 
-    // or key can be "image"
     //imagesData.append("gallery", images);
 
     //console.log("banner from form", bannerData.get("banner"));
@@ -160,23 +160,31 @@ export default function Upload() {
 
     console.log("New project:", newProject);
 
-    //console.log(newProject.banner);
-    //console.log(newProject.thumbnail);
+    if (window.confirm("Ready to submit?")) {
+      const createdProject = createProject(
+        newProject,
+        auth.getToken() as string
+      ).then((data) => {
+        console.log(data._id);
 
-    const createdProject = createProject(
-      newProject,
-      auth.getToken() as string
-    ).then((data) => {
-      console.log(data._id);
+        // need to perform file validation checks to check if images are null.
 
-      // need to perform file validation checks to check if images are files or URL.
-      postBanner(data._id, bannerData);
-      postThumbnail(data._id, thumbnailData);
-      
-      //postTab(data._id, "Images", imagesData);
-      //instead of postTab, need to use addGallery.
-      addGallery(data._id, "Overview", imagesData)
-    });
+        if (!banner == null) {
+          postBanner(data._id, bannerData);
+          console.log("received a banner");
+        } 
+        if (!thumbnail == null) {
+          postThumbnail(data._id, thumbnailData);
+          console.log("received a thumbnail");
+        } 
+        
+        //instead of postTab, need to use addGallery.
+        if (projectImages.length > 0) {
+          addGallery(data._id, "Overview", imagesData);
+          console.log("received images");
+        }
+      });
+    }
   };
 
   // this acts as a Navigator for each of upload pages rendered.
