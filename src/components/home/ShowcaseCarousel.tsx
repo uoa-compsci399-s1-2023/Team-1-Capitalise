@@ -17,14 +17,14 @@ const ShowcaseCarousel = ({
   display,
 }: Props) => {
   const slideRight = () => {
-    const element = document.getElementById(title);
+    const element = document.getElementById(title + "show");
     if (element) {
       element.scrollLeft = element.scrollLeft - 600;
     }
   };
 
   const slideLeft = () => {
-    const element = document.getElementById(title);
+    const element = document.getElementById(title + "show");
     if (element) {
       element.scrollLeft = element.scrollLeft + 600;
     }
@@ -62,7 +62,7 @@ const ShowcaseCarousel = ({
             </IconButton>
           </Box>
           <Box
-            id={title}
+            id={title + "show"}
             display="flex"
             gap="100px"
             width={{ xs: "540px", lg: "1140px", xl: "1740px" }}

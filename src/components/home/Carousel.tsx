@@ -18,14 +18,14 @@ const Carousel = ({
   display = "flex",
 }: Props) => {
   const slideRight = () => {
-    const element = document.getElementById(category);
+    const element = document.getElementById(category + "carousel");
     if (element) {
       element.scrollLeft = element.scrollLeft - 400;
     }
   };
 
   const slideLeft = () => {
-    const element = document.getElementById(category);
+    const element = document.getElementById(category + "carousel");
     if (element) {
       element.scrollLeft = element.scrollLeft + 400;
     }
@@ -56,7 +56,7 @@ const Carousel = ({
             </IconButton>
           </Box>
           <Box
-            id={category}
+            id={category + "carousel"}
             display="flex"
             gap="80px"
             width={{ xs: "360px", md: "760px", lg: "1160px", xl: "1560px" }}
