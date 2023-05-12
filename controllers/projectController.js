@@ -85,7 +85,9 @@ const getAwardedProjectByLatestSemester = async (req, res) => {
     semester: mySemester._id,
   })
     .populate("semester", "value -_id")
-    .populate("category", "value -_id");
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
 
   return res.status(200).send(projects);
 };
