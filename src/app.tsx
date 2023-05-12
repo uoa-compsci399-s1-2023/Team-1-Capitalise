@@ -22,6 +22,7 @@ import UserProfile from "./routes/UserProfile";
 import { AuthProvider } from "./customHooks/useAuth";
 import GoogleSuccessRedirect from "./routes/googleSuccessRedirect";
 import GoogleFailure from "./routes/googleFailure";
+import Upload from "./routes/Upload";
 
 export type TFiltersState = {
   keywords: string;
@@ -43,6 +44,19 @@ export const SearchContext = createContext<TSearchContext>(
   {} as TSearchContext
 );
 
+const initialProjectsPerPage = () => {
+  let width = window.innerWidth;
+  if (width > 2140) {
+    return 15;
+  } else if (width < 2140 && width > 1770) {
+    return 12;
+  } else if (width < 1770 && width > 1400) {
+    return 9;
+  } else if (width < 1400) {
+    return 6;
+  } else return 6;
+};
+
 export function getDefaultFilters(): TFiltersState {
   return {
     keywords: "",
@@ -51,7 +65,7 @@ export function getDefaultFilters(): TFiltersState {
     award: searchFilterParams.award[0],
     sortBy: searchFilterParams.sortBy[0],
     currPage: 1,
-    projectsPerPage: 6,
+    projectsPerPage: initialProjectsPerPage(),
   };
 }
 
@@ -81,6 +95,7 @@ export default function App() {
                   element={<GoogleSuccessRedirect />}
                 />
                 <Route path="/googleFailure" element={<GoogleFailure />} />
+                <Route path="/upload" element={<Upload/>} />
               </Routes>
             </Box>
           </ThemeProvider>

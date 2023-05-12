@@ -34,7 +34,7 @@ export async function getProjectsSearch({
     let awardQParam = `award=${award.value}&`;
     if (award._id == "0") awardQParam = "";
 
-    let sortQParam = `sortBy=${sortBy.qParam}&`;
+    let sortQParam = `sortBy=${String(sortBy.qParam)}&`;
 
     const startIndex = (currPage - 1) * projectsPerPage;
     let pagesQParam = `startIndex=${startIndex}&numProjects=${projectsPerPage}`;
