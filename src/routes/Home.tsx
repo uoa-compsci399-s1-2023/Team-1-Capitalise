@@ -41,6 +41,7 @@ function Home() {
         return respData;
       }
     };
+
     const fetchProjectsCategories = async () => {
       let projects: any[] = [];
       for (let category of catergories) {
@@ -59,29 +60,33 @@ function Home() {
     };
     fetchProjectsCategories();
   }, [catergories]);
+
   return (
     <Box mt="8vh">
       <Hero />
-      <ShowcaseCarousel
-        items={awardShowcase}
-        backgroundColor={"white"}
-        title={
-          awardShowcase[0]
-            ? `Semester ${awardShowcase[0].semester.value.substring(
-                1
-              )} Capstone Winners`
-            : ""
-        }
-        display={{ xs: "none", md: "flex" }}
-      />
-      <Carousel
-        items={awardShowcase}
-        backgroundColor={"white"}
-        //title={awardShowcase[0].semester.value Capstone Winners}
-        category={"S1 2023 Capstone Winners"}
-        display={{ xs: "flex", md: "none" }}
-      />
-
+      {awardShowcase.length !== 0 && (
+        <Box>
+          <ShowcaseCarousel
+            items={awardShowcase}
+            backgroundColor={"white"}
+            title={
+              awardShowcase[0]
+                ? `Semester ${awardShowcase[0].semester.value.substring(
+                    1
+                  )} Capstone Winners`
+                : ""
+            }
+            display={{ xs: "none", md: "flex" }}
+          />
+          <Carousel
+            items={awardShowcase}
+            backgroundColor={"white"}
+            //title={awardShowcase[0].semester.value Capstone Winners}
+            category={"S1 2023 Capstone Winners"}
+            display={{ xs: "flex", md: "none" }}
+          />
+        </Box>
+      )}
       {projects.map((project, i) => (
         <Carousel
           items={project.value}

@@ -45,6 +45,7 @@ const Hero = () => {
     };
     checkAuth();
   }, [auth]);
+
   return (
     <Box position="relative">
       {!isLoading && (
@@ -53,16 +54,17 @@ const Hero = () => {
           navButtonsAlwaysInvisible={true}
           swipe={false}
         >
-          {heroBanners.map((banner) => (
+          {heroBanners.map((banner, i) => (
             <Box
               display="flex"
               width="100%"
-              height={{ xs: "350px", lg: "400px", xl: "500px" }}
+              height="400px"
               component="img"
               src={banner}
               alt="hero"
               alignSelf="center"
               sx={{ objectFit: "cover" }}
+              key={i}
             ></Box>
           ))}
         </MuiCarousel>
