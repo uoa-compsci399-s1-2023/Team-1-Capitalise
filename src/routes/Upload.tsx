@@ -188,6 +188,7 @@ export default function Upload() {
       case 1:
         return (
           <ProjectInfoForm
+       
             projectInfoToUpload={projectInfoToUpload}
             handleBack={handleBack}
           />

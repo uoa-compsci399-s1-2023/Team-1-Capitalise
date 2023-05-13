@@ -30,8 +30,9 @@ interface TProjectInfo {
 }
 
 export default function ProjectInfoForm(
-  { projectInfoToUpload }: any,
-  { handleBack }: any
+  {projectInfoToUpload, handleBack }: any,
+  
+  
 ) {
 
   // Map the semesters to the MenuItems.
@@ -80,6 +81,7 @@ export default function ProjectInfoForm(
   };
 
   const handleSemesterChange = (event: SelectChangeEvent) => {
+    event.preventDefault();
     setSemester(event.target.value);
   };
 
@@ -208,6 +210,7 @@ export default function ProjectInfoForm(
         </Grid>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
+            type="button"
             variant="outlined"
             sx={{ mt: 3, ml: 1 }}
             onClick={() => handleBack()}

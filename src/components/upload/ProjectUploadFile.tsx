@@ -26,8 +26,8 @@ const FileInputField = styled(TextField)({
 });
 
 export default function ProjectUploadFileForm(
-  { projectFileToUpload }: any,
-  { handleBack }: any
+  { projectFileToUpload, handleBack }: any
+
 ) {
   // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
   // const [banner, setBanner] = useState(null);
@@ -68,6 +68,7 @@ export default function ProjectUploadFileForm(
     // handle file upload logic here
     projectFileToUpload(banner, images, thumbnail);
   };  
+
 
   return (
     <React.Fragment>
@@ -176,9 +177,10 @@ export default function ProjectUploadFileForm(
         </Grid>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
+            type="button"
             variant="outlined"
             sx={{ mt: 3, ml: 1 }}
-            onClick={() => handleBack()}
+            onClick={handleBack}
           >
             Back
           </Button>
