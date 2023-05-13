@@ -19,35 +19,38 @@ const getCategories = async (req, res) => {
   res.send(categories);
 };
 
-//Gets all semesters and sorts by semester
 const getSemesters = async (req, res) => {
-  let sortedArr = [];
-  const sortedSemesters = await sortSemesters();
-  for (let i = 0; i < sortedSemesters.length; i++) {
-    let mySem = await Parameter.findOne({
-      parameterType: "semester",
-      value: sortedSemesters[i],
-    });
-    sortedArr.push(mySem);
-  }
-  res.send(sortedArr);
-};
+  mySems = await Parameter.aggregate([
+    {
+      $match: { parameterType: "semester" },
+    },
+    {
+      $project: {
+        value: 1,
+        parameterType: 1,
+        year: { $substr: ["$value", 3, -1] },
+        sem: { $substr: ["$value", 0, 2] },
+      },
+    },
+    {
+      $addFields: {
+        isSX: {
+          $cond: { if: { $eq: ["$value", "SX 20XX"] }, then: 1, else: 0 },
+        },
+      },
+    },
+    {
+      $sort: { isSX: 1, year: -1, sem: -1 },
+    },
+    {
+      $project: {
+        value: 1,
+        parameterType: 1,
+      },
+    },
+  ]);
 
-const sortSemesters = async () => {
-  const semesters = await Parameter.find({ parameterType: "semester" });
-
-  const semArray = semesters.map((semester) => semester.value.split(" "));
-
-  semArray.sort((a, b) => {
-    if (b[1] === a[1]) {
-      return b[0] === "S2" ? 1 : -1;
-    } else {
-      return b[1] - a[1];
-    }
-  });
-
-  const newSemArray = semArray.map((arr) => arr.join(" "));
-  return newSemArray;
+  res.send(mySems);
 };
 
 //Gets all categories and sorts by name
