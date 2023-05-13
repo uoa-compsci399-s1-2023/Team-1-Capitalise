@@ -133,7 +133,7 @@ const UserProfile = () => {
   useEffect(() => {
     if (typeof user === "undefined") return;
     const fetchProject = async () => {
-      if (typeof user.project === "undefined") return;
+      if (typeof user.project === "undefined" || user.project === null) return;
       const newProject = await getProject(user.project._id);
       setProject(newProject);
     };

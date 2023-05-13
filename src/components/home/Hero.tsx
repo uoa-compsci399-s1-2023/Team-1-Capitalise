@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Fade, Slide, Typography } from "@mui/material";
+import { Box, Button, Slide, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
 import MuiCarousel from "react-material-ui-carousel";
@@ -51,9 +51,9 @@ const Hero = () => {
       {!isLoading && (
         <MuiCarousel
           indicators={false}
-          navButtonsAlwaysInvisible={true}
+          navButtonsAlwaysInvisible={false}
           swipe={false}
-          interval={10000}
+          interval={8000}
         >
           {heroBanners.map((banner, i) => (
             <Box
