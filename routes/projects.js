@@ -48,10 +48,8 @@ router.get("/:projectId", getProject);
 //Add new project. Requires authorization.
 router.post("/", [auth, graduate], addNewProject);
 
-
 //Increments the view counter of a page
 router.patch("/:projectId/incrementViews", incrementViews);
-
 
 //Writes a comment. Appends it to the relevant user and project.
 router.post("/comment", auth, writeComment);
@@ -61,7 +59,6 @@ router.get("/comments/all", getAllComments);
 
 //Get all comments by projectId
 router.get("/comments/:projectId", getCommentsByProjectId);
-
 
 //Delete a comment. Removes comment from relevant user and project.
 router.delete("/comment/:commentId", auth, deleteComment);

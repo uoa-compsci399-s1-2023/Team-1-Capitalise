@@ -144,7 +144,7 @@ describe("Test that fetches projects GET", () => {
       .get(URLstring)
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length > 0);
+    expect(response.body.length > 0);
   });
 
 
@@ -158,7 +158,7 @@ describe("Test that fetches projects GET", () => {
     .get(URLstring + '6432f9226cce2fc1706572e3')
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.project._id == "6432f9226cce2fc1706572e3") 
+    expect(response.body._id == "6432f9226cce2fc1706572e3") 
   })
 
   it('Sends status code 404 if parameter projectId is an invalid mongoDb id' ,async() => {
@@ -210,8 +210,8 @@ describe('POST Project from endpoint /api/projects/ using addNewProject', () => 
     .send(testProject)
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.project.name).toEqual(testProject.name)
-    projectId = response.body.project._id
+    expect(response.body.name).toEqual(testProject.name)
+    projectId = response.body._id
     
   })
 
@@ -374,7 +374,7 @@ describe('Test the /:projectId/incrementViews PATCH endpoint  using incrementVie
     .patch(URLstring + `${projectId}/incrementViews`)
     
     expect(response.statusCode).toEqual(200)
-    expect(response.body.project.views).toEqual(currentViewCount + 1)
+    expect(response.body.views).toEqual(currentViewCount + 1)
   })
 
   it('Expects statusCode 404 and project = null and a err msg', async () => {
@@ -400,7 +400,7 @@ describe('Test the POST comment ~ /comment using writeComment', () => {
     "projectId": projectId,
     "commentBody": "comment1"
   })
-  commentUser = commentResponse.body.comment._id
+  commentUser = commentResponse.body._id
   await request(app)
   .post(URLstring + 'comment')
   .set('x-auth-token', xToken)
@@ -417,9 +417,9 @@ describe('Test the POST comment ~ /comment using writeComment', () => {
     "commentBody": "Hello There"
   })
   expect(response.statusCode).toEqual(200)
-  expect(response.body.comment.commentBody).toEqual("Hello There")
-  commentId = response.body.comment._id
-  const commentUserID = response.body.comment.user.username
+  expect(response.body.commentBody).toEqual("Hello There")
+  commentId = response.body._id
+  const commentUserID = response.body.user.username
 
   expect(commentUserID).toEqual(visitorSignIn.username)
 
@@ -630,7 +630,7 @@ describe('Test the like project PATCH endpoint using likeComment ', () => {
     .patch(URLstring + `${projectId}/like`)
     .set('x-auth-token', xToken)
     expect(response.statusCode).toEqual(200)
-    expect(response.body.project.likes).toEqual(likes + 1)
+    expect(response.body.likes).toEqual(likes + 1)
 
   })
 
@@ -641,7 +641,7 @@ describe('Test the like project PATCH endpoint using likeComment ', () => {
     .patch(URLstring + `${projectId}/like`)
     .set('x-auth-token', xToken)
     expect(response.statusCode).toEqual(200)
-    expect(response.body.project.likes).toEqual(likes - 1)
+    expect(response.body.likes).toEqual(likes - 1)
   })
 
 })
@@ -659,7 +659,7 @@ describe('Test the PATCH /:projectId route where it uses updateProjectById endpo
     .send(patchBody)
     
     expect(response.statusCode).toEqual(200)
-    expect(response.body.project.name).toEqual(patchBody.name)
+    expect(response.body.name).toEqual(patchBody.name)
   })
 
   it('Expects statusCode 404 when projectId is an invalid id', async() => {
@@ -906,7 +906,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.project.members.includes(userId2))
+    expect(response.body.members.includes(userId2))
   })
   
   it('Expects statusCode 400 if the user being added is already added ', async () => {
@@ -1093,7 +1093,7 @@ describe('Test the GET search function using /search with keyword using searchPr
     .query({keyword: projectData.name})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length == 1)
+    expect(response.body.length == 1)
   })
 
   it('Expects 200 and at least 1 project to be returned when query is keyword : tag superCool', async () => {
@@ -1102,7 +1102,7 @@ describe('Test the GET search function using /search with keyword using searchPr
     .query({keyword: 'superCool'})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length == 1)
+    expect(response.body.length == 1)
   })
 
 
@@ -1115,7 +1115,7 @@ describe('Test the GET search function using /search with query parameters being
     .query({category: projectData.category})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length > 0 )
+    expect(response.body.length > 0 )
   })
 
   it('Expects 200 and at least 1 project to be returned when query is category : mo', async () => {
@@ -1124,7 +1124,7 @@ describe('Test the GET search function using /search with query parameters being
     .query({category: 'mo'})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length > 0)
+    expect(response.body.length > 0)
   })
 
   it('Expects 404 when query is category and invalid', async () => {
@@ -1153,7 +1153,7 @@ describe('Test the GET search function using /search with query parameters being
     .query({semester: projectData.semester})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length > 0 )
+    expect(response.body.length > 0 )
   })
   it('Expects 200 when query is semester : s12023', async () => {
     const response = await request(app)
@@ -1161,7 +1161,7 @@ describe('Test the GET search function using /search with query parameters being
     .query({semester: 's12023'})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length > 0 )
+    expect(response.body.length > 0 )
   })
 
   it('Expects 404 when query is semester and invalid', async () => {
@@ -1200,7 +1200,7 @@ describe('Test the GET search function using /search with query parameters being
     .query({award: 'Top Excellence'})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length > 0)
+    expect(response.body.length > 0)
   })
 
   it('Expects 404 when query is award : TopExcellence', async () => {
@@ -1297,7 +1297,7 @@ describe('Test the sortBy query parameter', () =>{
 describe('Test the startIndex as query', () =>{
   it('Expects 200 when start index is 0 and all projects', async () => {
     const projectCount = (await request(app)
-    .get(URLstring)).body.projects.length
+    .get(URLstring)).body.length
 
     if(projectCount > 0){    
       const response = await request(app)
@@ -1305,13 +1305,13 @@ describe('Test the startIndex as query', () =>{
       .query({startIndex: 0})
 
       expect(response.statusCode).toEqual(200)
-      expect(response.body.projects.length == projectCount)
+      expect(response.body.length == projectCount)
     }
   })
 
   it('Expects 200 when start index is valid and is length of projects which gives only one project', async () => {
     const projectCount = (await request(app)
-    .get(URLstring)).body.projects.length
+    .get(URLstring)).body.length
 
     if(projectCount > 0){    
       const response = await request(app)
@@ -1319,14 +1319,14 @@ describe('Test the startIndex as query', () =>{
       .query({startIndex: projectCount-1})
 
       expect(response.statusCode).toEqual(200)
-      expect(response.body.projects.length == 1)
+      expect(response.body.length == 1)
     }
   })
 
   it('Expects 200 when start index is valid and is length of projects which gives only one project', async () => {
     
     const projectCount = (await request(app)
-    .get(URLstring)).body.projects.length
+    .get(URLstring)).body.length
 
     if(projectCount > 0){    
       const response = await request(app)
@@ -1334,20 +1334,20 @@ describe('Test the startIndex as query', () =>{
       .query({startIndex: projectCount-1})
 
       expect(response.statusCode).toEqual(200)
-      expect(response.body.projects.length == 1)
+      expect(response.body.length == 1)
     }
   })
 
   it('Expects 200 when start index is valid and is > length of projects ', async () => {
     const projectCount = (await request(app)
-    .get(URLstring)).body.projects.length
+    .get(URLstring)).body.length
 
       const response = await request(app)
       .get(URLstring + 'search')
       .query({startIndex: projectCount})
 
       expect(response.statusCode).toEqual(200)
-      expect(response.body.projects).toEqual([projectCount])
+      expect(response.body).toEqual([projectCount])
   })
 })
 
@@ -1355,7 +1355,7 @@ describe('Test the startIndex as query', () =>{
 describe('Test when /search query is numProjects', () =>{
   it('Expects 5 projects if there are 5 projects', async () => {
     const projectCount = (await request(app)
-    .get(URLstring)).body.projects.length
+    .get(URLstring)).body.length
 
     if(projectCount >= 5){
       const response = await request(app)
@@ -1363,13 +1363,13 @@ describe('Test when /search query is numProjects', () =>{
       .query({numProjects: 5})
 
       expect(response.statusCode).toEqual(200)
-      expect(response.body.projects.length).toEqual(6)
+      expect(response.body.length).toEqual(6)
     }
   })
 
     it('Expects all projects if query specifies more than projectCount', async () => {
       const projectCount = (await request(app)
-      .get(URLstring)).body.projects.length
+      .get(URLstring)).body.length
   
       if(projectCount >= 1){
         const response = await request(app)
@@ -1377,13 +1377,13 @@ describe('Test when /search query is numProjects', () =>{
         .query({numProjects: projectCount})
   
         expect(response.statusCode).toEqual(200)
-        expect(response.body.projects.length).toEqual(projectCount+1)
+        expect(response.body.length).toEqual(projectCount+1)
       }
   })
 
   it('Expects all projects if query = 0', async () => {
     const projectCount = (await request(app)
-    .get(URLstring)).body.projects.length
+    .get(URLstring)).body.length
 
     if(projectCount >= 1){
       const response = await request(app)
@@ -1391,7 +1391,7 @@ describe('Test when /search query is numProjects', () =>{
       .query({numProjects: 0})
 
       expect(response.statusCode).toEqual(200)
-      expect(response.body.projects.length).toEqual(projectCount+1)
+      expect(response.body.length).toEqual(projectCount+1)
     }
    })
 
@@ -1515,7 +1515,7 @@ describe('Test the delete endpoint /:projectId using deleteProject', () =>{
     const commentsInProject = await Comment.find({project: projectId})
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.projects.length == lengthOfProjects - 1)
+    expect(response.body.length == lengthOfProjects - 1)
     expect(findProject).toEqual(null)
     expect(userInProject.project).toEqual(null)
     expect(commentsInProject).toEqual([])

@@ -111,13 +111,13 @@ describe("POST semesters", () => {
       .post("/api/parameters")
       .set("x-auth-token", process.env.ANDREWTOKEN)
       .send({
-        value: "S2 2023",
+        value: "S2 2098",
         parameterType: "semester",
       })
       .expect(201)
       .then(async (response) => {
         // Check the response
-        expect(response.body.value).toBe("S2 2023");
+        expect(response.body.value).toBe("S2 2098");
         expect(response.body.parameterType).toBe("semester");
         deleteObjects.push(
           await Parameter.findByIdAndDelete(response.body._id)
@@ -129,13 +129,13 @@ describe("POST semesters", () => {
       .post("/api/parameters")
       .set("x-auth-token", process.env.ANDREWTOKEN)
       .send({
-        value: "s1 2024",
+        value: "s1 2099",
         parameterType: "semester",
       })
       .expect(201)
       .then(async (response) => {
         // Check the response
-        expect(response.body.value).toBe("S1 2024");
+        expect(response.body.value).toBe("S1 2099");
         expect(response.body.parameterType).toBe("semester");
         deleteObjects.push(
           await Parameter.findByIdAndDelete(response.body._id)
