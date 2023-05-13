@@ -256,13 +256,11 @@ function ResponsiveAppBar() {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In">
-                  {auth.user && (
-                    <img
-                      src={auth.user.profilePicture}
-                      referrerPolicy="no-referrer"
-                    />
-                  )}
+                <Avatar
+                  alt="Logged In"
+                  src={auth.user ? auth.user.profilePicture : ""}
+                >
+                  {auth.user && <img referrerPolicy="no-referrer" />}
                   {!auth.user && (
                     <AccountCircleRoundedIcon
                       sx={{ transform: "scale(2.5)" }}
