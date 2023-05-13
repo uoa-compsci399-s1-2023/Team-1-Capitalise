@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Divider,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { getProject } from "../api/getProject";
 import { getUser } from "../api/getUser";
 import { TUser } from "../model/TUser";
@@ -18,32 +11,45 @@ import MyTabs from "../components/MyTabs";
 import ExternalLinkBtn from "../components/projectPage/ExternalLinkBtn";
 import { useAuth } from "../customHooks/useAuth";
 import EditUser from "../components/EditUser";
+import Error from "../components/Error";
+import MyComment from "../components/projectPage/Comments/MyComment";
+import { TComment } from "../model/TComment";
+import { getUserComments } from "../api/getUserComments";
+import { deleteComment } from "../api/deleteComment";
 
 const UserProfile = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<TUser | undefined>();
   const [project, setProject] = useState<TProject | undefined>();
   const [likedProjects, setLikedProjects] = useState<TProject[]>([]);
+  const [comments, setComments] = useState<TComment[]>([]);
   const [open, setOpen] = useState(false);
   let { userID } = useParams();
-  const theme = useTheme();
+  let token = "";
+  let isLoggedIn = false;
   const userTabs = [
     {
       label: "Overview",
       index: "1",
       Component: (
         <Stack height="100%">
-          <Box padding="0px 24px 10px 24px">
+          <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
             <Typography variant="h6">Bio</Typography>
             {typeof user != "undefined" && (
-              <Typography whiteSpace="pre">
+              <Typography
+                sx={{ wordBreak: "break-word" }}
+                whiteSpace="pre-line"
+              >
                 {typeof user.bio != "undefined" ? user.bio : ""}
               </Typography>
             )}
           </Box>
           <Divider />
           {typeof project != "undefined" && (
-            <Box padding="10px 24px 0px 24px">
-              <Typography variant="h6">Project</Typography>
+            <Box padding="10px 24px 24px 24px">
+              <Typography variant="h6" paddingBottom="10px">
+                Project
+              </Typography>
               <ProjectCard
                 title={project.name}
                 semester={project.semester.value}
@@ -77,21 +83,48 @@ const UserProfile = () => {
         </Box>
       ),
     },
+    {
+      label: "Comments",
+      index: "3",
+      Component: (
+        <Box height="100%" padding="0px 24px 10px 24px">
+          <Typography variant="h6">Comments</Typography>
+          {comments.map((comment) => (
+            <MyComment
+              key={comment._id}
+              comment={comment}
+              deleteComment={() => userDeleteComment(comment._id, token)}
+            />
+          ))}
+        </Box>
+      ),
+    },
   ];
+
+  const userDeleteComment = async (commentId: string, token: string) => {
+    if (isLoggedIn) {
+      deleteComment(commentId, token).then(() => {
+        const updatedComments = comments.filter(
+          (comment) => comment._id != commentId
+        );
+        setComments(updatedComments);
+      });
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!userID) return;
       const newUser = await getUser(userID);
       setUser(newUser);
+      setIsLoading(false);
     };
     fetchUser();
   }, [userID]);
 
-  let isLoggedIn = false;
-  let token = "";
   const auth = useAuth();
   if (auth.user) {
-    if (auth.user._id === user?._id) {
+    if (auth.user._id === user?._id || auth.user.userType === "admin") {
       isLoggedIn = true;
       token = auth.getToken() as string;
     }
@@ -99,9 +132,8 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (typeof user === "undefined") return;
-
     const fetchProject = async () => {
-      if (typeof user.project === "undefined") return;
+      if (typeof user.project === "undefined" || user.project === null) return;
       const newProject = await getProject(user.project._id);
       setProject(newProject);
     };
@@ -115,8 +147,14 @@ const UserProfile = () => {
       }
       setLikedProjects(likedProjects);
     };
+    const fetchComments = async () => {
+      if (typeof user === "undefined") return;
+      const comments = await getUserComments(user._id);
+      setComments(comments);
+    };
     fetchProject();
     fetchLikes();
+    fetchComments();
   }, [user]);
 
   const handleClickOpen = () => {
@@ -129,14 +167,12 @@ const UserProfile = () => {
 
   if (typeof user === "undefined") {
     return (
-      <Box
-        justifyContent="center"
-        display="flex"
-        width="100%"
-        minHeight="92vh"
-        mt="8vh"
-      >
-        <Typography>{userID} does not exist</Typography>
+      <Box>
+        {isLoading ? (
+          <Box />
+        ) : (
+          <Error errorMessage={`User "${userID}" does not exist`} />
+        )}
       </Box>
     );
   }
@@ -169,7 +205,10 @@ const UserProfile = () => {
             sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
           ></Box>
           <Box paddingLeft={{ xs: "24px", md: "0px" }}>
-            <Typography>{user.userType}</Typography>
+            <Typography>
+              {user.userType.charAt(0).toUpperCase() +
+                user.userType.slice(1).toLowerCase()}
+            </Typography>
             <Typography
               width="100%"
               variant="h6"
@@ -193,7 +232,7 @@ const UserProfile = () => {
                 <Button
                   onClick={handleClickOpen}
                   variant="outlined"
-                  sx={{ width: "100%" }}
+                  sx={{ width: "180px" }}
                 >
                   Edit Profile
                 </Button>

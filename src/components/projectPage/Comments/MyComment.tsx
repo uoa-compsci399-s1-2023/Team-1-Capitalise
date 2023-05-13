@@ -1,6 +1,6 @@
 // this is for rendering a comment
 
-import { Container, Box, Typography, Button } from "@mui/material";
+import { Container, Box, Typography, Button, colors } from "@mui/material";
 // import { getUserbyId, TUser } from "../api/getUserbyId";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -53,9 +53,11 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
           <Link to={`../user/${comment.user._id}`}>
             <div className="comment-author">{comment.user.name}</div>
           </Link>
-          <div className="comment-date">{createdAt}</div>
+          <Link to={`../projects/${comment.project}`}>
+            <div className="comment-date">{createdAt}</div>
+          </Link>
         </div>
-        <Typography variant="body1" color="initial" fontWeight={100}>
+        <Typography variant="body1" fontWeight={100}>
           {comment.commentBody}
         </Typography>
         <div className="comment-actions">
