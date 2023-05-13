@@ -652,7 +652,8 @@ const searchProjects = async (req, res) => {
       )
     ) {
       const mySortRequest = req.query.sortBy.toLowerCase();
-      mySortRequest == "likes"
+      //Note this is a very naive approach to sorting by semester. Due to complexity, it is easier to assume the semesters will be added in order. 
+      mySortRequest == "likes" || mySortRequest == "semester"
         ? (sortQuery = { [mySortRequest]: -1 })
         : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending.
     } else {
