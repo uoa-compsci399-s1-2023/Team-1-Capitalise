@@ -18,4 +18,5 @@ export type TNewProject = {
       value: string[];
     }[];
   }[];
+  tags: {name: string}[];
 };

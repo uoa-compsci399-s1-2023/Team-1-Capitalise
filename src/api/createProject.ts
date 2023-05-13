@@ -16,6 +16,7 @@ export async function createProject(newProject: TNewProject, token: string) {
       //banner: newProject.banner,
       //thumbnail: newProject.thumbnail,
       content: newProject.content,
+      tags: newProject.tags,
     }),
   });
   return response.json();

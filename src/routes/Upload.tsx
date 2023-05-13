@@ -30,6 +30,7 @@ interface TProjectInfo {
   categoryN: string;
   semesterN: string;
   projectDescription: string | null;
+  tags:string [];
 }
 
 // different stages of the project upload form.
@@ -56,6 +57,7 @@ export default function Upload() {
   const projectSemester = projectInfo?.semesterN as string;
   const projectCategory = projectInfo?.categoryN as string;
   const projectDescription = projectInfo?.projectDescription as string;
+  const projectTags = projectInfo?.tags  as [];
 
   //let formData = new FormData();
   let bannerData = new FormData();
@@ -152,6 +154,7 @@ export default function Upload() {
           ],
         },
       ],
+      tags: projectTags,
     };
 
     console.log("New project:", newProject);

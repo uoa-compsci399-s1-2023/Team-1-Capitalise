@@ -26,14 +26,24 @@ interface TProjectInfo {
   projN: string;
   categoryN: string;
   semesterN: string;
+  tags: string[];
   projectDescription: string | null;
 }
+
+
 
 export default function ProjectInfoForm(
   {projectInfoToUpload, handleBack }: any,
   
   
 ) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedTags, setSelectedTags] = useState([]);
+  console.log("value: ", selectedTags);
+  const [semester, setSemester] = React.useState("");
+  const [category, setCategory] = React.useState("");
+  const tagList : {name: string}[] = [];
+  
 
   // Map the semesters to the MenuItems.
   const [semesters, setSemesters] = useState<JSX.Element[]>([]);
@@ -65,11 +75,7 @@ export default function ProjectInfoForm(
     })
   }, []);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedTags, setSelectedTags] = useState([]);
 
-  const [semester, setSemester] = React.useState("");
-  const [category, setCategory] = React.useState("");
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     event.preventDefault();
@@ -103,6 +109,7 @@ export default function ProjectInfoForm(
       projN: projectN,
       categoryN: cat,
       semesterN: sem,
+      tags: selectedTags,
       projectDescription: projDesc,
     };
     console.log("Info sent from ProjectInfo:", infoSend);
@@ -169,15 +176,18 @@ export default function ProjectInfoForm(
               variant="outlined"
             />
           </Grid>
-
+        
           <Grid item xs={12}>
             <Autocomplete
               multiple
               id="tags-filled"
-              options={[]}
-              onChange={() => handleTagChange}
+              options={tagList.map((option) => option.name)}
+              onChange={(event: any, newValue: any) => { 
+                //setSelectedTags(newValue.map((name: string) => ({name: name})));
+                setSelectedTags(newValue);
+              }}
               freeSolo
-              renderTags={(value: readonly string[], getTagProps) =>
+              renderTags={(value: string[], getTagProps) =>
                 value.map((option: string, index: number) => (
                   <Chip
                     variant="outlined"
