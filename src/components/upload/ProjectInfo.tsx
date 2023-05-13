@@ -34,17 +34,14 @@ interface TProjectInfo {
 
 export default function ProjectInfoForm(
   {projectInfoToUpload, handleBack }: any,
-  
-  
 ) {
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedTags, setSelectedTags] = useState([]);
-  console.log("value: ", selectedTags);
   const [semester, setSemester] = React.useState("");
   const [category, setCategory] = React.useState("");
   const tagList : {name: string}[] = [];
   
-
   // Map the semesters to the MenuItems.
   const [semesters, setSemesters] = useState<JSX.Element[]>([]);
   useEffect(() => {
@@ -94,17 +91,10 @@ export default function ProjectInfoForm(
   const handleNext = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
     const projectN = data.get("projectName") as string;
-
     const sem = semester;
     const cat = category;
-    //Not working at this stage.
-    //const tags = selectedTags;
-    //console.log(tags);
-
     const projDesc = data.get("projectDesc") as string;
-
     const infoSend: TProjectInfo = {
       projN: projectN,
       categoryN: cat,
@@ -183,7 +173,6 @@ export default function ProjectInfoForm(
               id="tags-filled"
               options={tagList.map((option) => option.name)}
               onChange={(event: any, newValue: any) => { 
-                //setSelectedTags(newValue.map((name: string) => ({name: name})));
                 setSelectedTags(newValue);
               }}
               freeSolo

@@ -13,7 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProjectInfoForm from "../components/upload/ProjectInfo";
 import ProjectUploadFileForm from "../components/upload/ProjectUploadFile";
 import ProjectTeamSelectionForm from "../components/upload/ProjectTeamSelection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UploadComplete from "../components/upload/UploadComplete";
 
 import { useAuth } from "../customHooks/useAuth";
@@ -24,6 +24,7 @@ import { postThumbnail } from "../api/postThumbnail";
 import { postTab } from "../api/postTab";
 import { addGallery } from "../api/addGallery";
 import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface TProjectInfo {
   projN: string;
@@ -39,8 +40,13 @@ const steps = ["Team Details", "Project Details", "Project Files", "Upload"];
 // set the new project
 
 export default function Upload() {
+  const nav = useNavigate();
   const auth = useAuth();
-
+  useEffect(() => {
+    if (!auth.user) {
+      nav("/")
+    }
+  })
   // holds the counter for navigation between pages.
   const [activeStep, setActiveStep] = useState(0);
 
@@ -50,6 +56,7 @@ export default function Upload() {
   // array of Project attributes - Project Name, Project Semester, Project Category, Project Description
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>();
   const [projectLink, setProjectLink] = useState([]);
+  const [projectID, setProjectID] = useState('');
 
   // seperate out fields into variables to avoid "possibly undefined".
   // force some of the fields to be string so we avoid "possibly undefined".
@@ -91,7 +98,7 @@ export default function Upload() {
   const projectInfoToUpload = (projectInfoData: any) => {
     // stores Project Info into Project State
     setProjectInfo(projectInfoData);
-    console.log(projectInfoData);
+
 
     // navigates to next page
     handleNext();
@@ -99,20 +106,20 @@ export default function Upload() {
 
   const projectLinkToUpload = (projectLinks: any) => {
     setProjectLink(projectLinks);
-    console.log(projectLink);
+
   }
 
   const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
     // stores Project Files into respective states
     
-    console.log('These on upload:', projectLink);
+    
     // we want to check if these files are null or not.
     if (banner == null) {
-      console.log("Banner is null");
+      //console.log("Banner is null");
       isBannerEmpty = true;
     }
     if (thumbnail == null) {
-      console.log("Thumbnail is null");
+      //console.log("Thumbnail is null");
       isThumbnailEmpty = true;
     }
 
@@ -120,12 +127,12 @@ export default function Upload() {
     thumbnailData.append("thumbnail", thumbnail);
 
     numImages = images.length;
-    console.log("How many images:", numImages);
+    //console.log("How many images:", numImages);
 
     // go through image files and append as formdata
     images.forEach((image: any) => {
       imagesData.append("gallery", image);
-      console.log(image);
+      //console.log(image);
     });
 
     // navigates to loading page
@@ -169,13 +176,13 @@ export default function Upload() {
       tags: projectTags,
     };
 
-    console.log("New project:", newProject);
+    //console.log("New project:", newProject);
 
     const createdProject = createProject(
       newProject,
       auth.getToken() as string
     ).then((data) => {
-      console.log(data._id);
+      setProjectID(data._id)
 
       // need to perform file validation checks to check if images are null.
       if (!isBannerEmpty) {
@@ -221,7 +228,12 @@ export default function Upload() {
 
       // An API call screen. Shows a successful response for Users.
       case 3:
-        return <UploadComplete />;
+          console.log('PROJECT ID',projectID);
+          return (
+            <UploadComplete projectID={projectID}/>
+          )
+   
+        
 
       default:
         throw new Error("Unknown step");

@@ -6,17 +6,23 @@ import HashLoader from "react-spinners/HashLoader";
 import { Navigate, useNavigate } from "react-router-dom";
 import { BounceLoader } from "react-spinners";
 
-export default function UploadComplete() {
+export default function UploadComplete({projectID}: any) {
+  console.log("ID", projectID);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [color, setColor] = useState("#1976D2");
+  const projectURL = '/projects/' + projectID;
+  
+  
+  //Redirects to Project Page after creation
+  
   useEffect(() => {
     setLoading(true)
     setTimeout(() => {
-      navigate("/");
+      navigate(projectURL);
       setLoading(false);
 
-    },3000)
+    },5000)
   }, [])
   return (
    

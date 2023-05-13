@@ -22,7 +22,7 @@ const projectTags = [{ tag: "Mobile" }];
 
 const FileInputField = styled(TextField)({
   minWidth: 200,
-  maxWidth: 350,
+  maxWidth: 450,
 });
 
 export default function ProjectUploadFileForm(
@@ -84,14 +84,14 @@ export default function ProjectUploadFileForm(
         2. Project Files
       </Typography>
       <Box component="form" noValidate onSubmit={handleUpload}>
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           {/* Upload Attach Banner */}
           <Grid item>
             <Typography variant="subtitle2" gutterBottom>
               Upload a Project Banner
             </Typography>
           </Grid>
-          <Grid item xs={10}>
+          <Grid item xs={12}>
             <input
               type="file"
               id="bannerInput"
