@@ -34,7 +34,7 @@ const Hero = () => {
           }
         }
         //delete in final
-        if (auth.user.userType === "admin") {
+        if (auth.user._id === "6432f8826cce2fc1706572d3") {
           setLoggedInAdmin(1000);
         }
         //delete in final end

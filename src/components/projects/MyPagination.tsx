@@ -77,7 +77,7 @@ const MyPagination = () => {
 
   // check if there are projects to display
   const checkProjects = projects.length > 0;
-  console.log(projects);
+
   return (
     <Box>
       {/* Search sidebar for desktop */}

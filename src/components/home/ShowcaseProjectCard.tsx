@@ -52,7 +52,7 @@ const ShowcaseProjectCard = ({
   let loggedInAdmin = 0;
   const auth = useAuth();
   if (auth.user) {
-    if (auth.user.userType === "admin") {
+    if (auth.user._id === "6432f8826cce2fc1706572d3") {
       loggedInAdmin = 1000;
     }
   }
