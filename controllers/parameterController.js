@@ -140,10 +140,8 @@ const deleteParameter = async (req, res) => {
           category: misc._id,
         }
       );
-    }
-
-    //If the parameter is a semester, change the semester to SX 20XX
-    if (parameter.parameterType === "semester") {
+    } //If the parameter is a semester, change the semester to SX 20XX
+    else if (parameter.parameterType === "semester") {
       const miscSem = await Parameter.findOne({
         value: "SX 20XX",
         parameterType: "semester",
@@ -155,6 +153,16 @@ const deleteParameter = async (req, res) => {
         },
         {
           semester: miscSem._id,
+        }
+      );
+    } //If the parameter is an award, remove the award from all projects that have it
+    else if (parameter.parameterType === "award") {
+      await Project.updateMany(
+        {
+          award: parameter._id,
+        },
+        {
+          award: null,
         }
       );
     }
