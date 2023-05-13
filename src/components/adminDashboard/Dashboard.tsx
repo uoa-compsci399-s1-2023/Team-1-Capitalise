@@ -4,16 +4,27 @@ import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
+import { List, ListItem, ListItemText } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../customHooks/useAuth";
+
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TextField,
+} from "@mui/material";
 
 import { DateRange, EmojiEvents } from "@mui/icons-material";
 import CategoryIcon from "@mui/icons-material/Category";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 import { getCategories } from "../../api/getCategories";
 import { TCategory } from "../../model/TCategory";
@@ -28,11 +39,91 @@ import { Button, Stack } from "@mui/material";
 import MyTabs from "../../components/MyTabs";
 
 const Dashboard = () => {
+  const [open, setOpen] = useState(false);
+
+  const auth = useAuth();
+
+  // counts displayed in paper components of overview page.
   const [categoryCount, setCategoryCount] = useState(0);
   const [semesterCount, setSemesterCount] = useState(0);
   const [awardCount, setAwardCount] = useState(0);
 
-  const [open, setOpen] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
+  const [categories, setCategories] = useState<TCategory[]>([]);
+
+  const handleNewCategory = (event: any) => {
+    setNewCategory(event.target.value);
+  };
+
+  const handleAddCategory = async () => {
+    // call the API to  add category
+    console.log(newCategory);
+    const token = auth.getToken();
+    if (token) {
+      const category = {} as TCategory;
+
+      console.log("we can access the endpoint");
+      // replace with call to add parameter endpoint in api folder.
+      //fetch(`${API_URL}/api/projects/comment`, {
+      //  method: "POST",
+      //  headers: {
+      //    Accept: "application/json",
+      //    "Content-Type": "application/json",
+      //    "x-auth-token": token,
+      //  },
+      //  body: JSON.stringify({
+      //    projectId: projectId,
+      //    commentBody: text,
+      //  }),
+      //})
+      // update the categories (need to create a TCategory object based on response using the interface)
+      //.then((data) => {
+      //category._id = data._id;
+      //category.value = data.value;
+      //category.parameterType = data.parameterType;
+
+      //setCategories([categories, ...category]);
+      //});
+    }
+
+    // increment the category count to reflect addition
+    setCategoryCount(categoryCount + 1);
+
+    // reset input field
+    setNewCategory("");
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    // call the API to  delete category
+    const token = auth.getToken();
+    if (token) {
+      // replace with call to delete parameter endpoint in api folder.
+      //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+      //  method: "DELETE",
+      //  headers: {
+      //    "x-auth-token": token,
+      //  },
+
+      //}).then(() => {
+      // we need to update the categories.
+      //const updatedCategories = categories.filter(
+      //  (category) => category._id != categoryId
+      //);
+      //setCategories(updatedCategories);
+      //});
+
+      // decrement the category count to reflect deletion.
+      setCategoryCount(categoryCount - 1);
+
+      console.log("Delete category:", categoryId);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCategories = getCategories().then((data) => {
+      setCategories(data);
+    });
+  }, []);
 
   const dashboardTabs = [
     {
@@ -92,7 +183,7 @@ const Dashboard = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <DateRange
+                    <EmojiEventsIcon
                       color="primary"
                       sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
                     />
@@ -113,9 +204,57 @@ const Dashboard = () => {
       label: "Categories",
       index: "2",
       Component: (
-        <Box height="100%" padding="0px 24px 10px 24px">
-          <Typography variant="h6">Category Info</Typography>
-        </Box>
+        <Stack height="100%">
+          <Box height="100%" padding="0px 24px 10px 24px">
+            <Typography paddingTop={3} variant="h6">
+              Manage categories
+            </Typography>
+            <Box paddingTop={3} sx={{ maxHeight: "400px", overflow: "auto" }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Categories</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {categories.map((category) => (
+                    <TableRow key={category._id}>
+                      <TableCell>{category.value}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => handleDeleteCategory(category._id)}
+                        >
+                          Delete category
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+            <Typography paddingTop={5} variant="h6">
+              Add category
+            </Typography>
+            <TextField
+              label="New category"
+              value={newCategory}
+              onChange={handleNewCategory}
+              variant="outlined"
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddCategory}
+            >
+              Add Category
+            </Button>
+          </Box>
+        </Stack>
       ),
     },
     {
@@ -123,7 +262,7 @@ const Dashboard = () => {
       index: "3",
       Component: (
         <Box height="100%" padding="0px 24px 10px 24px">
-          <Typography variant="h6">Semester info</Typography>
+          <Typography variant="h6">Manage semesters</Typography>
         </Box>
       ),
     },
@@ -132,7 +271,7 @@ const Dashboard = () => {
       index: "4",
       Component: (
         <Box height="100%" padding="0px 24px 10px 24px">
-          <Typography variant="h6">Award info</Typography>
+          <Typography variant="h6">Manage awards</Typography>
         </Box>
       ),
     },
@@ -184,7 +323,6 @@ const Dashboard = () => {
         padding="24px"
       >
         <Box display={{ xs: "flex", md: "block" }} width="100%">
-          {/* The Paper components overviewing number of categories, semesters and awards  */}
           <Box paddingLeft={{ xs: "24px", md: "0px" }}>
             <Typography variant="h1">Welcome Admin</Typography>
           </Box>
