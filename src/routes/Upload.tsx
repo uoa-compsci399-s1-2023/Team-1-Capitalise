@@ -49,6 +49,7 @@ export default function Upload() {
 
   // array of Project attributes - Project Name, Project Semester, Project Category, Project Description
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>();
+  const [projectLink, setProjectLink] = useState([]);
 
   // seperate out fields into variables to avoid "possibly undefined".
   // force some of the fields to be string so we avoid "possibly undefined".
@@ -58,6 +59,7 @@ export default function Upload() {
   const projectCategory = projectInfo?.categoryN as string;
   const projectDescription = projectInfo?.projectDescription as string;
   const projectTags = projectInfo?.tags  as [];
+  
 
   //let formData = new FormData();
   let bannerData = new FormData();
@@ -95,9 +97,15 @@ export default function Upload() {
     handleNext();
   };
 
+  const projectLinkToUpload = (projectLinks: any) => {
+    setProjectLink(projectLinks);
+    console.log(projectLink);
+  }
+
   const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
     // stores Project Files into respective states
     
+    console.log('These on upload:', projectLink);
     // we want to check if these files are null or not.
     if (banner == null) {
       console.log("Banner is null");
@@ -122,8 +130,11 @@ export default function Upload() {
 
     // navigates to loading page
     // check if user wants to submit their project, otherwise keep them on this page.
+
+
     if (window.confirm("Ready to submit?")) {
       handleNext();
+      
     }
     
     // calls upload function as we have all the information to create a project
@@ -142,6 +153,7 @@ export default function Upload() {
       //thumbnail: thumbnail,       
       semester: projectSemester,
       category: projectCategory,
+      links: projectLink,
       content: [
         {
           tabName: "Overview", // first tab name will be "Overview" by default.
@@ -203,6 +215,7 @@ export default function Upload() {
           <ProjectUploadFileForm
             projectFileToUpload={projectFileToUpload}
             handleBack={handleBack}
+            projectLinkToUpload={projectLinkToUpload}
           />
         );
 

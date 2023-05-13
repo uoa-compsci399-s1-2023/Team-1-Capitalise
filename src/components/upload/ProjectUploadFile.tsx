@@ -26,7 +26,7 @@ const FileInputField = styled(TextField)({
 });
 
 export default function ProjectUploadFileForm(
-  { projectFileToUpload, handleBack }: any
+  { projectFileToUpload, projectLinkToUpload, handleBack }: any
 
 ) {
   // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
@@ -41,6 +41,8 @@ export default function ProjectUploadFileForm(
   >();
 
   const [images, setImages] = useState<File[]>([]);
+
+  const [projectLinks, setProjectLinks] = useState([]);
 
   const handleBannerFile = (event: any) => {
     event.preventDefault();
@@ -61,6 +63,12 @@ export default function ProjectUploadFileForm(
     event.preventDefault();
     setThumbnail(event.target.files[0]);
     //console.log("Thumbnail from form:", thumbnail);
+  };
+  const handleProjectLinks = (projLinksFromChild: any) => {
+    setProjectLinks(projLinksFromChild);
+    projectLinkToUpload (projectLinks);
+
+    //console.log("Project links from form:", projectLinks);
   };
 
   const handleUpload = (event: any) => {
@@ -173,7 +181,7 @@ export default function ProjectUploadFileForm(
           </Grid>
 
           {/*Project Links Component*/}
-          <ProjectLinksForm />
+          <ProjectLinksForm handleProjectLinks={handleProjectLinks}/>
         </Grid>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button

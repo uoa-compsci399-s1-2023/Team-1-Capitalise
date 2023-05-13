@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { CollectionsBookmarkOutlined } from "@mui/icons-material";
 import { FormControl, TextField, Grid, InputLabel, Select, MenuItem, Button, Typography } from "@mui/material";
 import React, { useState } from "react";
 
@@ -20,40 +21,48 @@ const SocialLinkField = styled(TextField)({
 const options = [
   {
     value: 'gitHub',
+    type: 'github',
     label: 'GitHub',
   },
   {
     value: 'codePen',
+    type: 'codepen',
     label: 'CodePen',
   },
   {
     value: 'notion',
+    type: 'notion',
     label: 'Notion',
   },
   {
     value: 'codesandbox',
+    type: 'codesandbox',
     label: 'CodeSandbox',
   },
   {
     value: 'kaggle',
+    type: 'kaggle',
     label: 'Kaggle',
   },
 ];
-export default function ProjectLinksForm() {
-  const [selectedOptions, setSelectedOptions] = useState([{ option: '', text: '' }]);
+export default function ProjectLinksForm({handleProjectLinks}: any) {
+  const [selectedOptions, setSelectedOptions] = useState([{ value: '', type: '' }]);
   const handleOptionChange = (index:any, event:any) => {
     const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[index].option = event.target.value;
+    newSelectedOptions[index].type = event.target.value;
     setSelectedOptions(newSelectedOptions);
   };
   const handleTextChange = (index:any, event:any) => {
     const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[index].text = event.target.value;
+    newSelectedOptions[index].value = event.target.value;
     setSelectedOptions(newSelectedOptions);
+    handleProjectLinks(selectedOptions);
   };
 
-  const handleAdd = () => {
-    setSelectedOptions([...selectedOptions, { option: '', text: '' }]);
+  const handleAdd = (event: any) => {
+    event.preventDefault();
+    setSelectedOptions([...selectedOptions, {value: '', type: '' }]);
+    
   };
 
   return (
@@ -68,23 +77,23 @@ export default function ProjectLinksForm() {
       <LinkForm>
         <Select
           labelId={`select-label-${index}`}
-          value={selectedOption.option}
+          value={selectedOption.type}
           onChange={(event) => handleOptionChange(index, event)}
           autoWidth
         >
           {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label} {index}
+            <MenuItem key={option.type} value={option.type}>
+              {option.label}
             </MenuItem>
           ))}
         </Select>
       </LinkForm>
 
-      {selectedOption.option !== '' && (
+      {selectedOption.type !== '' && (
         <SocialLinkField
           fullWidth
           label="Insert a Link"
-          value={selectedOption.text}
+          value={selectedOption.value}
           onChange={(event) => handleTextChange(index, event)}
         />
       )}

@@ -9,7 +9,7 @@ export type TNewProject = {
   thumbnail?: string;
   semester: string;
   category: string;
-  //links?: TProject['links']      // links are a list of JSON objects with a "value" and "type"
+  links?: TProject['links']      // links are a list of JSON objects with a "value" and "type"
   content: {
     tabName: string;
     tabContent: {

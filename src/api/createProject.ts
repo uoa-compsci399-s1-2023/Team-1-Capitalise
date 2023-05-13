@@ -13,6 +13,7 @@ export async function createProject(newProject: TNewProject, token: string) {
       teamname: newProject.teamname,
       semester: newProject.semester,
       category: newProject.category,
+      links: newProject.links,
       //banner: newProject.banner,
       //thumbnail: newProject.thumbnail,
       content: newProject.content,
