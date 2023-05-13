@@ -71,39 +71,55 @@ const sortSemesters = async () => {
 
 const getAwardedProjectByLatestSemester = async (req, res) => {
   const semesterList = await sortSemesters();
-  const mySemester = await Parameter.findOne({
-    value: semesterList[0],
+  let count = 0;
+
+  let mySemester = await Parameter.findOne({
+    value: semesterList[count++],
     parameterType: "semester",
   });
+
 
   if (!mySemester) {
     return res.status(400).send({ fail: "No semester found!" });
   }
 
-  const projects = await Project.find({
+  let projects = await Project.find({
     badges: { $ne: null },
     semester: mySemester._id,
   })
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "name -_id");
+
+
+  while (projects.length < 3) {
+    if (count == semesterList.length) {
+      return res.status(400).send({fail: "Error, no semesters have 3 projects or more with awards!"});
+    }
+    mySemester = await Parameter.findOne({
+      value: semesterList[count++],
+      parameterType: "semester",
+    });
+    if (!mySemester) {
+      return res.status(400).send({ fail: "No semester found!" });
+    }
+
+    projects = await Project.find({
+      badges: { $ne: null },
+      semester: mySemester._id,
+    })
+      .populate("semester", "value -_id")
+      .populate("category", "value -_id")
+      .populate("badges", "value -_id")
+      .populate("tags", "name -_id");
+  }
 
   return res.status(200).send(projects);
 };
 
 const getFrontPageHeadlines = async (req, res) => {
   const myCategorys = await Parameter.find({ parameterType: "category" });
-  /*let myGroup = await Project.aggregate([
-    { $sort: { totalQuanity: 1 } },
-    {
-      $group: {
-        _id: "$category",
-        category: { $first: "$category" },
-        totalQuantity: { $count: {} },
-      },
-    },
-  ]);*/
 
   let myGroup = await Project.aggregate([
     {
