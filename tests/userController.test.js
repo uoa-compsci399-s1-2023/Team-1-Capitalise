@@ -5,6 +5,29 @@ const { Project } = require("../models/project");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 
+var projectId = ''
+const projectData = {
+  "name": "userTestProject", 
+  "semester": "S1 2023",
+  "category": "Mobile Development",
+  "tags": ["superCool"]
+}    
+
+beforeAll(async () => {
+  const response = await request(app)
+  .post('/api/projects/')
+  .send(projectData)
+  .set('x-auth-token', process.env.ANDREWTOKEN)
+  projectId = response.body._id
+})
+
+afterAll(async () => {
+  await request(app)
+  .delete(`/api/projects/${projectId}`)
+  .set('x-auth-token', process.env.ANDREWTOKEN)
+})
+
+
 describe("Fetches all users", () => {
   it("Sends a 200 response if all users are fetched", async () => {
     await request(app)
@@ -271,7 +294,7 @@ describe("POST user", () => {
       name: "My Next Test User",
       email: "testuser222@aucklanduni.ac.nz",
       password: "test",
-      projectId: "6432fe007b09c2f91d48a134",
+      projectId: projectId,
     };
 
     await request(app)
@@ -350,7 +373,6 @@ describe("POST user", () => {
       random_attribute: "random",
     };
 
-    
     await request(app)
       .post("/api/users")
       .send(data)
@@ -592,7 +614,7 @@ describe("DELETE a User", () => {
         );
         // Check if the user was removed from the project with ID 6432fe877b09c2f91d48a162
         const project = await Project.findOne({
-          _id: "6432fe007b09c2f91d48a134",
+          _id: projectId,
         });
         expect(project.members).toEqual(
           expect.not.arrayContaining([{ _id: user4._id }])
