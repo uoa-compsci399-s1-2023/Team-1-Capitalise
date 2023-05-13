@@ -18,12 +18,35 @@ const getCategories = async (req, res) => {
   res.send(categories);
 };
 
-//Gets all categories and sorts by name
+//Gets all semesters and sorts by semester
 const getSemesters = async (req, res) => {
-  const semesters = await Parameter.find({
-    parameterType: "semester",
-  }).sort("name");
-  res.send(semesters);
+  let sortedArr = [];
+  const sortedSemesters = await sortSemesters();
+  for (let i = 0; i < sortedSemesters.length; i++) {
+    let mySem = await Parameter.findOne({
+      parameterType: "semester",
+      value: sortedSemesters[i],
+    });
+    sortedArr.push(mySem);
+  }
+  res.send(sortedArr);
+};
+
+const sortSemesters = async () => {
+  const semesters = await Parameter.find({ parameterType: "semester" });
+
+  const semArray = semesters.map((semester) => semester.value.split(" "));
+
+  semArray.sort((a, b) => {
+    if (b[1] === a[1]) {
+      return b[0] === "S2" ? 1 : -1;
+    } else {
+      return b[1] - a[1];
+    }
+  });
+
+  const newSemArray = semArray.map((arr) => arr.join(" "));
+  return newSemArray;
 };
 
 //Gets all categories and sorts by name

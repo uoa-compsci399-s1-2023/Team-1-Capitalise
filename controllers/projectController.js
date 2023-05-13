@@ -853,4 +853,5 @@ module.exports = {
   awardBadge,
   getAwardedProjectByLatestSemester,
   getFrontPageHeadlines,
+  sortSemesters
 };
