@@ -43,11 +43,13 @@ export default function ProjectUploadFileForm(
   const [images, setImages] = useState<File[]>([]);
 
   const handleBannerFile = (event: any) => {
+    event.preventDefault();
     setBanner(event.target.files[0]);
     //console.log(event.target.files[0]);
   };
 
   const handleProjectImages = (event: any) => {
+    event.preventDefault();
     if (Array.from(event.target.files).length > 5) {
       alert(`Only 5 files are allowed to upload.`);
       return;
@@ -56,11 +58,13 @@ export default function ProjectUploadFileForm(
   };
 
   const handleThumbnail = (event: any) => {
+    event.preventDefault();
     setThumbnail(event.target.files[0]);
     //console.log("Thumbnail from form:", thumbnail);
   };
 
-  const handleUpload = () => {
+  const handleUpload = (event: any) => {
+    event.preventDefault();
     // handle file upload logic here
     projectFileToUpload(banner, images, thumbnail);
   };  

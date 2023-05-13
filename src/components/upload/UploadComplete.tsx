@@ -16,7 +16,7 @@ export default function UploadComplete() {
       navigate("/");
       setLoading(false);
 
-    },100000)
+    },3000)
   }, [])
   return (
    

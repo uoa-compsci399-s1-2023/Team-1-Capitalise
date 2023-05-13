@@ -17,10 +17,8 @@ import {
   styled,
 } from "@mui/material";
 import { useState, useEffect } from "react";
-
 import { getSemesters } from "../../api/getSemesters";
 import { TSemester } from "../../model/TSemester";
-
 import { getCategories } from "../../api/getCategories";
 import { TCategory } from "../../model/TCategory";
 
@@ -73,9 +71,11 @@ export default function ProjectInfoForm(
   const [category, setCategory] = React.useState("");
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
+    event.preventDefault();
     setCategory(event.target.value);
   };
   const handleTagChange = (event: any, value: any) => {
+    event.preventDefault();
     setSelectedTags(value);
   };
 

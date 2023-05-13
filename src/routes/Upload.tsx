@@ -1,9 +1,7 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
+
 import Container from "@mui/material/Container";
-import Toolbar from "@mui/material/Toolbar";
+import TeamInformation from "../assets/TeamInformation.svg"
 import Paper from "@mui/material/Paper";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -25,6 +23,7 @@ import { postBanner } from "../api/postBanner";
 import { postThumbnail } from "../api/postThumbnail";
 import { postTab } from "../api/postTab";
 import { addGallery } from "../api/addGallery";
+import { Box } from "@mui/material";
 
 interface TProjectInfo {
   projN: string;
@@ -213,12 +212,29 @@ export default function Upload() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 20, mb: 4 }}>
+    <div style={{background: "white"}}>
+    <Container maxWidth="md" sx={{mt: 20, mb: 4 }}>
       <Paper
-        variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+        elevation={12}
+
+        sx={{my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
+        <Box
+              component="img"
+              justifyContent="center"
+              alignContent="center"
+              margin="auto"
+              src={TeamInformation}
+              alt="logo"
+              sx={{
+                width: "150px",
+                flexGrow: 1,
+                display: { xs: "flex", md: "flex" },
+              }}
+            ></Box>
         <Typography component="h1" variant="h4" align="center">
+          {/*Team Image*/}
+          
           Upload your Project
         </Typography>
         <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
@@ -232,5 +248,6 @@ export default function Upload() {
         {getStepContent(activeStep)}
       </Paper>
     </Container>
+    </div>
   );
 }
