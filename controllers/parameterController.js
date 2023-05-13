@@ -127,8 +127,8 @@ const deleteParameter = async (req, res) => {
 
     //If the parameter is a category, change all projects with this category to miscellaneous
     if (parameter.parameterType === "category") {
-      const misc = await Parameter.find({
-        name: "Miscellaneous",
+      const misc = await Parameter.findOne({
+        value: "Miscellaneous",
         parameterType: "category",
       });
 
@@ -145,7 +145,7 @@ const deleteParameter = async (req, res) => {
     //If the parameter is a semester, change the semester to SX 20XX
     if (parameter.parameterType === "semester") {
       const miscSem = await Parameter.findOne({
-        name: "SX 20XX",
+        value: "SX 20XX",
         parameterType: "semester",
       });
 
