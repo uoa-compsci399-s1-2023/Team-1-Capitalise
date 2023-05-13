@@ -271,7 +271,7 @@ describe("POST user", () => {
       name: "My Next Test User",
       email: "testuser222@aucklanduni.ac.nz",
       password: "test",
-      projectId: "645b8a5ce8dc8357cec2e7a4",
+      projectId: "6432fe007b09c2f91d48a134",
     };
 
     await request(app)
@@ -592,7 +592,7 @@ describe("DELETE a User", () => {
         );
         // Check if the user was removed from the project with ID 6432fe877b09c2f91d48a162
         const project = await Project.findOne({
-          _id: "645b8a5ce8dc8357cec2e7a4",
+          _id: "6432fe007b09c2f91d48a134",
         });
         expect(project.members).toEqual(
           expect.not.arrayContaining([{ _id: user4._id }])
