@@ -53,6 +53,7 @@ const Hero = () => {
           indicators={false}
           navButtonsAlwaysInvisible={true}
           swipe={false}
+          interval={10000}
         >
           {heroBanners.map((banner, i) => (
             <Box
