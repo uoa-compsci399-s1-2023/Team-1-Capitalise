@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { Parameter, validateParameter } = require("../models/parameter");
+const { Project } = require("../models/project");
 
-const semesterRegex = new RegExp(/(S|s)\d{1} (19|20)\d{2}$/);
+const semesterRegex = new RegExp(/((S|s)\d{1} (19|20)\d{2}$|SX 20XX)/);
 
 String.prototype.capitalize = function () {
   return this.replace(/(^|\s)([a-z])/g, function (m, p1, p2) {
@@ -111,6 +112,51 @@ const deleteParameter = async (req, res) => {
 
     if (!parameter) {
       return res.status(400).send("Error - The parameter does not exist!");
+    }
+
+    //Check if parameter is Miscellaneous category or SX 20XX semester. Do NOT allow these to be deleted.
+    if (
+      (parameter.parameterType === "category" &&
+        parameter.value === "Miscellaneous") ||
+      (parameter.parameterType === "semester" && parameter.value === "SX 20XX")
+    ) {
+      return res.status(400).send({
+        fail: "Error - You cannot delete this parameter! It is required by the system for error handling!",
+      });
+    }
+
+    //If the parameter is a category, change all projects with this category to miscellaneous
+    if (parameter.parameterType === "category") {
+      const misc = await Parameter.find({
+        name: "Miscellaneous",
+        parameterType: "category",
+      });
+
+      await Project.updateMany(
+        {
+          category: parameter._id,
+        },
+        {
+          category: misc._id,
+        }
+      );
+    }
+
+    //If the parameter is a semester, change the semester to SX 20XX
+    if (parameter.parameterType === "semester") {
+      const miscSem = await Parameter.findOne({
+        name: "SX 20XX",
+        parameterType: "semester",
+      });
+
+      await Project.updateMany(
+        {
+          semester: parameter._id,
+        },
+        {
+          semester: miscSem._id,
+        }
+      );
     }
 
     await parameter.deleteOne();

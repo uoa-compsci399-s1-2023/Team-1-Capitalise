@@ -192,7 +192,6 @@ function validateProject(project) {
       "Peoples Choice"
     ),
     category: Joi.string()
-      .valid("Mobile Development", "Game Development", "Web Development")
       .required(),
     tags: Joi.array().items(Joi.string()),
   });
