@@ -81,7 +81,6 @@ function Home() {
           <Carousel
             items={awardShowcase}
             backgroundColor={"white"}
-            //title={awardShowcase[0].semester.value Capstone Winners}
             category={"S1 2023 Capstone Winners"}
             display={{ xs: "flex", md: "none" }}
           />
