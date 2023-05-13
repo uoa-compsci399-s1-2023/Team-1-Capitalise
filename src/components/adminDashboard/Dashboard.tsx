@@ -8,209 +8,193 @@ import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import { useEffect, useState } from "react";
 
-import { ClearAll, DateRange, EmojiEvents } from "@mui/icons-material";
+import { DateRange, EmojiEvents } from "@mui/icons-material";
+import CategoryIcon from "@mui/icons-material/Category";
 
-const drawerWidth = 240;
+import { getCategories } from "../../api/getCategories";
+import { TCategory } from "../../model/TCategory";
 
-const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
+import { getSemesters } from "../../api/getSemesters";
+import { TSemester } from "../../model/TSemester";
 
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
+import { getAwards } from "../../api/getAwards";
+import { TAward } from "../../model/TAward";
 
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
+import { Button, Stack } from "@mui/material";
+import MyTabs from "../../components/MyTabs";
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+const Dashboard = () => {
+  const [categoryCount, setCategoryCount] = useState(0);
+  const [semesterCount, setSemesterCount] = useState(0);
+  const [awardCount, setAwardCount] = useState(0);
 
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
+  const [open, setOpen] = useState(false);
 
-function Dashboard() {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const dashboardTabs = [
+    {
+      label: "Overview",
+      index: "1",
+      Component: (
+        <Stack height="100%">
+          <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
+            <Typography variant="h6">Summary</Typography>
 
-  const handleDrawerOpen = () => {
+            <Grid container spacing={3} paddingTop={3}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper sx={{ p: 3 }}>
+                  <Typography variant="h4">Categories</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CategoryIcon
+                      color="primary"
+                      sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
+                    />
+                    <Typography variant="h4">{categoryCount}</Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper sx={{ p: 3 }}>
+                  <Typography variant="h4">Semesters</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <DateRange
+                      color="primary"
+                      sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
+                    />
+                    <Typography variant="h4">{semesterCount}</Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper sx={{ p: 3 }}>
+                  <Typography variant="h4">Awards</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <DateRange
+                      color="primary"
+                      sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
+                    />
+                    <Typography variant="h4">{awardCount}</Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            </Grid>
+            <Typography paddingTop={10} variant="h6">
+              {/* Show newly created projects over a timeframe (maybe for the week??) */}
+              Recently created projects
+            </Typography>
+          </Box>
+        </Stack>
+      ),
+    },
+    {
+      label: "Categories",
+      index: "2",
+      Component: (
+        <Box height="100%" padding="0px 24px 10px 24px">
+          <Typography variant="h6">Category Info</Typography>
+        </Box>
+      ),
+    },
+    {
+      label: "Semesters",
+      index: "3",
+      Component: (
+        <Box height="100%" padding="0px 24px 10px 24px">
+          <Typography variant="h6">Semester info</Typography>
+        </Box>
+      ),
+    },
+    {
+      label: "Awards",
+      index: "4",
+      Component: (
+        <Box height="100%" padding="0px 24px 10px 24px">
+          <Typography variant="h6">Award info</Typography>
+        </Box>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    // grab the categories from the API
+    const fetchCategories = getCategories().then((data) => {
+      setCategoryCount(data.length);
+    });
+  }, []);
+
+  useEffect(() => {
+    // grab the semesters from the API
+    const fetchCategories = getSemesters().then((data) => {
+      setSemesterCount(data.length);
+    });
+  }, []);
+
+  useEffect(() => {
+    // grab the semesters from the API
+    const fetchAwards = getAwards().then((data) => {
+      setAwardCount(data.length);
+    });
+  }, []);
+
+  const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
+  const handleClose = () => {
     setOpen(false);
   };
 
   return (
-    <Box paddingTop={5} paddingLeft={15} sx={{ display: "flex" }}>
-      <Drawer
-        variant="permanent"
-        anchor="left"
-        sx={{
-          "& .MuiPaper-root": {
-            marginTop: "70px",
-            width: "120px",
-          },
-        }}
+    <Stack
+      direction={{ xs: "column", md: "row" }}
+      justifyContent={{ xs: "start", md: "center" }}
+      spacing={0}
+      minHeight="92vh"
+      margin="8vh 0vh auto"
+      paddingTop="20px"
+    >
+      <Stack
+        display="flex"
+        direction="column"
+        alignItems="start"
+        width={{ xs: "100%", md: "305px" }}
+        padding="24px"
       >
-        <List>
-          <ListItemButton
-            sx={{
-              flexDirection: "column",
-              alignItems: "left",
-              marginTop: "30px",
-            }}
-          >
-            <ListItemIcon>
-              <ClearAll />
-            </ListItemIcon>
-            <ListItemText primary="Categories" />
-          </ListItemButton>
-
-          <ListItemButton
-            sx={{
-              flexDirection: "column",
-              alignItems: "left",
-              marginTop: "10px",
-            }}
-          >
-            <ListItemIcon>
-              <DateRange />
-            </ListItemIcon>
-            <ListItemText primary="Semesters" />
-          </ListItemButton>
-
-          <ListItemButton
-            sx={{
-              flexDirection: "column",
-              alignItems: "left",
-              marginTop: "10px",
-            }}
-          >
-            <ListItemIcon>
-              <EmojiEvents />
-            </ListItemIcon>
-            <ListItemText primary="Awards" />
-          </ListItemButton>
-        </List>
-      </Drawer>
-
-      <Box component="main" sx={{ flexGrow: 0.5 }}>
-        <Typography variant="h1">Admin dashboard</Typography>
-        <Box
-          display="grid"
-          gridTemplateColumns="repeat(3, 1fr)"
-          flexDirection="row"
-          gap="50px"
-          justifyContent={"center"}
-          paddingTop={5}
-          paddingLeft={21}
-        >
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h4">Categories</Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <ClearAll
-                color="primary"
-                sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
-              />
-              <Typography variant="h4">10</Typography>
-            </Box>
-          </Paper>
-
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h4">Semesters</Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <DateRange
-                color="primary"
-                sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
-              />
-              <Typography variant="h4">10</Typography>
-            </Box>
-          </Paper>
-
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h4">Awards</Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <EmojiEvents
-                color="primary"
-                sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
-              />
-              <Typography variant="h4">10</Typography>
-            </Box>
-          </Paper>
+        <Box display={{ xs: "flex", md: "block" }} width="100%">
+          {/* The Paper components overviewing number of categories, semesters and awards  */}
+          <Box paddingLeft={{ xs: "24px", md: "0px" }}>
+            <Typography variant="h1">Welcome Admin</Typography>
+          </Box>
         </Box>
+      </Stack>
+      <Box height="inherit" width={{ xs: "100%", md: "1150px" }}>
+        <MyTabs tabs={dashboardTabs} />
       </Box>
-    </Box>
+    </Stack>
   );
-}
+};
 
 export default Dashboard;
