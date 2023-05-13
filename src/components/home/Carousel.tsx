@@ -20,14 +20,14 @@ const Carousel = ({
   const slideRight = () => {
     const element = document.getElementById(category + "carousel");
     if (element) {
-      element.scrollLeft = element.scrollLeft - 400;
+      element.scrollLeft = element.scrollLeft - 390;
     }
   };
 
   const slideLeft = () => {
     const element = document.getElementById(category + "carousel");
     if (element) {
-      element.scrollLeft = element.scrollLeft + 400;
+      element.scrollLeft = element.scrollLeft + 390;
     }
   };
 
@@ -58,8 +58,8 @@ const Carousel = ({
           <Box
             id={category + "carousel"}
             display="flex"
-            gap="80px"
-            width={{ xs: "360px", md: "760px", lg: "1160px", xl: "1560px" }}
+            gap="70px"
+            width={{ xs: "360px", md: "750px", lg: "1140px", xl: "1530px" }}
             padding="20px 20px 30px 20px"
             sx={{
               scrollBehavior: "smooth",

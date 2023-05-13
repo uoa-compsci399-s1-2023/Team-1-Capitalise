@@ -8,7 +8,6 @@ import Hero from "../components/home/Hero";
 import Carousel from "../components/home/Carousel";
 import { getAwardShowcase } from "../api/getAwardShowcase";
 import ShowcaseCarousel from "../components/home/ShowcaseCarousel";
-import { getProjects } from "../api/getProjects";
 
 function Home() {
   const theme = useTheme();
@@ -25,7 +24,7 @@ function Home() {
       }
     };
     const fetchAwardShowcase = async () => {
-      const respData = await getProjects();
+      const respData = await getAwardShowcase();
       if (respData) {
         setAwardShowcase(respData);
       }
@@ -60,15 +59,19 @@ function Home() {
     };
     fetchProjectsCategories();
   }, [catergories]);
-
   return (
     <Box mt="8vh">
       <Hero />
       <ShowcaseCarousel
         items={awardShowcase}
         backgroundColor={"white"}
-        //title={awardShowcase[0].semester.value Capstone Winners}
-        title={"S1 2023 Capstone Winners"}
+        title={
+          awardShowcase[0]
+            ? `Semester ${awardShowcase[0].semester.value.substring(
+                1
+              )} Capstone Winners`
+            : ""
+        }
         display={{ xs: "none", md: "flex" }}
       />
       <Carousel

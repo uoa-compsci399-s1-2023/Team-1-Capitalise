@@ -14,6 +14,7 @@ import topExcellence from "../../assets/topExcellence.svg";
 import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../customHooks/useAuth";
 
 interface Props {
   title: string;
@@ -44,9 +45,18 @@ const ProjectCard = ({
 
   // Yathi - Have to properly define type or build fails.
   let colour: (typeof theme)["customColors"] | string = "lightgrey";
-
   let awardText = "";
   let awardIcon = null;
+
+  //delete in final build
+  let loggedInAdmin = 0;
+  const auth = useAuth();
+  if (auth.user) {
+    if (auth.user.userType === "admin") {
+      loggedInAdmin = 1000;
+    }
+  }
+  //delete end
 
   const setBadge = (badges: string) => {
     if (badges === "Community Impact") {
@@ -67,7 +77,7 @@ const ProjectCard = ({
   setBadge(badges);
 
   return (
-    <Fade in={true} timeout={1000}>
+    <Fade in={true} timeout={loggedInAdmin}>
       <Card
         sx={{
           minWidth: 320,

@@ -43,7 +43,7 @@ const ShowcaseCarousel = ({
         <Box display="flex" justifyContent="center">
           <Typography
             variant="body1"
-            fontSize={{ xs: "20pt", md: "30pt", lg: "50pt" }}
+            fontSize={{ xs: "20pt", md: "24pt", lg: "30pt" }}
             fontWeight={500}
             noWrap
           >

@@ -45,7 +45,6 @@ const MyPagination = () => {
 
   useEffect(() => {
     setIsLoading(true);
-
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => {
@@ -70,6 +69,7 @@ const MyPagination = () => {
       ...currFilters,
       ["currPage"]: page,
     });
+    window.scrollTo(0, 0);
   };
 
   const currentPage = currFilters.currPage;
@@ -98,20 +98,18 @@ const MyPagination = () => {
           marginRight="auto"
           width={{ xs: "100%", md: gridWidth }}
         >
-          {!isLoading && (
-            <Typography
-              my={4}
-              variant="h1"
-              // component="h1"
-              sx={{
-                textAlign: { xs: "center", md: "left" },
-              }}
-            >
-              {currFilters.keywords
-                ? `Showing results for "${currFilters.keywords}"`
-                : `Projects`}
-            </Typography>
-          )}
+          <Typography
+            my={4}
+            variant="h1"
+            // component="h1"
+            sx={{
+              textAlign: { xs: "center", md: "left" },
+            }}
+          >
+            {currFilters.keywords
+              ? `Showing results for "${currFilters.keywords}"`
+              : `Projects`}
+          </Typography>
         </Box>
         {/* Render project data into the ProjectsGrid component */}
         {checkProjects && <ProjectsGrid projects={projects} />}

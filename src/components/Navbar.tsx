@@ -139,7 +139,16 @@ function ResponsiveAppBar() {
             {/* Check if User is logged in */}
             {uCheck
               ? [
-                <Button sx={{padding: "0 25px"}} key="upload" variant="contained" onClick={() => {goToPage("upload")}}>Upload</Button>,
+                  <Button
+                    sx={{ padding: "0 25px" }}
+                    key="upload"
+                    variant="contained"
+                    onClick={() => {
+                      goToPage("upload");
+                    }}
+                  >
+                    Upload
+                  </Button>,
                   <IconButton
                     key="profilepic"
                     onClick={handleOpenUserMenu}
@@ -246,8 +255,8 @@ function ResponsiveAppBar() {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                {/*bug*/}
                 <Avatar alt="Logged In" src={auth.user?.profilePicture}>
-                  {" "}
                   <img referrerPolicy="no-referrer" />
                 </Avatar>
               </IconButton>
