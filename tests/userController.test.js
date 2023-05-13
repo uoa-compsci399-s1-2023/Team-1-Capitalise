@@ -350,6 +350,7 @@ describe("POST user", () => {
       random_attribute: "random",
     };
 
+    
     await request(app)
       .post("/api/users")
       .send(data)
