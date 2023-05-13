@@ -1,5 +1,7 @@
 export type TCategory = {
   _id: string;
-  value: string;
+  category: {
+    value: string;
+  };
   parameterType: string;
 };

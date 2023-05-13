@@ -5,7 +5,7 @@ export async function getProjectsCategory(
   category: string
 ): Promise<TProject[] | undefined> {
   const resp = await fetch(
-    `${API_URL}/api/projects/search?category=${category}`
+    `${API_URL}/api/projects/search?category=${category}&sortBy=likes`
   );
   if (resp.ok) {
     return resp.json();

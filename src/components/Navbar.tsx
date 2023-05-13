@@ -24,6 +24,7 @@ import Typography from "@mui/material/Typography";
 import { AppRegistration, Login, Logout } from "@mui/icons-material";
 import { useAuth } from "../customHooks/useAuth";
 import { useState } from "react";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 
 const pages = ["About", "Projects"];
 const NoNavPages = [
@@ -139,7 +140,16 @@ function ResponsiveAppBar() {
             {/* Check if User is logged in */}
             {uCheck
               ? [
-                <Button sx={{padding: "0 25px"}} key="upload" variant="contained" onClick={() => {goToPage("upload")}}>Upload</Button>,
+                  <Button
+                    sx={{ padding: "0 25px" }}
+                    key="upload"
+                    variant="contained"
+                    onClick={() => {
+                      goToPage("upload");
+                    }}
+                  >
+                    Upload
+                  </Button>,
                   <IconButton
                     key="profilepic"
                     onClick={handleOpenUserMenu}
@@ -246,9 +256,18 @@ function ResponsiveAppBar() {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src={auth.user?.profilePicture}>
-                  {" "}
-                  <img referrerPolicy="no-referrer" />
+                <Avatar alt="Logged In">
+                  {auth.user && (
+                    <img
+                      src={auth.user.profilePicture}
+                      referrerPolicy="no-referrer"
+                    />
+                  )}
+                  {!auth.user && (
+                    <AccountCircleRoundedIcon
+                      sx={{ transform: "scale(2.5)" }}
+                    />
+                  )}
                 </Avatar>
               </IconButton>
             </Tooltip>
@@ -296,27 +315,26 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {/*The dropdown options*/}
-              <MenuItem
-                onClick={() => {
-                  handleCloseUserMenu();
-                  navigate(`../user/${auth.user?._id}`);
-                }}
-              >
-                {/*If User is logged in, render his name*/}
-                {uCheck
-                  ? [
-                      <Avatar
-                        key="userAva"
-                        // Yathi - Added referrerPolicy for google
-                        imgProps={{ referrerPolicy: "no-referrer" }}
-                        src={auth.user?.profilePicture}
-                      />,
-                      // <img key="refPolicy" referrerPolicy="no-referrer" /> ,
-                      auth.user?.name,
-                    ]
-                  : "Guest"}
-              </MenuItem>
-              <Divider />
+              {uCheck && (
+                <Box>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate(`../user/${auth.user?._id}`);
+                    }}
+                  >
+                    {/*If User is logged in, render his name*/}
+                    <Avatar
+                      key="userAva"
+                      // Yathi - Added referrerPolicy for google
+                      imgProps={{ referrerPolicy: "no-referrer" }}
+                      src={auth.user?.profilePicture}
+                    ></Avatar>
+                    {auth.user?.name}
+                  </MenuItem>
+                  <Divider />
+                </Box>
+              )}
               {/*Display settings based on login status*/}
               {uCheck
                 ? [
