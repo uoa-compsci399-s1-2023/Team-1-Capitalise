@@ -3,4 +3,5 @@ export type TAward = {
   value: string;
   parameterType: string;
   gradient: [];
+  image: string;
 };

@@ -16,8 +16,9 @@ import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
 import { getAwardTypes } from "../../api/getAwardTypes";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TAward } from "../../model/TAward";
+import { AwardTypeContext } from "../../app";
 
 interface Props {
   title: string;
@@ -45,29 +46,10 @@ const ShowcaseProjectCard = ({
     e.target.src = DefaultProjectImage;
   };
   const theme = useTheme();
-  const [awardTypes, setAwardTypes] = useState<TAward[]>([]);
+  const awardTypes = useContext(AwardTypeContext);
   let gradientColours = ["lightgrey", "lightgrey"];
   let awardText = "";
   let awardIcon = null;
-
-  useEffect(() => {
-    const fetchAwardTypes = async () => {
-      const respData = await getAwardTypes();
-      if (respData.length !== 0) {
-        setAwardTypes(respData);
-      }
-    };
-    fetchAwardTypes();
-  }, []);
-
-  const getAwardColours = (badges: string) => {
-    for (const awardType of awardTypes) {
-      if (awardType.value === badges) {
-        gradientColours = awardType.gradient;
-        awardText = awardType.value + " Award";
-      }
-    }
-  };
 
   //delete in final build
   let loggedInAdmin = 0;
@@ -81,14 +63,13 @@ const ShowcaseProjectCard = ({
 
   const setBadge = (badges: string) => {
     if (badges !== "default") {
-      if (badges === "Community Impact") {
-        awardIcon = communityImpact;
-      } else if (badges === "Top Excellence") {
-        awardIcon = topExcellence;
-      } else if (badges === "Peoples Choice") {
-        awardIcon = peoplesChoice;
+      for (const awardType of awardTypes) {
+        if (awardType.value === badges) {
+          gradientColours = awardType.gradient;
+          awardText = awardType.value + " Award";
+          awardIcon = awardType.image;
+        }
       }
-      getAwardColours(badges);
     }
   };
 
