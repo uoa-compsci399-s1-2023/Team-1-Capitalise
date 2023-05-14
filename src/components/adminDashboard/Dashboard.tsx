@@ -51,8 +51,15 @@ const Dashboard = () => {
   const [newCategory, setNewCategory] = useState("");
   const [categories, setCategories] = useState<TCategory[]>([]);
 
+  const [newSemester, setNewSemester] = useState("");
+  const [semesters, setSemesters] = useState<TSemester[]>([]);
+
   const handleNewCategory = (event: any) => {
     setNewCategory(event.target.value);
+  };
+
+  const handleNewSemester = (event: any) => {
+    setNewSemester(event.target.value);
   };
 
   const handleAddCategory = async () => {
@@ -119,9 +126,79 @@ const Dashboard = () => {
     }
   };
 
+  const handleAddSemester = async () => {
+    // call the API to  add semester
+    console.log(newSemester);
+    const token = auth.getToken();
+    if (token) {
+      const semester = {} as TSemester;
+
+      console.log("we can access the endpoint");
+      // replace with call to add parameter endpoint in api folder.
+      //fetch(`${API_URL}/api/projects/comment`, {
+      //  method: "POST",
+      //  headers: {
+      //    Accept: "application/json",
+      //    "Content-Type": "application/json",
+      //    "x-auth-token": token,
+      //  },
+      //  body: JSON.stringify({
+      //    projectId: projectId,
+      //    commentBody: text,
+      //  }),
+      //})
+      // update the categories (need to create a TCategory object based on response using the interface)
+      //.then((data) => {
+      //category._id = data._id;
+      //category.value = data.value;
+      //category.parameterType = data.parameterType;
+
+      //setCategories([categories, ...category]);
+      //});
+    }
+
+    // increment the semester count to reflect addition
+    setSemesterCount(semesterCount + 1);
+
+    // reset input field
+    setNewSemester("");
+  };
+
+  const handleDeleteSemester = async (semesterId: string) => {
+    // call the API to  delete category
+    const token = auth.getToken();
+    if (token) {
+      // replace with call to delete parameter endpoint in api folder.
+      //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+      //  method: "DELETE",
+      //  headers: {
+      //    "x-auth-token": token,
+      //  },
+
+      //}).then(() => {
+      // we need to update the categories.
+      //const updatedCategories = categories.filter(
+      //  (category) => category._id != categoryId
+      //);
+      //setCategories(updatedCategories);
+      //});
+
+      // decrement the category count to reflect deletion.
+      setSemesterCount(semesterCount - 1);
+
+      console.log("Delete semester:", semesterId);
+    }
+  };
+
   useEffect(() => {
     const fetchCategories = getCategories().then((data) => {
       setCategories(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchSemesters = getSemesters().then((data) => {
+      setSemesters(data);
     });
   }, []);
 
@@ -262,7 +339,53 @@ const Dashboard = () => {
       index: "3",
       Component: (
         <Box height="100%" padding="0px 24px 10px 24px">
-          <Typography variant="h6">Manage semesters</Typography>
+          <Typography paddingTop={3} variant="h6">
+            Manage semesters
+          </Typography>
+          <Box paddingTop={3} sx={{ maxHeight: "400px", overflow: "auto" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Semesters</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {semesters.map((semester) => (
+                  <TableRow key={semester._id}>
+                    <TableCell>{semester.value}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleDeleteSemester(semester._id)}
+                      >
+                        Delete semester
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+          <Typography paddingTop={5} variant="h6">
+            Add semester
+          </Typography>
+          <TextField
+            label="New semester"
+            value={newSemester}
+            onChange={handleNewSemester}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddSemester}
+          >
+            Add Semester
+          </Button>
         </Box>
       ),
     },
