@@ -33,6 +33,7 @@ import { TAward } from "../../model/TAward";
 import MyTabs from "../../components/MyTabs";
 
 import { addParameter } from "../../api/addParameter";
+import { deleteParameter } from "../../api/deleteParameter";
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
@@ -93,24 +94,17 @@ const Dashboard = () => {
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    // call the API to  delete category
+    // call the API to delete category
     const token = auth.getToken();
     if (token) {
       if (window.confirm("Are you sure you want to delete this category?")) {
-        // replace with call to delete parameter endpoint in api folder.
-        //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
-        //  method: "DELETE",
-        //  headers: {
-        //    "x-auth-token": token,
-        //  },
-
-        //}).then(() => {
-        // we need to update the categories.
-        //const updatedCategories = categories.filter(
-        //  (category) => category._id != categoryId
-        //);
-        //setCategories(updatedCategories);
-        //});
+        deleteParameter(categoryId, token).then(() => {
+          // we need to update the categories.
+          const updatedCategories = categories.filter(
+            (category) => category._id != categoryId
+          );
+          setCategories(updatedCategories);
+        });
 
         // decrement the category count to reflect deletion.
         setCategoryCount(categoryCount - 1);
@@ -150,20 +144,13 @@ const Dashboard = () => {
     const token = auth.getToken();
     if (token) {
       if (window.confirm("Are you sure you want to delete this semester?")) {
-        // replace with call to delete parameter endpoint in api folder.
-        //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
-        //  method: "DELETE",
-        //  headers: {
-        //    "x-auth-token": token,
-        //  },
-
-        //}).then(() => {
-        // we need to update the categories.
-        //const updatedCategories = categories.filter(
-        //  (category) => category._id != categoryId
-        //);
-        //setCategories(updatedCategories);
-        //});
+        deleteParameter(semesterId, token).then(() => {
+          // we need to update the semesters.
+          const updatedSemesters = semesters.filter(
+            (semester) => semester._id != semesterId
+          );
+          setSemesters(updatedSemesters);
+        });
 
         // decrement the category count to reflect deletion.
         setSemesterCount(semesterCount - 1);
@@ -194,7 +181,7 @@ const Dashboard = () => {
     }
 
     // increment the award count to reflect addition
-    setCategoryCount(awardCount + 1);
+    setAwardCount(awardCount + 1);
 
     // reset input field
     setNewAward("");
@@ -205,20 +192,11 @@ const Dashboard = () => {
     const token = auth.getToken();
     if (token) {
       if (window.confirm("Are you sure you want to delete this award?")) {
-        // replace with call to delete parameter endpoint in api folder.
-        //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
-        //  method: "DELETE",
-        //  headers: {
-        //    "x-auth-token": token,
-        //  },
-
-        //}).then(() => {
-        // we need to update the categories.
-        //const updatedCategories = categories.filter(
-        //  (category) => category._id != categoryId
-        //);
-        //setCategories(updatedCategories);
-        //});
+        deleteParameter(awardId, token).then(() => {
+          // we need to update the awards.
+          const updatedAwards = awards.filter((award) => award._id != awardId);
+          setAwards(updatedAwards);
+        });
 
         // decrement the category count to reflect deletion.
         setAwardCount(awardCount - 1);
@@ -484,11 +462,7 @@ const Dashboard = () => {
             fullWidth
             margin="normal"
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddSemester}
-          >
+          <Button variant="contained" color="primary" onClick={handleAddAward}>
             Add Award
           </Button>
         </Box>
