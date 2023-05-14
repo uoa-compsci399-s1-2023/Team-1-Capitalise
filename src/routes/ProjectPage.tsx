@@ -85,8 +85,7 @@ export default function ProjectPage() {
       })
     }
   }, [projectChanges]) // Will run anytime changes are set.
-
-
+  
   if (!isLoading) {
     return (
       <ProjectContext.Provider value={{ project, setProject, setProjectChanges }}>

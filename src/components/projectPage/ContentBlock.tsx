@@ -1,4 +1,4 @@
-import React, { useState, FC, useContext } from 'react'
+import React, { useState, FC, useContext, useRef, ReactNode } from 'react'
 import { Box, Stack, Typography, useTheme, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import EditIcon from '@mui/icons-material/Edit';
@@ -7,6 +7,7 @@ import { TProject } from '../../model/TProject';
 import { useAuth } from '../../customHooks/useAuth';
 import { ProjectContext } from '../../routes/ProjectPage';
 import ContentBlockDialog from './TextBlockDialog';
+import { MemoizedImageCarousel } from './ImageCarousel';
 
 export interface ContentBlockProps {
   tabIndex: number
@@ -16,7 +17,6 @@ export interface ContentBlockProps {
   value: TProject['content'][0]['tabContent'][0]['value']
 }
 
-
 export default function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: ContentBlockProps) {
 
   const theme = useTheme();
@@ -24,27 +24,25 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   const [isHovering, setIsHovering] = useState(false);
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const contentStackRef = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (auth.isAllowed(['admin'], project.members)) {
       setIsHovering(true);
+      // Change border to grey
+      if (contentStackRef.current) {
+        contentStackRef.current.style.border = `3px solid ${theme.customColors.DividerGrey}`
+      }
     }
   }
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsHovering(false);
+    // Reset border
+    if (contentStackRef.current) {
+      contentStackRef.current.style.border = theme.contentBlock!.border!
+    }
   }
-
-  const ContentStack = styled(Stack)({
-    backgroundColor: 'white',
-    border: theme.contentBlock?.border,
-    borderRadius: theme.contentBlock?.borderRadius,
-    padding: '40px 0 40px 40px',
-    width: '100%',
-    "&:hover": auth.isAllowed(['admin'], project.members) && {
-      border: `3px solid ${theme.customColors.DividerGrey}`
-    },
-  })
 
   const EditButton = styled(Button)({
     height: "100%",
@@ -64,6 +62,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         component='p'
         fontSize={20}
         fontWeight={600}
+        mb={2}
       >
         {subHeading}
       </Typography>
@@ -90,10 +89,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       break;
     case 'gallery':
       Content = () => (
-        <img src={value[0]}
-          width={'70%'}
-          style={{ margin: '0 auto' }}
-          alt="image" />
+        <MemoizedImageCarousel urls={value}/>
       )
   }
 
@@ -106,15 +102,23 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         blockIndex={blockIndex}
         initialValue={value[0]}
       />
-      <ContentStack
+      <div
+        ref={contentStackRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        style={{
+          backgroundColor: 'white',
+          border: theme.contentBlock?.border,
+          borderRadius: theme.contentBlock?.borderRadius,
+          padding: '40px 0 40px 40px',
+          width: '100%',
+        }}
       >
         <Stack flexDirection={'row'}>
 
           <Stack width={'100%'}>
-            <Heading />
-            <Content />
+            {Heading({})}
+            {Content({})}
           </Stack>
 
           {/* negative margin counters parent padding */}
@@ -137,7 +141,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           </Stack>
 
         </Stack>
-      </ContentStack>
+      </div>
     </>
   )
 }

@@ -16,7 +16,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
 
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [value, setValue] = useState(initialValue);
-  const [subHeading, setSubHeading] = useState(project.content[tabIndex].tabContent[blockIndex].subHeading ?? '')
+  const [subHeading, setSubHeading] = useState(project.content[tabIndex].tabContent[blockIndex].subHeading ?? '') // if undefined set to empty string
   const [valueError, setValueError] = useState('');
   const [headingError, setErrorHeading] = useState('');
 
@@ -70,7 +70,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
       fullWidth
       maxWidth='lg'
     >
-      
+
       <DialogTitle>Edit text block</DialogTitle>
       <DialogContent>
         <TextField
@@ -95,7 +95,6 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
           onChange={handleValueChange}
           fullWidth
           multiline
-          // sx={{ mt: 1, mb: 2 }}
         />
 
       </DialogContent>
