@@ -139,20 +139,20 @@ const ShowcaseProjectCard = ({
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ lineHeight: 0.4, fontSize: "17px" }}
+                  sx={{ lineHeight: 1, fontSize: "17px" }}
                 >
                   {semester}
                 </Typography>
                 <Typography
                   noWrap
                   variant="body1"
-                  sx={{ fontWeight: 600, fontSize: "35px" }}
+                  sx={{ lineHeight: 1, fontWeight: 600, fontSize: "35px" }}
                 >
                   {title}
                 </Typography>
                 <Typography
                   variant="body2"
-                  marginBottom="1.25em"
+                  marginBottom="1em"
                   height="21px"
                   sx={{
                     fontSize: "17px",

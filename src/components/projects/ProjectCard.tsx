@@ -141,16 +141,20 @@ const ProjectCard = ({
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ lineHeight: 0.4, fontSize: "10px" }}
+                  sx={{ lineHeight: 1, fontSize: "12px" }}
                 >
                   {semester}
                 </Typography>
-                <Typography noWrap variant="h5" sx={{ fontWeight: 600 }}>
+                <Typography
+                  noWrap
+                  variant="h5"
+                  sx={{ lineHeight: 1, fontWeight: 600 }}
+                >
                   {title}
                 </Typography>
                 <Typography
                   variant="body2"
-                  marginBottom="1em"
+                  marginBottom="0.9em"
                   height="14px"
                   sx={{
                     fontSize: "12px",
