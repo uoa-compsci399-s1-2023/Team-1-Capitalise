@@ -70,9 +70,8 @@ router.patch("/:projectId/like", auth, likeComment);
 //Update a project
 router.patch("/:projectId", [auth, graduate], updateProjectById);
 
-//This put call appends a user to a project. It is not great.
-router.put("/:id/:userid", [auth, graduate], addUserToProject);
-
+//This PATCH call appends a user to a project.
+router.patch("/addUser/:id/:userid", [auth, graduate], addUserToProject);
 
 //Delete the project. Will carry out general authorization first, before admin authorization.
 router.delete("/:projectId", [auth, admin], deleteProject);
@@ -84,7 +83,7 @@ router.patch("/badges/award", [auth, admin], awardBadge);
 router.get("/badges/:badge", getProjectByBadge);
 
 //This PATCH call pulls a user from a project.
-router.patch('/removeUser/:projectId/:id', auth, removeUserFromProject);
+router.patch('/removeUser/:projectId/:id', [auth, graduate], removeUserFromProject);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
