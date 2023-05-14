@@ -662,17 +662,34 @@ const searchProjects = async (req, res) => {
   }
 
   //Find relevant projects.
-  const projects = await Project.find(query)
-    .skip(req.query.startIndex)
-    .limit(req.query.numProjects)
-    //.populate("members", "_id, name")
-    .populate("semester", "value -_id")
-    .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
-    .sort(sortQuery);
+  const populateFields = [
+    { path: "semester", select: "value -_id" },
+    { path: "category", select: "value -_id" },
+    { path: "badges", select: "value -_id" },
+    { path: "tags", select: "name -_id" }
+  ];  
+
+  if (req.query.sortBy !== "semester") {
+    const projects = await Project.find(query)
+      .skip(req.query.startIndex)
+      .limit(req.query.numProjects)
+      .populate(populateFields)
+      .sort(sortQuery);
+
+    const totalProjectCount = await Project.find(query).count();
+
+    projects.unshift(totalProjectCount);
+
+    //Send the projects off.
+    return res.status(200).send(projects);
+  }
 
   if (req.query.sortBy === "semester") {
+    let projects = await Project.find(query)
+      .populate("semester", "value -_id")
+      .populate("category", "value -_id")
+      .populate("badges", "value -_id")
+      .populate("tags", "name -_id");
     //Perform manual sorting - O(nlogn + n)ish
     projects.forEach((project) => {
       project.splitSem = project.semester.value.split(" ");
@@ -690,14 +707,19 @@ const searchProjects = async (req, res) => {
         return b.splitSem[1] - a.splitSem[1];
       }
     });
+
+    const slicedProjects = projects.slice(
+      parseInt(req.query.startIndex),
+      parseInt(req.query.startIndex) + parseInt(req.query.numProjects)
+    );
+
+    const totalProjectCount = await Project.find(query).count();
+
+    slicedProjects.unshift(totalProjectCount);
+
+    //Send the projects off.
+    return res.status(200).send(slicedProjects);
   }
-
-  const totalProjectCount = await Project.find(query).count();
-
-  projects.unshift(totalProjectCount);
-
-  //Send the projects off.
-  return res.status(200).send(projects);
 };
 
 const likeComment = async (req, res) => {
