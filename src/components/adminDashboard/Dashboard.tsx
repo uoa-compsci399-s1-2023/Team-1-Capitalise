@@ -108,8 +108,6 @@ const Dashboard = () => {
 
         // decrement the category count to reflect deletion.
         setCategoryCount(categoryCount - 1);
-
-        console.log("Delete category:", categoryId);
       }
     }
   };
@@ -154,8 +152,6 @@ const Dashboard = () => {
 
         // decrement the category count to reflect deletion.
         setSemesterCount(semesterCount - 1);
-
-        console.log("Delete semester:", semesterId);
       }
     }
   };
@@ -200,8 +196,6 @@ const Dashboard = () => {
 
         // decrement the category count to reflect deletion.
         setAwardCount(awardCount - 1);
-
-        console.log("Delete award:", awardId);
       }
     }
   };
@@ -231,7 +225,9 @@ const Dashboard = () => {
       Component: (
         <Stack height="100%">
           <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
-            <Typography variant="h6">Summary</Typography>
+            <Typography paddingTop={2} variant="h6">
+              Summary
+            </Typography>
 
             <Grid container spacing={3} paddingTop={3}>
               <Grid item xs={12} sm={6} md={4}>
@@ -246,7 +242,7 @@ const Dashboard = () => {
                   >
                     <Category
                       color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
+                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
                     />
                     <Typography variant="h4">{categoryCount}</Typography>
                   </Box>
@@ -265,7 +261,7 @@ const Dashboard = () => {
                   >
                     <DateRange
                       color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
+                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
                     />
                     <Typography variant="h4">{semesterCount}</Typography>
                   </Box>
@@ -284,7 +280,7 @@ const Dashboard = () => {
                   >
                     <EmojiEvents
                       color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
+                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
                     />
                     <Typography variant="h4">{awardCount}</Typography>
                   </Box>
@@ -309,12 +305,12 @@ const Dashboard = () => {
               Manage categories
             </Typography>
             <Box paddingTop={3} sx={{ overflow: "auto" }}>
-              <TableContainer style={{ maxHeight: 400 }}>
+              <TableContainer style={{ maxHeight: 400, maxWidth: 800 }}>
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell style={{ width: "30%" }}>Categories</TableCell>
-                      <TableCell style={{ width: "70%" }}></TableCell>
+                      <TableCell style={{ width: "50%" }}>Categories</TableCell>
+                      <TableCell style={{ width: "50%" }}></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -339,21 +335,29 @@ const Dashboard = () => {
             <Typography paddingTop={5} variant="h6">
               Add category
             </Typography>
-            <TextField
-              label="New category"
-              value={newCategory}
-              onChange={handleNewCategory}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddCategory}
+            <Box
+              sx={{ width: 600 }}
+              component={"form"}
+              display={"flex"}
+              alignItems={"center"}
+              gap={2}
             >
-              Add Category
-            </Button>
+              <TextField
+                label="New category"
+                value={newCategory}
+                onChange={handleNewCategory}
+                variant="outlined"
+                fullWidth
+                margin="normal"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddCategory}
+              >
+                Submit
+              </Button>
+            </Box>
           </Box>
         </Stack>
       ),
@@ -367,12 +371,12 @@ const Dashboard = () => {
             Manage semesters
           </Typography>
           <Box paddingTop={3} sx={{ overflow: "auto" }}>
-            <TableContainer style={{ maxHeight: 400 }}>
+            <TableContainer style={{ maxHeight: 400, maxWidth: 800 }}>
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ width: "30%" }}>Semesters</TableCell>
-                    <TableCell style={{ width: "70%" }}></TableCell>
+                    <TableCell style={{ width: "50%" }}>Semesters</TableCell>
+                    <TableCell style={{ width: "50%" }}></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -397,21 +401,29 @@ const Dashboard = () => {
           <Typography paddingTop={5} variant="h6">
             Add semester
           </Typography>
-          <TextField
-            label="New semester"
-            value={newSemester}
-            onChange={handleNewSemester}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddSemester}
+          <Box
+            sx={{ width: 600 }}
+            component={"form"}
+            display={"flex"}
+            alignItems={"center"}
+            gap={2}
           >
-            Add Semester
-          </Button>
+            <TextField
+              label="New semester"
+              value={newSemester}
+              onChange={handleNewSemester}
+              variant="outlined"
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddSemester}
+            >
+              Submit
+            </Button>
+          </Box>
         </Box>
       ),
     },
@@ -424,12 +436,12 @@ const Dashboard = () => {
             Manage awards
           </Typography>
           <Box paddingTop={3} sx={{ overflow: "auto" }}>
-            <TableContainer style={{ maxHeight: 400 }}>
+            <TableContainer style={{ maxHeight: 400, maxWidth: 800 }}>
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ width: "30%" }}>Awards</TableCell>
-                    <TableCell style={{ width: "70%" }}></TableCell>
+                    <TableCell style={{ width: "50%" }}>Awards</TableCell>
+                    <TableCell style={{ width: "50%" }}></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -454,17 +466,29 @@ const Dashboard = () => {
           <Typography paddingTop={5} variant="h6">
             Add award
           </Typography>
-          <TextField
-            label="New award"
-            value={newAward}
-            onChange={handleNewAward}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          />
-          <Button variant="contained" color="primary" onClick={handleAddAward}>
-            Add Award
-          </Button>
+          <Box
+            sx={{ width: 600 }}
+            component={"form"}
+            display={"flex"}
+            alignItems={"center"}
+            gap={2}
+          >
+            <TextField
+              label="New award"
+              value={newAward}
+              onChange={handleNewAward}
+              variant="outlined"
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddAward}
+            >
+              Submit
+            </Button>
+          </Box>
         </Box>
       ),
     },
