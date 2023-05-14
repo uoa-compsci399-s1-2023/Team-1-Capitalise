@@ -8,9 +8,6 @@ import { styled } from '@mui/material/styles'
 import pluralize from 'pluralize';
 
 
-
-
-
 export default function LikeBtn() {
 
   const auth = useAuth();

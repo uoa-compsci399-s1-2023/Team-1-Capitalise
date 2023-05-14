@@ -6,7 +6,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TProject } from '../../model/TProject';
 import { useAuth } from '../../customHooks/useAuth';
 import { ProjectContext } from '../../routes/ProjectPage';
-import ContentBlockDialog from './TextBlockDialog';
+import TextBlockDialog from './TextBlockDialog';
+import GalleryBlockDialog from './GalleryBlockDialog';
 import { MemoizedImageCarousel } from './ImageCarousel';
 
 export interface ContentBlockProps {
@@ -55,6 +56,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
   let Content: FC = () => <></>;
   let Heading: FC = () => <></>;
+  let Dialog: FC = () => <></>;
 
   if (subHeading) {
     Heading = () => (
@@ -62,7 +64,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         component='p'
         fontSize={20}
         fontWeight={600}
-        mb={2}
+        mb={3}
       >
         {subHeading}
       </Typography>
@@ -73,6 +75,15 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     case 'text':
       Content = () => (
         <Typography variant='body1'>{value[0]}</Typography>
+      )
+      Dialog = () => (
+        <TextBlockDialog
+          setIsDialogOpen={setIsDialogOpen}
+          isDialogOpen={isDialogOpen}
+          tabIndex={tabIndex}
+          blockIndex={blockIndex}
+          initialValue={value[0]}
+        />
       )
       break;
     case 'quote':
@@ -88,20 +99,23 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       )
       break;
     case 'gallery':
-      Content = () => (
-        <MemoizedImageCarousel urls={value}/>
+      Content = () => (<MemoizedImageCarousel urls={value} />);
+      Dialog = () => (
+        <GalleryBlockDialog
+          setIsDialogOpen={setIsDialogOpen}
+          isDialogOpen={isDialogOpen}
+          tabIndex={tabIndex}
+          blockIndex={blockIndex}
+          initialUrls={value}
+        />
       )
   }
 
   return (
     <>
-      <ContentBlockDialog
-        setIsDialogOpen={setIsDialogOpen}
-        isDialogOpen={isDialogOpen}
-        tabIndex={tabIndex}
-        blockIndex={blockIndex}
-        initialValue={value[0]}
-      />
+
+      {Dialog({})}
+
       <div
         ref={contentStackRef}
         onMouseEnter={handleMouseEnter}

@@ -8,6 +8,7 @@ export function ImageCarousel({ urls }: { urls: string[] }) {
     <Carousel
       animation='slide'
       duration={600}
+      sx={{mt: 1}}
     >
       {urls.map((imgUrl, index) => (
         <Stack
@@ -18,7 +19,6 @@ export function ImageCarousel({ urls }: { urls: string[] }) {
             href={imgUrl} 
             target='_blank'
             style={{
-              // width: 'auto',
               margin: '0 auto'
             }}
           >

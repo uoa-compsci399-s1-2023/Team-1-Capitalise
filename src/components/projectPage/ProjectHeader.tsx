@@ -46,13 +46,12 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
   return (
     <>
       <Stack
-
         sx={headerStyle}
       >
         <Box>
           <Typography
             variant="h1"
-            color="initial"
+            color="black"
             mt={1}
             fontWeight={600}
             alignSelf={'center'}

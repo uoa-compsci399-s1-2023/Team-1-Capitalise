@@ -14,17 +14,15 @@ import { useAuth } from '../../../customHooks/useAuth';
 export default function SemesterField() {
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [value, setValue] = useState<string>('');
   const theme = useTheme();
   const auth = useAuth();
-  
-  // // const searchParams = useSearchParams();
 
-  // useEffect(() => {
-  //   setValue(project.semester.value)
-  // }, [project])
+  useEffect( () => {
+    fetchCurrentParameters()
+  },[])
 
   const handleMouseIn = () => {
     if (auth.user && auth.isAllowed(['admin'], project.members)) {

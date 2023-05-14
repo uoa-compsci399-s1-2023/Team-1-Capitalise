@@ -4,11 +4,11 @@ import React, { useState } from "react";
 
 
 const LinkForm = styled(FormControl)({
-    marginBottom: 8,
-    minWidth: 150,
-    maxWidth: 300
-    
-  }
+  marginBottom: 8,
+  minWidth: 150,
+  maxWidth: 300
+
+}
 );
 
 const SocialLinkField = styled(TextField)({
@@ -41,12 +41,13 @@ const options = [
 ];
 export default function ProjectLinksForm() {
   const [selectedOptions, setSelectedOptions] = useState([{ option: '', text: '' }]);
-  const handleOptionChange = (index:any, event:any) => {
+  
+  const handleOptionChange = (index: any, event: any) => {
     const newSelectedOptions = [...selectedOptions];
     newSelectedOptions[index].option = event.target.value;
     setSelectedOptions(newSelectedOptions);
   };
-  const handleTextChange = (index:any, event:any) => {
+  const handleTextChange = (index: any, event: any) => {
     const newSelectedOptions = [...selectedOptions];
     newSelectedOptions[index].text = event.target.value;
     setSelectedOptions(newSelectedOptions);
@@ -58,45 +59,45 @@ export default function ProjectLinksForm() {
 
   return (
     <React.Fragment>
-        
-  <Grid item xs={12}>
-  <Typography variant="subtitle2" gutterBottom>
-        Project Resources
-      </Typography>
-    {selectedOptions.map((selectedOption, index) => (
-    <Grid item xs={12} key={index}>
-      <LinkForm>
-        <Select
-          labelId={`select-label-${index}`}
-          value={selectedOption.option}
-          onChange={(event) => handleOptionChange(index, event)}
-          autoWidth
-        >
-          {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label} {index}
-            </MenuItem>
-          ))}
-        </Select>
-      </LinkForm>
 
-      {selectedOption.option !== '' && (
-        <SocialLinkField
-          fullWidth
-          label="Insert a Link"
-          value={selectedOption.text}
-          onChange={(event) => handleTextChange(index, event)}
-        />
-      )}
-    </Grid>
-    
-    
-  ))}
+      <Grid item xs={12}>
+        <Typography variant="subtitle2" gutterBottom>
+          Project Resources
+        </Typography>
+        {selectedOptions.map((selectedOption, index) => (
+          <Grid item xs={12} key={index}>
+            <LinkForm>
+              <Select
+                labelId={`select-label-${index}`}
+                value={selectedOption.option}
+                onChange={(event) => handleOptionChange(index, event)}
+                autoWidth
+              >
+                {options.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label} {index}
+                  </MenuItem>
+                ))}
+              </Select>
+            </LinkForm>
 
-  
-<Button onClick={handleAdd}>Add more links  </Button>
-    </Grid>
+            {selectedOption.option !== '' && (
+              <SocialLinkField
+                fullWidth
+                label="Insert a Link"
+                value={selectedOption.text}
+                onChange={(event) => handleTextChange(index, event)}
+              />
+            )}
+          </Grid>
 
-  </React.Fragment>
+
+        ))}
+
+
+        <Button onClick={handleAdd}>Add more links  </Button>
+      </Grid>
+
+    </React.Fragment>
   )
 }

@@ -1,4 +1,4 @@
-import React, { SetStateAction, useContext, useState } from 'react'
+import React, { SetStateAction, useContext, useState, useEffect } from 'react'
 import { TProject } from '../../model/TProject'
 import { Dialog, DialogContent, DialogTitle, FormControl, OutlinedInput, DialogActions, Button, FormHelperText, InputLabel, TextField } from '@mui/material'
 import { ProjectContext } from '../../routes/ProjectPage'
@@ -19,6 +19,10 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
   const [subHeading, setSubHeading] = useState(project.content[tabIndex].tabContent[blockIndex].subHeading ?? '') // if undefined set to empty string
   const [valueError, setValueError] = useState('');
   const [headingError, setErrorHeading] = useState('');
+
+  useEffect(() => {
+    setValue(initialValue)
+  }, [isDialogOpen])
 
   const handleClose = () => {
     setIsDialogOpen(false);
@@ -69,35 +73,46 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
       onClose={handleClose}
       fullWidth
       maxWidth='lg'
+      PaperProps= {{sx: {p: 2}}}
     >
 
-      <DialogTitle>Edit text block</DialogTitle>
-      <DialogContent>
+      <DialogTitle>Edit sub-heading</DialogTitle>
+      <DialogContent
+      >
         <TextField
           id='block-heading-edit'
-          label='Sub-heading'
+          hiddenLabel
+          placeholder='Enter sub-heading...'
           variant='outlined'
           error={!!headingError}
           helperText={headingError}
           value={subHeading}
           onChange={handleSubHeadingChange}
+          onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}} // Save if enter pressed
           fullWidth
-          sx={{ mt: 1, mb: 2 }}
+          sx={{ mt: 1, mb: 1 }}
         />
+      </DialogContent>
+
+      <DialogTitle>Edit content</DialogTitle>
+      <DialogContent>
 
         <TextField
           id='block-content-edit'
-          label='Content'
+          hiddenLabel
           variant='outlined'
           error={!!valueError}
           helperText={valueError}
           value={value}
           onChange={handleValueChange}
+          onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}}
           fullWidth
           multiline
-        />
+          sx={{ mt: 1, mb: 1 }}
 
+        />
       </DialogContent>
+
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button onClick={handleSave}>Save</Button>
