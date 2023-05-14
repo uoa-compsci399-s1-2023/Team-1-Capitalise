@@ -20,6 +20,7 @@ import {
   TableRow,
   TableCell,
   TextField,
+  TableContainer,
 } from "@mui/material";
 
 import { DateRange, EmojiEvents } from "@mui/icons-material";
@@ -286,33 +287,35 @@ const Dashboard = () => {
             <Typography paddingTop={3} variant="h6">
               Manage categories
             </Typography>
-            <Box paddingTop={3} sx={{ maxHeight: "400px", overflow: "auto" }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Categories</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {categories.map((category) => (
-                    <TableRow key={category._id}>
-                      <TableCell>{category.value}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleDeleteCategory(category._id)}
-                        >
-                          Delete category
-                        </Button>
-                      </TableCell>
+            <Box paddingTop={3} sx={{ overflow: "auto" }}>
+              <TableContainer style={{ maxHeight: 400 }}>
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell style={{ width: "30%" }}>Categories</TableCell>
+                      <TableCell style={{ width: "70%" }}></TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {categories.map((category) => (
+                      <TableRow key={category._id}>
+                        <TableCell>{category.value}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => handleDeleteCategory(category._id)}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Box>
-            <Typography paddingTop={5} variant="h6">
+            <Typography paddingTop={13} variant="h6">
               Add category
             </Typography>
             <TextField
@@ -342,31 +345,33 @@ const Dashboard = () => {
           <Typography paddingTop={3} variant="h6">
             Manage semesters
           </Typography>
-          <Box paddingTop={3} sx={{ maxHeight: "400px", overflow: "auto" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Semesters</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {semesters.map((semester) => (
-                  <TableRow key={semester._id}>
-                    <TableCell>{semester.value}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleDeleteSemester(semester._id)}
-                      >
-                        Delete semester
-                      </Button>
-                    </TableCell>
+          <Box paddingTop={3} sx={{ overflow: "auto" }}>
+            <TableContainer style={{ maxHeight: 400 }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ width: "30%" }}>Semesters</TableCell>
+                    <TableCell style={{ width: "70%" }}></TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {semesters.map((semester) => (
+                    <TableRow key={semester._id}>
+                      <TableCell>{semester.value}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => handleDeleteSemester(semester._id)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
           <Typography paddingTop={5} variant="h6">
             Add semester
