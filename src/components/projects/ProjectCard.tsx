@@ -15,6 +15,9 @@ import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
+import { getAwardTypes } from "../../api/getAwardTypes";
+import { useEffect, useState } from "react";
+import { TAward } from "../../model/TAward";
 
 interface Props {
   title: string;
@@ -42,11 +45,28 @@ const ProjectCard = ({
     e.target.src = DefaultProjectImage;
   };
   const theme = useTheme();
-
-  // Yathi - Have to properly define type or build fails.
-  let colour: (typeof theme)["customColors"] | string = "lightgrey";
+  const [awardTypes, setAwardTypes] = useState<TAward[]>([]);
+  let gradientColours = ["lightgrey", "lightgrey"];
   let awardText = "";
   let awardIcon = null;
+
+  useEffect(() => {
+    const fetchAwardTypes = async () => {
+      const respData = await getAwardTypes();
+      if (respData.length !== 0) {
+        setAwardTypes(respData);
+      }
+    };
+    fetchAwardTypes();
+  }, []);
+
+  const getAwardColours = (badges: string) => {
+    for (const awardType of awardTypes) {
+      if (awardType.value === badges) {
+        gradientColours = awardType.gradient;
+      }
+    }
+  };
 
   //delete in final build
   let loggedInAdmin = 0;
@@ -59,16 +79,14 @@ const ProjectCard = ({
   //delete end
 
   const setBadge = (badges: string) => {
+    getAwardColours(badges);
     if (badges === "Community Impact") {
-      colour = theme.customColors.communityImpact!;
       awardText = "Community Impact Award";
       awardIcon = communityImpact;
     } else if (badges === "Top Excellence") {
-      colour = theme.customColors.excellenceAward!;
       awardText = "Top Excellence Award";
       awardIcon = topExcellence;
     } else if (badges === "Peoples Choice") {
-      colour = theme.customColors.peoplesChoice!;
       awardText = "People's Choice Award";
       awardIcon = peoplesChoice;
     }
@@ -96,7 +114,12 @@ const ProjectCard = ({
             src={image}
             onError={handleDefaultImage}
           />
-          <Box bgcolor={colour} height="8px" />
+          <Box
+            height="8px"
+            sx={{
+              background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[1]})`,
+            }}
+          />
 
           <CardContent
             sx={{
@@ -127,9 +150,14 @@ const ProjectCard = ({
                 </Typography>
                 <Typography
                   variant="body2"
-                  marginBottom="1.5em"
-                  height="4px"
-                  sx={{ lineHeight: 0.4, fontSize: "10px", color: colour }}
+                  marginBottom="1em"
+                  height="14px"
+                  sx={{
+                    fontSize: "12px",
+                    background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[0]})`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
                 >
                   {awardText}
                 </Typography>
