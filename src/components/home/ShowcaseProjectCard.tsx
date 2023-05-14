@@ -64,6 +64,7 @@ const ShowcaseProjectCard = ({
     for (const awardType of awardTypes) {
       if (awardType.value === badges) {
         gradientColours = awardType.gradient;
+        awardText = awardType.value + " Award";
       }
     }
   };
@@ -79,16 +80,15 @@ const ShowcaseProjectCard = ({
   //delete end
 
   const setBadge = (badges: string) => {
-    getAwardColours(badges);
-    if (badges === "Community Impact") {
-      awardText = "Community Impact Award";
-      awardIcon = communityImpact;
-    } else if (badges === "Top Excellence") {
-      awardText = "Top Excellence Award";
-      awardIcon = topExcellence;
-    } else if (badges === "Peoples Choice") {
-      awardText = "People's Choice Award";
-      awardIcon = peoplesChoice;
+    if (badges !== "default") {
+      if (badges === "Community Impact") {
+        awardIcon = communityImpact;
+      } else if (badges === "Top Excellence") {
+        awardIcon = topExcellence;
+      } else if (badges === "Peoples Choice") {
+        awardIcon = peoplesChoice;
+      }
+      getAwardColours(badges);
     }
   };
 
@@ -153,7 +153,7 @@ const ShowcaseProjectCard = ({
                 <Typography
                   variant="body2"
                   marginBottom="1.25em"
-                  height="19px"
+                  height="21px"
                   sx={{
                     fontSize: "17px",
                     background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[0]})`,

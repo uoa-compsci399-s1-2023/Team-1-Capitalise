@@ -64,6 +64,7 @@ const ProjectCard = ({
     for (const awardType of awardTypes) {
       if (awardType.value === badges) {
         gradientColours = awardType.gradient;
+        awardText = awardType.value + " Award";
       }
     }
   };
@@ -79,16 +80,15 @@ const ProjectCard = ({
   //delete end
 
   const setBadge = (badges: string) => {
-    getAwardColours(badges);
-    if (badges === "Community Impact") {
-      awardText = "Community Impact Award";
-      awardIcon = communityImpact;
-    } else if (badges === "Top Excellence") {
-      awardText = "Top Excellence Award";
-      awardIcon = topExcellence;
-    } else if (badges === "Peoples Choice") {
-      awardText = "People's Choice Award";
-      awardIcon = peoplesChoice;
+    if (badges !== "default") {
+      if (badges === "Community Impact") {
+        awardIcon = communityImpact;
+      } else if (badges === "Top Excellence") {
+        awardIcon = topExcellence;
+      } else if (badges === "Peoples Choice") {
+        awardIcon = peoplesChoice;
+      }
+      getAwardColours(badges);
     }
   };
 
