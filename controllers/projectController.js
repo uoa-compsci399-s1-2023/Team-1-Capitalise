@@ -302,6 +302,14 @@ const addNewProject = async (req, res) => {
       .status(400)
       .send({ project: null, msg: error.details[0].message });
 
+  //Check if user already has a project. NOT IMPLEMENTED YET FOR TESTING REASONS!
+  // const myUser = await User.findById(req.user._id);
+  // if (myUser.project) {
+  //   return res
+  //   .status(400)
+  //   .send({ project: myUser.project, msg: "You already belong to a project!" });
+  // }
+
   //Check if semester exists in database
   const sem = await Parameter.findOne({
     value: req.body.semester,
