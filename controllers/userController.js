@@ -320,72 +320,6 @@ const getUserComments = async (req, res) => {
   }
 };
 
-const removeUserFromProject = async (req, res) => {
-  const { id, projectId } = req.params;
-
-  if (!(await checkUser(id))) {
-    return res.status(400).send({ user: null, msg: "No user found" });
-  }
-
-  //If user tries to remove themself
-  /*if (id == req.user._id) {
-    return res
-      .status(403)
-      .json({ fail: "You are not authorized remove yourself" });
-  }*/
-
-  const user = await User.findById(req.user._id);
-
-  //If a user is not an admin and their projectId is not null
-  if (user.project != null && req.user.userType != "admin") {
-    //Checks if user is part of the project they wish to remove a user from
-    if (user.project._id != projectId) {
-      return res
-        .status(403)
-        .json({ fail: "You are not authorized to edit this project" });
-    }
-  }
-  //If a user has not project and they are not adamin
-  else if (user.project == null && req.user.userType != "admin") {
-    return res
-      .status(403)
-      .json({ fail: "You are not authorized to edit this project" });
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////
-  //user must be an admin or their projectId is valid if above functions are not run
-
-  //Check if user to be removed is in project
-  let project = await Project.findById(projectId);
-
-  //If we find the id in members attribute
-  const memberIn = project.members.filter((member) => member._id == id);
-
-  //If member is not found
-  if (memberIn.length == 0) {
-    return res
-      .status(404)
-      .send({ project: null, msg: "No member found with that id" });
-  }
-
-  //If user is found
-  //Remove user from project
-  project = await Project.findByIdAndUpdate(
-    project._id,
-    {
-      //Pop
-      $pull: { members: id },
-    },
-    { new: true }
-  );
-  //Remove project from user
-  await User.findByIdAndUpdate(id, {
-    project: null
-  });
-  //Send 200 status code and project
-  return res.status(200).send(project);
-};
-
 module.exports = {
   getAllUsers,
   getUserById,
@@ -398,5 +332,4 @@ module.exports = {
   postGoogleUser,
   searchUsers,
   getUserComments,
-  removeUserFromProject,
 };

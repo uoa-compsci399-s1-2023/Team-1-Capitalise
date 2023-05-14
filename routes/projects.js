@@ -24,7 +24,8 @@ const {
   getCommentsByProjectId,
   awardBadge,
   getAwardedProjectByLatestSemester,
-  getFrontPageHeadlines
+  getFrontPageHeadlines,
+  removeUserFromProject
 } = require("../controllers/projectController");
 
 //Need to add more projects to properly test this
@@ -81,6 +82,9 @@ router.patch("/badges/award", [auth, admin], awardBadge);
 
 //Get projects with :badge whatever
 router.get("/badges/:badge", getProjectByBadge);
+
+//This PATCH call pulls a user from a project.
+router.patch('/removeUser/:projectId/:id', auth, removeUserFromProject);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
