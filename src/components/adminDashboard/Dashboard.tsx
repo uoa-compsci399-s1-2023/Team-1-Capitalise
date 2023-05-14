@@ -1,17 +1,4 @@
 import * as React from "react";
-import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import { List, ListItem, ListItemText } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
-import { useEffect, useState } from "react";
-import { useAuth } from "../../customHooks/useAuth";
 
 import {
   Table,
@@ -21,11 +8,18 @@ import {
   TableCell,
   TextField,
   TableContainer,
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  Stack,
 } from "@mui/material";
 
-import { DateRange, EmojiEvents } from "@mui/icons-material";
-import CategoryIcon from "@mui/icons-material/Category";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import { DateRange, Category, EmojiEvents } from "@mui/icons-material";
+
+import { useEffect, useState } from "react";
+import { useAuth } from "../../customHooks/useAuth";
 
 import { getCategories } from "../../api/getCategories";
 import { TCategory } from "../../model/TCategory";
@@ -36,7 +30,6 @@ import { TSemester } from "../../model/TSemester";
 import { getAwards } from "../../api/getAwards";
 import { TAward } from "../../model/TAward";
 
-import { Button, Stack } from "@mui/material";
 import MyTabs from "../../components/MyTabs";
 
 import { addParameter } from "../../api/addParameter";
@@ -57,12 +50,19 @@ const Dashboard = () => {
   const [semesters, setSemesters] = useState<TSemester[]>([]);
   const [newSemester, setNewSemester] = useState("");
 
+  const [awards, setAwards] = useState<TAward[]>([]);
+  const [newAward, setNewAward] = useState("");
+
   const handleNewCategory = (event: any) => {
     setNewCategory(event.target.value);
   };
 
   const handleNewSemester = (event: any) => {
     setNewSemester(event.target.value);
+  };
+
+  const handleNewAward = (event: any) => {
+    setNewAward(event.target.value);
   };
 
   const handleAddCategory = async () => {
@@ -96,25 +96,27 @@ const Dashboard = () => {
     // call the API to  delete category
     const token = auth.getToken();
     if (token) {
-      // replace with call to delete parameter endpoint in api folder.
-      //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
-      //  method: "DELETE",
-      //  headers: {
-      //    "x-auth-token": token,
-      //  },
+      if (window.confirm("Are you sure you want to delete this category?")) {
+        // replace with call to delete parameter endpoint in api folder.
+        //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+        //  method: "DELETE",
+        //  headers: {
+        //    "x-auth-token": token,
+        //  },
 
-      //}).then(() => {
-      // we need to update the categories.
-      //const updatedCategories = categories.filter(
-      //  (category) => category._id != categoryId
-      //);
-      //setCategories(updatedCategories);
-      //});
+        //}).then(() => {
+        // we need to update the categories.
+        //const updatedCategories = categories.filter(
+        //  (category) => category._id != categoryId
+        //);
+        //setCategories(updatedCategories);
+        //});
 
-      // decrement the category count to reflect deletion.
-      setCategoryCount(categoryCount - 1);
+        // decrement the category count to reflect deletion.
+        setCategoryCount(categoryCount - 1);
 
-      console.log("Delete category:", categoryId);
+        console.log("Delete category:", categoryId);
+      }
     }
   };
 
@@ -147,25 +149,82 @@ const Dashboard = () => {
     // call the API to  delete category
     const token = auth.getToken();
     if (token) {
-      // replace with call to delete parameter endpoint in api folder.
-      //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
-      //  method: "DELETE",
-      //  headers: {
-      //    "x-auth-token": token,
-      //  },
+      if (window.confirm("Are you sure you want to delete this semester?")) {
+        // replace with call to delete parameter endpoint in api folder.
+        //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+        //  method: "DELETE",
+        //  headers: {
+        //    "x-auth-token": token,
+        //  },
 
-      //}).then(() => {
-      // we need to update the categories.
-      //const updatedCategories = categories.filter(
-      //  (category) => category._id != categoryId
-      //);
-      //setCategories(updatedCategories);
-      //});
+        //}).then(() => {
+        // we need to update the categories.
+        //const updatedCategories = categories.filter(
+        //  (category) => category._id != categoryId
+        //);
+        //setCategories(updatedCategories);
+        //});
 
-      // decrement the category count to reflect deletion.
-      setSemesterCount(semesterCount - 1);
+        // decrement the category count to reflect deletion.
+        setSemesterCount(semesterCount - 1);
 
-      console.log("Delete semester:", semesterId);
+        console.log("Delete semester:", semesterId);
+      }
+    }
+  };
+
+  const handleAddAward = async () => {
+    // call the API to  add award
+    console.log(newAward);
+    const token = auth.getToken();
+    if (token) {
+      const award = {} as TAward;
+
+      console.log("Adding the award:", newAward);
+
+      addParameter(newAward, "award", token)
+        // update the awards (need to create a TAward object based on response using the interface)
+        .then((data) => {
+          award._id = data._id;
+          award.value = data.value;
+          award.parameterType = data.parameterType;
+
+          setAwards([...awards, award]);
+        });
+    }
+
+    // increment the award count to reflect addition
+    setCategoryCount(awardCount + 1);
+
+    // reset input field
+    setNewAward("");
+  };
+
+  const handleDeleteAward = async (awardId: string) => {
+    // call the API to  delete award
+    const token = auth.getToken();
+    if (token) {
+      if (window.confirm("Are you sure you want to delete this award?")) {
+        // replace with call to delete parameter endpoint in api folder.
+        //fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+        //  method: "DELETE",
+        //  headers: {
+        //    "x-auth-token": token,
+        //  },
+
+        //}).then(() => {
+        // we need to update the categories.
+        //const updatedCategories = categories.filter(
+        //  (category) => category._id != categoryId
+        //);
+        //setCategories(updatedCategories);
+        //});
+
+        // decrement the category count to reflect deletion.
+        setAwardCount(awardCount - 1);
+
+        console.log("Delete award:", awardId);
+      }
     }
   };
 
@@ -178,6 +237,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchSemesters = getSemesters().then((data) => {
       setSemesters(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchAwards = getAwards().then((data) => {
+      setAwards(data);
     });
   }, []);
 
@@ -201,7 +266,7 @@ const Dashboard = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <CategoryIcon
+                    <Category
                       color="primary"
                       sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
                     />
@@ -239,7 +304,7 @@ const Dashboard = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <EmojiEventsIcon
+                    <EmojiEvents
                       color="primary"
                       sx={{ height: 100, width: 100, opacity: 0.3, mr: 1 }}
                     />
@@ -293,7 +358,7 @@ const Dashboard = () => {
                 </Table>
               </TableContainer>
             </Box>
-            <Typography paddingTop={13} variant="h6">
+            <Typography paddingTop={5} variant="h6">
               Add category
             </Typography>
             <TextField
@@ -377,7 +442,55 @@ const Dashboard = () => {
       index: "4",
       Component: (
         <Box height="100%" padding="0px 24px 10px 24px">
-          <Typography variant="h6">Manage awards</Typography>
+          <Typography paddingTop={3} variant="h6">
+            Manage awards
+          </Typography>
+          <Box paddingTop={3} sx={{ overflow: "auto" }}>
+            <TableContainer style={{ maxHeight: 400 }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ width: "30%" }}>Awards</TableCell>
+                    <TableCell style={{ width: "70%" }}></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {awards.map((award) => (
+                    <TableRow key={award._id}>
+                      <TableCell>{award.value}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => handleDeleteAward(award._id)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Typography paddingTop={5} variant="h6">
+            Add award
+          </Typography>
+          <TextField
+            label="New award"
+            value={newAward}
+            onChange={handleNewAward}
+            variant="outlined"
+            fullWidth
+            margin="normal"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddSemester}
+          >
+            Add Award
+          </Button>
         </Box>
       ),
     },
