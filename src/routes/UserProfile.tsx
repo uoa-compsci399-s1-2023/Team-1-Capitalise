@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, Typography, styled } from "@mui/material";
 import { getProject } from "../api/getProject";
 import { getUser } from "../api/getUser";
 import { TUser } from "../model/TUser";
@@ -27,21 +27,42 @@ const UserProfile = () => {
   let { userID } = useParams();
   let token = "";
   let isLoggedIn = false;
+  const CustomScroll = styled(Box)({
+    overflowX: "hidden",
+    "&::-webkit-scrollbar": {
+      width: 7,
+    },
+    "&::-webkit-scrollbar-track": {
+      display: "none",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "darkgrey",
+      borderRadius: "10px",
+      opacity: "50`%",
+    },
+  });
+
   const userTabs = [
     {
       label: "Overview",
       index: "1",
       Component: (
         <Stack height="100%">
-          <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
+          <Box padding="5px 24px 10px 24px" width="100%">
             <Typography variant="h6">Bio</Typography>
             {typeof user != "undefined" && (
-              <Typography
-                sx={{ wordBreak: "break-word" }}
-                whiteSpace="pre-line"
+              <CustomScroll
+                minHeight="50px"
+                maxHeight={{ xs: "200px", md: "220px", xl: "300px" }}
+                overflow="scroll"
               >
-                {typeof user.bio != "undefined" ? user.bio : ""}
-              </Typography>
+                <Typography
+                  sx={{ wordBreak: "break-word" }}
+                  whiteSpace="pre-line"
+                >
+                  {typeof user.bio != "undefined" ? user.bio : ""}
+                </Typography>
+              </CustomScroll>
             )}
           </Box>
           <Divider />
@@ -77,7 +98,7 @@ const UserProfile = () => {
       label: "Likes",
       index: "2",
       Component: (
-        <Box height="100%" padding="0px 24px 10px 24px">
+        <Box height="100%" padding="5px 24px 10px 24px">
           <Typography variant="h6">Likes</Typography>
           <ProjectsGrid projects={likedProjects} justifyContent="start" />
         </Box>
@@ -87,7 +108,7 @@ const UserProfile = () => {
       label: "Comments",
       index: "3",
       Component: (
-        <Box height="100%" padding="0px 24px 10px 24px">
+        <Box height="100%" padding="5px 24px 10px 24px">
           <Typography variant="h6">Comments</Typography>
           {comments.map((comment) => (
             <MyComment
@@ -191,7 +212,7 @@ const UserProfile = () => {
         direction="column"
         alignItems="start"
         width={{ xs: "100%", md: "305px" }}
-        padding="24px"
+        padding={{ xs: "0px 24px", md: "24px" }}
       >
         <Box display={{ xs: "flex", md: "block" }} width="100%">
           <Box

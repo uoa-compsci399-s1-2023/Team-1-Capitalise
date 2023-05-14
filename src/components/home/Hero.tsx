@@ -24,6 +24,7 @@ const Hero = () => {
   const auth = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isLg = useMediaQuery(theme.breakpoints.down("xl"));
 
   useEffect(() => {
     const fetchHeroBanners = async () => {
@@ -39,10 +40,12 @@ const Hero = () => {
   useEffect(() => {
     if (isMobile) {
       setCarouselHeight("400px");
+    } else if (isLg) {
+      setCarouselHeight("450px");
     } else {
       setCarouselHeight("500px");
     }
-  }, [isMobile]);
+  }, [isMobile, isLg]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -99,7 +102,7 @@ const Hero = () => {
               position="absolute"
               zIndex={1}
               top={0}
-              padding={{ xs: 4, md: 7, lg: 10 }}
+              padding={{ xs: 4, md: 5, lg: 7, xl: 10 }}
             >
               <Box>
                 {!isStudent && (
