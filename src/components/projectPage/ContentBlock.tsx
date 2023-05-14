@@ -6,20 +6,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TProject } from '../../model/TProject';
 import { useAuth } from '../../customHooks/useAuth';
 import { ProjectContext } from '../../routes/ProjectPage';
+import ContentBlockDialog from './TextBlockDialog';
 
 export interface ContentBlockProps {
+  tabIndex: number
+  blockIndex: number
   type: TProject['content'][0]['tabContent'][0]['type']
   subHeading?: TProject['content'][0]['tabContent'][0]['subHeading']
   value: TProject['content'][0]['tabContent'][0]['value']
 }
 
 
-export default function ContentBlock({ type, value, subHeading }: ContentBlockProps) {
+export default function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: ContentBlockProps) {
 
   const theme = useTheme();
-  const [isHovering, setIsHovering] = useState(false);
   const auth = useAuth();
+  const [isHovering, setIsHovering] = useState(false);
   const { project, setProjectChanges } = useContext(ProjectContext);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (auth.isAllowed(['admin'], project.members)) {
@@ -51,7 +55,6 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
     }
   })
 
-
   let Content: FC = () => <></>;
   let Heading: FC = () => <></>;
 
@@ -66,7 +69,6 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
       </Typography>
     )
   }
-
 
   switch (type) {
     case 'text':
@@ -97,6 +99,13 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
 
   return (
     <>
+      <ContentBlockDialog
+        setIsDialogOpen={setIsDialogOpen}
+        isDialogOpen={isDialogOpen}
+        tabIndex={tabIndex}
+        blockIndex={blockIndex}
+        initialValue={value[0]}
+      />
       <ContentStack
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -114,6 +123,7 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
             <EditButton
               sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
               color='editBtnGrey'
+              onClick={() => setIsDialogOpen(true)}
             >
               <EditIcon />
             </EditButton>
@@ -129,6 +139,5 @@ export default function ContentBlock({ type, value, subHeading }: ContentBlockPr
         </Stack>
       </ContentStack>
     </>
-
   )
 }

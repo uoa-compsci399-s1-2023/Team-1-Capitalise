@@ -20,11 +20,11 @@ export default function SemesterField() {
   const theme = useTheme();
   const auth = useAuth();
   
-  // const searchParams = useSearchParams();
+  // // const searchParams = useSearchParams();
 
-  useEffect(() => {
-    setValue(project.semester.value)
-  }, [project])
+  // useEffect(() => {
+  //   setValue(project.semester.value)
+  // }, [project])
 
   const handleMouseIn = () => {
     if (auth.user && auth.isAllowed(['admin'], project.members)) {

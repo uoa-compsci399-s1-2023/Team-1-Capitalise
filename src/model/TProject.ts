@@ -1,4 +1,5 @@
 import { TComment } from "./TComment";
+import { TContentTab } from "./TContentTab";
 
 export type TProject = {
   _id: string;
@@ -25,16 +26,7 @@ export type TProject = {
   members: string[];
   banner: string;
   thumbnail: string;
-  content: {
-    tabName: string;
-    tabContent: {
-      type: string;
-      subHeading?: string;
-      value: string[];
-      _id: string;
-    }[];
-    _id: string;
-  }[];
+  content: TContentTab[]
   likes: number;
   comments: string[]; // array of ids
   tags: { name: string }[];

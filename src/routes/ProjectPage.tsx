@@ -157,7 +157,11 @@ export default function ProjectPage() {
               {/* If content is not empty, otherwise show "no content msg" */}
               {project.content[selectedTab] ?
                 project.content[selectedTab].tabContent.map((cb, index) => (
-                  <ContentBlock key={index} {...cb as ContentBlockProps} />
+                  <ContentBlock key={index} {...{
+                    ...cb, 
+                    ['tabIndex']: selectedTab, 
+                    ['blockIndex']: index
+                  }} />
                 ))
                 :
                 <Typography variant="body2" color="neutral">No content to display.</Typography>
