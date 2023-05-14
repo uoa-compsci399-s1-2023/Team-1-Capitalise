@@ -78,7 +78,6 @@ const getAwardedProjectByLatestSemester = async (req, res) => {
     parameterType: "semester",
   });
 
-
   if (!mySemester) {
     return res.status(400).send({ fail: "No semester found!" });
   }
@@ -92,10 +91,11 @@ const getAwardedProjectByLatestSemester = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id");
 
-
   while (projects.length < 3) {
     if (count == semesterList.length) {
-      return res.status(400).send({fail: "Error, no semesters have 3 projects or more with awards!"});
+      return res.status(400).send({
+        fail: "Error, no semesters have 3 projects or more with awards!",
+      });
     }
     mySemester = await Parameter.findOne({
       value: semesterList[count++],
@@ -652,7 +652,7 @@ const searchProjects = async (req, res) => {
       )
     ) {
       const mySortRequest = req.query.sortBy.toLowerCase();
-      //Note this is a very naive approach to sorting by semester. Due to complexity, it is easier to assume the semesters will be added in order. 
+      //Note this is a very naive approach to sorting by semester. Due to complexity, it is easier to assume the semesters will be added in order.
       mySortRequest == "likes" || mySortRequest == "semester"
         ? (sortQuery = { [mySortRequest]: -1 })
         : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending.
@@ -671,6 +671,26 @@ const searchProjects = async (req, res) => {
     .populate("badges", "value -_id")
     .populate("tags", "name -_id")
     .sort(sortQuery);
+
+  if (req.query.sortBy === "semester") {
+    //Perform manual sorting - O(nlogn + n)ish
+    projects.forEach((project) => {
+      project.splitSem = project.semester.value.split(" ");
+    });
+
+    projects.sort((a, b) => {
+      // Check for special case
+      if (a.splitSem[0] === "SX" && a.splitSem[1] === "20XX") {
+        return 1; // sort a after b
+      } else if (b.splitSem[0] === "SX" && b.splitSem[1] === "20XX") {
+        return -1; // sort b after a
+      } else if (b.splitSem[1] === a.splitSem[1]) {
+        return b.splitSem[0] === "S2" ? 1 : -1;
+      } else {
+        return b.splitSem[1] - a.splitSem[1];
+      }
+    });
+  }
 
   const totalProjectCount = await Project.find(query).count();
 
@@ -854,5 +874,5 @@ module.exports = {
   awardBadge,
   getAwardedProjectByLatestSemester,
   getFrontPageHeadlines,
-  sortSemesters
+  sortSemesters,
 };
