@@ -39,6 +39,8 @@ import { TAward } from "../../model/TAward";
 import { Button, Stack } from "@mui/material";
 import MyTabs from "../../components/MyTabs";
 
+import { addParameter } from "../../api/addParameter";
+
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
 
@@ -49,11 +51,11 @@ const Dashboard = () => {
   const [semesterCount, setSemesterCount] = useState(0);
   const [awardCount, setAwardCount] = useState(0);
 
-  const [newCategory, setNewCategory] = useState("");
   const [categories, setCategories] = useState<TCategory[]>([]);
+  const [newCategory, setNewCategory] = useState("");
 
-  const [newSemester, setNewSemester] = useState("");
   const [semesters, setSemesters] = useState<TSemester[]>([]);
+  const [newSemester, setNewSemester] = useState("");
 
   const handleNewCategory = (event: any) => {
     setNewCategory(event.target.value);
@@ -70,28 +72,17 @@ const Dashboard = () => {
     if (token) {
       const category = {} as TCategory;
 
-      console.log("we can access the endpoint");
-      // replace with call to add parameter endpoint in api folder.
-      //fetch(`${API_URL}/api/projects/comment`, {
-      //  method: "POST",
-      //  headers: {
-      //    Accept: "application/json",
-      //    "Content-Type": "application/json",
-      //    "x-auth-token": token,
-      //  },
-      //  body: JSON.stringify({
-      //    projectId: projectId,
-      //    commentBody: text,
-      //  }),
-      //})
-      // update the categories (need to create a TCategory object based on response using the interface)
-      //.then((data) => {
-      //category._id = data._id;
-      //category.value = data.value;
-      //category.parameterType = data.parameterType;
+      console.log("Adding the category:", newCategory);
 
-      //setCategories([categories, ...category]);
-      //});
+      addParameter(newCategory, "category", token)
+        // update the categories (need to create a TCategory object based on response using the interface)
+        .then((data) => {
+          category._id = data._id;
+          category.value = data.value;
+          category.parameterType = data.parameterType;
+
+          setCategories([...categories, category]);
+        });
     }
 
     // increment the category count to reflect addition
@@ -128,34 +119,21 @@ const Dashboard = () => {
   };
 
   const handleAddSemester = async () => {
-    // call the API to  add semester
+    // call the API to add semester
     console.log(newSemester);
     const token = auth.getToken();
     if (token) {
       const semester = {} as TSemester;
 
-      console.log("we can access the endpoint");
-      // replace with call to add parameter endpoint in api folder.
-      //fetch(`${API_URL}/api/projects/comment`, {
-      //  method: "POST",
-      //  headers: {
-      //    Accept: "application/json",
-      //    "Content-Type": "application/json",
-      //    "x-auth-token": token,
-      //  },
-      //  body: JSON.stringify({
-      //    projectId: projectId,
-      //    commentBody: text,
-      //  }),
-      //})
-      // update the categories (need to create a TCategory object based on response using the interface)
-      //.then((data) => {
-      //category._id = data._id;
-      //category.value = data.value;
-      //category.parameterType = data.parameterType;
+      console.log("Adding the semester:", newSemester);
 
-      //setCategories([categories, ...category]);
-      //});
+      addParameter(newSemester, "semester", token).then((data) => {
+        semester._id = data._id;
+        semester.value = data.value;
+        semester.parameterType = data.parameterType;
+
+        setSemesters([...semesters, semester]);
+      });
     }
 
     // increment the semester count to reflect addition
