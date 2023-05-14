@@ -13,7 +13,8 @@ const {
   adminDeleteUserById,
   adminUpdateUserDetails,
   searchUsers,
-  getUserComments
+  getUserComments,
+  removeUserFromProject
 } = require('../controllers/userController')
 
 
@@ -32,6 +33,8 @@ router.post('/', postUser);
 router.get('/getCurrentUser/me', auth, getCurrentUser);
 
 router.get('/myComments/:id', getUserComments)
+
+router.patch('/removeUser/:projectId/:id', auth, removeUserFromProject);
 
 router.delete('/admin/:id', [auth, admin], adminDeleteUserById);
 router.patch('/admin/:id', [auth, admin], adminUpdateUserDetails);

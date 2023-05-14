@@ -75,7 +75,7 @@ const createParameter = async (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
-  const { value, parameterType, image } = req.body;
+  const { value, parameterType} = req.body;
   let hexString = "0123456789abcdef";
   let randomColor = () => {
     let hexCode = "#";
@@ -102,11 +102,15 @@ const createParameter = async (req, res) => {
         .json({ fail: "Semesters must take on the form of SX 20YY" });
     }
 
+    if (req.body.image) {
+      req.body.image = `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/awards/${req.body.image}`
+    }
+
     let parameter = "";
     if (parameterType === "award") {
       parameter = new Parameter({
         value: value.capitalize(),
-        image: image,
+        image: req.body.image,
         parameterType,
         gradient: [randomColor(), randomColor()],
       });
