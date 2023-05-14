@@ -146,43 +146,53 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
-          <Box display="flex" alignItems="center" gap="30px">
-            <Stack direction="column" width="300px" gap="10px">
-              <Box
-                width="100%"
-                component="img"
-                src={profilePicture}
-                alt="user profile"
-                referrerPolicy="no-referrer"
-                borderRadius="50%"
-                alignSelf="center"
-                sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-              ></Box>
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={handleDeleteProfilePicture}
+          <Box display="flex" alignItems="center">
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              alignItems="center"
+              gap="30px"
+            >
+              <Stack
+                direction="column"
+                width={{ xs: "100%", md: "80%" }}
+                gap="10px"
               >
-                Delete Profile Picuture
-              </Button>
+                <Box
+                  width={{ xs: "50%", md: "90%" }}
+                  component="img"
+                  src={profilePicture}
+                  alt="user profile"
+                  referrerPolicy="no-referrer"
+                  borderRadius="50%"
+                  alignSelf="center"
+                  sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                ></Box>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={handleDeleteProfilePicture}
+                >
+                  Delete Profile Picuture
+                </Button>
+              </Stack>
+              <TextField
+                label="Change profile picture"
+                type="file"
+                fullWidth
+                margin="dense"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                error={!validImage}
+                helperText={!validImage ? "Select a valid image type" : ""}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.files) {
+                    constHandleImage(event.target.files[0]);
+                  }
+                }}
+              />
             </Stack>
-            <TextField
-              label="Change profile picture"
-              type="file"
-              fullWidth
-              margin="dense"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              error={!validImage}
-              helperText={!validImage ? "Select a valid image type" : ""}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                if (event.target.files) {
-                  constHandleImage(event.target.files[0]);
-                }
-              }}
-            />
           </Box>
           <TextField
             margin="dense"

@@ -8,16 +8,11 @@ import {
   useTheme,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import communityImpact from "../../assets/communityImpact.svg";
-import peoplesChoice from "../../assets/peoplesChoice.svg";
-import topExcellence from "../../assets/topExcellence.svg";
 import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
-import { getAwardTypes } from "../../api/getAwardTypes";
-import { useContext, useEffect, useState } from "react";
-import { TAward } from "../../model/TAward";
+import { useContext } from "react";
 import { AwardTypeContext } from "../../app";
 
 interface Props {

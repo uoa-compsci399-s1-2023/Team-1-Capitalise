@@ -228,7 +228,7 @@ const UserProfile = () => {
               ))}
             </Stack>
             {isLoggedIn && (
-              <Box paddingTop="10px">
+              <Box paddingTop="8px">
                 <Button
                   onClick={handleClickOpen}
                   variant="outlined"
