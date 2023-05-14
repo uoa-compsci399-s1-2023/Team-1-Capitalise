@@ -8,6 +8,7 @@ var session = require("express-session");
 
 //packages within our repo
 const projects = require("./routes/projects");
+const s3 = require("./routes/s3Routes");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
 const parameters = require("./routes/parameters");
@@ -37,5 +38,6 @@ app.use("/api/projects", projects);
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 app.use("/api/parameters", parameters);
+app.use("/api/s3", s3);
 
 module.exports = app;
