@@ -19,7 +19,10 @@ const parameterSchema = new mongoose.Schema({
     },
     image: {
         type: String
-    }
+    },
+    gradient: [{
+        type: String
+    }]
 });
 
 

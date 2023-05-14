@@ -75,8 +75,15 @@ const createParameter = async (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
-  const { value, parameterType } = req.body;
-
+  const { value, parameterType, image } = req.body;
+  let hexString = "0123456789abcdef";
+  let randomColor = () => {
+    let hexCode = "#";
+    for (i = 0; i < 6; i++) {
+      hexCode += hexString[Math.floor(Math.random() * hexString.length)];
+    }
+    return hexCode;
+  };
   try {
     //Check if parameter already exists
     const existingParam = await Parameter.findOne({
@@ -95,10 +102,20 @@ const createParameter = async (req, res) => {
         .json({ fail: "Semesters must take on the form of SX 20YY" });
     }
 
-    const parameter = new Parameter({
-      value: value.capitalize(),
-      parameterType,
-    });
+    let parameter = "";
+    if (parameterType === "award") {
+      parameter = new Parameter({
+        value: value.capitalize(),
+        image: image,
+        parameterType,
+        gradient: [randomColor(), randomColor()],
+      });
+    } else {
+      parameter = new Parameter({
+        value: value.capitalize(),
+        parameterType,
+      });
+    }
 
     await parameter.save();
 
