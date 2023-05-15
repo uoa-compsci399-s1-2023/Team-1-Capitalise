@@ -842,7 +842,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 404 for invalid userId ', async () => {
     const xToken = await getToken(userSignIn)
     const response = await request(app)
-    .put(URLstring + `${projectId}/invalidUserId`)
+    .patch(URLstring + `addUser/${projectId}/invalidUserId`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(404)
@@ -852,7 +852,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 404 for no existing user from userId ', async () => {
     const xToken = await getToken(userSignIn)
     const response = await request(app)
-    .put(URLstring + `${projectId}/64572fd1f66d6a2ad42c394b`)
+    .patch(URLstring + `addUser/${projectId}/64572fd1f66d6a2ad42c394b`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(404)
@@ -862,7 +862,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 404 for invalid id ', async () => {
     const xToken = await getToken(userSignIn)
     const response = await request(app)
-    .put(URLstring + `wrongProjectId/${userId2}`)
+    .patch(URLstring + `addUser/wrongProjectId/${userId2}`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(404)
@@ -872,7 +872,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 404 for no existing project from id ', async () => {
     const xToken = await getToken(userSignIn)
     const response = await request(app)
-    .put(URLstring + `64572fd1f66d6a2ad42c394r/${userId2}`)
+    .patch(URLstring + `addUser/64572fd1f66d6a2ad42c394r/${userId2}`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(404)
@@ -882,7 +882,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 403 if the user adding the user is not part of the project or not admin ', async () => {
     const xToken = await getToken(userSignIn2)
     const response = await request(app)
-    .put(URLstring + `${projectId}/${userId2}`)
+    .patch(URLstring + `addUser/${projectId}/${userId2}`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(403)
@@ -892,7 +892,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 400 if the user is trying to add themselves to the project ', async () => {
     const xToken = await getToken(userSignIn)
     const response = await request(app)
-    .put(URLstring + `${projectId}/${userId}`)
+    .patch(URLstring + `addUser/${projectId}/${userId}`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(400)
@@ -902,7 +902,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 200 with project being returned with the id added', async () => {
     const xToken = await getToken(userSignIn)
     const response = await request(app)
-    .put(URLstring + `${projectId}/${userId2}`)
+    .patch(URLstring + `addUser/${projectId}/${userId2}`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(200)
@@ -912,7 +912,7 @@ describe('Adds user to project using PUT endpoint /:id/:userid using addUserToPr
   it('Expects statusCode 400 if the user being added is already added ', async () => {
     const xToken = await getToken(userSignIn)
     const response = await request(app)
-    .put(URLstring + `${projectId}/${userId2}`)
+    .patch(URLstring + `addUser/${projectId}/${userId2}`)
     .set('x-auth-token', xToken)
 
     expect(response.statusCode).toEqual(400)
@@ -1065,7 +1065,7 @@ describe('Test the GET /badges/:badge endpoint using getProjectByBadge', () =>{
 
   it('Expects 200 from an Peoples Choice badge', async () => {
     const response = await request(app)
-    .get(URLstring + `badges/Peoples Choice`)
+    .get(URLstring + `badges/People\'s Choice`)
     
     expect(response.statusCode).toEqual(200)
   })

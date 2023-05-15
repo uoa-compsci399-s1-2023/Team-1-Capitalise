@@ -8,13 +8,17 @@ const { Comment, validateComment } = require("../models/comment");
 const { checkUser } = require("./checkParamValid");
 
 async function deleteComments(commentId) {
-  const comment = await Comment.findById({ _id: commentId });
+  try {
+    const comment = await Comment.findById({ _id: commentId });
 
-  const project = await Project.findByIdAndUpdate(comment.project, {
-    $pull: { comments: commentId },
-  });
+    const project = await Project.findByIdAndUpdate(comment.project, {
+      $pull: { comments: commentId },
+    });
 
-  const deleted = await Comment.findByIdAndDelete(commentId);
+    const deleted = await Comment.findByIdAndDelete(commentId);
+  } catch (ex) {
+    res.status(500).send(`Internal Server Error: ${ex}`);
+  }
 }
 
 // Gets all users and sorts by name
@@ -46,110 +50,106 @@ const postUser = async (req, res) => {
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
-
-  // Check if the email already exists
-  let user = await User.findOne({ email: req.body.email });
-  if (user) {
-    return res
-      .status(400)
-      .json({ fail: `Email ${user.email} already exists!` });
-  }
-
-  // Check if the username already exists
-  if (req.body.username) {
-    user = await User.findOne({ username: req.body.username });
+  try {
+    let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res.status(400).send("Username already registered.");
+      return res
+        .status(400)
+        .json({ fail: `Email ${user.email} already exists!` });
     }
-  } else {
-    req.body.username = req.body.email;
-  }
 
-  // Determine user type based on email domain
-  const gradEmailDomain = req.body.email.substring(
-    req.body.email.indexOf("@") + 1
-  );
-  let myUserType = "";
-  if (req.body.email === "asma.shakil@auckland.ac.nz") {
-    myUserType = "admin";
-  } else if (gradEmailDomain !== "aucklanduni.ac.nz") {
-    myUserType = "visitor";
-  } else {
-    myUserType = "graduate";
-  }
-
-  // Hash password
-  const password = await bcrypt.hash(req.body.password, 10);
-
-  // Create user object
-  user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    username: req.body.username,
-    password: password,
-    profilePicture: req.body.profilePicture,
-    links: req.body.links,
-    project: req.body.projectId ? { _id: req.body.projectId } : undefined,
-    bio: req.body.bio,
-    likedProjects: [],
-    myComments: [],
-    userType: myUserType,
-    isGoogleCreated: false,
-    skills: req.body.skills,
-  });
-
-  // If project ID provided, append user to project's members
-  if (req.body.projectId) {
-    const project = await Project.findById(req.body.projectId);
-    if (!project) {
-      return res.status(400).json({ fail: `Invalid projectId provided!` });
+    if (req.body.username) {
+      user = await User.findOne({ username: req.body.username });
+      if (user) {
+        return res.status(400).send("Username already registered.");
+      }
+    } else {
+      req.body.username = req.body.email;
     }
-    project.members.push(user);
-    await project.save();
+
+    const gradEmailDomain = req.body.email.substring(
+      req.body.email.indexOf("@") + 1
+    );
+    let myUserType = "";
+    if (req.body.email === "asma.shakil@auckland.ac.nz") {
+      myUserType = "admin";
+    } else if (gradEmailDomain !== "aucklanduni.ac.nz") {
+      myUserType = "visitor";
+    } else {
+      myUserType = "graduate";
+    }
+
+    const password = await bcrypt.hash(req.body.password, 10);
+
+    user = new User({
+      name: req.body.name,
+      email: req.body.email,
+      username: req.body.username,
+      password: password,
+      profilePicture: req.body.profilePicture,
+      links: req.body.links,
+      project: req.body.projectId ? { _id: req.body.projectId } : undefined,
+      bio: req.body.bio,
+      likedProjects: [],
+      myComments: [],
+      userType: myUserType,
+      isGoogleCreated: false,
+      skills: req.body.skills,
+    });
+
+    if (req.body.projectId) {
+      const project = await Project.findById(req.body.projectId);
+      if (!project) {
+        return res.status(400).json({ fail: `Invalid projectId provided!` });
+      }
+      project.members.push(user);
+      await project.save();
+    }
+
+    user = await user.save();
+    const token = user.generateAuthToken();
+
+    res.header("x-auth-token", token).status(201).send(user);
+  } catch (ex) {
+    res.status(500).send(`Internal Server Error: ${ex}`);
   }
-
-  // Save user and generate token
-  user = await user.save();
-  const token = user.generateAuthToken();
-
-  // Return response with user object and token in header
-  res.header("x-auth-token", token).status(201).send(user);
 };
 
 // Adds new user from Google
 const postGoogleUser = async (profile) => {
-  const gradEmailDomain = profile.email.substring(
-    profile.email.indexOf("@") + 1
-  );
-  let myUserType = "";
-  if (profile.email === "asma.shakil@auckland.ac.nz") {
-    myUserType = "admin";
-  } else if (gradEmailDomain !== "aucklanduni.ac.nz") {
-    myUserType = "visitor";
-  } else {
-    myUserType = "graduate";
+  try {
+    const gradEmailDomain = profile.email.substring(
+      profile.email.indexOf("@") + 1
+    );
+    let myUserType = "";
+    if (profile.email === "asma.shakil@auckland.ac.nz") {
+      myUserType = "admin";
+    } else if (gradEmailDomain !== "aucklanduni.ac.nz") {
+      myUserType = "visitor";
+    } else {
+      myUserType = "graduate";
+    }
+
+    // Create user object
+    const user = new User({
+      name: profile.name,
+      email: profile.email,
+      username: profile.email,
+      //Grab the full profile pic in Full HD
+      profilePicture: profile.picture.substring(0, profile.picture.length - 6),
+      likedProjects: [],
+      myComments: [],
+      userType: myUserType,
+      isGoogleCreated: true,
+    });
+
+    // Save user and return
+    return await user.save();
+  } catch (ex) {
+    res.status(500).send(`Internal Server Error: ${ex}`);
   }
-
-  // Create user object
-  const user = new User({
-    name: profile.name,
-    email: profile.email,
-    username: profile.email,
-    //Grab the full profile pic in Full HD
-    profilePicture: profile.picture.substring(0, profile.picture.length - 6),
-    likedProjects: [],
-    myComments: [],
-    userType: myUserType,
-    isGoogleCreated: true,
-  });
-
-  // Save user and return
-  return await user.save();
 };
 
-//updates the user details besides the user type
-//This method also assumes that if a user doesn't update a field
-//The front end form sent will send the user.<parameter> default value
 const updateUserDetails = async (req, res) => {
   const { id } = req.params;
 
@@ -163,53 +163,63 @@ const updateUserDetails = async (req, res) => {
     return res.status(400).json({ fail: "Invalid user ID" });
   }
 
-  const user = await User.findById(id);
-  if (!user) {
-    return res.status(400).json({ fail: "User not found" });
-  }
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({ fail: "User not found" });
+    }
 
-  if (req.body.password) {
-    req.body.password = await bcrypt.hash(req.body.password, 10);
-  }
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10);
+    }
 
-  if (req.user.userType !== "admin") {
-    delete req.body.userType;
-  }
+    if (req.user.userType !== "admin") {
+      delete req.body.userType;
+    }
 
-  if (req.body.email) {
-    req.body.username = req.body.email;
-  }
+    if (req.body.email) {
+      req.body.username = req.body.email;
+    }
 
-  const updateUser = await User.findByIdAndUpdate(id, req.body, { new: true });
-  res.json(updateUser);
+    const updateUser = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.json(updateUser);
+  } catch (ex) {
+    res.status(500).send(`Internal Server Error: ${ex}`);
+  }
 };
 
 const deleteUserById = async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
 
-  if (!user) {
-    return res.status(400).json({ fail: `User with id ${id} not found` });
+    if (!user) {
+      return res.status(400).json({ fail: `User with id ${id} not found` });
+    }
+
+    if (id !== req.user._id && req.user.userType !== "admin") {
+      return res
+        .status(403)
+        .json({ fail: "You are not authorized to delete this user" });
+    }
+
+    const { username, project } = user;
+
+    if (project) {
+      await Project.findByIdAndUpdate(project, { $pull: { members: id } });
+    }
+
+    if (user.myComments) {
+      user.myComments.forEach((commentId) => deleteComments(commentId));
+    }
+
+    await User.findByIdAndDelete(id);
+    res.json({ removed: `${username} removed` });
+  } catch (ex) {
+    res.status(500).send(`Internal Server Error: ${ex}`);
   }
-
-  if (id !== req.user._id && req.user.userType !== "admin") {
-    return res
-      .status(403)
-      .json({ fail: "You are not authorized to delete this user" });
-  }
-
-  const { username, project } = user;
-
-  if (project) {
-    await Project.findByIdAndUpdate(project, { $pull: { members: id } });
-  }
-
-  if (user.myComments) {
-    user.myComments.forEach((commentId) => deleteComments(commentId));
-  }
-
-  await User.findByIdAndDelete(id);
-  res.json({ removed: `${username} removed` });
 };
 
 const adminDeleteUserById = async (req, res) => {

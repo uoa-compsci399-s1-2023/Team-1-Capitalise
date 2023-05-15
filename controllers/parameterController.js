@@ -20,37 +20,41 @@ const getCategories = async (req, res) => {
 };
 
 const getSemesters = async (req, res) => {
-  mySems = await Parameter.aggregate([
-    {
-      $match: { parameterType: "semester" },
-    },
-    {
-      $project: {
-        value: 1,
-        parameterType: 1,
-        year: { $substr: ["$value", 3, -1] },
-        sem: { $substr: ["$value", 0, 2] },
+  try {
+    mySems = await Parameter.aggregate([
+      {
+        $match: { parameterType: "semester" },
       },
-    },
-    {
-      $addFields: {
-        isSX: {
-          $cond: { if: { $eq: ["$value", "SX 20XX"] }, then: 1, else: 0 },
+      {
+        $project: {
+          value: 1,
+          parameterType: 1,
+          year: { $substr: ["$value", 3, -1] },
+          sem: { $substr: ["$value", 0, 2] },
         },
       },
-    },
-    {
-      $sort: { isSX: 1, year: -1, sem: -1 },
-    },
-    {
-      $project: {
-        value: 1,
-        parameterType: 1,
+      {
+        $addFields: {
+          isSX: {
+            $cond: { if: { $eq: ["$value", "SX 20XX"] }, then: 1, else: 0 },
+          },
+        },
       },
-    },
-  ]);
+      {
+        $sort: { isSX: 1, year: -1, sem: -1 },
+      },
+      {
+        $project: {
+          value: 1,
+          parameterType: 1,
+        },
+      },
+    ]);
 
-  res.send(mySems);
+    res.send(mySems);
+  } catch (err) {
+    res.status(500).send(`Internal Server Error: ${err}`);
+  }
 };
 
 //Gets all categories and sorts by name
@@ -75,7 +79,7 @@ const createParameter = async (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
-  const { value, parameterType} = req.body;
+  const { value, parameterType } = req.body;
   let hexString = "0123456789abcdef";
   let randomColor = () => {
     let hexCode = "#";
@@ -103,7 +107,7 @@ const createParameter = async (req, res) => {
     }
 
     if (req.body.image) {
-      req.body.image = `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/awards/${req.body.image}`
+      req.body.image = `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/awards/${req.body.image}`;
     }
 
     let parameter = "";
@@ -126,7 +130,7 @@ const createParameter = async (req, res) => {
     res.status(201).json(parameter);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server error");
+    res.status(500).send(`Internal Server Error: ${error}`);
   }
 };
 
@@ -196,7 +200,7 @@ const deleteParameter = async (req, res) => {
     res.json({ removed: `${parameter.value} removed` });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server error");
+    res.status(500).send(`Internal Server Error: ${error}`);
   }
 };
 
