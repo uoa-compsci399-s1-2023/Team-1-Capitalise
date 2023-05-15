@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { CollectionsBookmarkOutlined } from "@mui/icons-material";
-import { FormControl, TextField, Grid, InputLabel, Select, MenuItem, Button, Typography } from "@mui/material";
+import { FormControl, TextField, Grid, InputLabel, Select, MenuItem, Button, Typography, IconButton} from "@mui/material";
 import React, { useState } from "react";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const LinkForm = styled(FormControl)({
     marginBottom: 8,
@@ -64,6 +64,11 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
     setSelectedOptions([...selectedOptions, {value: '', type: '' }]);
     
   };
+  const handleRemove = (index: number) => {
+    const newSelectedOptions = [...selectedOptions];
+    newSelectedOptions.splice(index, 1);
+    setSelectedOptions(newSelectedOptions);
+  };
 
   return (
     <React.Fragment>
@@ -89,7 +94,7 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
         </Select>
       </LinkForm>
 
-      {selectedOption.type !== '' && (
+      {selectedOption.type !== '' &&  (
         <SocialLinkField
           fullWidth
           label="Insert a Link"
@@ -97,13 +102,17 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
           onChange={(event) => handleTextChange(index, event)}
         />
       )}
+      {selectedOptions.length > 1 && (
+    <IconButton onClick={() => handleRemove(index)}>
+      <DeleteIcon />
+    </IconButton>
+      )}
     </Grid>
     
     
   ))}
 
-  
-<Button onClick={handleAdd}>Add more links  </Button>
+  {selectedOptions.length < 5 && ( <Button onClick={handleAdd}>Add more links  </Button>)}
     </Grid>
 
   </React.Fragment>
