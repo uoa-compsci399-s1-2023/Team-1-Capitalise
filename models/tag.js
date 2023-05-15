@@ -26,7 +26,7 @@ const Tag = mongoose.model('Tag', tagSchema);
 function validateTag(Tag) {
     const schema = Joi.object({
         projectId: Joi.objectId(),
-        name: Joi.string().min(1).max(20).required()
+        name: Joi.string().min(1).max(50).required()
     });
 
     return schema.validate(Tag);
