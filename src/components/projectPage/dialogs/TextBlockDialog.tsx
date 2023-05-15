@@ -53,7 +53,11 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
 
       // Get current content, and change the required block value.
       const content: TProject['content'] = JSON.parse(JSON.stringify(project.content))
-      content[tabIndex].tabContent[blockIndex].value = [value,]
+      if (value) {
+        content[tabIndex].tabContent[blockIndex].value = [value,]
+      } else {
+        content[tabIndex].tabContent[blockIndex].value = []
+      }
       if (subHeading.length > 0) {
         content[tabIndex].tabContent[blockIndex].subHeading = subHeading
       } else {

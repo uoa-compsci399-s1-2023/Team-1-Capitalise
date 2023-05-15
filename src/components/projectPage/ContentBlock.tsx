@@ -10,6 +10,7 @@ import TextBlockDialog from './dialogs/TextBlockDialog';
 import GalleryBlockDialog from './dialogs/GalleryBlockDialog';
 import { MemoizedImageCarousel } from './ImageCarousel';
 import AddIcon from '@mui/icons-material/Add';
+import AddBlockDialog from './dialogs/AddBlockDialog';
 
 
 export interface ContentBlockProps {
@@ -49,7 +50,8 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   }
 
   const handleAddContentBlock = () => {
-
+    setIsAddDialogOpen(true);
+    setIsHovering(false);
   }
 
   const EditButton = styled(Button)({
@@ -89,8 +91,10 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
   switch (type) {
     case 'text':
-      Content = () => (
+      Content = () => ( value.length > 0 ? 
         <Typography variant='body1'>{value[0]}</Typography>
+        :
+        <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty text block&gt;</Typography>
       )
       Dialog = () => (
         <TextBlockDialog
@@ -132,6 +136,12 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     <>
 
       <Dialog />
+
+      {isAddDialogOpen && 
+        <AddBlockDialog 
+          {...{isAddDialogOpen, setIsAddDialogOpen, tabIndex, blockIndex}} 
+        />
+      }
 
       <div
         ref={contentStackRef}
@@ -176,7 +186,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
           </Stack>
 
-          {blockIndex < 5 &&
+          {project.content[tabIndex].tabContent.length < 5 &&
             <AddButton
               sx={{
                 visibility: isHovering ? 'visible' : 'hidden',

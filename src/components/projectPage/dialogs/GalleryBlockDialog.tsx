@@ -28,12 +28,10 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
   const [subHeading, setSubHeading] = useState(project.content[tabIndex].tabContent[blockIndex].subHeading ?? '') // if undefined set to empty string
   const [valueError, setValueError] = useState('');
   const [headingError, setErrorHeading] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
 
   const handleClose = () => {
     setIsDialogOpen(false);
-    setImgsToDelete([]);
   };
 
   const handleFileAdded = () => {
@@ -88,27 +86,27 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
       const gallery = tab.tabContent[blockIndex]
 
       // Delete images
-      deleteGalleryImgs(project._id, tab.tabName, gallery._id, imgsToDelete)
+      deleteGalleryImgs(project._id, tab.tabName, gallery._id!, imgsToDelete)
         .then(proj => {
           if (proj) {
             setProject(proj);
           }
         });
 
-        if (newImgFiles.length > 0) {
-          const formData = new FormData()
-          newImgFiles.forEach(file => formData.append('gallery', file))
-          // Send files to backend
-          addGalleryImgs(project._id, tab.tabName, gallery._id, formData)
-            .then(resp => {
-              if (!resp.ok) {
-                resp.text().then(err => console.log(err))
-              } else {
-                resp.json().then(projJson => setProject(projJson))
-              }
-            })
-        }
-        setIsDialogOpen(false);
+      if (newImgFiles.length > 0) {
+        const formData = new FormData()
+        newImgFiles.forEach(file => formData.append('gallery', file))
+        // Send files to backend
+        addGalleryImgs(project._id, tab.tabName, gallery._id!, formData)
+          .then(resp => {
+            if (!resp.ok) {
+              resp.text().then(err => console.log(err))
+            } else {
+              resp.json().then(projJson => setProject(projJson))
+            }
+          })
+      }
+      setIsDialogOpen(false);
     }
   };
 
@@ -120,99 +118,91 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
       maxWidth='lg'
       PaperProps={{ sx: { p: 2 } }}
     >
-      { isLoading ? 
-        <CircularProgress /> 
-        :
-        <>
-          <DialogTitle>Edit sub-heading</DialogTitle>
-          <DialogContent>
-            <TextField
-              id='block-heading-edit'
-              hiddenLabel
-              placeholder='Enter sub-heading...'
-              variant='outlined'
-              error={!!headingError}
-              helperText={headingError}
-              value={subHeading}
-              onChange={handleSubHeadingChange}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }} // Save if enter pressed
-              fullWidth
-              sx={{ mt: 1, mb: 1 }}
+      <DialogTitle>Edit sub-heading</DialogTitle>
+      <DialogContent>
+        <TextField
+          id='block-heading-edit'
+          hiddenLabel
+          placeholder='Enter sub-heading...'
+          variant='outlined'
+          error={!!headingError}
+          helperText={headingError}
+          value={subHeading}
+          onChange={handleSubHeadingChange}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }} // Save if enter pressed
+          fullWidth
+          sx={{ mt: 1, mb: 1 }}
+        />
+      </DialogContent>
+
+      <DialogTitle>Current images</DialogTitle>
+      <DialogContent>
+        <Grid
+          container
+          spacing={1}
+          justifyContent={'center'}
+          alignItems={'center'}
+        >
+          {imgUrls.map((url, index) => (
+            <ImgThumbnail
+              key={index}
+              url={url}
+              {...{ blockIndex, tabIndex, imgUrls, setImgUrls, imgsToDelete }}
+              imgIndex={index}
             />
-          </DialogContent>
+          ))}
+        </Grid>
+      </DialogContent>
 
-          <DialogTitle>Current images</DialogTitle>
-          <DialogContent>
-            <Grid
-              container
-              spacing={1}
-              justifyContent={'center'}
-              alignItems={'center'}
-            >
-              {imgUrls.map((url, index) => (
-                <ImgThumbnail
-                  key={index}
-                  url={url}
-                  {...{ blockIndex, tabIndex, imgUrls, setImgUrls, imgsToDelete }}
-                  imgIndex={index}
+      <DialogTitle>Upload images</DialogTitle>
+      <DialogContent>
+        <Stack gap={2}>
+          {
+            newImgFiles.map((file, index) => (
+              <Box key={index}>
+                {/* File input */}
+                <OutlinedInput
+                  type='file'
+                  inputProps={{ accept: "image/*" }}
+                  onChange={(e) => handleFileUploaded(e as ChangeEvent<HTMLInputElement>, index)}
+                  sx={{ maxWidth: '300px' }}
                 />
-              ))}
-            </Grid>
-          </DialogContent>
+                {/* Delete file input */}
+                <Button
+                  color='neutral'
+                  sx={{
+                    ml: 2,
+                    height: '100%'
+                  }}
+                  onClick={() => handleRemoveFile(index)}
+                >
+                  <DeleteIcon />
+                </Button>
+              </Box>
+            ))
+          }
+        </Stack>
 
-          <DialogTitle>Upload images</DialogTitle>
-          <DialogContent>
-            <Stack gap={2}>
-              {
-                newImgFiles.map((file, index) => (
-                  <Box key={index}>
-                    {/* File input */}
-                    <OutlinedInput
-                      type='file'
-                      inputProps={{ accept: "image/*" }}
-                      onChange={(e) => handleFileUploaded(e as ChangeEvent<HTMLInputElement>, index)}
-                      sx={{ maxWidth: '300px' }}
-                    />
-                    {/* Delete file input */}
-                    <Button
-                      color='neutral'
-                      sx={{
-                        ml: 2,
-                        height: '100%'
-                      }}
-                      onClick={() => handleRemoveFile(index)}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </Box>
-                ))
-              }
-            </Stack>
+        {/* Max 5 images */}
+        {newImgFiles.length + imgUrls.length < 5 ?
+          <Button
+            variant='outlined'
+            onClick={handleFileAdded}
+            sx={{ mt: 2 }}
+            color='neutral'
+          >
+            Add file
+          </Button>
+          :
+          <Typography variant='subtitle1' color={theme.palette.neutral.main} mt={2}>Note: The maximum number of images is 5.</Typography>
+        }
+      </DialogContent>
 
-            {/* Max 5 images */}
-            {newImgFiles.length + imgUrls.length < 5 ?
-              <Button
-                variant='outlined'
-                onClick={handleFileAdded}
-                sx={{ mt: 2 }}
-                color='neutral'
-              >
-                Add file
-              </Button>
-              :
-              <Typography variant='subtitle1' color={theme.palette.neutral.main} mt={2}>Note: The maximum number of images is 5.</Typography>
-            }
-          </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleSave}>Save</Button>
+      </DialogActions>
 
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
-          </DialogActions>
-
-        </>
-      }
-
-    </Dialog >
-
+    </Dialog>
   )
 }
