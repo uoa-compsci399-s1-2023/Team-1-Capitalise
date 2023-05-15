@@ -35,7 +35,7 @@ interface TProjectInfo {
 
 
 export default function ProjectInfoForm(
-  {projectInfoToUpload, handleBack }: any,
+  {projectInfoToUpload, handleBack, projectInformation }: any,
 ) {
   
   //Project Name State
@@ -43,7 +43,6 @@ export default function ProjectInfoForm(
   
   //Project Description State 
   const [projectDescErrorText, setProjectDescErrorText] = useState('');
-  
   
   //Semester States
   const [semester, setSemester] = React.useState('');
@@ -61,11 +60,11 @@ export default function ProjectInfoForm(
   
   const validateProjectName= (projectN: any) => { 
     //Project Name Validation 
+    if(validator.isEmpty(projectN)) {
+      setProjectNameErrorText('Enter a project name.');
+    }
     if(!validator.isAscii(projectN)) {
       setProjectNameErrorText('Enter a project name with only ASCII characters.');
-      
-    } else if (!validator.isEmpty(projectN)) {
-      setProjectNameErrorText('Enter a project name.');
     } else { 
       setProjectNameErrorText('');
       return true;
@@ -73,7 +72,7 @@ export default function ProjectInfoForm(
   }
   const validateProjectSemester= (sem: any) => { 
     //Project Semester Validation 
-    if(!validator.isEmpty(sem)) {
+    if(validator.isEmpty(sem)) {
       setSemesterErrorText('Pick your project semester.');
     } else { 
       setSemesterErrorText('');
@@ -82,7 +81,7 @@ export default function ProjectInfoForm(
   }
   const validateProjectCategory= (cat: any) => { 
     //Project Category Validation 
-    if(!validator.isEmpty(cat)) {
+    if(validator.isEmpty(cat)) {
       setCategoryErrorText('Pick a project category.');
     } else { 
       setCategoryErrorText('');
@@ -92,8 +91,8 @@ export default function ProjectInfoForm(
   
   const validateProjectTags= (selectedTags: any) => { 
     //Project Tags Validation 
-    var msgError = 'The following tags are invalid: ';
-    if(selectedTags) {
+    if(selectedTags.length > 0) {
+      var msgError = 'The following tags are invalid: ';
       for (var i = 0 ; i < selectedTags.length; i++) {
         //Check against a blacklist, inappropriate word list.
         if (nw.en.includes(selectedTags[i])) {
@@ -101,7 +100,9 @@ export default function ProjectInfoForm(
         }
         
       }
-      setTagErrorText(msgError);
+      if (msgError != 'The following tags are invalid: ') {
+        setTagErrorText(msgError);
+      }
     } else { 
       setTagErrorText('');
       return true;
@@ -112,10 +113,10 @@ export default function ProjectInfoForm(
     if(!validator.isAscii(projectDesc)) {
       setProjectDescErrorText('Enter a project description with only ASCII characters.');
       
-    } else if (!validator.isEmpty(projectDesc)) {
-      setProjectNameErrorText('Enter a project description.');
+    } else if (validator.isEmpty(projectDesc)) {
+      setProjectDescErrorText('Enter a project description.');
     } else { 
-      setProjectNameErrorText('');
+      setProjectDescErrorText('');
       return true;
     }
   }
@@ -219,6 +220,7 @@ export default function ProjectInfoForm(
                 id="select-semester"
                 value={semester}
                 label="Semester"
+                error= {!!semesterErrorText}
                
                 onChange={handleSemesterChange}
               >
@@ -240,15 +242,14 @@ export default function ProjectInfoForm(
                 id="select-category"
                 value={category}
                 label="Cateogry"
-              
-          
+                error= {!!categoryErrorText}
+                defaultValue={projectInformation.categoryN}
                 onChange={handleCategoryChange}
               >
                 {categories}
               </Select>
               <FormHelperText>
                 {categoryErrorText ? categoryErrorText: '* What does this project specialise in?'}
-                
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -261,6 +262,7 @@ export default function ProjectInfoForm(
               name="projectName"
               label="Project Name"
               fullWidth
+              defaultValue={projectInformation.projN}
               error={!!projectNameErrorText}
               helperText={projectNameErrorText ? projectNameErrorText : ''}
               variant="outlined"
@@ -276,6 +278,7 @@ export default function ProjectInfoForm(
                 setSelectedTags(newValue);
               }}
               freeSolo
+              defaultValue={projectInformation.tags}
               renderTags={(value: string[], getTagProps) =>
                 value.map((option: string, index: number) => (
                   <Chip
@@ -291,6 +294,7 @@ export default function ProjectInfoForm(
                   variant="outlined"
                   label="Project Tags"
                   error={!!tagErrorText}
+                  
                   helperText={tagErrorText? tagErrorText : ''}
                 />
               )}
@@ -302,6 +306,7 @@ export default function ProjectInfoForm(
               id="projectDesc"
               name="projectDesc"
               label="Project Description"
+              defaultValue={projectInformation.projDescription}
               fullWidth
               variant="outlined"
               multiline={true}
