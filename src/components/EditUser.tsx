@@ -109,15 +109,13 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       if (typeof profilePictureFile !== "undefined") {
         let formData = new FormData();
         formData.append("profilePicture", profilePictureFile);
-        uploadProfilePicture(user._id, formData).then(
-          () => (window.location.href = window.location.href)
+        uploadProfilePicture(user._id, formData).then(() =>
+          window.location.reload()
         );
       } else if (deleteProfile) {
-        deleteProfilePicture(user._id).then(
-          () => (window.location.href = window.location.href)
-        );
+        deleteProfilePicture(user._id).then(() => window.location.reload());
       } else {
-        window.location.href = window.location.href;
+        window.location.reload();
       }
     });
     handleClose();
