@@ -28,6 +28,9 @@ const {
     uploadAward,
     deleteAward,
     getAwards,
+    uploadMobileHeroBanners,
+    getMobileHeroBanners,
+    deleteMobileHeroBanner,
 } = require('../controllers/s3ControllerApi')
 
 
@@ -36,8 +39,8 @@ const {
 const router = express.Router()
 const storage = multer.memoryStorage()
 
-const uploadUserPicture = multer({storage})
-const projectPictureRoute = multer({storage})
+const uploadUserPicture = multer({storage, limits : 30485760})
+const projectPictureRoute = multer({storage, limits : 30485760})
 
 const projectFields = projectPictureRoute.fields([
     {name:"image", maxCount: 5}, 
@@ -66,6 +69,12 @@ router.delete('/heroBanner/:heroBannerName' , deleteHeroBanner) //WORKS
 router.post('/award' , projectPictureRoute.array('award', 5), uploadAward) //WORKS
 router.get('/award' , getAwards) //WORKS
 router.delete('/award/:awardName' , deleteAward) //WORKS
+
+
+
+router.post('/mobileHeroBanner' , projectPictureRoute.array('heroBanner', 5), uploadMobileHeroBanners) //WORKS
+router.get('/mobileHeroBanner' , getMobileHeroBanners) //WORKS
+router.delete('/mobileHeroBanner/:heroBannerName' , deleteMobileHeroBanner) //WORKS
 
 
 /***************************************************

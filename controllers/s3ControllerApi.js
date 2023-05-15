@@ -8,6 +8,7 @@ const dotenv = require('dotenv').config()
 const { User, validate } = require('../models/user');
 const { Project } = require('../models/project');
 const { checkUser, checkProject } = require('./checkParamValid');
+const { date } = require("joi");
 
 const client = new S3Client({
     region: process.env.REGION,
@@ -19,6 +20,27 @@ const client = new S3Client({
 
 const URL = process.env.URL
 
+const getDate = () => {
+    let ts = Date.now();
+
+    const dateNow = new Date(ts)
+    
+    const today = dateNow.getDate();
+    const month = dateNow.getMonth() + 1;
+    const year = dateNow.getFullYear();
+    // current hours
+    const hours = dateNow.getHours();
+    
+    // current minutes
+    const minutes = dateNow.getMinutes();
+    // current seconds
+    const seconds = dateNow.getSeconds();
+    const miliSeconds = dateNow.getMilliseconds();
+    const current = `${year} ${month} ${today} ${hours} ${minutes} ${seconds} ${miliSeconds}`
+    
+
+    return current
+}
 
 //Replaces spaces with + 
 const checkString = (url) => {
@@ -51,6 +73,12 @@ const s3Upload = async (params) => {
 //Deletes all images related objects in mongoDb
 const deleteAllTabImagesInMongoDb = async (projectId, tabName) => {
     const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
+
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
     if(tabIndex == -1){
         return null
@@ -140,7 +168,13 @@ const getTabFolder = async (projectId, tabName) => {
 //This is used for inital creation of a new tab. Not for singular uploads
 const createTab = async (projectId, files) => {
     //Gets the projects contents    
-    const project = (await Project.findById(projectId))
+    const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
+
     const {tabName, image, gallery, video, poster} = files
     const newTab = {
         "tabName": revertString(tabName),
@@ -187,10 +221,16 @@ const createTab = async (projectId, files) => {
     return project
 }
 
-
 //Updates the corresponding folder (image, video, gallery or poster) in the mongoDb object's tabContent where tabName == tabName
+//Doesn't delete image from s3
 const deleteSingleTabFolderImageMongo = async (projectId, tabName, folder, url) => {
     const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
+
     const projectContent = project.content
     const tabIndex = projectContent.findIndex(tab => tab.tabName == tabName)
     const existIndex = projectContent[tabIndex].tabContent.findIndex(imageObject => (imageObject.type == folder && imageObject.value[0] == url))
@@ -219,7 +259,13 @@ const deleteSingleTabFolderImageMongo = async (projectId, tabName, folder, url) 
 //Updates a tab's tabContent based on the fieldname
 //Expects there to be tabContent
 const singleUpdateToMongo = async (projectId, tabName, folder, urlKey) => {
-    const project = await Project.findById(projectId) //Gets project
+    const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
+     //Gets project
     const projectContent = project.content
 
     //Find the index of the tab
@@ -265,9 +311,10 @@ const uploadUserProfilePicture = async (req, res) => {
 
     //Get the image type
     const imageType = checkFileType(profilePic.mimetype.split('/')[1])
+    console.log(getDate())
     const params = {
         Bucket: process.env.BUCKET,
-        Key: `userProfilePictures/${id}.${imageType}`,
+        Key: `userProfilePictures/${id} ${getDate()}.${imageType}`,
         Body: profilePic.buffer,
         ContentType: profilePic.mimetype
     }
@@ -294,7 +341,7 @@ const uploadUserProfilePicture = async (req, res) => {
     try{
         //upload the image
         await s3Upload(uploadCommand)
-        const profilePicURL = URL + params.Key
+        const profilePicURL = URL + checkString(params.Key)
         await User.findByIdAndUpdate(id, { profilePicture: profilePicURL })
         const mongoDbUser = (await User.findById(id))
         //Returns picture URL
@@ -599,6 +646,11 @@ const uploadGallery = async (req, res) => {
 
 const addGalleryToMongoDb = async(projectId, tabName,  listOfUrls) => {
     const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
 
     if(tabIndex == -1){
@@ -631,6 +683,11 @@ const uploadImageToGallery = async (req, res) => {
 
     //find the gallery based galleryId
     const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
     //get tabContent
     const tabContent = project.content[tabIndex].tabContent
@@ -710,7 +767,12 @@ const deleteGalleryImageS3 = async(req, res) => {
     if(!(await checkProject(projectId))){
         return res.status(404).send({project:null, msg: "No project found"})
     }
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
 
     //Gets the tabContent of the tab
@@ -782,6 +844,11 @@ const deleteGalleryImage = async(req, res) => {
     const {projectId, tabName, galleryId, key} = req.params
 
     const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
 
     const tabIndex= project.content.findIndex(tab => tab.tabName == tabName)
     const tabContent = project.content[tabIndex].tabContent
@@ -790,7 +857,9 @@ const deleteGalleryImage = async(req, res) => {
         return res.status(404).send({project:null, msg: "No gallery found"})
     }
     const galleryURL = URL +`capitaliseProjects/${projectId}/${tabName}/gallery/${key}`
+
     const gallery = tabContent[galleryIndex].value
+
     //If url is not in gallery
     if(!gallery.includes(galleryURL)){
         return res.status(404).send({project:null, msg:"image is not part of this gallery"})
@@ -818,6 +887,11 @@ const deleteGallery = async (req, res) => {
     }
 
     const project = await Project.findById(projectId)
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "name -_id")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
 
     const galleryIndex = project.content[tabIndex].tabContent.findIndex(imageObject => imageObject._id == galleryId)
@@ -839,6 +913,11 @@ const deleteGalleryS3 = async (req, res) => {
     try {
       // Check if project exists in mongoDB
       const project = await Project.findById(projectId)
+      .populate("members", "_id, name")
+      .populate("semester", "value -_id")
+      .populate("category", "value -_id")
+      .populate("badges", "value -_id")
+      .populate("tags", "name -_id")
       if (!project) {
         return res.status(404).send({ project: null, msg: "No project found" })
       }
@@ -959,7 +1038,12 @@ const bannerUpload = async (req, res) => {
         await s3Upload(uploadCommand)
         const bannerURL = URL + params.Key
         await Project.findByIdAndUpdate(projectId, { banner:  bannerURL})
-        const project = (await Project.findById(projectId))
+        const project = await Project.findById(projectId)
+        .populate("members", "_id, name")
+        .populate("semester", "value -_id")
+        .populate("category", "value -_id")
+        .populate("badges", "value -_id")
+        .populate("tags", "name -_id")
         //Returns picture URL
         return res.status(200).send(project)
     }
@@ -1001,6 +1085,12 @@ const bannerDelete = async (req, res) => {
         const bannerNumber = Math.floor(Math.random() * (bannerLength))
         await client.send(new DeleteObjectCommand(deleteBannerParams))
         await Project.findByIdAndUpdate(projectId, {banner: `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/banners/banner${bannerNumber}.png`})
+        .populate("members", "_id, name")
+        .populate("semester", "value -_id")
+        .populate("category", "value -_id")
+        .populate("badges", "value -_id")
+        .populate("tags", "name -_id")
+
         const project = await Project.findById(projectId)
         return res.status(200).send(project)
     }
@@ -1054,6 +1144,11 @@ const thumbnailUpload = async (req, res) => {
         const url = URL + params.Key
         await Project.findByIdAndUpdate(projectId, {thumbnail: url})
         const project = await Project.findById(projectId)
+        .populate("members", "_id, name")
+        .populate("semester", "value -_id")
+        .populate("category", "value -_id")
+        .populate("badges", "value -_id")
+        .populate("tags", "name -_id")
         return res.status(200).send(project)
     }
     catch(err){
@@ -1090,6 +1185,11 @@ const thumbnailDelete = async (req, res) => {
         await Project.findByIdAndUpdate(projectId, {thumbnail: process.env.DEFAULTTHUMBNAIL})
         await client.send(new DeleteObjectCommand(deleteThumbnailParams))
         const project = await Project.findById(projectId)
+        .populate("members", "_id, name")
+        .populate("semester", "value -_id")
+        .populate("category", "value -_id")
+        .populate("badges", "value -_id")
+        .populate("tags", "name -_id")
         return res.status(200).send(project)
     }
     catch(err){
@@ -1316,6 +1416,119 @@ const deleteAward= async (req, res) => {
 }
 
 
+
+const uploadMobileHeroBanners = async (req, res) => {
+    const files = req.files
+    const uploadPromise = []
+    const urls = []
+    files.forEach(file => {
+        const fileType = checkFileType(file.mimetype.split('/')[1])
+        const fileName = file.originalname.split('.')[0] +'.'+ fileType
+        const fileParams = {
+            Bucket: process.env.BUCKET,
+            Key: `capitaliseAssets/mobileHeroBanners/${fileName}`,
+            Body: file.buffer,
+            ContentType: file.mimetype
+        }
+        //create the urls
+        urls.push(URL + `capitaliseAssets/mobileHeroBanners/${checkString(fileName)}`)
+        // upload to s3
+        const uploadCommand = new PutObjectCommand(fileParams)
+        uploadPromise.push(s3Upload(uploadCommand))
+        })
+    try{
+        await Promise.all(uploadPromise)
+        const keyPrefix = `capitaliseAssets/mobileHeroBanners/`
+        const updatedUrls =[]
+        const getHeroBanners = {
+            Bucket: process.env.BUCKET,
+            Prefix: keyPrefix
+        }
+    
+        const fileExist = (await client.send(new ListObjectsV2Command(getHeroBanners))).Contents
+        //Iterate through the contents of fileExist skipping the first index where it is just the folder
+        for(let i = 0; i < fileExist.length; i++){
+            if(fileExist[i].Size > 0){
+            updatedUrls.push(URL + checkString(fileExist[i].Key))
+        }}
+
+        return res.status(200).send(updatedUrls)
+    }
+    catch(err){
+        return res.status(404).send({heroBanners :null, msg: err})
+    }
+}
+
+const getMobileHeroBanners = async (req, res) => {
+    const keyPrefix = `capitaliseAssets/mobileHeroBanners/`
+    const updatedUrls =[]
+
+    const getMobileHeroBanners = {
+        Bucket: process.env.BUCKET,
+        Prefix: keyPrefix
+    }
+
+    const fileExist = (await client.send(new ListObjectsV2Command(getMobileHeroBanners))).Contents
+    //Iterate through the contents of fileExist skipping the first index where it is just the folder
+    if(fileExist){
+
+    for(let i = 0; i < fileExist.length; i++){
+        if(fileExist[i].Size > 0){
+           updatedUrls.push(URL + checkString(fileExist[i].Key)) 
+        }
+        
+    }}
+
+
+    return res.status(200).send(updatedUrls)
+}
+
+
+const deleteMobileHeroBanner = async (req, res) => {
+    const {heroBannerName} = req.params
+    var fileKey = ''
+    const keyPrefix = `capitaliseAssets/mobileHeroBanners/`
+    const updatedUrls = []
+
+    //check to see if a banner already exist
+    const checkMobileHeroBannerParams = {
+        Bucket: process.env.BUCKET,
+        Prefix: keyPrefix
+    }
+
+    const fileExist = (await client.send(new ListObjectsV2Command(checkMobileHeroBannerParams))).Contents
+    if(!fileExist){
+        return res.status(404).send({heroBanners: null, msg: 'no mobileHeroBanners found'})
+    }
+    //Iterate through the contents of fileExist skipping the first index where it is just the folder
+    for(let i = 0; i < fileExist.length; i++){
+        if(fileExist[i].Size > 0){
+            if(fileExist[i].Key == keyPrefix + revertString(heroBannerName)){
+                fileKey = fileExist[i].Key
+            }
+            else{
+                updatedUrls.push(URL + checkString(fileExist[i].Key))
+            }
+        }
+
+    }
+
+    try{
+        const deleteHeroBannerParams = {
+            Bucket: process.env.BUCKET,
+            Key: keyPrefix + revertString(heroBannerName)
+        }
+        await client.send(new DeleteObjectCommand(deleteHeroBannerParams))
+
+        return res.status(200).send(updatedUrls)
+    }
+    catch(err){
+        return res.status(404).send({heroBanners: null, msg:"error deleting the heroBanner"})
+    }
+}
+
+
+
 module.exports = {
     uploadUserProfilePicture,
     uploadGallery,
@@ -1339,4 +1552,8 @@ module.exports = {
     uploadAward,
     deleteAward,
     getAwards,
+    uploadMobileHeroBanners,
+    getMobileHeroBanners,
+    deleteMobileHeroBanner,
+
 }
