@@ -269,7 +269,7 @@ const UserProfile = () => {
           </Box>
         </Box>
       </Stack>
-      <Box height="inherit" width={{ xs: "100%", md: "1150px" }}>
+      <Box height="inherit" width="100%">
         <MyTabs tabs={userTabs} />
       </Box>
     </Stack>
