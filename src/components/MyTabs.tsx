@@ -16,7 +16,12 @@ const MyTabs = ({ tabs }: Props) => {
     <Box height="100%">
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList aria-label="MyTab" onChange={handleChange}>
+          <TabList
+            aria-label="MyTab"
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+          >
             {tabs.map(({ label }, i) => (
               <Tab label={label} value={tabs[i].index} key={i} />
             ))}
@@ -38,7 +43,3 @@ const MyTabs = ({ tabs }: Props) => {
 };
 
 export default MyTabs;
-
-/*
-
-    */

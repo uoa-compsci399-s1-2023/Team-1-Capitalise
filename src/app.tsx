@@ -23,6 +23,8 @@ import { AuthProvider } from "./customHooks/useAuth";
 import GoogleSuccessRedirect from "./routes/googleSuccessRedirect";
 import GoogleFailure from "./routes/googleFailure";
 import Upload from "./routes/Upload";
+import { getAwardTypes } from "./api/getAwardTypes";
+import { TAward } from "./model/TAward";
 
 export type TFiltersState = {
   keywords: string;
@@ -69,37 +71,56 @@ export function getDefaultFilters(): TFiltersState {
   };
 }
 
+export const AwardTypeContext = createContext([] as TAward[]);
+
 export default function App() {
   // Represents curr state of filters
   const [currFilters, setFilters] = useState<TFiltersState>(
     getDefaultFilters()
   );
 
+  const [awardTypes, setAwardTypes] = useState<TAward[]>([]);
+
+  useEffect(() => {
+    const fetchAwardTypes = async () => {
+      const respData = await getAwardTypes();
+      if (respData.length !== 0) {
+        setAwardTypes(respData);
+      }
+    };
+    fetchAwardTypes();
+  }, []);
+
   return (
     <BrowserRouter>
       <AuthProvider>
-        <SearchContext.Provider value={{ currFilters, setFilters }}>
-          <ThemeProvider theme={customTheme1}>
-            <Navbar />
-            <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/projects/:projectId" element={<ProjectPage />} />
-                <Route path="/About" element={<About />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/user/:userID" element={<UserProfile />} />
-                <Route path="/Register" element={<Registration />} />
-                <Route
-                  path="/googleSuccessRedirect"
-                  element={<GoogleSuccessRedirect />}
-                />
-                <Route path="/googleFailure" element={<GoogleFailure />} />
-                <Route path="/upload" element={<Upload/>} />
-              </Routes>
-            </Box>
-          </ThemeProvider>
-        </SearchContext.Provider>
+        <AwardTypeContext.Provider value={awardTypes}>
+          <SearchContext.Provider value={{ currFilters, setFilters }}>
+            <ThemeProvider theme={customTheme1}>
+              <Navbar />
+              <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route
+                    path="/projects/:projectId"
+                    element={<ProjectPage />}
+                  />
+                  <Route path="/About" element={<About />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/user/:userID" element={<UserProfile />} />
+                  <Route path="/Register" element={<Registration />} />
+                  <Route
+                    path="/googleSuccessRedirect"
+                    element={<GoogleSuccessRedirect />}
+                  />
+                  <Route path="/googleFailure" element={<GoogleFailure />} />
+                  <Route path="/upload" element={<Upload />} />
+                </Routes>
+              </Box>
+            </ThemeProvider>
+          </SearchContext.Provider>
+        </AwardTypeContext.Provider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -1,6 +1,13 @@
 // this is for rendering a comment
 
-import { Container, Box, Typography, Button, colors } from "@mui/material";
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  colors,
+  Avatar,
+} from "@mui/material";
 // import { getUserbyId, TUser } from "../api/getUserbyId";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -39,11 +46,9 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
       <div className="comment-image-container">
         {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
         <Link to={`../user/${comment.user._id}`}>
-          <img
+          <Avatar
             src={comment.user.profilePicture}
-            width="30"
-            height="30"
-            referrerPolicy="no-referrer"
+            imgProps={{ referrerPolicy: "no-referrer" }}
           />
         </Link>
       </div>

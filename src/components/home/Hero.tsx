@@ -1,28 +1,60 @@
-import { Box, Button, Slide, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Slide,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
 import MuiCarousel from "react-material-ui-carousel";
 import { useEffect, useState } from "react";
-import { getHeroBanners } from "../../api/getHeroBanners";
+import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
 
 const Hero = () => {
   //delete this in final
+  const [loggedInAdmin, setLoggedInAdmin] = useState(0);
   const [heroBanners, setHeroBanners] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [mobileHeroBanners, setMobileHeroBanners] = useState([]);
+  const [isHeroLoading, setHeroIsLoading] = useState(true);
+  const [isMobileHeroLoading, setMobileHeroIsLoading] = useState(true);
   const [isStudent, setIsStudent] = useState(false);
   const [hasProject, setHasProject] = useState(false);
-  const [loggedInAdmin, setLoggedInAdmin] = useState(0);
+  const [carouselHeight, setCarouselHeight] = useState("");
   const auth = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isLg = useMediaQuery(theme.breakpoints.down("xl"));
+
   useEffect(() => {
     const fetchHeroBanners = async () => {
       const respData = await getHeroBanners();
       if (respData.length !== 0) {
         setHeroBanners(respData);
-        setIsLoading(false);
+        setHeroIsLoading(false);
+      }
+    };
+    const fetchMobileHeroBanners = async () => {
+      const respData = await getMobileHeroBanners();
+      if (respData.length !== 0) {
+        setMobileHeroBanners(respData);
+        setMobileHeroIsLoading(false);
       }
     };
     fetchHeroBanners();
+    fetchMobileHeroBanners();
   }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setCarouselHeight("400px");
+    } else if (isLg) {
+      setCarouselHeight("450px");
+    } else {
+      setCarouselHeight("500px");
+    }
+  }, [isMobile, isLg]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -48,42 +80,72 @@ const Hero = () => {
 
   return (
     <Box position="relative">
-      {!isLoading && (
+      {!isHeroLoading && !isMobile && (
         <MuiCarousel
           indicators={false}
           navButtonsAlwaysInvisible={false}
           swipe={false}
           interval={8000}
+          height={carouselHeight}
         >
           {heroBanners.map((banner, i) => (
             <Box
               display="flex"
               width="100%"
-              height="400px"
+              height={carouselHeight}
               component="img"
               src={banner}
               alt="hero"
               alignSelf="center"
-              sx={{ objectFit: "cover" }}
+              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
               key={i}
             ></Box>
           ))}
         </MuiCarousel>
       )}
-      {!isLoading && (
+      {!isMobileHeroLoading && isMobile && (
+        <MuiCarousel
+          indicators={false}
+          navButtonsAlwaysInvisible={false}
+          swipe={false}
+          interval={8000}
+          height={carouselHeight}
+        >
+          {mobileHeroBanners.map((banner, i) => (
+            <Box
+              display="flex"
+              width="100%"
+              height={carouselHeight}
+              component="img"
+              src={banner}
+              alt="hero"
+              alignSelf="center"
+              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
+              key={i}
+            ></Box>
+          ))}
+        </MuiCarousel>
+      )}
+      {!isMobileHeroLoading && !isHeroLoading && (
         <Box>
           <Slide in={true} timeout={loggedInAdmin}>
             <Box
-              width={{ xs: "95%", sm: "85%", md: "70%" }}
+              width={{ xs: "100%", sm: "85%", md: "53%" }}
               position="absolute"
               zIndex={1}
               top={0}
-              padding={{ xs: 4, lg: 10 }}
+              padding={{ xs: 4, md: 5, lg: 7, xl: 10 }}
             >
               <Box>
                 {!isStudent && (
                   <Box width="100%">
                     <Box>
+                      {auth.user?.name && (
+                        <Typography variant="h4" color="white" fontWeight={200}>
+                          {`Welcome ${auth.user?.name}!`}
+                        </Typography>
+                      )}
+
                       <Typography variant="h1" color="white" fontWeight={400}>
                         {"Explore the talent at UoA"}
                       </Typography>
