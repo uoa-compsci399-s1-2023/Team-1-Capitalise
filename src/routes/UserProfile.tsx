@@ -204,8 +204,9 @@ const UserProfile = () => {
       justifyContent={{ xs: "start", md: "center" }}
       spacing={0}
       minHeight="92vh"
-      margin="8vh 0vh auto"
+      margin="8vh auto 0vh auto"
       paddingTop="20px"
+      width={{ xs: "97%", sm: "95%", md: "80%" }}
     >
       <Stack
         display="flex"
