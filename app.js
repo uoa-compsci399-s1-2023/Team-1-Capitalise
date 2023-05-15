@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv").config();
 const passport = require("passport");
 var session = require("express-session");
+const cors = require("cors");
 
 //packages within our repo
 const projects = require("./routes/projects");
@@ -16,6 +17,8 @@ const { User } = require("./models/user");
 const { Project } = require("./models/project");
 
 const app = express();
+
+app.use(cors());
 
 app.use(
   session({
