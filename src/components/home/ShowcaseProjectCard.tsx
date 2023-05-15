@@ -8,13 +8,12 @@ import {
   useTheme,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import communityImpact from "../../assets/communityImpact.svg";
-import peoplesChoice from "../../assets/peoplesChoice.svg";
-import topExcellence from "../../assets/topExcellence.svg";
 import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
+import { useContext } from "react";
+import { AwardTypeContext } from "../../app";
 
 interface Props {
   title: string;
@@ -42,9 +41,8 @@ const ShowcaseProjectCard = ({
     e.target.src = DefaultProjectImage;
   };
   const theme = useTheme();
-
-  // Yathi - Have to properly define type or build fails.
-  let colour: (typeof theme)["customColors"] | string = "lightgrey";
+  const awardTypes = useContext(AwardTypeContext);
+  let gradientColours = ["lightgrey", "lightgrey"];
   let awardText = "";
   let awardIcon = null;
 
@@ -59,18 +57,14 @@ const ShowcaseProjectCard = ({
   //delete end
 
   const setBadge = (badges: string) => {
-    if (badges === "Community Impact") {
-      colour = theme.customColors.communityImpact!;
-      awardText = "Community Impact Award";
-      awardIcon = communityImpact;
-    } else if (badges === "Top Excellence") {
-      colour = theme.customColors.excellenceAward!;
-      awardText = "Top Excellence Award";
-      awardIcon = topExcellence;
-    } else if (badges === "Peoples Choice") {
-      colour = theme.customColors.peoplesChoice!;
-      awardText = "People's Choice Award";
-      awardIcon = peoplesChoice;
+    if (badges !== "default") {
+      for (const awardType of awardTypes) {
+        if (awardType.value === badges) {
+          gradientColours = awardType.gradient;
+          awardText = awardType.value + " Award";
+          awardIcon = awardType.image;
+        }
+      }
     }
   };
 
@@ -96,7 +90,12 @@ const ShowcaseProjectCard = ({
             src={image}
             onError={handleDefaultImage}
           />
-          <Box bgcolor={colour} height="8px" />
+          <Box
+            height="12px"
+            sx={{
+              background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[1]})`,
+            }}
+          />
 
           <CardContent
             sx={{
@@ -116,22 +115,27 @@ const ShowcaseProjectCard = ({
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ lineHeight: 0.4, fontSize: "17px" }}
+                  sx={{ lineHeight: 1, fontSize: "17px" }}
                 >
                   {semester}
                 </Typography>
                 <Typography
                   noWrap
                   variant="body1"
-                  sx={{ fontWeight: 600, fontSize: "35px" }}
+                  sx={{ lineHeight: 1, fontWeight: 600, fontSize: "35px" }}
                 >
                   {title}
                 </Typography>
                 <Typography
                   variant="body2"
-                  marginBottom="1.25em"
-                  height="4px"
-                  sx={{ lineHeight: 0.4, fontSize: "17px", color: colour }}
+                  marginBottom="1em"
+                  height="21px"
+                  sx={{
+                    fontSize: "17px",
+                    background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[0]})`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
                 >
                   {awardText}
                 </Typography>

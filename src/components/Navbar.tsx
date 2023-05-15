@@ -15,6 +15,7 @@ import {
 
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
+import DefaultPFP from "../assets/default_pfp.svg";
 import SearchBar from "./SearchBar";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
@@ -258,15 +259,9 @@ function ResponsiveAppBar() {
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt="Logged In"
-                  src={auth.user ? auth.user.profilePicture : ""}
-                >
-                  {auth.user && <img referrerPolicy="no-referrer" />}
-                  {!auth.user && (
-                    <AccountCircleRoundedIcon
-                      sx={{ transform: "scale(2.5)" }}
-                    />
-                  )}
-                </Avatar>
+                  src={auth.user ? auth.user.profilePicture : DefaultPFP}
+                  imgProps={{ referrerPolicy: "no-referrer" }}
+                />
               </IconButton>
             </Tooltip>
             <Menu

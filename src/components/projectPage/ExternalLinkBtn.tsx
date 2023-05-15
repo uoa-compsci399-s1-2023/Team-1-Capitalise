@@ -74,7 +74,7 @@ function LinkBtn({
       }}
       sx={{
         px: { xs: 1, md: 3 },
-        minWidth: "28px",
+        minWidth: "30px",
         width: { xs: 0, md: 180 },
         display: "flex",
         alignItems: "center",

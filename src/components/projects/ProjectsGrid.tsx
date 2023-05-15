@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import ProjectCard from "./ProjectCard";
 import { TProject } from "../../model/TProject";
 interface props {
-  projects: TProject[] ;
+  projects: TProject[];
   justifyContent?: string;
 }
 export default function ProjectsGrid({
@@ -31,7 +31,9 @@ export default function ProjectsGrid({
               category={project.category.value}
               likes={project.likes}
               badges={
-                typeof project.badges != "undefined" ? project.badges.value : ""
+                typeof project.badges != "undefined"
+                  ? project.badges.value
+                  : "default"
               }
               projectID={project._id}
             ></ProjectCard>

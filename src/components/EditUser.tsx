@@ -47,6 +47,10 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
+  const nameCharacterLimit = 500;
+  const bioCharacterLimit = 2000;
+  const linkCharacterLimit = 500;
+
   let links: any[] = [];
 
   const formHandleClose = async () => {
@@ -105,15 +109,13 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       if (typeof profilePictureFile !== "undefined") {
         let formData = new FormData();
         formData.append("profilePicture", profilePictureFile);
-        uploadProfilePicture(user._id, formData).then(
-          () => (window.location.href = window.location.href)
+        uploadProfilePicture(user._id, formData).then(() =>
+          window.location.reload()
         );
       } else if (deleteProfile) {
-        deleteProfilePicture(user._id).then(
-          () => (window.location.href = window.location.href)
-        );
+        deleteProfilePicture(user._id).then(() => window.location.reload());
       } else {
-        window.location.href = window.location.href;
+        window.location.reload();
       }
     });
     handleClose();
@@ -146,43 +148,53 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
-          <Box display="flex" alignItems="center" gap="30px">
-            <Stack direction="column" width="300px" gap="10px">
-              <Box
-                width="100%"
-                component="img"
-                src={profilePicture}
-                alt="user profile"
-                referrerPolicy="no-referrer"
-                borderRadius="50%"
-                alignSelf="center"
-                sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-              ></Box>
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={handleDeleteProfilePicture}
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              alignItems="center"
+              gap={{ xs: "10px", md: "30px" }}
+            >
+              <Stack
+                direction="column"
+                width={{ xs: "100%", md: "80%" }}
+                gap="10px"
               >
-                Delete Profile Picuture
-              </Button>
+                <Box
+                  width={{ xs: "50%", md: "90%" }}
+                  component="img"
+                  src={profilePicture}
+                  alt="user profile"
+                  referrerPolicy="no-referrer"
+                  borderRadius="50%"
+                  alignSelf="center"
+                  sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                ></Box>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={handleDeleteProfilePicture}
+                >
+                  Delete Profile Picuture
+                </Button>
+              </Stack>
+              <TextField
+                label="Change profile picture"
+                type="file"
+                fullWidth
+                margin="dense"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                error={!validImage}
+                helperText={!validImage ? "Select a valid image type" : ""}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.files) {
+                    constHandleImage(event.target.files[0]);
+                  }
+                }}
+              />
             </Stack>
-            <TextField
-              label="Change profile picture"
-              type="file"
-              fullWidth
-              margin="dense"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              error={!validImage}
-              helperText={!validImage ? "Select a valid image type" : ""}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                if (event.target.files) {
-                  constHandleImage(event.target.files[0]);
-                }
-              }}
-            />
           </Box>
           <TextField
             margin="dense"
@@ -190,6 +202,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             fullWidth
             variant="standard"
             defaultValue={name}
+            inputProps={{ maxLength: nameCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setName(event.target.value);
             }}
@@ -200,8 +213,9 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             label="Bio"
             fullWidth
             variant="standard"
-            helperText="Press enter for new line"
+            helperText={`Characters ${bio.length}/2000. Press enter for new line. `}
             defaultValue={bio}
+            inputProps={{ maxLength: bioCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setBio(event.target.value);
             }}
@@ -219,6 +233,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 ? "URL is not correct, include https://github.com"
                 : ""
             }
+            inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setGithub(event.target.value);
             }}
@@ -236,6 +251,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 ? "URL is not correct, include https://linkedin.com"
                 : ""
             }
+            inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setLinkedin(event.target.value);
             }}
@@ -251,6 +267,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             helperText={
               !isUrlValid(deployedSite, "") ? "URL is not correct" : ""
             }
+            inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDeployedSite(event.target.value);
             }}
