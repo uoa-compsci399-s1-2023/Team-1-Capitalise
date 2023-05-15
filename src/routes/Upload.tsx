@@ -204,7 +204,7 @@ export default function Upload() {
     switch (step) {
       // enter Team details - Team Name
       case 0:
-        return <ProjectTeamSelectionForm teamToUpload={teamToUpload} />;
+        return <ProjectTeamSelectionForm teamToUpload={teamToUpload} currentTeamInformation={team} />;
 
       // Project Information - project name, semester, category, tags, description
       case 1:
