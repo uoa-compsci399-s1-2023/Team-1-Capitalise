@@ -6,7 +6,7 @@ const tagSchema = new mongoose.Schema({
     name: {
         type: String,
         minlength: 1,
-        maxlength: 20,
+        maxlength: 50,
         required: true
     },
     projects: [{
