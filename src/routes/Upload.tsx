@@ -40,6 +40,13 @@ const steps = ["Team Details", "Project Details", "Project Files", "Upload"];
 // set the new project
 
 export default function Upload() {
+  const infoHold: TProjectInfo = {
+    projN: '',
+    categoryN: '',
+    semesterN: '',
+    tags: [],
+    projectDescription: '',
+  };
   const nav = useNavigate();
   const auth = useAuth();
   useEffect(() => {
@@ -54,7 +61,7 @@ export default function Upload() {
   const [team, setTeam] = useState("");
 
   // array of Project attributes - Project Name, Project Semester, Project Category, Project Description
-  const [projectInfo, setProjectInfo] = useState<TProjectInfo>();
+  const [projectInfo, setProjectInfo] = useState<TProjectInfo>(infoHold);
   const [projectLink, setProjectLink] = useState([]);
   const [projectID, setProjectID] = useState('');
 
@@ -98,7 +105,6 @@ export default function Upload() {
   const projectInfoToUpload = (projectInfoData: any) => {
     // stores Project Info into Project State
     setProjectInfo(projectInfoData);
-
 
     // navigates to next page
     handleNext();
@@ -212,7 +218,7 @@ export default function Upload() {
           <ProjectInfoForm
             projectInfoToUpload={projectInfoToUpload}
             handleBack={handleBack}
-            currentProjectInformation={projectInfo}
+            projectInformation={projectInfo}
           />
         );
 

@@ -35,8 +35,44 @@ interface TProjectInfo {
 
 
 export default function ProjectInfoForm(
-  {projectInfoToUpload, handleBack, projectInformation }: any,
+  {projectInfoToUpload, 
+  handleBack, 
+  projectInformation,
+
+
+  }: any,
 ) {
+    //API Fetches for Semester and Category lists 
+  // Map the semesters to the MenuItems.
+  const [semesterList, setSemesterList] = useState<JSX.Element[]>([]);
+  useEffect(() => {
+    // grab the semesters from the API
+    const fetchSemesters = getSemesters().then((data) => {
+      // Map the semesters to the MenuItem components
+      const semesterList = data.map(semester => (
+        <MenuItem key={semester._id} value={semester.value}>
+          {semester.value}
+        </MenuItem>
+      ));
+      setSemesterList(semesterList);
+    })
+  }, []);
+
+  // Map the categories to the MenuItems.
+  const [categories, setCategories] = useState<JSX.Element[]>([]);
+  useEffect(() => {
+    // grab the categories from the API
+    const fetchCategories = getCategories().then((data) => {
+      // Map the categories to the MenuItem components
+      const categories = data.map(category => (
+        <MenuItem key={category._id} value={category.value}>
+          {category.value}
+        </MenuItem>
+      ));
+      setCategories(categories);
+    })
+  }, []);
+
   
   //Project Name State
   const [projectNameErrorText, setProjectNameErrorText] = useState('');
@@ -45,16 +81,17 @@ export default function ProjectInfoForm(
   const [projectDescErrorText, setProjectDescErrorText] = useState('');
   
   //Semester States
-  const [semester, setSemester] = React.useState('');
+  const [semester, setSemester] = React.useState(projectInformation.semesterN);
   const [semesterErrorText, setSemesterErrorText] = useState('');
   
   //Category States
-  const [category, setCategory] = React.useState('');
+  const [category, setCategory] = React.useState(projectInformation.categoryN);
   const [categoryErrorText, setCategoryErrorText] = useState('');
   
   //Tag states
   const tagList : {name: string}[] = [];
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(projectInformation.tags);
+  console.log("these tags", selectedTags);
   const [tagErrorText, setTagErrorText] = useState('');
   
   
@@ -87,21 +124,23 @@ export default function ProjectInfoForm(
       setCategoryErrorText('');
       return true;
     }
-  }
+  } 
   
   const validateProjectTags= (selectedTags: any) => { 
     //Project Tags Validation 
     if(selectedTags.length > 0) {
-      var msgError = 'The following tags are invalid: ';
-      for (var i = 0 ; i < selectedTags.length; i++) {
+      let msgError = 'The following tags are invalid: ';
+      for (const element of selectedTags) {
         //Check against a blacklist, inappropriate word list.
-        if (nw.en.includes(selectedTags[i])) {
-          msgError += selectedTags[i] + ' ';   
+        if (nw.en.includes(element)) {
+          msgError += element + ' ';   
         }
         
       }
       if (msgError != 'The following tags are invalid: ') {
         setTagErrorText(msgError);
+      } else {
+        return true;
       }
     } else { 
       setTagErrorText('');
@@ -121,36 +160,6 @@ export default function ProjectInfoForm(
     }
   }
 
-  //API Fetches for Semester and Category lists 
-  // Map the semesters to the MenuItems.
-    const [semesterList, setSemesterList] = useState<JSX.Element[]>([]);
-    useEffect(() => {
-      // grab the semesters from the API
-      const fetchSemesters = getSemesters().then((data) => {
-        // Map the semesters to the MenuItem components
-        const semesterList = data.map(semester => (
-          <MenuItem key={semester._id} value={semester.value}>
-            {semester.value}
-          </MenuItem>
-        ));
-        setSemesterList(semesterList);
-      })
-    }, []);
-
-    // Map the categories to the MenuItems.
-    const [categories, setCategories] = useState<JSX.Element[]>([]);
-    useEffect(() => {
-      // grab the categories from the API
-      const fetchCategories = getCategories().then((data) => {
-        // Map the categories to the MenuItem components
-        const categories = data.map(category => (
-          <MenuItem key={category._id} value={category.value}>
-            {category.value}
-          </MenuItem>
-        ));
-        setCategories(categories);
-      })
-    }, []);
 
 
   //Setting Category State on Change
@@ -191,17 +200,11 @@ export default function ProjectInfoForm(
         tags: selectedTags,
         projectDescription: projDesc,
       };
-       //console.log("Info sent from ProjectInfo:", infoSend);
+      //console.log("Info sent from ProjectInfo:", infoSend);
+      
       projectInfoToUpload(infoSend);
       
     }
-    
-    
-    
-    
-   
-
-   
   };
 
   return (
@@ -221,7 +224,6 @@ export default function ProjectInfoForm(
                 value={semester}
                 label="Semester"
                 error= {!!semesterErrorText}
-               
                 onChange={handleSemesterChange}
               >
                 {semesterList}
@@ -241,10 +243,11 @@ export default function ProjectInfoForm(
                 labelId="demo-select-small-label2"
                 id="select-category"
                 value={category}
-                label="Cateogry"
+              
+                label="Category"
                 error= {!!categoryErrorText}
-                defaultValue={projectInformation.categoryN}
                 onChange={handleCategoryChange}
+         
               >
                 {categories}
               </Select>
@@ -261,8 +264,9 @@ export default function ProjectInfoForm(
               id="projectName"
               name="projectName"
               label="Project Name"
+              defaultValue={projectInformation.projN? projectInformation.projN : ''}
               fullWidth
-              defaultValue={projectInformation.projN}
+        
               error={!!projectNameErrorText}
               helperText={projectNameErrorText ? projectNameErrorText : ''}
               variant="outlined"
@@ -271,14 +275,14 @@ export default function ProjectInfoForm(
         
           <Grid item xs={12}>
             <Autocomplete
-              multiple
+              multiple={true}
               id="tags-filled"
+              defaultValue={projectInformation.tags}
               options={tagList.map((option) => option.name)}
               onChange={(event: any, newValue: any) => { 
                 setSelectedTags(newValue);
               }}
               freeSolo
-              defaultValue={projectInformation.tags}
               renderTags={(value: string[], getTagProps) =>
                 value.map((option: string, index: number) => (
                   <Chip
@@ -306,13 +310,14 @@ export default function ProjectInfoForm(
               id="projectDesc"
               name="projectDesc"
               label="Project Description"
-              defaultValue={projectInformation.projDescription}
+              defaultValue={projectInformation.projectDescription? projectInformation.projectDescription : ""}
               fullWidth
               variant="outlined"
               multiline={true}
               rows={10}
               error={!!projectDescErrorText}
               helperText={projectDescErrorText? projectDescErrorText : 'Enter a short description about your project'}
+             
             />
           </Grid>
         </Grid>
