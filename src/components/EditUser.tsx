@@ -47,6 +47,10 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
+  const nameCharacterLimit = 500;
+  const bioCharacterLimit = 2000;
+  const linkCharacterLimit = 500;
+
   let links: any[] = [];
 
   const formHandleClose = async () => {
@@ -200,6 +204,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             fullWidth
             variant="standard"
             defaultValue={name}
+            inputProps={{ maxLength: nameCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setName(event.target.value);
             }}
@@ -210,8 +215,9 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             label="Bio"
             fullWidth
             variant="standard"
-            helperText="Press enter for new line"
+            helperText={`Characters ${bio.length}/2000. Press enter for new line. `}
             defaultValue={bio}
+            inputProps={{ maxLength: bioCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setBio(event.target.value);
             }}
@@ -229,6 +235,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 ? "URL is not correct, include https://github.com"
                 : ""
             }
+            inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setGithub(event.target.value);
             }}
@@ -246,6 +253,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 ? "URL is not correct, include https://linkedin.com"
                 : ""
             }
+            inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setLinkedin(event.target.value);
             }}
@@ -261,6 +269,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             helperText={
               !isUrlValid(deployedSite, "") ? "URL is not correct" : ""
             }
+            inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDeployedSite(event.target.value);
             }}

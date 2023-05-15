@@ -10,14 +10,15 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
 import MuiCarousel from "react-material-ui-carousel";
 import { useEffect, useState } from "react";
-import { getHeroBanners } from "../../api/getHeroBanners";
+import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
 
 const Hero = () => {
   //delete this in final
   const [loggedInAdmin, setLoggedInAdmin] = useState(0);
-
   const [heroBanners, setHeroBanners] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [mobileHeroBanners, setMobileHeroBanners] = useState([]);
+  const [isHeroLoading, setHeroIsLoading] = useState(true);
+  const [isMobileHeroLoading, setMobileHeroIsLoading] = useState(true);
   const [isStudent, setIsStudent] = useState(false);
   const [hasProject, setHasProject] = useState(false);
   const [carouselHeight, setCarouselHeight] = useState("");
@@ -31,10 +32,18 @@ const Hero = () => {
       const respData = await getHeroBanners();
       if (respData.length !== 0) {
         setHeroBanners(respData);
-        setIsLoading(false);
+        setHeroIsLoading(false);
+      }
+    };
+    const fetchMobileHeroBanners = async () => {
+      const respData = await getMobileHeroBanners();
+      if (respData.length !== 0) {
+        setMobileHeroBanners(respData);
+        setMobileHeroIsLoading(false);
       }
     };
     fetchHeroBanners();
+    fetchMobileHeroBanners();
   }, []);
 
   useEffect(() => {
@@ -71,7 +80,7 @@ const Hero = () => {
 
   return (
     <Box position="relative">
-      {!isLoading && (
+      {!isHeroLoading && !isMobile && (
         <MuiCarousel
           indicators={false}
           navButtonsAlwaysInvisible={false}
@@ -94,7 +103,30 @@ const Hero = () => {
           ))}
         </MuiCarousel>
       )}
-      {!isLoading && (
+      {!isMobileHeroLoading && isMobile && (
+        <MuiCarousel
+          indicators={false}
+          navButtonsAlwaysInvisible={false}
+          swipe={false}
+          interval={8000}
+          height={carouselHeight}
+        >
+          {mobileHeroBanners.map((banner, i) => (
+            <Box
+              display="flex"
+              width="100%"
+              height={carouselHeight}
+              component="img"
+              src={banner}
+              alt="hero"
+              alignSelf="center"
+              sx={{ objectFit: "cover" }}
+              key={i}
+            ></Box>
+          ))}
+        </MuiCarousel>
+      )}
+      {!isMobileHeroLoading && !isHeroLoading && (
         <Box>
           <Slide in={true} timeout={loggedInAdmin}>
             <Box

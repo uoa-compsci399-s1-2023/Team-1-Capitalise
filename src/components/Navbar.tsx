@@ -260,9 +260,8 @@ function ResponsiveAppBar() {
                 <Avatar
                   alt="Logged In"
                   src={auth.user ? auth.user.profilePicture : DefaultPFP}
-                >
-                  <img referrerPolicy="no-referrer" />
-                </Avatar>
+                  imgProps={{ referrerPolicy: "no-referrer" }}
+                />
               </IconButton>
             </Tooltip>
             <Menu
