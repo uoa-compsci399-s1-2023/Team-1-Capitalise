@@ -10,7 +10,7 @@ import {
 } from "react";
 
 // Components
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Pagination as MuiPagination } from "@mui/material";
 import ProjectsGrid from "./ProjectsGrid";
 
@@ -27,6 +27,11 @@ const MyPagination = () => {
   const [gridWidth, setGridWidth] = useState("0px");
   const [isLoading, setIsLoading] = useState(true);
   const { currFilters, setFilters } = useContext(SearchContext);
+  const [paginationSize, setPaginationSize] = useState<"small" | "medium">(
+    "medium"
+  );
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleResize = () => {
     let width = window.innerWidth;
@@ -51,6 +56,14 @@ const MyPagination = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setPaginationSize("small");
+    } else {
+      setPaginationSize("medium");
+    }
+  }, [isMobile]);
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
@@ -114,7 +127,11 @@ const MyPagination = () => {
         {/* Render project data into the ProjectsGrid component */}
         {checkProjects && <ProjectsGrid projects={projects} />}
 
-        <Stack spacing={2} alignItems="center" padding={5}>
+        <Stack
+          spacing={2}
+          alignItems="center"
+          padding={{ xs: "30px 20px", md: 5 }}
+        >
           <Box>
             {/* We will return the pagination component IF there are projects to display */}
             {checkProjects && (
@@ -126,6 +143,7 @@ const MyPagination = () => {
                 showFirstButton
                 showLastButton
                 color="primary"
+                size={paginationSize}
               />
             )}
           </Box>

@@ -146,11 +146,11 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" justifyContent="center">
             <Stack
               direction={{ xs: "column", md: "row" }}
               alignItems="center"
-              gap="30px"
+              gap={{ xs: "10px", md: "30px" }}
             >
               <Stack
                 direction="column"
