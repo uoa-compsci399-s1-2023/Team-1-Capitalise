@@ -49,6 +49,12 @@ const options = [
 export default function ProjectLinksForm({handleProjectLinks}: any) {
 
   const [selectedOptions, setSelectedOptions] = useState([{ value: '', type: '' }]);
+  const [githubLinkError, setGitHubLinkError] = useState('');
+  const [codepenLinkError, setcodepenLinkError] = useState('');
+  const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
+  const [kaggleLinkError, setkaggleLinkError] = useState('');
+  const [notionlinkError, setnotionLinkError] = useState('');
+
   console.log(selectedOptions[0].type);
   const handleOptionChange = (index:any, event:any) => {
     const newSelectedOptions = [...selectedOptions];
@@ -75,9 +81,12 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
   };
     //Validate the Links are appropriate
     const validateLinks = () => {
-      for (const link in selectedOptions) {
-        if(link == 'github') {
-  
+      for (const link of selectedOptions) {
+        if(link.type == 'github') {
+            if(!validator.matches(link.value, "https://github.com/")) {
+
+
+            }
         }
   
       }
@@ -115,6 +124,7 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
         <SocialLinkField
           fullWidth
           label="Insert a Link"
+          error={!!${selectedOption.type}}
           value={selectedOption.value}
           onChange={(event) => handleTextChange(index, event)}
         />)}
