@@ -97,7 +97,7 @@ const Hero = () => {
               src={banner}
               alt="hero"
               alignSelf="center"
-              sx={{ objectFit: "cover" }}
+              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
               key={i}
             ></Box>
           ))}
@@ -120,7 +120,7 @@ const Hero = () => {
               src={banner}
               alt="hero"
               alignSelf="center"
-              sx={{ objectFit: "cover" }}
+              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
               key={i}
             ></Box>
           ))}
