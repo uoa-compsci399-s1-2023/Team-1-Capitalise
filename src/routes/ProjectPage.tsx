@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom';
 import { TComment } from '../model/TComment';
 import Comments from '../components/projectPage/Comments/Comments';
 import { getProjectComments } from '../api/getProjectComments';
+import AddIcon from '@mui/icons-material/Add';
 
 
 type TabContent = {
@@ -42,6 +43,8 @@ export default function ProjectPage() {
   const [projectChanges, setProjectChanges] = useState<TProjectPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [comments, setComments] = useState<TComment[] | undefined>();
+
+  console.log(project)
 
   // Sets inital project on mount
   useEffect(() => {
@@ -85,12 +88,12 @@ export default function ProjectPage() {
       })
     }
   }, [projectChanges]) // Will run anytime changes are set.
-  
+
   if (!isLoading) {
     return (
       <ProjectContext.Provider value={{ project, setProject, setProjectChanges }}>
-      
-      {/* Banner */}
+
+        {/* Banner */}
         <img
           src={project.banner}
           alt='Project cover photo'
@@ -100,8 +103,8 @@ export default function ProjectPage() {
             objectFit: 'cover'
           }}
         />
-      
-      {/* Everything else */}
+
+        {/* Everything else */}
         <Stack
           bgcolor={'white'}
           minHeight={'92vh'}
@@ -157,8 +160,8 @@ export default function ProjectPage() {
               {project.content[selectedTab] ?
                 project.content[selectedTab].tabContent.map((cb, index) => (
                   <ContentBlock key={index} {...{
-                    ...cb, 
-                    ['tabIndex']: selectedTab, 
+                    ...cb,
+                    ['tabIndex']: selectedTab,
                     ['blockIndex']: index
                   }} />
                 ))
@@ -170,7 +173,7 @@ export default function ProjectPage() {
             <ProjectDetails />
           </Stack>
 
-        {/* Comments Section */}
+          {/* Comments Section */}
           {comments &&
             <Box mt={10} width={'100%'}>
               <Comments comments={comments} projectId={projectId} />

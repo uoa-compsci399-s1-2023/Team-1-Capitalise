@@ -38,7 +38,7 @@ declare module "@mui/material/styles" {
   interface CustomPalette {
     neutral: SimplePaletteColorOptions;
     black: PaletteColorOptions;
-    editBtnGrey: PaletteColorOptions;
+    editBtnGrey: SimplePaletteColorOptions;
     githubBtn: PaletteColorOptions;
     linkedinBtn: PaletteColorOptions;
   }

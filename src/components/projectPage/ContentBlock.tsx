@@ -6,9 +6,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TProject } from '../../model/TProject';
 import { useAuth } from '../../customHooks/useAuth';
 import { ProjectContext } from '../../routes/ProjectPage';
-import TextBlockDialog from './TextBlockDialog';
-import GalleryBlockDialog from './GalleryBlockDialog';
+import TextBlockDialog from './dialogs/TextBlockDialog';
+import GalleryBlockDialog from './dialogs/GalleryBlockDialog';
 import { MemoizedImageCarousel } from './ImageCarousel';
+import AddIcon from '@mui/icons-material/Add';
+
 
 export interface ContentBlockProps {
   tabIndex: number
@@ -25,6 +27,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   const [isHovering, setIsHovering] = useState(false);
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -45,8 +48,21 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     }
   }
 
+  const handleAddContentBlock = () => {
+
+  }
+
   const EditButton = styled(Button)({
     height: "100%",
+    visibility: 'hidden',
+    flex: '1',
+    '&:hover': {
+      backgroundColor: theme.customColors.DividerGrey
+    }
+  })
+
+  const AddButton = styled(Button)({
+    width: "100%",
     visibility: 'hidden',
     flex: '1',
     '&:hover': {
@@ -109,12 +125,13 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           initialUrls={value}
         />
       )
+      break;
   }
 
   return (
     <>
 
-      {Dialog({})}
+      <Dialog />
 
       <div
         ref={contentStackRef}
@@ -124,38 +141,56 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           backgroundColor: 'white',
           border: theme.contentBlock?.border,
           borderRadius: theme.contentBlock?.borderRadius,
-          padding: '40px 0 40px 40px',
           width: '100%',
         }}
       >
-        <Stack flexDirection={'row'}>
+        <Stack>
+          <Stack flexDirection={'row'}
+            padding='40px 0 40px 40px'
+          >
 
-          <Stack width={'100%'}>
-            {Heading({})}
-            {Content({})}
+            <Stack width={'100%'}>
+              {Heading({})}
+              {Content({})}
+
+            </Stack>
+
+            {/* negative margin counters parent padding */}
+            <Stack my={'-40px'}>
+
+              <EditButton
+                sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+                color='editBtnGrey'
+                onClick={() => setIsDialogOpen(true)}
+              >
+                <EditIcon />
+              </EditButton>
+
+              <EditButton
+                sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+                color='editBtnGrey'
+              >
+                <DeleteIcon />
+              </EditButton>
+            </Stack>
+
           </Stack>
 
-          {/* negative margin counters parent padding */}
-          <Stack my={'-40px'}>
-
-            <EditButton
-              sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+          {blockIndex < 5 &&
+            <AddButton
+              sx={{
+                visibility: isHovering ? 'visible' : 'hidden',
+                width: '100%'
+              }}
               color='editBtnGrey'
-              onClick={() => setIsDialogOpen(true)}
+              onClick={handleAddContentBlock}
             >
-              <EditIcon />
-            </EditButton>
-
-            <EditButton
-              sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
-              color='editBtnGrey'
-            >
-              <DeleteIcon />
-            </EditButton>
-          </Stack>
+              <AddIcon fontSize='large' />
+            </AddButton>
+          }
 
         </Stack>
-      </div>
+      </div >
     </>
   )
 }

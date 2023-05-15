@@ -4,6 +4,13 @@ import { TContentBlock } from "../../model/TContentBlock";
 import { ProjectContext } from "../../routes/ProjectPage";
 import DeleteIcon from '@mui/icons-material/Delete';
 
+// Helper
+function getFilenameFromURL(url: string) {
+  const splitUrl = url.split('/')
+  const filename = splitUrl[splitUrl.length-1].trim()
+  return filename;
+}
+
 
 interface ThumbnailProps {
     url: string
@@ -11,16 +18,19 @@ interface ThumbnailProps {
     blockIndex: number
     imgIndex: number
     setImgUrls: Dispatch<React.SetStateAction<string[]>>
+    imgsToDelete: string[]
     imgUrls: string[]
 }
 
-export default function ImgThumbnail({ url, tabIndex, blockIndex, setImgUrls, imgUrls, imgIndex }: ThumbnailProps) {
+export default function ImgThumbnail({ url, tabIndex, blockIndex, setImgUrls, imgUrls, imgIndex, imgsToDelete }: ThumbnailProps) {
     const [isHover, setIsHover] = useState(false)
     const theme = useTheme();
 
     const handleImgDelete = () => {
+        const index = imgUrls.indexOf(url)
+        imgsToDelete.push(getFilenameFromURL(imgUrls[index]));
         const newUrls = [...imgUrls]
-        newUrls.splice(imgUrls.indexOf(url), 1)
+        newUrls.splice(index, 1)
         setImgUrls(newUrls)
     }
   

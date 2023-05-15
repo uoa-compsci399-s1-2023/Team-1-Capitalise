@@ -1,7 +1,7 @@
 import React, { SetStateAction, useContext, useState, useEffect } from 'react'
-import { TProject } from '../../model/TProject'
+import { TProject } from '../../../model/TProject'
 import { Dialog, DialogContent, DialogTitle, FormControl, OutlinedInput, DialogActions, Button, FormHelperText, InputLabel, TextField } from '@mui/material'
-import { ProjectContext } from '../../routes/ProjectPage'
+import { ProjectContext } from '../../../routes/ProjectPage'
 
 
 interface TextBlockDialogProps {

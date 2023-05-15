@@ -40,4 +40,10 @@ export function ImageCarousel({ urls }: { urls: string[] }) {
   )
 }
 
-export const MemoizedImageCarousel = memo(ImageCarousel)
+export const MemoizedImageCarousel = memo(ImageCarousel, (prev, next) => {
+  console.log(prev.urls);
+  console.log(next.urls);
+  if (prev === next) 
+    return true;
+  return false;
+})
