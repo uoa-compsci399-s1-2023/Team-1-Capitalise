@@ -135,10 +135,10 @@ const getFrontPageHeadlines = async (req, res) => {
         $group: {
           _id: "$category",
           category: { $first: "$category" },
-          totalQuantity: { $count: {} },
+          totalLikes: { $sum: "$likes" },
         },
       },
-      { $sort: { totalQuantity: -1 } },
+      { $sort: { totalLikes: -1 } },
       { $limit: 5 },
     ]);
 

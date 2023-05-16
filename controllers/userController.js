@@ -298,11 +298,19 @@ const getCurrentUser = async (req, res) => {
 
 const searchUsers = async (req, res) => {
   const nameQuery = req.query.name || "";
+  const isAvaliable = req.query.isAvaliable || "";
+
+  let searchQuery = {
+    name: { $regex: nameQuery, $options: "i" },
+  };
+  if (isAvaliable === "true") {
+    searchQuery.project = null;
+  }
 
   try {
-    const users = await User.find({
-      name: { $regex: nameQuery, $options: "i" },
-    });
+    const users = await User.find(searchQuery)
+      .skip(req.query.startIndex)
+      .limit(req.query.numProjects);
     res.send(users);
   } catch (error) {
     res.status(500).send({ error: "Server error" });
