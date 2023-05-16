@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import {
   Table,
   TableHead,
@@ -34,10 +32,9 @@ import MyTabs from "../../components/MyTabs";
 
 import { addParameter } from "../../api/addParameter";
 import { deleteParameter } from "../../api/deleteParameter";
+import Overview from "./Overview";
 
 const Dashboard = () => {
-  const [open, setOpen] = useState(false);
-
   const auth = useAuth();
 
   // counts displayed in paper components of overview page.
@@ -201,20 +198,20 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const fetchCategories = getCategories().then((data) => {
+    // grab the categories from the API
+    getCategories().then((data) => {
       setCategories(data);
+      setCategoryCount(data.length);
     });
-  }, []);
-
-  useEffect(() => {
-    const fetchSemesters = getSemesters().then((data) => {
+    // grab the semesters from the API
+    getSemesters().then((data) => {
       setSemesters(data);
+      setSemesterCount(data.length);
     });
-  }, []);
-
-  useEffect(() => {
-    const fetchAwards = getAwards().then((data) => {
+    // grab the awards from the API
+    getAwards().then((data) => {
       setAwards(data);
+      setAwardCount(data.length);
     });
   }, []);
 
@@ -223,76 +220,11 @@ const Dashboard = () => {
       label: "Overview",
       index: "1",
       Component: (
-        <Stack height="100%">
-          <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
-            <Typography paddingTop={2} variant="h6">
-              Summary
-            </Typography>
-
-            <Grid container spacing={3} paddingTop={3}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h4">Categories</Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Category
-                      color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
-                    />
-                    <Typography variant="h4">{categoryCount}</Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h4">Semesters</Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <DateRange
-                      color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
-                    />
-                    <Typography variant="h4">{semesterCount}</Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h4">Awards</Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <EmojiEvents
-                      color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
-                    />
-                    <Typography variant="h4">{awardCount}</Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            </Grid>
-            <Typography paddingTop={10} variant="h6">
-              {/* Show newly created projects over a timeframe (maybe for the week??) */}
-              Recently created projects
-            </Typography>
-          </Box>
-        </Stack>
+        <Overview
+          categoryCount={categoryCount}
+          semesterCount={semesterCount}
+          awardCount={awardCount}
+        />
       ),
     },
     {
@@ -493,35 +425,6 @@ const Dashboard = () => {
       ),
     },
   ];
-
-  useEffect(() => {
-    // grab the categories from the API
-    const fetchCategories = getCategories().then((data) => {
-      setCategoryCount(data.length);
-    });
-  }, []);
-
-  useEffect(() => {
-    // grab the semesters from the API
-    const fetchCategories = getSemesters().then((data) => {
-      setSemesterCount(data.length);
-    });
-  }, []);
-
-  useEffect(() => {
-    // grab the semesters from the API
-    const fetchAwards = getAwards().then((data) => {
-      setAwardCount(data.length);
-    });
-  }, []);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Stack
