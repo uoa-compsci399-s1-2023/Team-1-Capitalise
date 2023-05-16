@@ -12,7 +12,7 @@ export default function MembersField() {
   const [members, setMembers] = useState<TUser[]>([]);
 
   useEffect(() => {
-    const promises: Promise<Promise<TUser> | undefined>[] = []
+    const promises: Promise<TUser | undefined>[] = []
     for (const mId of project.members) {
       promises.push(getUser(mId));
     }

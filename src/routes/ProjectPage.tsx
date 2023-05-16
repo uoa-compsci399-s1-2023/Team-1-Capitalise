@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom';
 import { TComment } from '../model/TComment';
 import Comments from '../components/projectPage/Comments/Comments';
 import { getProjectComments } from '../api/getProjectComments';
+import CircularProgress from '@mui/material/CircularProgress';
 import AddIcon from '@mui/icons-material/Add';
 
 
@@ -192,7 +193,16 @@ export default function ProjectPage() {
     )
   } else {
     // Need to replace with loading animation.
-    return <h1>Loading...</h1>
+    return (
+      <Stack
+        width={'100%'}
+        height={'92vh'}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        <CircularProgress color='info' />
+      </Stack>
+    )
   }
 
 }

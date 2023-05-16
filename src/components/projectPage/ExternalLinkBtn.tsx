@@ -1,6 +1,5 @@
 import React from "react";
-import { Button, SvgIcon, Box } from "@mui/material";
-import { PaletteColorOptions } from "@mui/material";
+import { Button, SvgIcon, Box, useMediaQuery, useTheme, Stack } from "@mui/material";
 import LaunchOutlinedIcon from "@mui/icons-material/LaunchOutlined";
 import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
 import { TProject } from "../../model/TProject";
@@ -54,36 +53,44 @@ function LinkBtn({
   textColor,
   variant,
 }: LinkBtnProps) {
+
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("md"));
+
   const handleClick = () => {
     window.open(link, "_blank", "noreferrer");
   };
 
   return (
     <Button
-      // color='black' // Ignore type error
-      // startIcon={<SquareOutlinedIcon />}
-      {...{ startIcon, color }}
+      {...{ color }}
+      startIcon={!isSmall && startIcon}
       onClick={handleClick}
-      // target='_blank'
       endIcon={
-        <LaunchOutlinedIcon sx={{ display: { xs: "none", md: "block" } }} />
+        !isSmall && <LaunchOutlinedIcon />
       }
       variant={variant}
       style={{
         fontWeight: 400,
       }}
       sx={{
-        px: { xs: 1, md: 3 },
         minWidth: "28px",
-        width: { xs: 0, md: 180 },
+        width: { xs: 'fit-content', md: 180 },
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "center",
         textTransform: "capitalize",
         color: textColor, // Text color
       }}
     >
-      <Box display={{ xs: "none", md: "block" }}>{text}</Box>
+      <Stack
+        width={'100%'}
+        alignContent={'center'}
+      >
+        {!isSmall && text}
+        {isSmall && startIcon}
+      </Stack>
+      {/* {isSmall && 'sadfasdfas'} */}
     </Button>
   );
 }

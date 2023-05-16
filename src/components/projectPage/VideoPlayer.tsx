@@ -11,9 +11,13 @@ export default React.memo(function VideoPlayer({ url }: { url: string }) {
       px={'20px'}
       overflow={'hidden'}
       className='video-wrapper'
-      width={'100%'}
+      margin={'0 auto'}
       height={'400px'}
-    >
+      sx={{
+        // Stop video from becoming too big
+        width: {lg: '70%', xs: '100%'}
+      }}
+      >
       <ReactPlayer
         width='100%'
         height='100%'

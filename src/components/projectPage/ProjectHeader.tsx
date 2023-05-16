@@ -18,9 +18,6 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
   const { project, setProject } = useContext(ProjectContext);
   const auth = useAuth();
 
-  const isSmall = theme.breakpoints.down("md");
-
-
   const headerStyle = {
     padding: '0 20px',
     width: '100%',
@@ -33,7 +30,7 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
     gap: 0,
 
     // Only apply in phone mode
-    [isSmall]: {
+    [theme.breakpoints.down("md")]: {
       flexDirection: 'column',
       justifyContent: 'normal',
       alignItems: 'start',

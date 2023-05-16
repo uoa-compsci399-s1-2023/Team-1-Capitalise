@@ -14,9 +14,6 @@ interface FieldProps {
 
 export default function TeamMember({ name, avatar, userId }: FieldProps) {
 
-  const [fieldState, setFieldState] = useState('')
-  const theme = useTheme()
-
   const Member = styled(Button)({
     borderRadius: '5px',
     textTransform: 'capitalize',
@@ -45,7 +42,6 @@ export default function TeamMember({ name, avatar, userId }: FieldProps) {
           color='neutral' // Ignore type error.
           size='large'
           fullWidth
-          style={{}}
         >
           {name}
         </Member>

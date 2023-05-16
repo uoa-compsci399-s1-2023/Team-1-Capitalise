@@ -1,5 +1,5 @@
 import React, { useState, FC, useContext, useRef, ReactNode } from 'react'
-import { Box, Stack, Typography, useTheme, Button } from '@mui/material'
+import {useMediaQuery, Box, Stack, Typography, useTheme, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,8 +33,8 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
+  const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 
-  const isSmall = theme.breakpoints.down("md");
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (auth.isAllowed(['admin'], project.members)) {
@@ -136,14 +136,14 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           {value[0]}
         </Typography>
         :
-        <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty quote block&gt;</Typography>
+        <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty quote block&gt;</Typography>
       )
       break;
     case 'gallery':
       // Only render gallery if more than one image.
       if (value.length === 0) {
         Content = () => (
-          <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty gallery block&gt;</Typography>
+          <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty gallery block&gt;</Typography>
         )
       } else if (value.length === 1) {
         Content = () => (<Image url={value[0]} />)
@@ -164,7 +164,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       Content = () => (value.length > 0 ?
         <VideoPlayer url={value[0]} />
         :
-        <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty video block&gt;</Typography>
+        <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty video block&gt;</Typography>
       )
       Dialog = () => (
         <VideoBlockDialog
@@ -206,7 +206,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           {/* Row stack */}
           <Stack flexDirection={'row'}
             sx={{padding: {
-              xs: '20px',
+              xs: '40px 20px',
               md: '40px 0 40px 40px'
             }}}
           >
