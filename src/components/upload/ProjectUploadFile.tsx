@@ -2,6 +2,8 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+
+
 import {
   Autocomplete,
   Box,
@@ -16,33 +18,73 @@ import {
   SelectChangeEvent,
   styled,
 } from "@mui/material";
+import validator from 'validator';
 import { useState } from "react";
 import ProjectLinksForm from "./ProjectLinks";
 const projectTags = [{ tag: "Mobile" }];
 
+
+const options = [
+  {
+    value: 'gitHub',
+    type: 'github',
+    label: 'GitHub',
+  },
+  {
+    value: 'codePen',
+    type: 'codepen',
+    label: 'CodePen',
+  },
+  {
+    value: 'notion',
+    type: 'notion',
+    label: 'Notion',
+  },
+  {
+    value: 'codesandbox',
+    type: 'codesandbox',
+    label: 'CodeSandbox',
+  },
+  {
+    value: 'kaggle',
+    type: 'kaggle',
+    label: 'Kaggle',
+  },
+];
 const FileInputField = styled(TextField)({
   minWidth: 200,
   maxWidth: 450,
 });
 
 export default function ProjectUploadFileForm(
-  { projectFileToUpload, projectLinkToUpload, handleBack }: any
-
-) {
+  { projectFileToUpload, projectLinkToUpload, handleBack }: any) {
+    const [githubLinkError, setgithubLinkError] = useState('');
+    const [codepenLinkError, setcodepenLinkError] = useState('');
+    const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
+    const [kaggleLinkError, setkaggleLinkError] = useState('');
+    const [notionLinkError, setnotionLinkError] = useState('');
+  
   // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
   // const [banner, setBanner] = useState(null);
   const [banner, setBanner] = useState<
     File | undefined
   >();
 
-  // const [thumbnail, setThumbnail] = useState(null);
   const [thumbnail, setThumbnail] = useState<
     File | undefined
   >();
 
   const [images, setImages] = useState<File[]>([]);
 
-  const [projectLinks, setProjectLinks] = useState([]);
+  const [projectLinks, setProjectLinks] = useState(
+    options.map((option) => ({ value: '', type: option.type }))
+  );
+
+  const handleLinkChange = (event: any, index: any) => {
+    const newSelectedOptions = [...projectLinks];
+    newSelectedOptions[index].value = event.target.value;
+    setProjectLinks(newSelectedOptions);
+  };
 
   const handleBannerFile = (event: any) => {
     event.preventDefault();
@@ -71,10 +113,77 @@ export default function ProjectUploadFileForm(
     //console.log("Project links from form:", projectLinks);
   };
 
+  const validateGithub = () => {   if(projectLinks[0].type == 'github') {
+    if(!validator.matches(projectLinks[0].value, "https://github.com/") && !validator.isEmpty(projectLinks[0].value)) {
+      setgithubLinkError('Please make sure your link begins with https://github.com/...')
+      console.log(projectLinks[0], githubLinkError)
+    } else {
+      setgithubLinkError('');
+      return true;
+    }
+}}
+  const validateCodepen = () => {if (projectLinks[1].type == 'codepen') {
+    if(!validator.matches(projectLinks[1].value, "https://codepen.io/") && !validator.isEmpty(projectLinks[1].value)) {
+        setcodepenLinkError('Please make sure your link begins with https://codepen.io/...')
+
+      } else {
+        setcodepenLinkError('');
+        return true;
+      }}
+  }
+  const validateNotion= () => { if (projectLinks[2].type == 'notion') {
+    if(!validator.matches(projectLinks[2].value, "https://notion.so/") && !validator.isEmpty(projectLinks[2].value)) {
+      setnotionLinkError('Please make sure your link begins with https://notion.so/...')
+    } else {
+      setnotionLinkError('');
+      return true;
+    }}
+
+  }
+  const validateCodeSandbox = () => {  
+    if (projectLinks[3].type == 'codesandbox') {
+        if(!validator.matches(projectLinks[3].value, "https://codesandbox.io") && !validator.isEmpty(projectLinks[3].value)) {
+          setcodesandboxLinkError('Please make sure your link begins with https://codesandbox.io/...')
+        } else {
+          setcodesandboxLinkError('');
+          return true;
+        }
+    } }
+  const validateKaggle = () => {if(!validator.matches(projectLinks[4].value, "https://kaggle.com/") && !validator.isEmpty(projectLinks[4].value)) {
+    setkaggleLinkError('Please make sure your link begins with https://kaggle.com/...')
+  } else {
+    setkaggleLinkError('');
+    return true;
+  }
+}
+  
+   
+      
+  
+
   const handleUpload = (event: any) => {
     event.preventDefault();
+    
     // handle file upload logic here
-    projectFileToUpload(banner, images, thumbnail);
+    if(projectLinks.length > 0) {
+      const g = validateGithub();
+      const cp = validateCodepen();
+      const n = validateNotion();
+      const sb = validateCodeSandbox();
+      const k = validateKaggle()
+      if (g && cp && n && sb && k) {
+        console.log('passed')
+        projectFileToUpload(banner, images, thumbnail);}
+    } else {
+      if (window.confirm("Ready to submit?")) {
+        projectFileToUpload(banner, images, thumbnail);
+        
+      }
+      
+    }
+    
+    console.log(githubLinkError)
+   
   };  
 
 
@@ -181,8 +290,29 @@ export default function ProjectUploadFileForm(
           </Grid>
 
           {/*Project Links Component*/}
-          <ProjectLinksForm handleProjectLinks={handleProjectLinks}/>
+          <Grid item xs={12} sx={{marginTop: 5}}>
+            <Typography variant="subtitle2" gutterBottom>
+              Project Links
+            </Typography>
+
+            {projectLinks.map((option:any , index:any) => (
+              <Grid item xs={12} key={index} sx={{marginBottom: 2}}>
+              <TextField sx={{maxWidth: '450px'}}       
+                key={option.type}
+                fullWidth
+                label={option.type.charAt(0).toUpperCase() + option.type.slice(1).toLowerCase()}
+                defaultValue={option.value}
+                value={option.value}
+                error={eval(`${option.type}` + `LinkError`)}
+                helperText={ eval(`${option.type}` + `LinkError`) ? eval(`${option.type}` + `LinkError`)  : ''}
+                onChange={(event) => handleLinkChange(event, index)}
+              />
+              </Grid>
+            ))} 
+          </Grid> 
         </Grid>
+
+
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
             type="button"

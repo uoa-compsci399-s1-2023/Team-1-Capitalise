@@ -5,20 +5,6 @@ import React, { useState } from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
 import validator from 'validator';
 
-const LinkForm = styled(FormControl)({
-    marginBottom: 8,
-    minWidth: 150,
-    maxWidth: 300
-    
-  }
-);
-
-const SocialLinkField = styled(TextField)({
-  marginLeft: 8,
-  maxWidth: 250
-
-}
-);
 const options = [
   {
     value: 'gitHub',
@@ -51,112 +37,83 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
   const [selectedOptions, setSelectedOptions] = useState(
     options.map((option) => ({ value: '', type: option.type }))
   );
-  const [githubLinkError, setGitHubLinkError] = useState('');
+  const [githubLinkError, setgithubLinkError] = useState('');
   const [codepenLinkError, setcodepenLinkError] = useState('');
   const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
   const [kaggleLinkError, setkaggleLinkError] = useState('');
   const [notionlinkError, setnotionLinkError] = useState('');
 
   console.log(selectedOptions[0].type);
-  const handleLinkChange = (event, index) => {
+  const handleLinkChange = (event: any, index: any) => {
     const newSelectedOptions = [...selectedOptions];
     newSelectedOptions[index].value = event.target.value;
     setSelectedOptions(newSelectedOptions);
     handleProjectLinks(newSelectedOptions);
   };
 
-  //
-  //const handleAdd = (event: any) => {
-    //event.preventDefault();
-    //setSelectedOptions([...selectedOptions, {value: '', type: '' }]);
-    
-  //};
-  //const handleRemove = (index: number) => {
-    //const newSelectedOptions = [...selectedOptions];
-    //newSelectedOptions.splice(index, 1);
-    //setSelectedOptions(newSelectedOptions);
-  //};
 
     //Validate the Links are appropriate
     const validateLinks = () => {
       for (const link of selectedOptions) {
         if(link.type == 'github') {
             if(!validator.matches(link.value, "https://github.com/")) {
-
-
+              setgithubLinkError('Please make sure your link begins with https://github.com/...')
+            } else {
+              setgithubLinkError('');
             }
-        }
+        
+        } else if (link.type == 'codepen') {
+            if(!validator.matches(link.value, "https://codepen.io/")) {
+                setcodepenLinkError('Please make sure your link begins with https://codepen.io/...')
+              } else {
+                setcodepenLinkError('');
+              }
+        } else if (link.type == 'notion') {
+            if(!validator.matches(link.value, "https://notion.so/")) {
+              setnotionLinkError('Please make sure your link begins with https://notion.so/...')
+            } else {
+              setnotionLinkError('');
+            }
+        } else if (link.type == 'codesandbox') {
+            if(!validator.matches(link.value, "https://codesandbox.io")) {
+              setcodesandboxLinkError('Please make sure your link begins with https://codesandbox.io/...')
+            } else {
+              setcodesandboxLinkError('');
+            }
+        } else {
+            if(!validator.matches(link.value, "https://kaggle.com/")) {
+              setkaggleLinkError('Please make sure your link begins with https://kaggle.com/...')
+            } else {
+              setkaggleLinkError('');
+            }
   
       }
+    }
      
   
   
     }
 
-
-
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} sx={{marginTop: 5}}>
     <Typography variant="subtitle2" gutterBottom>
-      Project Resources
+      Project Links
     </Typography>
 
     {selectedOptions.map((option, index) => (
-      <Grid item xs={12}>
-      <SocialLinkField
-        
-        key={index}
+      <Grid item xs={12} key={index}>
+      <TextField sx={{marginBottom: 3, maxWidth: '450px'}}       
+        key={option.type}
         fullWidth
-        label={options[index].label}
+        label={option.type.charAt(0).toUpperCase() + option.type.slice(1).toLowerCase()}
         defaultValue={option.value}
         value={option.value}
+        error={!!`${option.type}LinkError`}
+        helperText={`${option.type}LinkError` ? `${option.type}LinkError` : ''}
         onChange={(event) => handleLinkChange(event, index)}
       />
       </Grid>
     ))}
-  </Grid>
-        
+  </Grid>    
     )
-  {/*  <React.Fragment>
-   
-  
-    {selectedOptions.map((selectedOption, index) => (
-      <Grid item xs={12} key={index}>
-        <LinkForm>
-          <Select
-            labelId={`select-label-${index}`}
-            value={selectedOption.type}
-            onChange={(event) => handleOptionChange(index, event)}
-            autoWidth>
-            {options.map((option) => (
-              <MenuItem key={option.type} value={option.type}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-            </LinkForm> 
-  
-      {selectedOption.type !== '' &&  (
-        <SocialLinkField
-          fullWidth
-          label="Insert a Link"
-          defaultValue={selectedOption.value}
-          value={selectedOption.value}
-          onChange={(event) => handleTextChange(index, event)}
-        />)}
-     
-      {selectedOptions.length > 1 && (
-        <IconButton onClick={() => handleRemove(index)}>
-          <DeleteIcon />
-        </IconButton>
-      )}
-    </Grid>
-  ))}
- 
-  {selectedOptions.length < 5 && ( <Button onClick={handleAdd}>Add more links  </Button>)}
-    </Grid>
-    
-
-  </React.Fragment>  */}
-  
 }
