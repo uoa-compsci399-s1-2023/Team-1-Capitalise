@@ -1,8 +1,15 @@
 // this is for rendering a comment
 
-import { Container, Box, Typography, Button } from "@mui/material";
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  colors,
+  Avatar,
+} from "@mui/material";
 // import { getUserbyId, TUser } from "../api/getUserbyId";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../../../customHooks/useAuth";
@@ -38,20 +45,24 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
     <div className="comment">
       <div className="comment-image-container">
         {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
-        <img
-          src={comment.user.profilePicture}
-          width="30"
-          height="30"
-          referrerPolicy="no-referrer"
-        />
+        <Link to={`../user/${comment.user._id}`}>
+          <Avatar
+            src={comment.user.profilePicture}
+            imgProps={{ referrerPolicy: "no-referrer" }}
+          />
+        </Link>
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
           {/* will be able to chuck in user.username when we're dealing with actual users */}
-          <div className="comment-author">{comment.user.name}</div>
-          <div className="comment-date">{createdAt}</div>
+          <Link to={`../user/${comment.user._id}`}>
+            <div className="comment-author">{comment.user.name}</div>
+          </Link>
+          <Link to={`../projects/${comment.project}`}>
+            <div className="comment-date">{createdAt}</div>
+          </Link>
         </div>
-        <Typography variant="body1" color="initial" fontWeight={100}>
+        <Typography variant="body1" fontWeight={100}>
           {comment.commentBody}
         </Typography>
         <div className="comment-actions">

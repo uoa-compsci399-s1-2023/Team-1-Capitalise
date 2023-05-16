@@ -1,39 +1,76 @@
-import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Box, Button, Divider, Stack, Typography, styled } from "@mui/material";
+import { getProject } from "../api/getProject";
 import { getUser } from "../api/getUser";
 import { TUser } from "../model/TUser";
 import { TProject } from "../model/TProject";
-import { useEffect, useState } from "react";
-import MyTabs from "../components/MyTabs";
 import ProjectCard from "../components/projects/ProjectCard";
-import { getProject } from "../api/getProject";
 import ProjectsGrid from "../components/projects/ProjectsGrid";
-import MyButton from "../components/MyButton";
+import MyTabs from "../components/MyTabs";
+import ExternalLinkBtn from "../components/projectPage/ExternalLinkBtn";
+import { useAuth } from "../customHooks/useAuth";
+import EditUser from "../components/EditUser";
+import Error from "../components/Error";
+import MyComment from "../components/projectPage/Comments/MyComment";
+import { TComment } from "../model/TComment";
+import { getUserComments } from "../api/getUserComments";
+import { deleteComment } from "../api/deleteComment";
 
 const UserProfile = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<TUser | undefined>();
   const [project, setProject] = useState<TProject | undefined>();
   const [likedProjects, setLikedProjects] = useState<TProject[]>([]);
+  const [comments, setComments] = useState<TComment[]>([]);
+  const [open, setOpen] = useState(false);
   let { userID } = useParams();
-  const theme = useTheme();
+  let token = "";
+  let isLoggedIn = false;
+  const CustomScroll = styled(Box)({
+    overflowX: "hidden",
+    "&::-webkit-scrollbar": {
+      width: 7,
+    },
+    "&::-webkit-scrollbar-track": {
+      display: "none",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "darkgrey",
+      borderRadius: "10px",
+      opacity: "50`%",
+    },
+  });
+
   const userTabs = [
     {
       label: "Overview",
       index: "1",
       Component: (
         <Stack height="100%">
-          <Box height="30%" padding="0px 24px 10px 24px">
+          <Box padding="5px 24px 10px 24px" width="100%">
             <Typography variant="h6">Bio</Typography>
             {typeof user != "undefined" && (
-              <Typography>
-                {typeof user.bio != "undefined" ? user.bio : ""}
-              </Typography>
+              <CustomScroll
+                minHeight="50px"
+                maxHeight={{ xs: "200px", md: "220px", xl: "300px" }}
+                overflow="scroll"
+              >
+                <Typography
+                  sx={{ wordBreak: "break-word" }}
+                  whiteSpace="pre-line"
+                >
+                  {typeof user.bio != "undefined" ? user.bio : ""}
+                </Typography>
+              </CustomScroll>
             )}
           </Box>
           <Divider />
           {typeof project != "undefined" && (
-            <Box padding="10px 24px 0px 24px">
-              <Typography variant="h6">Project</Typography>
+            <Box padding="10px 24px 24px 24px">
+              <Typography variant="h6" paddingBottom="10px">
+                Project
+              </Typography>
               <ProjectCard
                 title={project.name}
                 semester={project.semester.value}
@@ -61,27 +98,63 @@ const UserProfile = () => {
       label: "Likes",
       index: "2",
       Component: (
-        <Box height="100%" padding="0px 24px 10px 24px">
+        <Box height="100%" padding="5px 24px 10px 24px">
           <Typography variant="h6">Likes</Typography>
           <ProjectsGrid projects={likedProjects} justifyContent="start" />
         </Box>
       ),
     },
+    {
+      label: "Comments",
+      index: "3",
+      Component: (
+        <Box height="100%" padding="5px 24px 10px 24px">
+          <Typography variant="h6">Comments</Typography>
+          {comments.map((comment) => (
+            <MyComment
+              key={comment._id}
+              comment={comment}
+              deleteComment={() => userDeleteComment(comment._id, token)}
+            />
+          ))}
+        </Box>
+      ),
+    },
   ];
+
+  const userDeleteComment = async (commentId: string, token: string) => {
+    if (isLoggedIn) {
+      deleteComment(commentId, token).then(() => {
+        const updatedComments = comments.filter(
+          (comment) => comment._id != commentId
+        );
+        setComments(updatedComments);
+      });
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!userID) return;
       const newUser = await getUser(userID);
       setUser(newUser);
+      setIsLoading(false);
     };
     fetchUser();
   }, [userID]);
 
+  const auth = useAuth();
+  if (auth.user) {
+    if (auth.user._id === user?._id || auth.user.userType === "admin") {
+      isLoggedIn = true;
+      token = auth.getToken() as string;
+    }
+  }
+
   useEffect(() => {
     if (typeof user === "undefined") return;
-
     const fetchProject = async () => {
-      if (typeof user.project === "undefined") return;
+      if (typeof user.project === "undefined" || user.project === null) return;
       const newProject = await getProject(user.project._id);
       setProject(newProject);
     };
@@ -95,24 +168,32 @@ const UserProfile = () => {
       }
       setLikedProjects(likedProjects);
     };
+    const fetchComments = async () => {
+      if (typeof user === "undefined") return;
+      const comments = await getUserComments(user._id);
+      setComments(comments);
+    };
     fetchProject();
     fetchLikes();
+    fetchComments();
   }, [user]);
 
-  const handleLinkButton = (url: string) => {
-    window.open(url, "_blank", "noreferrer");
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   if (typeof user === "undefined") {
     return (
-      <Box
-        justifyContent="center"
-        display="flex"
-        width="100%"
-        minHeight="92vh"
-        mt="8vh"
-      >
-        <Typography>{userID} does not exist</Typography>
+      <Box>
+        {isLoading ? (
+          <Box />
+        ) : (
+          <Error errorMessage={`User "${userID}" does not exist`} />
+        )}
       </Box>
     );
   }
@@ -123,15 +204,16 @@ const UserProfile = () => {
       justifyContent={{ xs: "start", md: "center" }}
       spacing={0}
       minHeight="92vh"
-      margin="8vh 0vh auto"
+      margin="8vh auto 0vh auto"
       paddingTop="20px"
+      width={{ xs: "97%", sm: "95%", md: "80%" }}
     >
       <Stack
         display="flex"
         direction="column"
         alignItems="start"
         width={{ xs: "100%", md: "305px" }}
-        padding="24px"
+        padding={{ xs: "0px 24px", md: "24px" }}
       >
         <Box display={{ xs: "flex", md: "block" }} width="100%">
           <Box
@@ -145,7 +227,10 @@ const UserProfile = () => {
             sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
           ></Box>
           <Box paddingLeft={{ xs: "24px", md: "0px" }}>
-            <Typography>{user.userType}</Typography>
+            <Typography>
+              {user.userType.charAt(0).toUpperCase() +
+                user.userType.slice(1).toLowerCase()}
+            </Typography>
             <Typography
               width="100%"
               variant="h6"
@@ -155,19 +240,36 @@ const UserProfile = () => {
             </Typography>
             <Stack direction={{ xs: "row", md: "column" }} spacing={1}>
               {user.links.map((link) => (
-                <MyButton
-                  variant="contained"
-                  onClick={() => handleLinkButton(link.value)}
-                  key={link._id}
-                >
-                  {link.type}
-                </MyButton>
+                <Box key={link._id}>
+                  <ExternalLinkBtn
+                    type={link.type}
+                    value={link.value}
+                    _id={link._id}
+                  />
+                </Box>
               ))}
             </Stack>
+            {isLoggedIn && (
+              <Box paddingTop="8px">
+                <Button
+                  onClick={handleClickOpen}
+                  variant="outlined"
+                  sx={{ width: "180px" }}
+                >
+                  Edit Profile
+                </Button>
+                <EditUser
+                  open={open}
+                  handleClose={handleClose}
+                  user={user}
+                  token={token}
+                />
+              </Box>
+            )}
           </Box>
         </Box>
       </Stack>
-      <Box height="inherit" width={{ xs: "100%", md: "1150px" }}>
+      <Box height="inherit" width="100%">
         <MyTabs tabs={userTabs} />
       </Box>
     </Stack>

@@ -15,12 +15,14 @@ import {
 
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
+import DefaultPFP from "../assets/default_pfp.svg";
 import SearchBar from "./SearchBar";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
+
 import {
   AppRegistration,
   Login,
@@ -182,7 +184,6 @@ function ResponsiveAppBar() {
                     }}
                     variant="outlined"
                   >
-                    {" "}
                     Log In
                   </AuthButton>,
                   <AuthButton
@@ -269,10 +270,11 @@ function ResponsiveAppBar() {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src={auth.user?.profilePicture}>
-                  {" "}
-                  <img referrerPolicy="no-referrer" />
-                </Avatar>
+                <Avatar
+                  alt="Logged In"
+                  src={auth.user ? auth.user.profilePicture : DefaultPFP}
+                  imgProps={{ referrerPolicy: "no-referrer" }}
+                />
               </IconButton>
             </Tooltip>
             <Menu
@@ -319,24 +321,28 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {/*The dropdown options*/}
-              <MenuItem onClick={handleCloseUserMenu}>
-                {/*If User is logged in, render his name*/}
-                {uCheck
-                  ? [
-                      <Avatar
-                        key="userAva"
-                        // Yathi - Added referrerPolicy for google
-                        imgProps={{ referrerPolicy: "no-referrer" }}
-                        src={auth.user?.profilePicture}
-                      />,
-                      // <img key="refPolicy" referrerPolicy="no-referrer" /> ,
-                      auth.user?.name,
-                    ]
-                  : "Guest"}
-              </MenuItem>
-              <Divider />
+              {uCheck && (
+                <Box>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate(`../user/${auth.user?._id}`);
+                    }}
+                  >
+                    {/*If User is logged in, render his name*/}
+                    <Avatar
+                      key="userAva"
+                      // Yathi - Added referrerPolicy for google
+                      imgProps={{ referrerPolicy: "no-referrer" }}
+                      src={auth.user?.profilePicture}
+                    ></Avatar>
+                    {auth.user?.name}
+                  </MenuItem>
+                  <Divider />
+                </Box>
+              )}
 
-              {/*Display menu options based on login status*/}
+              {/*CHeck if isAdmin for dashboard*/}
 
               {uCheck &&
                 isAdmin && [
@@ -354,48 +360,52 @@ function ResponsiveAppBar() {
                   </MenuItem>,
                 ]}
 
-              {uCheck && [
-                <MenuItem
-                  key="logout"
-                  onClick={() => {
-                    handleCloseUserMenu();
-                    auth.signout();
-                    navigate("/");
-                  }}
-                >
-                  <ListItemIcon>
-                    <Logout fontSize="small" />
-                  </ListItemIcon>
-                  Log Out
-                </MenuItem>,
-              ]}
+              {/*Display settings based on login status*/}
+              {uCheck
+                ? [
+                    <MenuItem
+                      key="logout"
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        auth.signout();
+                        navigate("/");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      Log Out
+                    </MenuItem>,
+                  ]
+                : //Or display guest (not logged in details)
 
-              {!uCheck && [
-                <MenuItem
-                  key="register2"
-                  onClick={() => {
-                    handleCloseUserMenu();
-                    navigate("register");
-                  }}
-                >
-                  <ListItemIcon>
-                    <AppRegistration fontSize="small" />
-                  </ListItemIcon>
-                  Register
-                </MenuItem>,
-                <MenuItem
-                  key="login2"
-                  onClick={() => {
-                    handleCloseUserMenu();
-                    goToPage("login");
-                  }}
-                >
-                  <ListItemIcon>
-                    <Login fontSize="small" />
-                  </ListItemIcon>
-                  Login
-                </MenuItem>,
-              ]}
+                  [
+                    <MenuItem
+                      key="register2"
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        navigate("register");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <AppRegistration fontSize="small" />
+                      </ListItemIcon>
+                      Register
+                    </MenuItem>,
+                    <MenuItem
+                      key="login2"
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        goToPage("login");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Login fontSize="small" />
+                      </ListItemIcon>
+                      Login
+                    </MenuItem>,
+                  ]}
+              {/*End of Check condition*/}
             </Menu>
           </Box>
         </StyledToolBar>

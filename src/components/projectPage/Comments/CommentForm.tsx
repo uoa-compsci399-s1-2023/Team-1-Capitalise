@@ -3,8 +3,8 @@ import { Box, TextField, Button } from "@mui/material";
 import MyComment from "./MyComment";
 
 interface CommentFormProps {
-  handleSubmit: (c: string) => void
-  submitLabel: string
+  handleSubmit: (c: string) => void;
+  submitLabel: string;
 }
 
 const CommentForm = ({ handleSubmit, submitLabel }: CommentFormProps) => {
@@ -33,31 +33,32 @@ const CommentForm = ({ handleSubmit, submitLabel }: CommentFormProps) => {
     // </Box>
 
     // Added styles to make it consistent with mui
-    <Box 
-      sx={{ width: 600 }} component={'form'}
-      display={'flex'}
-      alignItems={'center'}
+    <Box
+      width={{ xs: "90%", sm: "400px", md: "500px", lg: "600px" }}
+      component={"form"}
+      display={"flex"}
+      alignItems={"center"}
       gap={2}
     >
-        <TextField
-          id="comment-input-field"
-          value={text}
-          onChange={(e) => setText(e.target.value)} 
-          multiline
-          placeholder="Enter comment..."
-          fullWidth
-        />
+      <TextField
+        id="comment-input-field"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        multiline
+        placeholder="Enter comment..."
+        fullWidth
+      />
 
-        <Button 
-          // className="comment-form-button" 
-          disabled={isTextAreaDisabled} 
-          onClick={onSubmit}
-          variant="contained"
-          color="primary"
-          sx={{height: '40px'}}
-        >
-          {submitLabel}
-        </Button>
+      <Button
+        // className="comment-form-button"
+        disabled={isTextAreaDisabled}
+        onClick={onSubmit}
+        variant="contained"
+        color="primary"
+        sx={{ height: "40px" }}
+      >
+        {submitLabel}
+      </Button>
       {/* </form> */}
     </Box>
   );

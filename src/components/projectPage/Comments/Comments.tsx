@@ -5,7 +5,6 @@ import MyComment from "./MyComment";
 import CommentForm from "./CommentForm";
 import { useAuth } from "../../../customHooks/useAuth";
 
-
 import { API_URL } from "../../../api/config";
 import { TComment } from "../../../model/TComment";
 
@@ -56,7 +55,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
         })
         .then((data) => {
           comment._id = data._id;
-          comment.projectId = data.project;
+          comment.project = data.project;
 
           comment.commentBody = data.commentBody;
           comment.parentComment = data.parentComment;
@@ -69,7 +68,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
 
           setBackendComments([comment, ...backendComments]);
         });
-      }
+    }
 
     // Yathi - replaced with onlyAuthenticated() to redirect user.
     // } else {
@@ -95,33 +94,38 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     if (token)  {
       // Yathi - Need to replace with a mui modal.
       // if (window.confirm("Are you sure you want to remove comment?")) {
-        fetch(`${API_URL}/api/projects/comment/${commentId}`, {
-          method: "DELETE",
-          // Yathi - This endpoint doesn't need a body
-          headers: {
-            // Accept: "application/json",
-            // "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-          // body: JSON.stringify({
-          //   commentId: comment._id,
-          // }),
-        }).then(() => {
-          // we need to update the backend comments list
-          const updatedBackendComments = backendComments.filter(
-            (backendComment) => backendComment._id != commentId
-          );
-          setBackendComments(updatedBackendComments);
-        });
+      fetch(`${API_URL}/api/projects/comment/${commentId}`, {
+        method: "DELETE",
+        // Yathi - This endpoint doesn't need a body
+        headers: {
+          // Accept: "application/json",
+          // "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+        // body: JSON.stringify({
+        //   commentId: comment._id,
+        // }),
+      }).then(() => {
+        // we need to update the backend comments list
+        const updatedBackendComments = backendComments.filter(
+          (backendComment) => backendComment._id != commentId
+        );
+        setBackendComments(updatedBackendComments);
+      });
       // }
     }
   };
 
   return (
-    <div className="comments" style={{width: '100%', marginLeft: '20px'}}>
-
+    <div className="comments" style={{ width: "100%", marginLeft: "20px" }}>
       {/* Yathi - Changed variant from body1 to h4 and made component h2 */}
-      <Typography variant="h4" component={"h2"} color="initial" fontWeight={"light"} mb={4}>
+      <Typography
+        variant="h4"
+        component={"h2"}
+        color="black"
+        fontWeight={"light"}
+        mb={4}
+      >
         Discussion ({backendComments.length})
       </Typography>
 

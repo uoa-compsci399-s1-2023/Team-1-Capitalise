@@ -1,69 +1,103 @@
-import Logo from "../assets/Logo.svg";
-import Navbar from "../components/Navbar";
-import { useEffect, useState, useContext } from "react";
-import { Box, Button, Container, Stack, Typography, keyframes, styled } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { SearchContext, getDefaultFilters } from "../app";
+import { useEffect, useState } from "react";
+import { Box, useTheme } from "@mui/material";
+import { TCategory } from "../model/TCategory";
+import { TProject } from "../model/TProject";
+import { getHomeCategories } from "../api/getHomeCategories";
+import { getProjectsCategory } from "../api/getProjectsCategory";
+import Hero from "../components/home/Hero";
+import Carousel from "../components/home/Carousel";
+import { getAwardShowcase } from "../api/getAwardShowcase";
+import ShowcaseCarousel from "../components/home/ShowcaseCarousel";
 
 function Home() {
-  //dw about this just the spinny logo START
-  // const [logoVisability, setLogoVisability] = useState(false);
-
-  // const handleImageClick = () => {
-  //   setLogoVisability(!logoVisability);
-  // };
-
-  // const AnimatedImg = styled("img")({
-  //   "@keyframes spin": {
-  //     from: {
-  //       transform: "rotate(0deg)",
-  //     },
-  //     to: {
-  //       transform: "rotate(360deg)",
-  //     },
-  //   },
-  //   height: "7.5em",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   animation: "spin infinite 20s linear",
-  //   opacity: `${logoVisability ? "100%" : "0%"}`,
-  // });
-  // //dw about this just the spinny logo END
-
-  // return (
-  //   <Box mt="8vh">
-  //     <Box
-  //       minHeight="92vh"
-  //       display="flex"`
-  //       justifyContent="center"
-  //       alignItems="center"
-  //     >
-  //       <AnimatedImg
-  //         src={Logo}
-  //         alt="logo"
-  //         onClick={handleImageClick}
-  //       ></AnimatedImg>
-  //     </Box>
-  //   </Box>
-  // );
-
-  // Temp redirect till we make a landing page
-  const { currFilters, setFilters } = useContext(SearchContext);
-  const nav = useNavigate();
+  const theme = useTheme();
+  const [catergories, setCategories] = useState<TCategory[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [awardShowcase, setAwardShowcase] = useState<TProject[]>([]);
+  const carouselColours = [theme.customColors.bgGrey, "white"];
 
   useEffect(() => {
-    setFilters(getDefaultFilters());
-    nav('/Projects')
-  }, [])
+    const fetchCategories = async () => {
+      const respData = await getHomeCategories();
+      if (respData) {
+        setCategories(respData);
+      }
+    };
+    const fetchAwardShowcase = async () => {
+      const respData = await getAwardShowcase();
+      if (respData) {
+        setAwardShowcase(respData);
+      }
+    };
+    fetchCategories();
+    fetchAwardShowcase();
+  }, []);
+
+  useEffect(() => {
+    const fetchProjects = async (category: string) => {
+      const respData = await getProjectsCategory(category);
+      if (respData) {
+        respData.shift();
+        return respData;
+      }
+    };
+
+    const fetchProjectsCategories = async () => {
+      let projects: any[] = [];
+      for (let category of catergories) {
+        await fetchProjects(category.category.value).then((result) => {
+          if (result) {
+            if (result.length != 0) {
+              projects.push({
+                category: category.category.value,
+                value: result,
+              });
+            }
+          }
+        });
+      }
+      setProjects(projects);
+    };
+    fetchProjectsCategories();
+  }, [catergories]);
+
   return (
-  <Container maxWidth="md">
-    <Box py={8} textAlign="center">
-    <Typography variant="overline" component="span">Welcome new Opportunities</Typography>
-    <Typography variant="h3" component="h2">Upload your Project!</Typography>
-    <Box mt={4}>
-        <Button color="primary" >Check it out now!</Button>
+    <Box mt="8vh">
+      <Hero />
+      {awardShowcase.length !== 0 && (
+        <Box>
+          <ShowcaseCarousel
+            items={awardShowcase}
+            backgroundColor={"white"}
+            title={
+              awardShowcase[0]
+                ? `Semester ${awardShowcase[0].semester.value.substring(
+                    1
+                  )} Capstone Winners`
+                : ""
+            }
+            display={{ xs: "none", md: "flex" }}
+          />
+          <Carousel
+            items={awardShowcase}
+            backgroundColor={"white"}
+            category={"S1 2023 Capstone Winners"}
+            display={{ xs: "flex", md: "none" }}
+          />
+        </Box>
+      )}
+      {projects.map((project, i) => (
+        <Carousel
+          items={project.value}
+          backgroundColor={
+            carouselColours[i % carouselColours.length] as string
+          }
+          category={project.category}
+          key={i}
+        />
+      ))}
     </Box>
-  </Box> </Container>)
+  );
 }
 
 export default Home;

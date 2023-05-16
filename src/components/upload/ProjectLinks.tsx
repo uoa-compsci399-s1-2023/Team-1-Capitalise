@@ -31,11 +31,6 @@ const options = [
     label: 'Notion',
   },
   {
-    value: 'notion',
-    label: 'Notion',
-  },
-
-  {
     value: 'codesandbox',
     label: 'CodeSandbox',
   },
@@ -79,7 +74,7 @@ export default function ProjectLinksForm() {
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
-              {option.label}
+              {option.label} {index}
             </MenuItem>
           ))}
         </Select>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import getSearchParams from "../api/getSearchParameters"
-import { TProject } from "../api/getProjects";
+import { TProject } from "../model/TProject";
 
 type TAvailParameters = {
     category: { _id: string; value: string; qParam?: string; parameterType: string }[];

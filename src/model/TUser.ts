@@ -4,6 +4,7 @@ export type TUser = {
   email: string;
   bio: string;
   username: string;
+  password: string;
   likedProjects: string[];
   myComments: string[];
   userType: "graduate" | "visitor" | "admin";
@@ -14,12 +15,9 @@ export type TUser = {
     _id: string;
     value: string;
     // Need to change to user social links
-    type:
-      | "github"
-      | "codesandbox"
-      | "deployedSite"
-      // | "codepen"
-      // | "notion"
-      // | "kaggle";
+    type: "github" | "codesandbox" | "deployedSite";
+    // | "codepen"
+    // | "notion"
+    // | "kaggle";
   }[];
 };
