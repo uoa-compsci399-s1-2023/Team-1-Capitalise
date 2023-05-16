@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddBlockDialog from './dialogs/AddBlockDialog';
 import YoutubePlayer from './YoutubePlayer';
 import VideoBlockDialog from './dialogs/VideoBlockDialog';
+import ReactPlayer from 'react-player'
 
 
 export interface ContentBlockProps {
@@ -154,7 +155,20 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       break;
       case 'video':
         Content = () => ( value.length > 0 ?
-          <YoutubePlayer videoId={value[0]} />
+          <Stack alignItems={'center'} >
+            <ReactPlayer 
+              url={value[0]} 
+              controls
+              config={{
+                youtube: { 
+                  playerVars: {
+                    autoplay: false,
+                    modestBranding: true
+                  },
+                }
+              }}
+            />
+          </Stack>
           :
           <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty video block&gt;</Typography>
         )
