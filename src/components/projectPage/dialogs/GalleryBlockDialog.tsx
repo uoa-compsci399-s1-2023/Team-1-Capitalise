@@ -49,9 +49,6 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
   const handleFileUploaded = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     if (e.target.files) {
       const file = e.target.files[0]
-      // const newFiles = [...newImgFiles]
-      // newFiles[index] = file
-      // setNewImgFiles(newFiles)
       newImgFiles[index] = file
     }
   }

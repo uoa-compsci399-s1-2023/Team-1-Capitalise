@@ -54,6 +54,14 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     setIsHovering(false);
   }
 
+  const handleDeleteContentBlock = () => {
+    const content: TProject['content']  = JSON.parse(JSON.stringify(project.content))
+    content[tabIndex].tabContent.splice(blockIndex, 1);
+    setProjectChanges({
+      ['content']: content
+    })
+  }
+
   const EditButton = styled(Button)({
     height: "100%",
     visibility: 'hidden',
@@ -179,6 +187,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
               <EditButton
                 sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
                 color='editBtnGrey'
+                onClick={handleDeleteContentBlock}
               >
                 <DeleteIcon />
               </EditButton>
