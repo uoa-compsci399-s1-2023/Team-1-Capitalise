@@ -14,13 +14,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { deleteHeroBanner, uploadHeroBanner } from "../../api/adminHeroBanner";
+import {
+  deleteMobileHeroBanner,
+  uploadMobileHeroBanner,
+} from "../../api/adminHeroBanner";
 
 interface Props {
-  heroBanners: string[];
+  mobileHeroBanners: string[];
 }
 
-const DashboardHeroBanners = ({ heroBanners }: Props) => {
+const DashboardMobileHeroBanners = ({ mobileHeroBanners }: Props) => {
   const [validImage, setValidImage] = useState(true);
   const [heroBanner, setHeroBanner] = useState<File | undefined>();
   const [loading, setLoading] = useState(false);
@@ -39,12 +42,12 @@ const DashboardHeroBanners = ({ heroBanners }: Props) => {
       let formData = new FormData();
       formData.append("heroBanner", heroBanner);
       setLoading(true);
-      uploadHeroBanner(formData).then(() => window.location.reload());
+      uploadMobileHeroBanner(formData).then(() => window.location.reload());
     }
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
-    deleteHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() =>
+    deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() =>
       window.location.reload()
     );
   };
@@ -53,19 +56,21 @@ const DashboardHeroBanners = ({ heroBanners }: Props) => {
     <Stack height="100%">
       <Box height="100%" padding="0px 24px 10px 24px">
         <Typography paddingTop={3} variant="h6">
-          Manage landing page hero banners
+          Manage landing page mobile hero banners
         </Typography>
         <Box paddingTop={3} sx={{ overflow: "auto" }}>
           <TableContainer style={{ maxHeight: 400, maxWidth: 800 }}>
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ width: "50%" }}>Hero Banners</TableCell>
+                  <TableCell style={{ width: "50%" }}>
+                    {"Mobile Hero Banners"}
+                  </TableCell>
                   <TableCell style={{ width: "50%" }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {heroBanners.map((url, i) => (
+                {mobileHeroBanners.map((url, i) => (
                   <TableRow key={i}>
                     <TableCell>
                       <Box
@@ -155,4 +160,4 @@ const DashboardHeroBanners = ({ heroBanners }: Props) => {
   );
 };
 
-export default DashboardHeroBanners;
+export default DashboardMobileHeroBanners;

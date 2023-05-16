@@ -29,8 +29,9 @@ import MyTabs from "../../components/MyTabs";
 import { addParameter } from "../../api/addParameter";
 import { deleteParameter } from "../../api/deleteParameter";
 import DashboardOverview from "./DashboardOverview";
-import { getHeroBanners } from "../../api/getHeroBanners";
+import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
 import DashboardHeroBanners from "./DashboardHeroBanners";
+import DashboardMobileHeroBanners from "./DashboardMobileHeroBanners";
 
 const Dashboard = () => {
   const auth = useAuth();
@@ -220,7 +221,14 @@ const Dashboard = () => {
         setHeroBanners(respData);
       }
     };
+    const fetchMobileHeroBanners = async () => {
+      const respData = await getMobileHeroBanners();
+      if (respData.length !== 0) {
+        setMobileHeroBanners(respData);
+      }
+    };
     fetchHeroBanners();
+    fetchMobileHeroBanners();
   }, []);
 
   const dashboardTabs = [
@@ -435,11 +443,13 @@ const Dashboard = () => {
     {
       label: "Hero Banners",
       index: "5",
+      Component: <DashboardHeroBanners heroBanners={heroBanners} />,
+    },
+    {
+      label: "Mobile Hero Banners",
+      index: "6",
       Component: (
-        <DashboardHeroBanners
-          heroBanners={heroBanners}
-          mobileHeroBanners={[]}
-        />
+        <DashboardMobileHeroBanners mobileHeroBanners={mobileHeroBanners} />
       ),
     },
   ];
