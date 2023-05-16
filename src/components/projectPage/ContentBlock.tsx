@@ -11,9 +11,9 @@ import GalleryBlockDialog from './dialogs/GalleryBlockDialog';
 import { MemoizedImageCarousel, Image } from './ImageCarousel';
 import AddIcon from '@mui/icons-material/Add';
 import AddBlockDialog from './dialogs/AddBlockDialog';
-import YoutubePlayer from './YoutubePlayer';
 import VideoBlockDialog from './dialogs/VideoBlockDialog';
-import ReactPlayer from 'react-player'
+import fitvids from 'fitvids'
+import VideoPlayer from './VideoPlayer';
 
 
 export interface ContentBlockProps {
@@ -58,7 +58,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   }
 
   const handleDeleteContentBlock = () => {
-    const content: TProject['content']  = JSON.parse(JSON.stringify(project.content))
+    const content: TProject['content'] = JSON.parse(JSON.stringify(project.content))
     content[tabIndex].tabContent.splice(blockIndex, 1);
     setProjectChanges({
       ['content']: content
@@ -103,7 +103,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   // Switch block depending on content type
   switch (type) {
     case 'text':
-      Content = () => ( value.length > 0 ? 
+      Content = () => (value.length > 0 ?
         <Typography variant='body1'>{value[0]}</Typography>
         :
         <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty text block&gt;</Typography>
@@ -119,7 +119,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       )
       break;
     case 'quote':
-      Content = () => ( value.length > 0 ?
+      Content = () => (value.length > 0 ?
         <Typography
           component='p'
           fontSize={20}
@@ -153,35 +153,22 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         />
       )
       break;
-      case 'video':
-        Content = () => ( value.length > 0 ?
-          <Stack alignItems={'center'} >
-            <ReactPlayer 
-              url={value[0]} 
-              controls
-              config={{
-                youtube: { 
-                  playerVars: {
-                    autoplay: false,
-                    modestBranding: true
-                  },
-                }
-              }}
-            />
-          </Stack>
-          :
-          <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty video block&gt;</Typography>
-        )
-        Dialog = () => (
-          <VideoBlockDialog
-            setIsDialogOpen={setIsDialogOpen}
-            isDialogOpen={isDialogOpen}
-            tabIndex={tabIndex}
-            blockIndex={blockIndex}
-            initialValue={value[0]}
-          />
-        )
-        break;
+    case 'video':
+      Content = () => (value.length > 0 ?
+        <VideoPlayer url={value[0]} />
+        :
+        <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty video block&gt;</Typography>
+      )
+      Dialog = () => (
+        <VideoBlockDialog
+          setIsDialogOpen={setIsDialogOpen}
+          isDialogOpen={isDialogOpen}
+          tabIndex={tabIndex}
+          blockIndex={blockIndex}
+          initialValue={value[0]}
+        />
+      )
+      break;
   }
 
   return (
@@ -190,9 +177,9 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       <Dialog />
 
       {/* Dialog for adding new content */}
-      {isAddDialogOpen && 
-        <AddBlockDialog 
-          {...{isAddDialogOpen, setIsAddDialogOpen, tabIndex, blockIndex}} 
+      {isAddDialogOpen &&
+        <AddBlockDialog
+          {...{ isAddDialogOpen, setIsAddDialogOpen, tabIndex, blockIndex }}
         />
       }
 

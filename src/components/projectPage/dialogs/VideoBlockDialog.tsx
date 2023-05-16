@@ -30,12 +30,12 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
 
   const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
-    const regexp = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})/
-    if (!value.match(regexp)) {
-      setValueError('Please enter a valid youtube link')
-    } else {
-      setValueError('')
-    }
+    // const regexp = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})/
+    // if (!value.match(regexp)) {
+    //   setValueError('Please enter a valid youtube link')
+    // } else {
+    //   setValueError('')
+    // }
     setValue(e.target.value);
   }
 

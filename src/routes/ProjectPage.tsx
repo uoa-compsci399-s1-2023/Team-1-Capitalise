@@ -44,8 +44,6 @@ export default function ProjectPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [comments, setComments] = useState<TComment[] | undefined>();
 
-  console.log(project)
-
   // Sets inital project on mount
   useEffect(() => {
     setIsLoading(true)
@@ -89,6 +87,7 @@ export default function ProjectPage() {
     }
   }, [projectChanges]) // Will run anytime changes are set.
 
+
   if (!isLoading) {
     return (
       <ProjectContext.Provider value={{ project, setProject, setProjectChanges }}>
@@ -108,8 +107,12 @@ export default function ProjectPage() {
         <Stack
           bgcolor={'white'}
           minHeight={'92vh'}
-          pl={6}
-          pr={4}
+          sx={{
+            pl: { md: 6, sm: 1 },
+            pr: { md: 4, sm: 1 }
+          }}
+          // pl={6}
+          // pr={4}
           maxWidth={'1600px'}
           mx={'auto'}
         >
@@ -131,30 +134,32 @@ export default function ProjectPage() {
             mt={2}>
 
             {/* Tab content */}
-            <Stack flex={1} alignItems={'center'} mr={1} mb={10} >
+            <Stack flex={1} alignItems={'center'} mr={1} mb={10}>
 
               {/* Only render tab buttons if there's more than one tab */}
-              {project.content.length > 1 && <Stack
-                className='tab-btns'
-                flexDirection={'row'}
-                justifyContent={'center'}
-                mb={6}
-                pb={3}
-                borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
-                width={'90%'}
-              >
-                {
-                  project.content.map((tab, index) => (
-                    <TabButton
-                      key={index}
-                      isSelected={selectedTab === index}
-                      value={tab.tabName}
-                      setSelected={setSelectedTab}
-                      index={index}
-                    />
-                  ))
-                }
-              </Stack>}
+              {project.content.length > 1 &&
+                <Stack
+                  className='tab-btns'
+                  flexDirection={'row'}
+                  justifyContent={'center'}
+                  mb={6}
+                  pb={3}
+                  borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
+                  width={'90%'}
+                  flexWrap={'wrap'}
+                >
+                  {
+                    project.content.map((tab, index) => (
+                      <TabButton
+                        key={index}
+                        isSelected={selectedTab === index}
+                        value={tab.tabName}
+                        setSelected={setSelectedTab}
+                        index={index}
+                      />
+                    ))
+                  }
+                </Stack>}
 
               {/* If content is not empty, otherwise show "no content msg" */}
               {project.content[selectedTab] ?

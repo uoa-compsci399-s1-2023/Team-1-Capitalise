@@ -35,6 +35,7 @@ export function ImageCarousel({ urls }: { urls: string[] }) {
       animation='slide'
       duration={600}
       sx={{ mt: 1 }}
+      autoPlay={false}
     >
       {urls.map((imgUrl, index) => (
         <Image url={imgUrl} key={index} />
