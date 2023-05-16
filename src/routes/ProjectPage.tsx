@@ -108,8 +108,8 @@ export default function ProjectPage() {
           bgcolor={'white'}
           minHeight={'92vh'}
           sx={{
-            pl: { md: 6, sm: 1 },
-            pr: { md: 4, sm: 1 }
+            pl: { md: 6, xs: 1 },
+            pr: { md: 4, xs: 1 }
           }}
           // pl={6}
           // pr={4}
@@ -164,11 +164,14 @@ export default function ProjectPage() {
               {/* If content is not empty, otherwise show "no content msg" */}
               {project.content[selectedTab] ?
                 project.content[selectedTab].tabContent.map((cb, index) => (
-                  <ContentBlock key={index} {...{
-                    ...cb,
-                    ['tabIndex']: selectedTab,
-                    ['blockIndex']: index
-                  }} />
+                  <ContentBlock
+                    key={index}
+                    {...{
+                      ...cb,
+                      ['tabIndex']: selectedTab,
+                      ['blockIndex']: index
+                    }}
+                  />
                 ))
                 :
                 <Typography variant="body2" color="neutral">No content to display.</Typography>

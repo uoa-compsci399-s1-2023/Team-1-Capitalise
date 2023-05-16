@@ -36,6 +36,8 @@ export function ImageCarousel({ urls }: { urls: string[] }) {
       duration={600}
       sx={{ mt: 1 }}
       autoPlay={false}
+      cycleNavigation={false}
+      // navButtonsAlwaysVisible
     >
       {urls.map((imgUrl, index) => (
         <Image url={imgUrl} key={index} />

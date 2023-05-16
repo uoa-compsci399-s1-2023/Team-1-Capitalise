@@ -34,11 +34,13 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
 
+  const isSmall = theme.breakpoints.down("md");
+
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (auth.isAllowed(['admin'], project.members)) {
       setIsHovering(true);
       // Change border to grey
-      if (contentStackRef.current) {
+      if (!isSmall && contentStackRef.current) {
         contentStackRef.current.style.border = `3px solid ${theme.customColors.DividerGrey}`
       }
     }
@@ -47,7 +49,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsHovering(false);
     // Reset border
-    if (contentStackRef.current) {
+    if (!isSmall && contentStackRef.current) {
       contentStackRef.current.style.border = theme.contentBlock!.border!
     }
   }
@@ -87,6 +89,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   let Heading: FC = () => <></>;
   let Dialog: FC = () => <></>;
 
+
   if (subHeading) {
     Heading = () => (
       <Typography
@@ -104,7 +107,11 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   switch (type) {
     case 'text':
       Content = () => (value.length > 0 ?
-        <Typography variant='body1'>{value[0]}</Typography>
+        <Typography 
+          variant='body1'
+        >
+          {value[0]}
+        </Typography>
         :
         <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty text block&gt;</Typography>
       )
@@ -198,7 +205,10 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         <Stack>
           {/* Row stack */}
           <Stack flexDirection={'row'}
-            padding='40px 0 40px 40px'
+            sx={{padding: {
+              xs: '20px',
+              md: '40px 0 40px 40px'
+            }}}
           >
             {/* Content and heading */}
             <Stack width={'100%'}>
@@ -208,27 +218,29 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
             {/* Edit and delete buttons */}
             {/* negative margin counters parent padding */}
-            <Stack my={'-40px'}>
-              <EditButton
-                sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
-                color='editBtnGrey'
-                onClick={() => setIsDialogOpen(true)}
-              >
-                <EditIcon />
-              </EditButton>
+            {!isSmall &&
+              <Stack my={'-40px'}>
+                <EditButton
+                  sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+                  color='editBtnGrey'
+                  onClick={() => setIsDialogOpen(true)}
+                >
+                  <EditIcon />
+                </EditButton>
 
-              <EditButton
-                sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
-                color='editBtnGrey'
-                onClick={handleDeleteContentBlock}
-              >
-                <DeleteIcon />
-              </EditButton>
-            </Stack>
+                <EditButton
+                  sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+                  color='editBtnGrey'
+                  onClick={handleDeleteContentBlock}
+                >
+                  <DeleteIcon />
+                </EditButton>
+              </Stack>
+            }
           </Stack>
 
           {/* Add button (only shows if there are less than 5 blocks in tab) */}
-          {project.content[tabIndex].tabContent.length < 5 &&
+          {!isSmall && project.content[tabIndex].tabContent.length < 5 &&
             <AddButton
               sx={{
                 visibility: isHovering ? 'visible' : 'hidden',
