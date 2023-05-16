@@ -117,7 +117,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   };
 
   return (
-    <div className="comments" style={{ width: "100%", marginLeft: "20px" }}>
+    <div className="comments" style={{ margin: "0 20px" }}>
       {/* Yathi - Changed variant from body1 to h4 and made component h2 */}
       <Typography
         variant="h4"
