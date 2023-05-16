@@ -50,6 +50,9 @@ const options = [
     type: 'kaggle',
     label: 'Kaggle',
   },
+  { value: 'deployedSite',
+    type: 'deployedSite', 
+    label: 'Deployed Site'},
 ];
 const FileInputField = styled(TextField)({
   minWidth: 200,
@@ -63,7 +66,7 @@ export default function ProjectUploadFileForm(
     const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
     const [kaggleLinkError, setkaggleLinkError] = useState('');
     const [notionLinkError, setnotionLinkError] = useState('');
-  
+    const [deployedSiteLinkError, setdeployedSiteLinkError] = useState('');
   // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
   // const [banner, setBanner] = useState(null);
   const [banner, setBanner] = useState<
@@ -77,7 +80,7 @@ export default function ProjectUploadFileForm(
   const [images, setImages] = useState<File[]>([]);
 
   const [projectLinks, setProjectLinks] = useState(
-    options.map((option) => ({ value: '', type: option.type }))
+    options.map((option) => ({ value: '', type: option.type, label: option.label }))
   );
 
   const handleLinkChange = (event: any, index: any) => {
@@ -300,7 +303,7 @@ export default function ProjectUploadFileForm(
               <TextField sx={{maxWidth: '450px'}}       
                 key={option.type}
                 fullWidth
-                label={option.type.charAt(0).toUpperCase() + option.type.slice(1).toLowerCase()}
+                label={option.label}
                 defaultValue={option.value}
                 value={option.value}
                 error={eval(`${option.type}` + `LinkError`)}

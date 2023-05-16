@@ -91,7 +91,7 @@ export default function ProjectInfoForm(
   //Tag states
   const tagList : {name: string}[] = [];
   const [selectedTags, setSelectedTags] = useState(projectInformation.tags);
-  console.log("these tags", selectedTags);
+
   const [tagErrorText, setTagErrorText] = useState('');
   
   
@@ -99,12 +99,16 @@ export default function ProjectInfoForm(
     //Project Name Validation 
     if(validator.isEmpty(projectN)) {
       setProjectNameErrorText('Enter a project name.');
-    }
-    if(!validator.isAscii(projectN)) {
+    }else if(!validator.isAscii(projectN)) {
       setProjectNameErrorText('Enter a project name with only ASCII characters.');
-    } else { 
-      setProjectNameErrorText('');
-      return true;
+    }else if(projectN.length < 5) {
+      setProjectNameErrorText('Enter a project name longer than five characters.');
+    } else if (projectN.length > 100) { 
+      setProjectNameErrorText('Team name exceeded character limit.');
+      
+    } else {
+      setProjectNameErrorText('')
+      return true
     }
   }
   const validateProjectSemester= (sem: any) => { 
