@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, useTheme } from "@mui/material";
-import { TCategory } from "../model/TCategory";
+import { TFrontCategory } from "../model/TFrontCategory";
 import { TProject } from "../model/TProject";
 import { getHomeCategories } from "../api/getHomeCategories";
 import { getProjectsCategory } from "../api/getProjectsCategory";
@@ -11,7 +11,7 @@ import ShowcaseCarousel from "../components/home/ShowcaseCarousel";
 
 function Home() {
   const theme = useTheme();
-  const [catergories, setCategories] = useState<TCategory[]>([]);
+  const [catergories, setCategories] = useState<TFrontCategory[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [awardShowcase, setAwardShowcase] = useState<TProject[]>([]);
   const carouselColours = [theme.customColors.bgGrey, "white"];
