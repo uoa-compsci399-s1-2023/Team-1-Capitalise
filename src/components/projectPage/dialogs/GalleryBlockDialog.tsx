@@ -64,7 +64,7 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
   }
 
   const handleSave = () => {
-    if (!valueError || !headingError) {
+    if (!valueError && !headingError) {
 
       // Get current content, and change the required block value.
       const content: TProject['content'] = JSON.parse(JSON.stringify(project.content))

@@ -1,6 +1,6 @@
 import React, { useRef, useContext, useState, useEffect } from 'react'
 
-import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select } from '@mui/material';
+import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select, useMediaQuery } from '@mui/material';
 import { styled, Button, Typography, useTheme, Box } from '@mui/material'
 import { FormControl, MenuItem, InputLabel, SelectChangeEvent } from '@mui/material'
 import { ProjectContext } from '../../../routes/ProjectPage';
@@ -21,6 +21,7 @@ export default function CategoryField() {
   const [value, setValue] = useState<string>(''); // For onchange input validation
   const theme = useTheme();
   const auth = useAuth();
+  const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect( () => {
     fetchCurrentParameters()

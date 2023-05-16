@@ -31,7 +31,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
   const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
     if (value.length > 2000) {
-      setValueError('Please keep content under 20000 characters')
+      setValueError('Please keep content under 2000 characters')
     } else {
       setValueError('')
     }
@@ -49,7 +49,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
   }
 
   const handleSave = () => {
-    if (!valueError || !headingError) {
+    if (!valueError && !headingError) {
 
       // Get current content, and change the required block value.
       const content: TProject['content'] = JSON.parse(JSON.stringify(project.content))

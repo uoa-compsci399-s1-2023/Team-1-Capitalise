@@ -10,7 +10,10 @@ export type TProjectPost = {
   thumbnail?: TProject['thumbnail']
   semester?: TProject['semester']['value']
   category?: TProject['category']['value']
-  links?: TProject['links']
+  links?: {
+    type: TProject['links'][0]['type']
+    value: string
+  }[]
   content?: TProject['content']
   badges?: TProject['badges']['value']
   tags?: TProject['badges']['value'][] // Max 20 characters

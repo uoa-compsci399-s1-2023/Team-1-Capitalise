@@ -50,7 +50,7 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
   }
 
   const handleSave = () => {
-    if (!valueError || !headingError) {
+    if (!valueError && !headingError) {
 
       // Get current content, and change the required block value.
       const content: TProject['content'] = JSON.parse(JSON.stringify(project.content))
