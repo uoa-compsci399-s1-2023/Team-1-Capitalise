@@ -4,6 +4,8 @@ import TextFormatIcon from '@mui/icons-material/TextFormat';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import { ProjectContext } from '../../../routes/ProjectPage';
 import { TProject } from '../../../model/TProject';
+import { TContentBlock } from '../../../model/TContentBlock';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 
 interface AddBlockDialogProps {
   isAddDialogOpen: boolean
@@ -52,20 +54,15 @@ export default function AddBlockDialog({ isAddDialogOpen, setIsAddDialogOpen, ta
     setIsAddDialogOpen(false);
   }
 
-  const handleBtnClick = (type: string) => {
-    
-    switch(type) {
-      case 'text':
-        const newContent: TProject['content'] = JSON.parse(JSON.stringify(project.content));
-        newContent[tabIndex].tabContent.splice(blockIndex+1, 0, {
-          type: "text",
-          value: []
-        })
-        setProjectChanges({
-          ['content']: newContent
-        })
-    }
-
+  const handleBtnClick = (type: TContentBlock['type']) => {
+    const newContent: TProject['content'] = JSON.parse(JSON.stringify(project.content));
+    newContent[tabIndex].tabContent.splice(blockIndex+1, 0, {
+      type: type,
+      value: []
+    })
+    setProjectChanges({
+      ['content']: newContent
+    })
     setIsAddDialogOpen(false);
   }
 
@@ -106,6 +103,16 @@ export default function AddBlockDialog({ isAddDialogOpen, setIsAddDialogOpen, ta
               }}
             />
             <Typography color={'black'}>Gallery</Typography>
+          </ContentButton>
+
+          <ContentButton handleClick={() => handleBtnClick('video')}>
+            <OndemandVideoIcon
+              sx={{ 
+                fontSize: '125px', 
+                height: '150px'
+              }}
+            />
+            <Typography color={'black'}>Video</Typography>
           </ContentButton>
 
         </Grid>

@@ -8,9 +8,11 @@ import { useAuth } from '../../customHooks/useAuth';
 import { ProjectContext } from '../../routes/ProjectPage';
 import TextBlockDialog from './dialogs/TextBlockDialog';
 import GalleryBlockDialog from './dialogs/GalleryBlockDialog';
-import { MemoizedImageCarousel } from './ImageCarousel';
+import { MemoizedImageCarousel, Image } from './ImageCarousel';
 import AddIcon from '@mui/icons-material/Add';
 import AddBlockDialog from './dialogs/AddBlockDialog';
+import YoutubePlayer from './YoutubePlayer';
+import VideoBlockDialog from './dialogs/VideoBlockDialog';
 
 
 export interface ContentBlockProps {
@@ -97,6 +99,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     )
   }
 
+  // Switch block depending on content type
   switch (type) {
     case 'text':
       Content = () => ( value.length > 0 ? 
@@ -115,7 +118,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       )
       break;
     case 'quote':
-      Content = () => (
+      Content = () => ( value.length > 0 ?
         <Typography
           component='p'
           fontSize={20}
@@ -124,10 +127,21 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         >
           {value[0]}
         </Typography>
+        :
+        <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty quote block&gt;</Typography>
       )
       break;
     case 'gallery':
-      Content = () => (<MemoizedImageCarousel urls={value} />);
+      // Only render gallery if more than one image.
+      if (value.length === 0) {
+        Content = () => (
+          <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty gallery block&gt;</Typography>
+        )
+      } else if (value.length === 1) {
+        Content = () => (<Image url={value[0]} />)
+      } else {
+        Content = () => (<MemoizedImageCarousel urls={value} />);
+      }
       Dialog = () => (
         <GalleryBlockDialog
           setIsDialogOpen={setIsDialogOpen}
@@ -138,13 +152,30 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         />
       )
       break;
+      case 'video':
+        Content = () => ( value.length > 0 ?
+          <YoutubePlayer videoId={value[0]} />
+          :
+          <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty video block&gt;</Typography>
+        )
+        Dialog = () => (
+          <VideoBlockDialog
+            setIsDialogOpen={setIsDialogOpen}
+            isDialogOpen={isDialogOpen}
+            tabIndex={tabIndex}
+            blockIndex={blockIndex}
+            initialValue={value[0]}
+          />
+        )
+        break;
   }
 
   return (
     <>
-
+      {/* Dialog for editing content */}
       <Dialog />
 
+      {/* Dialog for adding new content */}
       {isAddDialogOpen && 
         <AddBlockDialog 
           {...{isAddDialogOpen, setIsAddDialogOpen, tabIndex, blockIndex}} 
@@ -162,20 +193,21 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           width: '100%',
         }}
       >
+        {/* Column stack */}
         <Stack>
+          {/* Row stack */}
           <Stack flexDirection={'row'}
             padding='40px 0 40px 40px'
           >
-
+            {/* Content and heading */}
             <Stack width={'100%'}>
               {Heading({})}
               {Content({})}
-
             </Stack>
 
+            {/* Edit and delete buttons */}
             {/* negative margin counters parent padding */}
             <Stack my={'-40px'}>
-
               <EditButton
                 sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
                 color='editBtnGrey'
@@ -192,9 +224,9 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
                 <DeleteIcon />
               </EditButton>
             </Stack>
-
           </Stack>
 
+          {/* Add button (only shows if there are less than 5 blocks in tab) */}
           {project.content[tabIndex].tabContent.length < 5 &&
             <AddButton
               sx={{
