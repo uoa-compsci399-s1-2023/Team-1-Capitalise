@@ -19,9 +19,10 @@ interface Props {
   handleClose: () => void;
   user: TUser;
   token: string;
+  refreshUser: () => void;
 }
 
-const EditUser = ({ open, handleClose, user, token }: Props) => {
+const EditUser = ({ open, handleClose, user, token, refreshUser }: Props) => {
   const getLink = (linkType: string) => {
     for (let link of user.links) {
       if (linkType === link.type) {
@@ -104,22 +105,26 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       bio: bio,
       links: links,
     };
-
+    setLoading(true);
     patchUser(user._id, body, token).then(() => {
       if (typeof profilePictureFile !== "undefined") {
         let formData = new FormData();
         formData.append("profilePicture", profilePictureFile);
-        uploadProfilePicture(user._id, formData).then(() =>
-          window.location.reload()
-        );
+        uploadProfilePicture(user._id, formData).then(() => {
+          refreshUser();
+          setLoading(false);
+        });
       } else if (deleteProfile) {
-        deleteProfilePicture(user._id).then(() => window.location.reload());
+        deleteProfilePicture(user._id).then(() => {
+          refreshUser();
+          setLoading(false);
+        });
       } else {
-        window.location.reload();
+        refreshUser();
+        setLoading(false);
       }
     });
     handleClose();
-    setLoading(true);
   };
 
   const isUrlValid = (url: string, urlWebsite: string) => {

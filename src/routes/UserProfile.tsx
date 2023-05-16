@@ -133,13 +133,14 @@ const UserProfile = () => {
     }
   };
 
+  const fetchUser = async () => {
+    if (!userID) return;
+    const newUser = await getUser(userID);
+    setUser(newUser);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!userID) return;
-      const newUser = await getUser(userID);
-      setUser(newUser);
-      setIsLoading(false);
-    };
     fetchUser();
   }, [userID]);
 
@@ -263,6 +264,7 @@ const UserProfile = () => {
                   handleClose={handleClose}
                   user={user}
                   token={token}
+                  refreshUser={fetchUser}
                 />
               </Box>
             )}
