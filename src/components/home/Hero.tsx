@@ -134,7 +134,13 @@ const Hero = () => {
               position="absolute"
               zIndex={1}
               top={0}
-              padding={{ xs: 4, md: 5, lg: 7, xl: 10 }}
+              left={{ md: "40px", lg: "56px", xl: "80px" }}
+              padding={{
+                xs: 4,
+                md: "40px 40px 40px 0px",
+                lg: "56px 56px 56px 0px",
+                xl: "80px 80px 80px 0px",
+              }}
             >
               <Box>
                 {!isStudent && (
