@@ -25,7 +25,7 @@ const sendConfirmationEmail = (name, email, confirmationCode) => {
       html: `<h1>You're almost there!</h1>
         <h2>Hey, ${name}!</h2>
         <p>Thank you for signing up to capitalise! There's just one more thing to do. Please confirm your email by clicking on the following link:</p>
-        <a href=https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/users/auth/confirm/${confirmationCode}>Click here to confirm</a>
+        <a href=https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/confirm/${confirmationCode}>Click here to confirm</a>
         </div>`,
     })
     .catch((err) => console.log(err));
