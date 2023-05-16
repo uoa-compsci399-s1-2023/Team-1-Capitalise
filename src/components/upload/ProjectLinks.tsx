@@ -48,7 +48,9 @@ const options = [
 ];
 export default function ProjectLinksForm({handleProjectLinks}: any) {
 
-  const [selectedOptions, setSelectedOptions] = useState([{ value: '', type: '' }]);
+  const [selectedOptions, setSelectedOptions] = useState(
+    options.map((option) => ({ value: '', type: option.type }))
+  );
   const [githubLinkError, setGitHubLinkError] = useState('');
   const [codepenLinkError, setcodepenLinkError] = useState('');
   const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
@@ -56,29 +58,25 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
   const [notionlinkError, setnotionLinkError] = useState('');
 
   console.log(selectedOptions[0].type);
-  const handleOptionChange = (index:any, event:any) => {
-    const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[index].type = event.target.value;
-    setSelectedOptions(newSelectedOptions);
-  };
-
-  const handleTextChange = (index:any, event:any) => {
+  const handleLinkChange = (event, index) => {
     const newSelectedOptions = [...selectedOptions];
     newSelectedOptions[index].value = event.target.value;
     setSelectedOptions(newSelectedOptions);
-    handleProjectLinks(selectedOptions);
+    handleProjectLinks(newSelectedOptions);
   };
 
-  const handleAdd = (event: any) => {
-    event.preventDefault();
-    setSelectedOptions([...selectedOptions, {value: '', type: '' }]);
+  //
+  //const handleAdd = (event: any) => {
+    //event.preventDefault();
+    //setSelectedOptions([...selectedOptions, {value: '', type: '' }]);
     
-  };
-  const handleRemove = (index: number) => {
-    const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions.splice(index, 1);
-    setSelectedOptions(newSelectedOptions);
-  };
+  //};
+  //const handleRemove = (index: number) => {
+    //const newSelectedOptions = [...selectedOptions];
+    //newSelectedOptions.splice(index, 1);
+    //setSelectedOptions(newSelectedOptions);
+  //};
+
     //Validate the Links are appropriate
     const validateLinks = () => {
       for (const link of selectedOptions) {
@@ -98,12 +96,30 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
 
 
   return (
-    <React.Fragment>
+    <Grid item xs={12}>
+    <Typography variant="subtitle2" gutterBottom>
+      Project Resources
+    </Typography>
+
+    {selectedOptions.map((option, index) => (
+      <Grid item xs={12}>
+      <SocialLinkField
         
-  <Grid item xs={12}>
-  <Typography variant="subtitle2" gutterBottom>
-        Project Resources
-      </Typography>
+        key={index}
+        fullWidth
+        label={options[index].label}
+        defaultValue={option.value}
+        value={option.value}
+        onChange={(event) => handleLinkChange(event, index)}
+      />
+      </Grid>
+    ))}
+  </Grid>
+        
+    )
+  {/*  <React.Fragment>
+   
+  
     {selectedOptions.map((selectedOption, index) => (
       <Grid item xs={12} key={index}>
         <LinkForm>
@@ -118,17 +134,17 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
               </MenuItem>
             ))}
           </Select>
-      </LinkForm>
-      {/*Text Field for Links*/}
+            </LinkForm> 
+  
       {selectedOption.type !== '' &&  (
         <SocialLinkField
           fullWidth
           label="Insert a Link"
-          error={!!${selectedOption.type}}
+          defaultValue={selectedOption.value}
           value={selectedOption.value}
           onChange={(event) => handleTextChange(index, event)}
         />)}
-      {/*Delete Link Field*/}
+     
       {selectedOptions.length > 1 && (
         <IconButton onClick={() => handleRemove(index)}>
           <DeleteIcon />
@@ -136,10 +152,11 @@ export default function ProjectLinksForm({handleProjectLinks}: any) {
       )}
     </Grid>
   ))}
-  {/*Add Extra Link Button sits outside Grid*/}
+ 
   {selectedOptions.length < 5 && ( <Button onClick={handleAdd}>Add more links  </Button>)}
     </Grid>
+    
 
-  </React.Fragment>
-  )
+  </React.Fragment>  */}
+  
 }
