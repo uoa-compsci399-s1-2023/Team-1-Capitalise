@@ -44,9 +44,11 @@ const DashboardHeroBanners = ({ heroBanners }: Props) => {
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
-    deleteHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() =>
-      window.location.reload()
-    );
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      deleteHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() =>
+        window.location.reload()
+      );
+    }
   };
 
   return (

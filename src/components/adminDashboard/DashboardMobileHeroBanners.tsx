@@ -47,9 +47,11 @@ const DashboardMobileHeroBanners = ({ mobileHeroBanners }: Props) => {
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
-    deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() =>
-      window.location.reload()
-    );
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() =>
+        window.location.reload()
+      );
+    }
   };
 
   return (
@@ -75,8 +77,8 @@ const DashboardMobileHeroBanners = ({ mobileHeroBanners }: Props) => {
                     <TableCell>
                       <Box
                         display="flex"
-                        width="540px"
-                        height="267px"
+                        width="450"
+                        height="200px"
                         component="img"
                         src={url}
                         alt="hero"
