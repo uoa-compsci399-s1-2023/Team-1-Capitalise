@@ -9,6 +9,7 @@ const {
   protected2,
   failure,
   nextPage,
+  verifyUser,
 } = require("../controllers/authController");
 
 //Authenticates a user.
@@ -34,5 +35,7 @@ router.get("/failure", failure);
 router.get("/nextPage", nextPage);
 
 router.get("/protected", googleAuth, protected2);
+
+router.get("/confirm/:confirmationCode", verifyUser)
 
 module.exports = router;

@@ -6,6 +6,30 @@ const { User, validate } = require("../models/user");
 const { Project } = require("../models/project");
 const { Comment, validateComment } = require("../models/comment");
 const { checkUser } = require("./checkParamValid");
+const nodemailer = require("nodemailer");
+
+const transport = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.NODEMAILEREMAIL,
+    pass: process.env.NODEMAILERPASS,
+  },
+});
+
+const sendConfirmationEmail = (name, email, confirmationCode) => {
+  transport
+    .sendMail({
+      from: process.env.NODEMAILEREMAIL,
+      to: email,
+      subject: "Please confirm your account",
+      html: `<h1>You're almost there!</h1>
+        <h2>Hey, ${name}!</h2>
+        <p>Thank you for signing up to capitalise! There's just one more thing to do. Please confirm your email by clicking on the following link:</p>
+        <a href=http://localhost:3000/api/auth/confirm/${confirmationCode}> Click here</a>
+        </div>`,
+    })
+    .catch((err) => console.log(err));
+};
 
 async function deleteComments(commentId) {
   try {
@@ -95,6 +119,10 @@ const postUser = async (req, res) => {
       userType: myUserType,
       isGoogleCreated: false,
       skills: req.body.skills,
+      confirmationCode: jwt.sign(
+        { email: req.body.email },
+        process.env.JWT_PRIVATE_KEY
+      ),
     });
 
     if (req.body.projectId) {
@@ -109,7 +137,9 @@ const postUser = async (req, res) => {
     user = await user.save();
     const token = user.generateAuthToken();
 
-    res.header("x-auth-token", token).status(201).send(user);
+    //res.header("x-auth-token", token).status(201).send(user);
+    res.send(user);
+    sendConfirmationEmail(user.name, user.email, user.confirmationCode);
   } catch (ex) {
     res.status(500).send(`Internal Server Error: ${ex}`);
   }

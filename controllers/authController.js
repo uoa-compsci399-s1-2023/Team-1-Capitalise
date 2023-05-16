@@ -19,23 +19,28 @@ const authenticateUser = async (req, res) => {
   //Check if a user exists with the same username specified in the request.
   if (req.body.email) {
     user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(400).send("Invalid email or password.");
+    if (!user) return res.status(401).send("Invalid email or password.");
   } else if (req.body.username) {
     user = await User.findOne({ username: req.body.username });
-    if (!user) return res.status(400).send("Invalid username or password.");
+    if (!user) return res.status(401).send("Invalid username or password.");
   } else {
-    return res.status(400).send("You didn't provide a username or email!");
+    return res.status(401).send("You didn't provide a username or email!");
   }
 
   //Check if they were created using OAuth
   if (user.isGoogleCreated === true)
-    return res.status(400).send("Please sign in using Google!");
+    return res.status(401).send("Please sign in using Google!");
 
   //Compare the password specified in the request password with that stored in the database.
   bcrypt.compare(req.body.password, user.password, function (err, result) {
     if (result === false) {
-      return res.status(400).send("Invalid username or password.");
+      return res.status(401).send("Invalid username or password.");
     } else {
+      if (user.status != "Active") {
+        return res
+          .status(401)
+          .send("Your account is pending. Please Verify Your Email!");
+      }
       const token = user.generateAuthToken();
       res.send(token);
     }
@@ -96,10 +101,7 @@ const protected2 = async (req, res) => {
   let user = await User.findOne({ email: req.user.email });
   if (!user) return res.status(400).send("Error: No user provided!");
   const token = user.generateAuthToken();
-  res
-    .redirect(
-      `//www.capitalise.space/googleSuccessRedirect?token=${token}`
-    );
+  res.redirect(`//www.capitalise.space/googleSuccessRedirect?token=${token}`);
   req.session.destroy();
 };
 
@@ -116,10 +118,38 @@ const nextPage = async (req, res) => {
   res.redirect("//www.capitalise.space/googleSuccessRedirect");
 };
 
+//Placeholder for redirect.
+const verifyUser = async (req, res) => {
+  try {
+    let user = await User.findOne({
+      confirmationCode: req.params.confirmationCode,
+    });
+    if (!user) {
+      return res.status(400).send({ fail: "User Not found." });
+    }
+
+    if (user.status === "Active") {
+      return res.status(400).send({ fail: "You have already confirmed your email!" });
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+      status: "Active",
+    });
+
+    const token = user.generateAuthToken();
+    //res.send(token);
+    res.redirect(`//www.capitalise.space/googleSuccessRedirect?token=${token}`);
+
+  } catch (err) {
+    return res.status(500).send(`Server failure: ${err}`);
+  }
+};
+
 module.exports = {
   authenticateUser,
   googleOAuth,
   protected2,
   failure,
   nextPage,
+  verifyUser,
 };

@@ -78,6 +78,14 @@ const userSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  status: {
+    type: String, 
+    enum: ['Pending', 'Active'],
+    default: 'Pending'
+  },
+  confirmationCode: { 
+    type: String, 
+    unique: true },
 });
 
 //Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user.
