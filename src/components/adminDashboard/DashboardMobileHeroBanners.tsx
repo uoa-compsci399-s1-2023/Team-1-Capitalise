@@ -21,9 +21,13 @@ import {
 
 interface Props {
   mobileHeroBanners: string[];
+  refreshBanners: () => void;
 }
 
-const DashboardMobileHeroBanners = ({ mobileHeroBanners }: Props) => {
+const DashboardMobileHeroBanners = ({
+  mobileHeroBanners,
+  refreshBanners,
+}: Props) => {
   const [validImage, setValidImage] = useState(true);
   const [heroBanner, setHeroBanner] = useState<File | undefined>();
   const [loading, setLoading] = useState(false);
@@ -42,14 +46,21 @@ const DashboardMobileHeroBanners = ({ mobileHeroBanners }: Props) => {
       let formData = new FormData();
       formData.append("heroBanner", heroBanner);
       setLoading(true);
-      uploadMobileHeroBanner(formData).then(() => window.location.reload());
+      uploadMobileHeroBanner(formData).then(() => {
+        refreshBanners();
+        setLoading(false);
+      });
     }
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
-      deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() =>
-        window.location.reload()
+      setLoading(true);
+      deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(
+        () => {
+          refreshBanners();
+          setLoading(false);
+        }
       );
     }
   };
@@ -154,6 +165,9 @@ const DashboardMobileHeroBanners = ({ mobileHeroBanners }: Props) => {
             </Button>
           </Box>
         </Box>
+        <Typography variant="subtitle2" color="grey">
+          {"Note: if the change doesn't work try again for submit and delete"}
+        </Typography>
       </Box>
       <Dialog open={loading}>
         <DialogTitle>Hang tight, this takes a few seconds...</DialogTitle>

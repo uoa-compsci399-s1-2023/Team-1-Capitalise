@@ -199,6 +199,19 @@ const Dashboard = () => {
     }
   };
 
+  const fetchHeroBanners = async () => {
+    const respData = await getHeroBanners();
+    if (respData.length !== 0) {
+      setHeroBanners(respData);
+    }
+  };
+  const fetchMobileHeroBanners = async () => {
+    const respData = await getMobileHeroBanners();
+    if (respData.length !== 0) {
+      setMobileHeroBanners(respData);
+    }
+  };
+
   useEffect(() => {
     // grab the categories from the API
     getCategories().then((data) => {
@@ -215,18 +228,6 @@ const Dashboard = () => {
       setAwards(data);
       setAwardCount(data.length);
     });
-    const fetchHeroBanners = async () => {
-      const respData = await getHeroBanners();
-      if (respData.length !== 0) {
-        setHeroBanners(respData);
-      }
-    };
-    const fetchMobileHeroBanners = async () => {
-      const respData = await getMobileHeroBanners();
-      if (respData.length !== 0) {
-        setMobileHeroBanners(respData);
-      }
-    };
     fetchHeroBanners();
     fetchMobileHeroBanners();
   }, []);
@@ -443,13 +444,21 @@ const Dashboard = () => {
     {
       label: "Hero Banners",
       index: "5",
-      Component: <DashboardHeroBanners heroBanners={heroBanners} />,
+      Component: (
+        <DashboardHeroBanners
+          heroBanners={heroBanners}
+          refreshBanners={fetchHeroBanners}
+        />
+      ),
     },
     {
       label: "Mobile Hero Banners",
       index: "6",
       Component: (
-        <DashboardMobileHeroBanners mobileHeroBanners={mobileHeroBanners} />
+        <DashboardMobileHeroBanners
+          mobileHeroBanners={mobileHeroBanners}
+          refreshBanners={fetchMobileHeroBanners}
+        />
       ),
     },
   ];
