@@ -340,7 +340,7 @@ const searchUsers = async (req, res) => {
   try {
     const users = await User.find(searchQuery)
       .skip(req.query.startIndex)
-      .limit(req.query.numProjects);
+      .limit(req.query.numUsers);
     res.send(users);
   } catch (error) {
     res.status(500).send({ error: "Server error" });
