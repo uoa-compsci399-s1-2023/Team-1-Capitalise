@@ -20,6 +20,7 @@ import ProjectPage from "./routes/ProjectPage";
 import Navbar from "./components/Navbar";
 import UserProfile from "./routes/UserProfile";
 import { AuthProvider } from "./customHooks/useAuth";
+import AdminDashboard from "./routes/AdminDashboard";
 import GoogleSuccessRedirect from "./routes/googleSuccessRedirect";
 import GoogleFailure from "./routes/googleFailure";
 import Upload from "./routes/Upload";
@@ -116,6 +117,7 @@ export default function App() {
                   />
                   <Route path="/googleFailure" element={<GoogleFailure />} />
                   <Route path="/upload" element={<Upload />} />
+                  <Route path="/adminDashboard" element={<AdminDashboard />} />
                 </Routes>
               </Box>
             </ThemeProvider>

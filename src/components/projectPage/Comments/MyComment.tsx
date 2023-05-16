@@ -68,7 +68,7 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
         <div className="comment-actions">
           <div className="comment-action">
             {auth.isAllowed(["graduate", "admin", "visitor"]) &&
-              auth.user?._id == comment.user._id && (
+              (auth.user?._id == comment.user._id || auth.user?.userType == "admin") && (
                 <Button
                   variant="outlined"
                   startIcon={<DeleteOutlineIcon />}
