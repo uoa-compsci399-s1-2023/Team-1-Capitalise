@@ -8,13 +8,9 @@ import {
   TableContainer,
   Box,
   Typography,
-  Paper,
-  Grid,
   Button,
   Stack,
 } from "@mui/material";
-
-import { DateRange, Category, EmojiEvents } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../../customHooks/useAuth";
@@ -32,7 +28,9 @@ import MyTabs from "../../components/MyTabs";
 
 import { addParameter } from "../../api/addParameter";
 import { deleteParameter } from "../../api/deleteParameter";
-import Overview from "./Overview";
+import DashboardOverview from "./DashboardOverview";
+import { getHeroBanners } from "../../api/getHeroBanners";
+import DashboardHeroBanners from "./DashboardHeroBanners";
 
 const Dashboard = () => {
   const auth = useAuth();
@@ -50,6 +48,9 @@ const Dashboard = () => {
 
   const [awards, setAwards] = useState<TAward[]>([]);
   const [newAward, setNewAward] = useState("");
+
+  const [heroBanners, setHeroBanners] = useState<string[]>([]);
+  const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
 
   const handleNewCategory = (event: any) => {
     setNewCategory(event.target.value);
@@ -213,6 +214,13 @@ const Dashboard = () => {
       setAwards(data);
       setAwardCount(data.length);
     });
+    const fetchHeroBanners = async () => {
+      const respData = await getHeroBanners();
+      if (respData.length !== 0) {
+        setHeroBanners(respData);
+      }
+    };
+    fetchHeroBanners();
   }, []);
 
   const dashboardTabs = [
@@ -220,7 +228,7 @@ const Dashboard = () => {
       label: "Overview",
       index: "1",
       Component: (
-        <Overview
+        <DashboardOverview
           categoryCount={categoryCount}
           semesterCount={semesterCount}
           awardCount={awardCount}
@@ -422,6 +430,16 @@ const Dashboard = () => {
             </Button>
           </Box>
         </Box>
+      ),
+    },
+    {
+      label: "Hero Banners",
+      index: "5",
+      Component: (
+        <DashboardHeroBanners
+          heroBanners={heroBanners}
+          mobileHeroBanners={[]}
+        />
       ),
     },
   ];

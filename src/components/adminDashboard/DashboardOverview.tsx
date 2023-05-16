@@ -7,7 +7,11 @@ interface Props {
   awardCount: number;
 }
 
-const Overview = ({ categoryCount, semesterCount, awardCount }: Props) => {
+const DashboardOverview = ({
+  categoryCount,
+  semesterCount,
+  awardCount,
+}: Props) => {
   return (
     <Stack height="100%">
       <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
@@ -82,4 +86,4 @@ const Overview = ({ categoryCount, semesterCount, awardCount }: Props) => {
   );
 };
 
-export default Overview;
+export default DashboardOverview;

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { uploadProfilePicture } from "../api/uploadProfilePicture";
 import { deleteProfilePicture } from "../api/deleteProfilePicture";
 import { useAuth } from "../customHooks/useAuth";
+import DefaultPFP from "../assets/default_pfp.svg";
 
 interface Props {
   open: boolean;
@@ -30,8 +31,8 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
     }
     return "";
   };
-  const defaultURL =
-    "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/default_pfp.svg";
+
+  const defaultURL = DefaultPFP;
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio);
   const [profilePicture, setProfilePicture] = useState(user.profilePicture);
