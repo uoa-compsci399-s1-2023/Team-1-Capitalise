@@ -329,7 +329,7 @@ const getCurrentUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   const nameQuery = req.query.name || "";
   const isAvailable = req.query.isAvailable || "";
-  const isGraduate = req. query.isGraduate || "";
+  const userRole = req. query.userRole || "";
 
   let searchQuery = {
     name: { $regex: nameQuery, $options: "i" },
@@ -338,8 +338,8 @@ const searchUsers = async (req, res) => {
     searchQuery.project = null;
   } 
 
-  if (isGraduate === "true") {
-    searchQuery.userType = "graduate"
+  if (userRole) {
+    searchQuery.userType = userRole
   }
 
   try {
