@@ -185,10 +185,9 @@ const Dashboard = () => {
       formData.append("award", newAwardImage);
       setLoading(true);
 
-      const response = await uploadAwardImage(formData)
-      setLoading(false)
-      setAwardImageString(response)
-      
+      const response = await uploadAwardImage(formData);
+      setLoading(false);
+      setAwardImageString(response);
     }
   };
 
@@ -228,7 +227,10 @@ const Dashboard = () => {
       if (window.confirm("Are you sure you want to delete this award?")) {
         deleteParameter(awardId, token).then(() => {
           // we also need to delete the associated award image from s3 by grabbing the image name
-          var last = awardImage.substring(awardImage.lastIndexOf("/") + 1, awardImage.length);
+          var last = awardImage.substring(
+            awardImage.lastIndexOf("/") + 1,
+            awardImage.length
+          );
           deleteAwardImage(last);
 
           // we need to update the awards display.
@@ -328,7 +330,7 @@ const Dashboard = () => {
               Add category
             </Typography>
             <Box
-              sx={{ width: 600 }}
+              width={{ xs: "300px", sm: "600px" }}
               component={"form"}
               display={"flex"}
               alignItems={"center"}
@@ -394,7 +396,7 @@ const Dashboard = () => {
             Add semester
           </Typography>
           <Box
-            sx={{ width: 600 }}
+            width={{ xs: "300px", sm: "600px" }}
             component={"form"}
             display={"flex"}
             alignItems={"center"}
@@ -486,8 +488,6 @@ const Dashboard = () => {
           >
             <TextField
               label="New award image"
-              //value={newCategory}
-              //onChange={handleNewCategory}
               variant="outlined"
               fullWidth
               margin="normal"
@@ -499,7 +499,7 @@ const Dashboard = () => {
               helperText={
                 !validImage
                   ? "Select a valid image type"
-                  : "The order is sorted by fileaname e.g Alpha.jpg then Bravo.jpg"
+                  : "match the name of the file with the award name"
               }
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 if (event.target.files) {
@@ -521,7 +521,7 @@ const Dashboard = () => {
             Add new award name
           </Typography>
           <Box
-            sx={{ width: 600 }}
+            width={{ xs: "300px", sm: "600px" }}
             component={"form"}
             display={"flex"}
             alignItems={"center"}

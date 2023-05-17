@@ -49,7 +49,7 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
+    if (window.confirm("Are you sure you want to delete this banner?")) {
       setLoading(true);
       deleteHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() => {
         refreshBanners();
@@ -125,8 +125,6 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
         >
           <TextField
             label="New hero banner"
-            //value={newCategory}
-            //onChange={handleNewCategory}
             variant="outlined"
             fullWidth
             margin="normal"

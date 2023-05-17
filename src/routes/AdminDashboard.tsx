@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!auth.user) {
+    if (!auth.user || auth.user.userType !== "admin") {
       navigate("/");
     }
   });
