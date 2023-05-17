@@ -329,12 +329,16 @@ const getCurrentUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   const nameQuery = req.query.name || "";
   const isAvaliable = req.query.isAvaliable || "";
+  const isGraduate = req. query.isGraduate || "";
 
   let searchQuery = {
     name: { $regex: nameQuery, $options: "i" },
   };
   if (isAvaliable === "true") {
     searchQuery.project = null;
+  } 
+
+  if (isGraduate === "true") {
     searchQuery.userType = "graduate"
   }
 
