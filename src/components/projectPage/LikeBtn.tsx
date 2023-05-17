@@ -45,15 +45,22 @@ export default function LikeBtn() {
 
       // If member or admin, show likes, views, and comments info
 
-      <Stack flexDirection={'row'} gap={2} flexWrap={'wrap'}>
-        <Typography sx={InfoBoxStyle}>
-          {pluralize('likes', project.likes, true)}
+      <Stack
+        flexDirection={'column'}
+        gap={0.5}
+        flexWrap={'wrap'}
+        sx={{
+          pl: {md: 0, xs: 1}
+        }}
+      >
+        <Typography variant='subtitle2' color={'text.secondary'}>
+          Likes: {project.likes}
         </Typography>
-        <Typography sx={InfoBoxStyle}>
-          {pluralize('views', project.views, true)}
+        <Typography variant='subtitle2' color={'text.secondary'}>
+          Views: {project.views}
         </Typography>
-        <Typography sx={InfoBoxStyle}>
-          {pluralize('comments', project.comments.length, true)}
+        <Typography variant='subtitle2' color={'text.secondary'}>
+          Comments: {project.comments.length}
         </Typography>
       </Stack>
 

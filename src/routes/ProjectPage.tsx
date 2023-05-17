@@ -143,7 +143,8 @@ export default function ProjectPage() {
                   className='tab-btns'
                   flexDirection={'row'}
                   justifyContent={'center'}
-                  mb={2}
+                  mb={2
+                  }
                   pb={3}
                   borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
                   width={'90%'}

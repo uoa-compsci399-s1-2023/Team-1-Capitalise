@@ -105,11 +105,13 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
           </Typography>
         </Box>
 
-        { <LikeBtn /> }
-
-        { <AdminDeleteBtn /> }
-
-
+      <Stack
+      gap={2}
+      // alignItems={'end'}
+      >
+        <AdminDeleteBtn />
+        <LikeBtn />
+      </Stack>
       </Stack>
 
     </>
