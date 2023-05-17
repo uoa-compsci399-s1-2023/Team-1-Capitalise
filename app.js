@@ -13,6 +13,7 @@ const s3 = require("./routes/s3Routes");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
 const parameters = require("./routes/parameters");
+const tags = require("./routes/tags")
 const { User } = require("./models/user");
 const { Project } = require("./models/project");
 
@@ -42,5 +43,6 @@ app.use("/api/users", users);
 app.use("/api/auth", auth);
 app.use("/api/parameters", parameters);
 app.use("/api/s3", s3);
+app.use("/api/tags", tags);
 
 module.exports = app;
