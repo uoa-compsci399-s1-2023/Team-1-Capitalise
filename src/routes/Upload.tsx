@@ -64,7 +64,9 @@ export default function Upload() {
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>(infoHold);
   const [projectLink, setProjectLink] = useState([]);
   const [projectID, setProjectID] = useState('');
-
+  const [bannerInfo, setBannerInfo] = useState('');
+  const [imagesInfo, setImagesInfo] = useState('');
+  const [thumbnailInfo, setThumbnailInfo] = useState('');
   // seperate out fields into variables to avoid "possibly undefined".
   // force some of the fields to be string so we avoid "possibly undefined".
   // we are using the same logic of forcing the variable to be a string even though it could be undefined. Like we did with the auth token.
@@ -117,7 +119,9 @@ export default function Upload() {
 
   const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
     // stores Project Files into respective states
-    
+    setThumbnailInfo(thumbnail);
+    setBannerInfo(banner);
+    setImagesInfo(images);
     
     // we want to check if these files are null or not.
     if (banner == null) {
@@ -144,16 +148,7 @@ export default function Upload() {
     // navigates to loading page
     // check if user wants to submit their project, otherwise keep them on this page.
 
-
-    if (window.confirm("Ready to submit?")) {
-      handleNext();
-      
-    }
-    
-    // calls upload function as we have all the information to create a project
-    handleUpload();
-  };
-
+  }
   // the final call to create a Project
   const handleUpload = () => {
     // API Call here!
@@ -181,6 +176,7 @@ export default function Upload() {
       ],
       tags: projectTags,
     };
+  
 
     //console.log("New project:", newProject);
 
@@ -229,6 +225,8 @@ export default function Upload() {
             projectFileToUpload={projectFileToUpload}
             handleBack={handleBack}
             projectLinkToUpload={projectLinkToUpload}
+            projectResources={[bannerInfo, imagesInfo, thumbnailInfo, projectLink]}
+            handleUpload={handleUpload}
           />
         );
 

@@ -60,7 +60,7 @@ const FileInputField = styled(TextField)({
 });
 
 export default function ProjectUploadFileForm(
-  { projectFileToUpload, projectLinkToUpload, handleBack }: any) {
+  { projectFileToUpload, projectLinkToUpload, handleBack, projectResources, handleUpload}: any) {
     const [githubLinkError, setgithubLinkError] = useState('');
     const [codepenLinkError, setcodepenLinkError] = useState('');
     const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
@@ -115,11 +115,16 @@ export default function ProjectUploadFileForm(
 
     //console.log("Project links from form:", projectLinks);
   };
-
+  
+  const handleGoBack = (event: any) => {
+    event.preventDefault();
+    projectFileToUpload(banner, images, thumbnail);
+    handleBack();}
+  
   const validateGithub = () => {   if(projectLinks[0].type == 'github') {
     if(!validator.matches(projectLinks[0].value, "https://github.com/") && !validator.isEmpty(projectLinks[0].value)) {
       setgithubLinkError('Please make sure your link begins with https://github.com/...')
-      console.log(projectLinks[0], githubLinkError)
+  
     } else {
       setgithubLinkError('');
       return true;
@@ -160,11 +165,17 @@ export default function ProjectUploadFileForm(
   }
 }
   
-   
-      
+  const validateDeployedWebsite = () => {if(!validator.isURL(projectLinks[5].value) && !validator.isEmpty(projectLinks[5].value)) {
+    setdeployedSiteLinkError('Please make sure your link is a website/URL.')
+  } else {
+    setdeployedSiteLinkError('');
+    return true;
+  }
+  }
+        
   
 
-  const handleUpload = (event: any) => {
+  const handleFileUpload = (event: any) => {
     event.preventDefault();
     
     // handle file upload logic here
@@ -174,9 +185,11 @@ export default function ProjectUploadFileForm(
       const n = validateNotion();
       const sb = validateCodeSandbox();
       const k = validateKaggle()
-      if (g && cp && n && sb && k) {
+      const ds = validateDeployedWebsite();
+      if (g && cp && n && sb && k && ds) {
         console.log('passed')
-        projectFileToUpload(banner, images, thumbnail);}
+        projectFileToUpload(banner, images, thumbnail);
+        }
     } else {
       if (window.confirm("Ready to submit?")) {
         projectFileToUpload(banner, images, thumbnail);
@@ -195,7 +208,7 @@ export default function ProjectUploadFileForm(
       <Typography variant="h6" gutterBottom>
         2. Project Files
       </Typography>
-      <Box component="form" noValidate onSubmit={handleUpload}>
+      <Box component="form" noValidate onSubmit={handleFileUpload}>
         <Grid container spacing={1}>
           {/* Upload Attach Banner */}
           <Grid item>
@@ -213,7 +226,9 @@ export default function ProjectUploadFileForm(
             />
             <FileInputField
               disabled
-              value={banner ? banner.name : ""}
+              
+              value={banner ? banner.name : projectResources[0].name}
+              
               fullWidth
               helperText="*This features at the top of your project page!"
             />
@@ -244,11 +259,12 @@ export default function ProjectUploadFileForm(
             />
             <FileInputField
               disabled
+              
               helperText="*Select images you would like to feature on the gallery"
               value={
                 images.length
                   ? `The number of files uploaded: ${images.length}`
-                  : ""
+                  : `The number of files uploaded: ${projectResources[1].length}`
               }
               fullWidth
             />
@@ -278,7 +294,8 @@ export default function ProjectUploadFileForm(
             />
             <FileInputField
               disabled
-              value={thumbnail ? thumbnail.name : ""}
+            
+              value={thumbnail ? thumbnail.name : projectResources[2].name}
               fullWidth
               helperText="*What people see when looking for your project!"
             />
@@ -304,7 +321,7 @@ export default function ProjectUploadFileForm(
                 key={option.type}
                 fullWidth
                 label={option.label}
-                defaultValue={option.value}
+                defaultValue={'HI'}
                 value={option.value}
                 error={eval(`${option.type}` + `LinkError`)}
                 helperText={ eval(`${option.type}` + `LinkError`) ? eval(`${option.type}` + `LinkError`)  : ''}
@@ -321,7 +338,7 @@ export default function ProjectUploadFileForm(
             type="button"
             variant="outlined"
             sx={{ mt: 3, ml: 1 }}
-            onClick={handleBack}
+            onClick={handleGoBack}
           >
             Back
           </Button>
