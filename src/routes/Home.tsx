@@ -1,28 +1,36 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
+import { TFrontCategory } from "../model/TFrontCategory";
+import { TProject } from "../model/TProject";
+import { getHomeCategories } from "../api/getHomeCategories";
 import { getProjectsCategory } from "../api/getProjectsCategory";
-import Carousel from "../components/Carousel";
-import heroImage from "../assets/image-placeholderhomeplaceholder.png";
-import CarouselMuiTest from "../components/CarouselMuiTest";
-import { getCategories } from "../api/getCategories";
-import { TCategory } from "../model/TCategory";
-import { LineWeight } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import Hero from "../components/home/Hero";
+import Carousel from "../components/home/Carousel";
+import { getAwardShowcase } from "../api/getAwardShowcase";
+import ShowcaseCarousel from "../components/home/ShowcaseCarousel";
 
 function Home() {
   const theme = useTheme();
-  const [catergories, setCategories] = useState<TCategory[]>([]);
+  const [catergories, setCategories] = useState<TFrontCategory[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
-  const carouselColours = ["white", theme.customColors.bgGrey];
+  const [awardShowcase, setAwardShowcase] = useState<TProject[]>([]);
+  const carouselColours = [theme.customColors.bgGrey, "white"];
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const respData = await getCategories();
+      const respData = await getHomeCategories();
       if (respData) {
         setCategories(respData);
       }
     };
+    const fetchAwardShowcase = async () => {
+      const respData = await getAwardShowcase();
+      if (respData) {
+        setAwardShowcase(respData);
+      }
+    };
     fetchCategories();
+    fetchAwardShowcase();
   }, []);
 
   useEffect(() => {
@@ -33,13 +41,17 @@ function Home() {
         return respData;
       }
     };
+
     const fetchProjectsCategories = async () => {
       let projects: any[] = [];
       for (let category of catergories) {
-        await fetchProjects(category.value).then((result) => {
+        await fetchProjects(category.category.value).then((result) => {
           if (result) {
             if (result.length != 0) {
-              projects.push({ category: category.value, value: result });
+              projects.push({
+                category: category.category.value,
+                value: result,
+              });
             }
           }
         });
@@ -49,87 +61,41 @@ function Home() {
     fetchProjectsCategories();
   }, [catergories]);
 
-  //responsiveness for test carousel
-  /*
-  const [numProjDisp, setNumProjDisp] = useState(
-    Math.round((window.innerWidth - 140) / 370)
-  );
-  useEffect(() => {
-    const handleResize = () => {
-      let width = window.innerWidth;
-      if (width < 1470 && width > 1150) {
-        setNumProjDisp(3);
-      } else if (width < 1150 && width > 830) {
-        setNumProjDisp(2);
-      } else if (width < 830) {
-        setNumProjDisp(1);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  */
-
   return (
     <Box mt="8vh">
-      <Box position="relative">
-        <Box
-          display="flex"
-          width="100%"
-          height={{ xs: "350px", md: "500px" }}
-          component="img"
-          src={heroImage}
-          alt="hero"
-          alignSelf="center"
-          sx={{ objectFit: "cover" }}
-        ></Box>
-        <Box position="absolute" zIndex={1} top={0} padding={{ xs: 4, md: 10 }}>
-          <Box width={{ xs: "100%", md: "70%" }}>
-            <Typography variant="h1" color="white" fontWeight={8000}>
-              Explore the talent at UoA
-            </Typography>
-            <Typography
-              variant="h4"
-              color="white"
-              paddingTop="50px"
-              fontWeight={200}
-            >
-              We are proud to showcase the exceptional skills of our students.
-            </Typography>
-          </Box>
-          <Box paddingTop="25px">
-            <Link to="../projects">
-              <Button variant="contained">Explore Projects</Button>
-            </Link>
-          </Box>
-        </Box>
-        {projects.map((project, i) => (
-          <Carousel
-            items={project.value}
-            backgroundColor={
-              carouselColours[i % carouselColours.length] as string
+      <Hero />
+      {awardShowcase.length !== 0 && (
+        <Box>
+          <ShowcaseCarousel
+            items={awardShowcase}
+            backgroundColor={"white"}
+            title={
+              awardShowcase[0]
+                ? `Semester ${awardShowcase[0].semester.value.substring(
+                    1
+                  )} Capstone Winners`
+                : ""
             }
-            category={project.category}
-            key={i}
-          ></Carousel>
-        ))}
-      </Box>
-
-      {/*
+            display={{ xs: "none", md: "flex" }}
+          />
+          <Carousel
+            items={awardShowcase}
+            backgroundColor={"white"}
+            category={"S1 2023 Capstone Winners"}
+            display={{ xs: "flex", md: "none" }}
+          />
+        </Box>
+      )}
       {projects.map((project, i) => (
-        <CarouselMuiTest
-          category={project.category}
+        <Carousel
           items={project.value}
-          numProjDisp={numProjDisp}
-          bgcolor={carouselColours[i % carouselColours.length] as string}
+          backgroundColor={
+            carouselColours[i % carouselColours.length] as string
+          }
+          category={project.category}
           key={i}
         />
       ))}
-      */}
     </Box>
   );
 }

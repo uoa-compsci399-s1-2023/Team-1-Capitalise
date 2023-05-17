@@ -1,6 +1,13 @@
 // this is for rendering a comment
 
-import { Container, Box, Typography, Button } from "@mui/material";
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  colors,
+  Avatar,
+} from "@mui/material";
 // import { getUserbyId, TUser } from "../api/getUserbyId";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -39,11 +46,9 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
       <div className="comment-image-container">
         {/* will be able to chuck in user.profilePicture when we're dealing with actual users */}
         <Link to={`../user/${comment.user._id}`}>
-          <img
+          <Avatar
             src={comment.user.profilePicture}
-            width="30"
-            height="30"
-            referrerPolicy="no-referrer"
+            imgProps={{ referrerPolicy: "no-referrer" }}
           />
         </Link>
       </div>
@@ -53,15 +58,17 @@ const MyComment: React.FC<CommentProps> = ({ comment, deleteComment }) => {
           <Link to={`../user/${comment.user._id}`}>
             <div className="comment-author">{comment.user.name}</div>
           </Link>
-          <div className="comment-date">{createdAt}</div>
+          <Link to={`../projects/${comment.project}`}>
+            <div className="comment-date">{createdAt}</div>
+          </Link>
         </div>
-        <Typography variant="body1" color="initial" fontWeight={100}>
+        <Typography variant="body1" fontWeight={100}>
           {comment.commentBody}
         </Typography>
         <div className="comment-actions">
           <div className="comment-action">
             {auth.isAllowed(["graduate", "admin", "visitor"]) &&
-              auth.user?._id == comment.user._id && (
+              (auth.user?._id == comment.user._id || auth.user?.userType == "admin") && (
                 <Button
                   variant="outlined"
                   startIcon={<DeleteOutlineIcon />}

@@ -26,7 +26,7 @@ interface Props {
   projectID: string;
 }
 
-const ProjectCard = ({
+const ShowcaseProjectCard = ({
   title,
   semester,
   image,
@@ -74,8 +74,8 @@ const ProjectCard = ({
     <Fade in={true} timeout={loggedInAdmin}>
       <Card
         sx={{
-          minWidth: 320,
-          maxWidth: 320,
+          minWidth: 500,
+          maxWidth: 500,
           border: "none",
           ":hover": {
             boxShadow: 10,
@@ -86,12 +86,12 @@ const ProjectCard = ({
           <CardMedia
             component="img"
             alt="error loading image"
-            height="125px"
+            height="195px"
             src={image}
             onError={handleDefaultImage}
           />
           <Box
-            height="8px"
+            height="12px"
             sx={{
               background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[1]})`,
             }}
@@ -99,41 +99,39 @@ const ProjectCard = ({
 
           <CardContent
             sx={{
-              paddingTop: "15px",
-              paddingBottom: "13px",
+              padding: "25px 25px 20px 25px",
               "&:last-child": {
-                paddingTop: "15px",
-                paddingBottom: "13px",
+                padding: "25px 25px 20px 25px",
               },
             }}
           >
             <Box display="flex">
               {awardIcon && (
                 <Box paddingRight="10px">
-                  <img src={awardIcon} width="40px"></img>
+                  <img src={awardIcon} width="60px"></img>
                 </Box>
               )}
               <Box display="grid">
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ lineHeight: 1, fontSize: "12px" }}
+                  sx={{ lineHeight: 1, fontSize: "17px" }}
                 >
                   {semester}
                 </Typography>
                 <Typography
                   noWrap
-                  variant="h5"
-                  sx={{ lineHeight: 1, fontWeight: 600 }}
+                  variant="body1"
+                  sx={{ lineHeight: 1, fontWeight: 600, fontSize: "35px" }}
                 >
                   {title}
                 </Typography>
                 <Typography
                   variant="body2"
-                  marginBottom="0.9em"
-                  height="14px"
+                  marginBottom="1em"
+                  height="21px"
                   sx={{
-                    fontSize: "12px",
+                    fontSize: "17px",
                     background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[0]})`,
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
@@ -150,7 +148,7 @@ const ProjectCard = ({
                   variant="body2"
                   color="text.secondary"
                   lineHeight={1.5}
-                  fontSize="12px"
+                  fontSize="17px"
                 >
                   {teamname}
                 </Typography>
@@ -158,7 +156,7 @@ const ProjectCard = ({
                   gutterBottom
                   variant="body2"
                   lineHeight={1}
-                  fontSize="12px"
+                  fontSize="17px"
                 >
                   {category}
                 </Typography>
@@ -190,4 +188,4 @@ const ProjectCard = ({
   );
 };
 
-export default ProjectCard;
+export default ShowcaseProjectCard;

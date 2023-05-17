@@ -5,6 +5,7 @@ import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';
 import EditButton from './EditButton';
 import EditNameDialog from './dialogs/EditNameDialog';
+import AdminDeleteBtn from './AdminDeleteBtn';
 
 interface ProjectHeaderProps {
   name: string
@@ -104,7 +105,10 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
           </Typography>
         </Box>
 
-        {<LikeBtn />}
+        { <LikeBtn /> }
+
+        { <AdminDeleteBtn /> }
+
 
       </Stack>
 
