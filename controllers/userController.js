@@ -335,6 +335,7 @@ const searchUsers = async (req, res) => {
   };
   if (isAvaliable === "true") {
     searchQuery.project = null;
+    searchQuery.userType = "graduate"
   }
 
   try {
