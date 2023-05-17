@@ -328,15 +328,16 @@ const getCurrentUser = async (req, res) => {
 
 const searchUsers = async (req, res) => {
   const nameQuery = req.query.name || "";
-  const isAvaliable = req.query.isAvaliable || "";
+  const isAvailable = req.query.isAvailable || "";
+  const userRole = req. query.userRole || "";
 
   let searchQuery = {
     name: { $regex: nameQuery, $options: "i" },
+    userType: { $regex: '^' + userRole + '$', $options: "i" }
   };
-  if (isAvaliable === "true") {
+  if (isAvailable === "true") {
     searchQuery.project = null;
-    searchQuery.userType = "graduate"
-  }
+  } 
 
   try {
     const users = await User.find(searchQuery)

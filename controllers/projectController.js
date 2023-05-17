@@ -13,8 +13,8 @@ const getAllProjects = async (req, res) => {
     .populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("badges", "value")
+    .populate("tags", "name")
     .sort("name");
   return res.status(200).send(projects);
 };
@@ -25,8 +25,8 @@ const getProjectsByLikes = async (req, res) => {
     //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("badges", "value")
+    .populate("tags", "name")
     .sort("likes");
 
   return res.status(200).send(projects);
@@ -95,8 +95,8 @@ const getAwardedProjectByLatestSemester = async (req, res) => {
     })
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id");
+      .populate("badges", "value")
+      .populate("tags", "name");
 
     while (projects.length < 3) {
       if (count == semesterList.length) {
@@ -118,8 +118,8 @@ const getAwardedProjectByLatestSemester = async (req, res) => {
       })
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
-        .populate("badges", "value -_id")
-        .populate("tags", "name -_id");
+        .populate("badges", "value")
+        .populate("tags", "name");
     }
 
     return res.status(200).send(projects);
@@ -167,8 +167,8 @@ const getProject = async (req, res) => {
       //.populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id");
+      .populate("badges", "value")
+      .populate("tags", "name");
 
     //If a project exist
     return res.status(200).send(project);
@@ -311,8 +311,8 @@ const updateProjectById = async (req, res) => {
       //.populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id");
+      .populate("badges", "value")
+      .populate("tags", "name");
 
     return res.status(200).send(project);
   } catch (err) {
@@ -421,8 +421,8 @@ const addNewProject = async (req, res) => {
       //.populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id");
+      .populate("badges", "value")
+      .populate("tags", "name");
 
     return res.send(populated);
   } catch (err) {
@@ -573,8 +573,8 @@ const addUserToProject = async (req, res) => {
       //.populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id");
+      .populate("badges", "value")
+      .populate("tags", "name");
 
     return res.status(200).send(project);
   } catch (err) {
@@ -674,8 +674,8 @@ const deleteProject = async (req, res) => {
       .populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id")
+      .populate("badges", "value")
+      .populate("tags", "name")
       .sort("name");
 
     const commentsInProject = await Comment.find({ project: projectId });
@@ -796,8 +796,8 @@ const searchProjects = async (req, res) => {
     const populateFields = [
       { path: "semester", select: "value -_id" },
       { path: "category", select: "value -_id" },
-      { path: "badges", select: "value -_id" },
-      { path: "tags", select: "name -_id" },
+      { path: "badges", select: "value" },
+      { path: "tags", select: "name" },
     ];
 
     if (req.query.sortBy !== "semester") {
@@ -819,8 +819,8 @@ const searchProjects = async (req, res) => {
       let projects = await Project.find(query)
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
-        .populate("badges", "value -_id")
-        .populate("tags", "name -_id");
+        .populate("badges", "value")
+        .populate("tags", "name");
       //Perform manual sorting - O(nlogn + n)ish
       projects.forEach((project) => {
         project.splitSem = project.semester.value.split(" ");
@@ -896,8 +896,8 @@ const likeComment = async (req, res) => {
         //.populate("members", "_id, name")
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
-        .populate("badges", "value -_id")
-        .populate("tags", "name -_id");
+        .populate("badges", "value")
+        .populate("tags", "name");
       const likedProjects = usersLikedProjects.filter((project) => {
         return project._id != projectId;
       });
@@ -928,8 +928,8 @@ const likeComment = async (req, res) => {
       //.populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id");
+      .populate("badges", "value")
+      .populate("tags", "name");
 
     return res.status(200).send(likedProject);
   } catch (err) {
@@ -948,8 +948,8 @@ const incrementViews = async (req, res) => {
     //.populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "name -_id");
+    .populate("badges", "value")
+    .populate("tags", "name");
 
   if (!project)
     return res.status(404).send({ project: null, msg: "No project found" });
@@ -1018,8 +1018,8 @@ const awardBadge = async (req, res) => {
       //.populate("members", "_id, name")
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
-      .populate("badges", "value -_id")
-      .populate("tags", "name -_id");
+      .populate("badges", "value")
+      .populate("tags", "name");
 
     return res.status(200).send(project);
   } catch (err) {

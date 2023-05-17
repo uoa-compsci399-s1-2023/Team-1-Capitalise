@@ -24,8 +24,8 @@ const getTagByNameOrId = async(req, res) => {
             populate: [
             { path: "semester", select: "value -_id" },
             { path: "category", select: "value -_id" },
-            { path: "badges", select: "value -_id" },
-            { path: "tags", select: "name -_id" },
+            { path: "badges", select: "value" },
+            { path: "tags", select: "name" },
             { path: "members", select: "_id name" }
             ]
         })
@@ -42,8 +42,8 @@ const getTagByNameOrId = async(req, res) => {
             populate: [
               { path: "semester", select: "value -_id" },
               { path: "category", select: "value -_id" },
-              { path: "badges", select: "value -_id" },
-              { path: "tags", select: "name -_id" },
+              { path: "badges", select: "value" },
+              { path: "tags", select: "name" },
               { path: "members", select: "_id name" }
             ]
           })
@@ -110,8 +110,8 @@ const searchTag = async (req, res) => {
         populate: [
           { path: "semester", select: "value -_id" },
           { path: "category", select: "value -_id" },
-          { path: "badges", select: "value -_id" },
-          { path: "tags", select: "name -_id" },
+          { path: "badges", select: "value" },
+          { path: "tags", select: "name" },
           { path: "members", select: "_id name" }
         ]
       })
@@ -162,8 +162,8 @@ const addTagToProject = async (req, res) => {
     .populate("members", "_id, name")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("badges", "value")
+    .populate("tags", "name")
 
     //Add the projectId to the tag
     tag.projects.push(projectId)
@@ -193,8 +193,8 @@ const deleteTagFromProject = async(req, res) => {
     const project = await Project.findByIdAndUpdate(projectId, {$pull: {tags: tag._id}}, {new : true})
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "name -_id");
+    .populate("badges", "value")
+    .populate("tags", "name");
 
     //set tag.projects to new array without the projectId
     tag.projects = tag.projects.filter(id => id != projectId) 
