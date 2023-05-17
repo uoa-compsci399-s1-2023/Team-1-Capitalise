@@ -59,7 +59,9 @@ const About = ({}) => {
   };
 
   const handleDeleteSection = async (id: string) => {
-    await deleteAbout(id, token);
+    if (window.confirm("Are you sure you want to delete this section?")) {
+      await deleteAbout(id, token);
+    }
     fetchAbout();
   };
 
