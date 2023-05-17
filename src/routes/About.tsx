@@ -8,23 +8,35 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../customHooks/useAuth";
+import { TAbout } from "../model/TAbout";
+import { addAbout, deleteAbout, editAbout, getAbout } from "../api/aboutAPIs";
 
 const About = ({}) => {
-  const [mockAboutData, setMockAboutData] = useState([
-    { title: "What is Capitalise?", body: "this is the body" },
-    { title: "So, what is Capstone?", body: "this is the body" },
-  ]);
+  const [aboutData, setAboutData] = useState<TAbout[]>([]);
+
+  const fetchAbout = async () => {
+    const respData = await getAbout();
+    if (respData) {
+      setAboutData(respData);
+    }
+  };
+
+  useEffect(() => {
+    fetchAbout();
+  }, []);
 
   const [editChecked, setEditChecked] = useState(false);
   let isAdmin = false;
-  let key = Date.now();
+  let token = "";
+  let key = Date.now().toString();
   const auth = useAuth();
 
   if (auth.user) {
     if (auth.user.userType === "admin") {
       isAdmin = true;
+      token = auth.getToken() as string;
     } else {
       isAdmin = false;
     }
@@ -36,23 +48,19 @@ const About = ({}) => {
     setEditChecked(event.target.checked);
   };
 
-  const handleEditSection = (title: string, body: string, index: number) => {
-    let newData = mockAboutData.slice();
-    newData[index] = { title: title, body: body };
-    setMockAboutData(newData);
+  const handleEditSection = async (id: string, title: string, body: string) => {
+    await editAbout(id, title, body, token);
+    fetchAbout();
   };
 
-  const handleAddSection = () => {
-    let newData = mockAboutData.slice();
-    newData.push({ title: "title", body: "body" });
-    setMockAboutData(newData);
+  const handleAddSection = async () => {
+    await addAbout("title", "body", token);
+    fetchAbout();
   };
 
-  const handleDeleteSection = (index: number) => {
-    const removeData = mockAboutData[index];
-    setMockAboutData((current) =>
-      current.filter((data) => data !== removeData)
-    );
+  const handleDeleteSection = async (id: string) => {
+    await deleteAbout(id, token);
+    fetchAbout();
   };
 
   return (
@@ -80,8 +88,8 @@ const About = ({}) => {
       )}
 
       {!editChecked &&
-        mockAboutData.map((section, i) => (
-          <Stack gap="10px" key={i + key}>
+        aboutData.map((section) => (
+          <Stack gap="10px" key={section._id + key}>
             <Typography variant="h1">{section.title}</Typography>
             <Typography variant="body1">{section.body}</Typography>
           </Stack>
@@ -94,20 +102,20 @@ const About = ({}) => {
               "Pressing Submit, Delete or Add section refreshes the data back to its original. Only edit and submit one section at a time or you will lose data"
             }
           </Typography>
-          {mockAboutData.map((section, i) => {
+          {aboutData.map((section, i) => {
             let title = section.title;
             let body = section.body;
             return (
               <Stack
                 direction="row"
-                key={i + key}
+                key={section._id + key}
                 gap="10px"
                 alignItems="center"
               >
                 <Stack gap="10px" width="100%">
                   <FormControl>
                     <TextField
-                      id={"admin-title" + (i + key).toString()}
+                      id={"admin-title" + (section._id + key)}
                       margin="dense"
                       label="Title"
                       multiline
@@ -121,7 +129,7 @@ const About = ({}) => {
                       }}
                     />
                     <TextField
-                      id={"admin-body" + (i + key).toString()}
+                      id={"admin-body" + (section._id + key)}
                       margin="dense"
                       label="Body"
                       multiline
@@ -137,14 +145,16 @@ const About = ({}) => {
                     <Box display="flex" justifySelf="start" gap="20px">
                       <Button
                         variant="contained"
-                        onClick={() => handleEditSection(title, body, i)}
+                        onClick={() =>
+                          handleEditSection(section._id, title, body)
+                        }
                       >
                         {"Submit"}
                       </Button>
                       <Button
                         variant="contained"
                         color="error"
-                        onClick={() => handleDeleteSection(i)}
+                        onClick={() => handleDeleteSection(section._id)}
                       >
                         {"Delete"}
                       </Button>
