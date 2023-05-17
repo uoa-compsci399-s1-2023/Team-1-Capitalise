@@ -44,7 +44,7 @@ export default function ProjectDetails() {
           <Chip key={i} size='small' label={tag.name} />
         ))}
       </Stack>
+      
     </Stack>
-
   )
 }

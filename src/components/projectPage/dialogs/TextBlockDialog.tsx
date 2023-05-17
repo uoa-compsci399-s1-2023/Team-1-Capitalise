@@ -20,6 +20,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
   const [valueError, setValueError] = useState('');
   const [headingError, setErrorHeading] = useState('');
 
+  // Make sure value is current each time dialog is opened.
   useEffect(() => {
     setValue(initialValue)
   }, [isDialogOpen])

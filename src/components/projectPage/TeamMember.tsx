@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
-
 import { Button, Chip, Avatar, useTheme, Box, Icon } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { Link } from 'react-router-dom'
+import ClearIcon from '@mui/icons-material/Clear';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useAuth } from '../../customHooks/useAuth';
+
 
 
 interface FieldProps {
@@ -10,9 +12,14 @@ interface FieldProps {
   avatar: string
   role?: string
   userId: string
+  isDeletable?: boolean
+  onDelete?: () => void
 }
 
-export default function TeamMember({ name, avatar, userId }: FieldProps) {
+export default function TeamMember({ name, avatar, userId, isDeletable, onDelete }: FieldProps) {
+
+  const theme = useTheme();
+  const auth = useAuth();
 
   const Member = styled(Button)({
     borderRadius: '5px',
@@ -21,13 +28,16 @@ export default function TeamMember({ name, avatar, userId }: FieldProps) {
     display: "flex",
     justifyContent: "flex-start",
     paddingLeft: "40px",
-    color: 'black'
+    color: 'black',
+    ':hover': {
+      backgroundColor: theme.customColors.DividerGrey
+    }
   })
 
   return (
     <Box width='100%' display='flex' flexDirection={'row'} >
       {/* Needs to redirect to user page onclick */}
-      <Link to={`../user/${userId}`} style={{width: '100%'}}>
+      <Link to={`../user/${userId}`} style={{ width: '100%' }} target='_blank'>
         <Member
           startIcon={
             <Avatar
@@ -46,6 +56,18 @@ export default function TeamMember({ name, avatar, userId }: FieldProps) {
           {name}
         </Member>
       </Link>
-    </Box>
+      {isDeletable &&
+        < Button
+          color='editBtnGrey'
+          onClick={onDelete}
+          sx={{
+            ':hover': {
+              backgroundColor: theme.customColors.DividerGrey
+            }
+          }}
+        >
+          <ClearIcon fontSize='small' />
+        </Button>}
+    </Box >
   )
 }

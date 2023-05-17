@@ -199,7 +199,7 @@ export default function ProjectPage() {
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <CircularProgress color='info' />
+        <CircularProgress color='primary' />
       </Stack>
     )
   }

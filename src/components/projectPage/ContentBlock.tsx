@@ -12,7 +12,6 @@ import { MemoizedImageCarousel, Image } from './ImageCarousel';
 import AddIcon from '@mui/icons-material/Add';
 import AddBlockDialog from './dialogs/AddBlockDialog';
 import VideoBlockDialog from './dialogs/VideoBlockDialog';
-import fitvids from 'fitvids'
 import VideoPlayer from './VideoPlayer';
 
 
