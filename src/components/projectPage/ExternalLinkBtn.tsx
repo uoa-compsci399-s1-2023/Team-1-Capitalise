@@ -70,10 +70,8 @@ function LinkBtn({
         !isSmall && <LaunchOutlinedIcon />
       }
       variant={variant}
-      style={{
-        fontWeight: 400,
-      }}
       sx={{
+        fontWeight: 400,
         minWidth: "28px",
         width: { xs: 'fit-content', md: 180 },
         display: "flex",

@@ -122,7 +122,6 @@ export default function ProjectPage() {
           <ProjectHeader
             name={project.name}
             blurb={project.blurb}
-            likes={project.likes}
           />
 
           {/* Project details for mobile view */}
@@ -136,7 +135,7 @@ export default function ProjectPage() {
             mt={2}>
 
             {/* Tab content */}
-            <Stack flex={1} alignItems={'center'} mr={1} mb={10}>
+            <Stack flex={1} alignItems={'center'} mr={1} mb={6}>
 
               {/* Only render tab buttons if there's more than one tab */}
               {project.content.length > 1 &&
@@ -144,7 +143,7 @@ export default function ProjectPage() {
                   className='tab-btns'
                   flexDirection={'row'}
                   justifyContent={'center'}
-                  mb={6}
+                  mb={2}
                   pb={3}
                   borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
                   width={'90%'}

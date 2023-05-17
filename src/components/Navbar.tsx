@@ -32,6 +32,7 @@ const NoNavPages = [
   "/googleSuccessRedirect",
   "/googleFailure",
 ];
+
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",

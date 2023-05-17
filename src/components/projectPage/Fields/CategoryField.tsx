@@ -64,13 +64,12 @@ export default function CategoryField() {
   return (
     <>
       <Dialog
-        keepMounted
         open={isOpen}
         onClose={handleClose}
         fullWidth
         maxWidth='sm'
       >
-        <DialogTitle>Edit category</DialogTitle>
+        <DialogTitle>Edit Category</DialogTitle>
         <DialogContent>
           <FormControl fullWidth>
             <Select

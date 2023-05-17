@@ -63,7 +63,7 @@ export default function SemesterField() {
         fullWidth
         maxWidth='sm'
       >
-        <DialogTitle>Edit semester</DialogTitle>
+        <DialogTitle>Edit Semester</DialogTitle>
         <DialogContent>
           <FormControl fullWidth>
             <Select

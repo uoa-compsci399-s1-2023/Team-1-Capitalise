@@ -18,7 +18,7 @@ export default function MemberChip({ userId }: MemberChipProps) {
           setUser(data)
         }
       })
-  })
+  }, [])
 
   return (
     <Chip

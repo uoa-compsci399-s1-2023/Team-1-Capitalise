@@ -71,7 +71,7 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
   useEffect(() => {
     if (inputValue !== '') {
       setIsResultsLoading(true)
-      searchUsers(inputValue, true, 0, 5)
+      searchUsers(inputValue, true, 0, 5, 'graduate')
         .then((resp) => {
           if (resp.ok) {
             resp.json().then((results) => {
@@ -180,11 +180,12 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
           <DialogContent>
             <Stack
               width={'400px'}
-              height={'600px'}
+              minHeight={'300px'}
             >
               <Box
                 flex={1}
-                height={'90%'}
+                mb={2}
+                maxHeight={'70vh'}
                 overflow={'auto'}
               >
                 {currMembers.map((m, i) => (
@@ -197,57 +198,65 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
                     onDelete={() => handleUserRemove(m, i)}
                   />
                 ))}
-                </Box>
+              </Box>
 
-                <Autocomplete
-                  disablePortal
-                  blurOnSelect
-                  autoComplete
-                  noOptionsText={'No results'}
-                  // Don't show results already added
-                  filterOptions={x => x.filter(
-                    o => !currMembers.some(e => e._id === o.user._id)
-                  )}
-                  loading={isResultsLoading}
-                  // For controlled component
-                  inputValue={inputValue}
-                  onInputChange={(evt, value) => setInputValue(value)}
-                  value={selectedOption}
-                  onChange={(evt, option) => setSelectedOption(option)}
-
-                  isOptionEqualToValue={(option, value) => option.user._id === value.user._id}
-                  options={options}
-                  sx={{ width: '100%' }}
-                  renderOption={(props, option) => {
-                    return (
-                      <li {...props} key={option.user._id}>
-                        <TeamMember
-                          name={option.user.name}
-                          avatar={option.user.profilePicture}
-                          userId={option.user._id}
-                          isLink={false}
-                        />
-                      </li>
-                    );
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params}
-                      fullWidth
-                      hiddenLabel
-                      placeholder='Add users...'
-                      size='small'
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <React.Fragment>
-                            {isResultsLoading ? <CircularProgress color="primary" size={20} /> : null}
-                            {params.InputProps.endAdornment}
-                          </React.Fragment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
+              <Autocomplete
+                popupIcon={null}
+                disablePortal
+                blurOnSelect
+                autoComplete
+                noOptionsText={'No results'}
+                // Don't show results already added
+                filterOptions={x => x.filter(
+                  o => !currMembers.some(e => e._id === o.user._id)
+                )}
+                loading={isResultsLoading}
+                // For controlled component
+                inputValue={inputValue}
+                onInputChange={(evt, value) => setInputValue(value)}
+                value={selectedOption}
+                onChange={(evt, option) => setSelectedOption(option)}
+                // No dropdown if theres no value entered.
+                componentsProps={{
+                  paper: {
+                    sx: {
+                      display: inputValue === '' ? 'none' : 'block'
+                    }
+                  }
+                }}
+                isOptionEqualToValue={(option, value) => option.user._id === value.user._id}
+                options={options}
+                sx={{ width: '100%' }}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.user._id}>
+                      <TeamMember
+                        name={option.user.name}
+                        avatar={option.user.profilePicture}
+                        userId={option.user._id}
+                        isLink={false}
+                      />
+                    </li>
+                  );
+                }}
+                renderInput={(params) => (
+                  <TextField {...params}
+                    fullWidth
+                    hiddenLabel
+                    placeholder='Add users...'
+                    size='small'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {isResultsLoading ? <CircularProgress color="primary" size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
+              />
 
             </Stack>
           </DialogContent>

@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { Button, Box, useTheme } from '@mui/material'
-import { styled } from '@mui/material/styles'
 
 
 interface TabButtonProps {
@@ -22,7 +21,6 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
       <Box
         borderBottom={`3px solid transparent`}
         p={0.5}
-
       >
         {value}
       </Box>

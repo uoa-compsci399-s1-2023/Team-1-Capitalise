@@ -11,6 +11,13 @@ import { styled } from '@mui/material/styles'
 import MemberChip from './Fields/MemberChip';
 import ExternalLinkBtn from './ExternalLinkBtn';
 
+const NoExpandAccordianSummary = styled(AccordionSummary)({
+  // Set hover pointer to default
+  "&:hover:not(.Mui-disabled)": {
+    cursor: "default"
+  }
+})
+
 export default function ProjectDetailsAccordian() {
   const [expanded, setExpanded] = React.useState<string | false>(false);
   const { project, setProject } = React.useContext(ProjectContext)
@@ -20,19 +27,12 @@ export default function ProjectDetailsAccordian() {
       setExpanded(isExpanded ? panel : false);
     };
 
-  const NoExpandAccordianSummary = styled(AccordionSummary)({
-    // Set hover pointer to default
-    "&:hover:not(.Mui-disabled)": {
-      cursor: "default"
-    }
-  })
-
   return (
     <Box
       sx={{ display: { md: 'none', sm: 'block' } }}
       p={'20px'}
     >
-
+      {/* Category */}
       <Accordion expanded={expanded === 'panel1'} >
         <NoExpandAccordianSummary
           expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
@@ -46,6 +46,7 @@ export default function ProjectDetailsAccordian() {
         </NoExpandAccordianSummary>
       </Accordion>
 
+      {/* Semester */}
       <Accordion expanded={expanded === 'panel2'}>
         <NoExpandAccordianSummary
           expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
@@ -59,6 +60,29 @@ export default function ProjectDetailsAccordian() {
         </NoExpandAccordianSummary>
       </Accordion>
 
+      {/* Links */}
+      {project.links.length > 0 &&
+        < Accordion expanded={expanded === 'panel4'}>
+          <NoExpandAccordianSummary
+            expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
+            aria-controls="panel4bh-content"
+            id="panel4bh-header"
+          >
+            <Typography sx={{ width: '33%', flexShrink: 0 }}>Links:</Typography>
+            <Stack
+              flexDirection={'row'}
+              flexWrap={'wrap'}
+              gap={2}
+            >
+              {project.links.map((link, index) => (
+                <ExternalLinkBtn key={index} {...link} />
+              ))}
+            </Stack>
+          </NoExpandAccordianSummary>
+        </Accordion>
+      }
+
+      {/* Teamname / members */}
       <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -72,8 +96,6 @@ export default function ProjectDetailsAccordian() {
             {project.teamname}
           </Typography>
         </AccordionSummary>
-
-
 
         <AccordionDetails>
           <Stack
@@ -89,29 +111,6 @@ export default function ProjectDetailsAccordian() {
 
 
 
-      <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel4bh-content"
-          id="panel4bh-header"
-        >
-          <Typography sx={{ width: '33%', flexShrink: 0 }}>Links:</Typography>
-          <Stack
-            flexDirection={'row'}
-            flexWrap={'wrap'}
-          >
-            {project.links.map((link, index) => (
-              <ExternalLinkBtn key={index} {...link} />
-            ))}
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit
-            amet egestas eros, vitae egestas augue. Duis vel est augue.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-    </Box>
+    </Box >
   );
 }

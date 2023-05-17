@@ -69,7 +69,7 @@ export default function TeamnameField() {
         fullWidth
         maxWidth='sm'
       >
-        <DialogTitle>Edit team name</DialogTitle>
+        <DialogTitle>Edit Team Name</DialogTitle>
         <DialogContent>
           <FormControl error={!!error} fullWidth>
             <OutlinedInput

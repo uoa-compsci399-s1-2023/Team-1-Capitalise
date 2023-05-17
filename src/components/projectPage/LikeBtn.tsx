@@ -14,12 +14,12 @@ export default function LikeBtn() {
   const { project, setProject } = useContext(ProjectContext);
   const theme = useTheme();
 
-  const InfoBox = styled(Typography)({
+  const InfoBoxStyle = {
     padding: '5px 10px',
     border: `1px solid ${theme.palette.neutral.main}`,
     borderRadius: '10px',
     whiteSpace: 'nowrap'
-  })
+  }
 
   const handleLike = () => {
     auth.onlyAuthenticated();
@@ -46,15 +46,15 @@ export default function LikeBtn() {
       // If member or admin, show likes, views, and comments info
 
       <Stack flexDirection={'row'} gap={2} flexWrap={'wrap'}>
-        <InfoBox>
+        <Typography sx={InfoBoxStyle}>
           {pluralize('likes', project.likes, true)}
-        </InfoBox>
-        <InfoBox>
+        </Typography>
+        <Typography sx={InfoBoxStyle}>
           {pluralize('views', project.views, true)}
-        </InfoBox>
-        <InfoBox>
+        </Typography>
+        <Typography sx={InfoBoxStyle}>
           {pluralize('comments', project.comments.length, true)}
-        </InfoBox>
+        </Typography>
       </Stack>
 
       :

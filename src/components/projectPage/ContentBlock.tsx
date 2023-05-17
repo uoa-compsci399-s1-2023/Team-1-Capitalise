@@ -1,5 +1,5 @@
 import React, { useState, FC, useContext, useRef, ReactNode } from 'react'
-import {useMediaQuery, Box, Stack, Typography, useTheme, Button } from '@mui/material'
+import { useMediaQuery, Box, Stack, Typography, useTheme, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,6 +22,18 @@ export interface ContentBlockProps {
   subHeading?: TProject['content'][0]['tabContent'][0]['subHeading']
   value: TProject['content'][0]['tabContent'][0]['value']
 }
+
+const EditButton = styled(Button)({
+  height: "100%",
+  visibility: 'hidden',
+  flex: '1',
+})
+
+const AddButton = styled(Button)({
+  width: "100%",
+  visibility: 'hidden',
+  flex: '1',
+})
 
 export default function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: ContentBlockProps) {
 
@@ -66,23 +78,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     })
   }
 
-  const EditButton = styled(Button)({
-    height: "100%",
-    visibility: 'hidden',
-    flex: '1',
-    '&:hover': {
-      backgroundColor: theme.customColors.DividerGrey
-    }
-  })
 
-  const AddButton = styled(Button)({
-    width: "100%",
-    visibility: 'hidden',
-    flex: '1',
-    '&:hover': {
-      backgroundColor: theme.customColors.DividerGrey
-    }
-  })
 
   let Content: FC = () => <></>;
   let Heading: FC = () => <></>;
@@ -106,7 +102,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   switch (type) {
     case 'text':
       Content = () => (value.length > 0 ?
-        <Typography 
+        <Typography
           variant='body1'
         >
           {value[0]}
@@ -204,10 +200,12 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         <Stack>
           {/* Row stack */}
           <Stack flexDirection={'row'}
-            sx={{padding: {
-              xs: '40px 20px',
-              md: '40px 0 40px 40px'
-            }}}
+            sx={{
+              padding: {
+                xs: '40px 20px',
+                md: '40px 0 40px 40px'
+              }
+            }}
           >
             {/* Content and heading */}
             <Stack width={'100%'}>
@@ -220,7 +218,12 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
             {!isSmall &&
               <Stack my={'-40px'}>
                 <EditButton
-                  sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+                  sx={{
+                    visibility: isHovering ? 'visible' : 'hidden',
+                    '&:hover': {
+                      backgroundColor: theme.customColors.DividerGrey
+                    }
+                  }}
                   color='editBtnGrey'
                   onClick={() => setIsDialogOpen(true)}
                 >
@@ -228,7 +231,12 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
                 </EditButton>
 
                 <EditButton
-                  sx={{ visibility: isHovering ? 'visible' : 'hidden' }}
+                  sx={{
+                    visibility: isHovering ? 'visible' : 'hidden',
+                    '&:hover': {
+                      backgroundColor: theme.customColors.DividerGrey
+                    }
+                  }}
                   color='editBtnGrey'
                   onClick={handleDeleteContentBlock}
                 >
