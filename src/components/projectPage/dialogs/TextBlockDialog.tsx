@@ -81,7 +81,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
       PaperProps= {{sx: {p: 2}}}
     >
 
-      <DialogTitle>Edit sub-heading</DialogTitle>
+      <DialogTitle>Edit Sub-heading</DialogTitle>
       <DialogContent
       >
         <TextField
@@ -99,7 +99,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
         />
       </DialogContent>
 
-      <DialogTitle>Edit content</DialogTitle>
+      <DialogTitle>Edit Content</DialogTitle>
       <DialogContent>
 
         <TextField

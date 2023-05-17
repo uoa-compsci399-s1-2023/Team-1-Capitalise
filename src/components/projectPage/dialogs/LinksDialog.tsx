@@ -98,7 +98,7 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
       PaperProps={{ sx: { p: 2 } }}
     >
 
-      <DialogTitle>Edit links</DialogTitle>
+      <DialogTitle>Edit Links</DialogTitle>
       <DialogContent
       >
         <TextField

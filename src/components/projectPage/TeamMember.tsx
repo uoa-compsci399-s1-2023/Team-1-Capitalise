@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import ClearIcon from '@mui/icons-material/Clear';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from '../../customHooks/useAuth';
+import { useState } from 'react';
 
 
 
@@ -13,13 +14,17 @@ interface FieldProps {
   role?: string
   userId: string
   isDeletable?: boolean
+  isLink?: boolean
   onDelete?: () => void
 }
 
-export default function TeamMember({ name, avatar, userId, isDeletable, onDelete }: FieldProps) {
+export default function TeamMember({ name, avatar, userId, onDelete, isLink = true, isDeletable = false }: FieldProps) {
+
+  // console.count('rendered: ')
 
   const theme = useTheme();
   const auth = useAuth();
+  const [isHover, setIsHover] = useState(false);
 
   const Member = styled(Button)({
     borderRadius: '5px',
@@ -27,7 +32,7 @@ export default function TeamMember({ name, avatar, userId, isDeletable, onDelete
     fontWeight: 300,
     display: "flex",
     justifyContent: "flex-start",
-    paddingLeft: "40px",
+    // paddingLeft: "40px",
     color: 'black',
     ':hover': {
       backgroundColor: theme.customColors.DividerGrey
@@ -35,9 +40,34 @@ export default function TeamMember({ name, avatar, userId, isDeletable, onDelete
   })
 
   return (
-    <Box width='100%' display='flex' flexDirection={'row'} >
-      {/* Needs to redirect to user page onclick */}
-      <Link to={`../user/${userId}`} style={{ width: '100%' }} target='_blank'>
+    <Box
+      width='100%'
+      display='flex'
+      flexDirection={'row'}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+    >
+      {/* Need to refactor this so its not the same shit copied twice */}
+      {isLink ?
+        <Link to={`../user/${userId}`} style={{ width: '100%' }} target='_blank'>
+          <Member
+            startIcon={
+              <Avatar
+                imgProps={{ referrerPolicy: "no-referrer" }}
+                sizes='small'
+                alt={name}
+                src={avatar}
+                sx={{ width: 30, height: 30 }}
+              />
+            }
+            variant='text'
+            size='large'
+            fullWidth
+          >
+            {name}
+          </Member>
+        </Link>
+        :
         <Member
           startIcon={
             <Avatar
@@ -49,25 +79,27 @@ export default function TeamMember({ name, avatar, userId, isDeletable, onDelete
             />
           }
           variant='text'
-          color='neutral' // Ignore type error.
           size='large'
           fullWidth
         >
           {name}
         </Member>
-      </Link>
+      }
+
       {isDeletable &&
-        < Button
+        <Button
           color='editBtnGrey'
           onClick={onDelete}
           sx={{
+            visibility: isHover ? 'visible' : 'hidden',
             ':hover': {
               backgroundColor: theme.customColors.DividerGrey
             }
           }}
         >
           <ClearIcon fontSize='small' />
-        </Button>}
+        </Button>
+      }
     </Box >
   )
 }

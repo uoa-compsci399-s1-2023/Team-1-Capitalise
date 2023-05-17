@@ -50,6 +50,7 @@ export default function RemoveUserConfirmDialog({ isDialogOpen, setUserToDelete,
       maxWidth='md'
       PaperProps={{ sx: { p: 2 } }}
     >
+      <DialogTitle>Are you sure you want to remove {user?.name} from {project.name}?</DialogTitle>
 
       {isLoading ?
         <Stack
@@ -58,11 +59,10 @@ export default function RemoveUserConfirmDialog({ isDialogOpen, setUserToDelete,
           alignItems={'center'}
           justifyContent={'center'}
         >
-          <CircularProgress color='primary' />
+          <CircularProgress color='spinnerColor' />
         </Stack>
         :
         <>
-          <DialogTitle>Are you sure you want to remove {user?.name} from {project.name}?</DialogTitle>
           <DialogActions>
             <Button onClick={handleClose}>No</Button>
             <Button onClick={handleSave}>Yes</Button>

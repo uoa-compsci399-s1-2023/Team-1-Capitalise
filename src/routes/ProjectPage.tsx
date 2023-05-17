@@ -65,6 +65,7 @@ export default function ProjectPage() {
   // Sends changes to backend and releases lock.
   // If patch request fails, changes are rolled back.
   // Perhaps we need to implement a session timer to release the lock on fail?
+  // Too many api calls so commented out - Yathi 17/05/2022 
   useEffect(() => {
     if (projectChanges) {
       patchProject(
@@ -199,7 +200,7 @@ export default function ProjectPage() {
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <CircularProgress color='primary' />
+        <CircularProgress color='spinnerColor' />
       </Stack>
     )
   }

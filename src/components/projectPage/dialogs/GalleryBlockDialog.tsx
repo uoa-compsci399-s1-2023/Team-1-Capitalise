@@ -115,7 +115,7 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
       maxWidth='lg'
       PaperProps={{ sx: { p: 2 } }}
     >
-      <DialogTitle>Edit sub-heading</DialogTitle>
+      <DialogTitle>Edit Sub-heading</DialogTitle>
       <DialogContent>
         <TextField
           id='block-heading-edit'
@@ -132,7 +132,7 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
         />
       </DialogContent>
 
-      <DialogTitle>Current images</DialogTitle>
+      <DialogTitle>Current Images</DialogTitle>
       <DialogContent>
         <Grid
           container

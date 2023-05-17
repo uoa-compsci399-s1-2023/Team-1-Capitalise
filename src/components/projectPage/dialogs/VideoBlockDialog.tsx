@@ -81,7 +81,7 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
       PaperProps= {{sx: {p: 2}}}
     >
 
-      <DialogTitle>Edit sub-heading</DialogTitle>
+      <DialogTitle>Edit Sub-heading</DialogTitle>
       <DialogContent
       >
         <TextField
@@ -99,7 +99,7 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
         />
       </DialogContent>
 
-      <DialogTitle>Youtube link</DialogTitle>
+      <DialogTitle>Youtube Link</DialogTitle>
       <DialogContent>
 
         <TextField
