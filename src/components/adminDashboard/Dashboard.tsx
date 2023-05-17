@@ -27,7 +27,10 @@ import { TAward } from "../../model/TAward";
 import MyTabs from "../../components/MyTabs";
 
 import { addParameter } from "../../api/addParameter";
+import { addAward, uploadAwardImage } from "../../api/addAward";
+
 import { deleteParameter } from "../../api/deleteParameter";
+import { deleteAwardImage } from "../../api/deleteAwardImage";
 import DashboardOverview from "./DashboardOverview";
 import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
 import DashboardHeroBanners from "./DashboardHeroBanners";
@@ -49,9 +52,15 @@ const Dashboard = () => {
 
   const [awards, setAwards] = useState<TAward[]>([]);
   const [newAward, setNewAward] = useState("");
+  const [newAwardImage, setNewAwardImage] = useState<File | undefined>();
+  const [awardImageString, setAwardImageString] = useState("");
+
+  const [validImage, setValidImage] = useState(true);
 
   const [heroBanners, setHeroBanners] = useState<string[]>([]);
   const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
+
+  const [loading, setLoading] = useState(false);
 
   const handleNewCategory = (event: any) => {
     setNewCategory(event.target.value);
@@ -155,6 +164,40 @@ const Dashboard = () => {
     }
   };
 
+  const constHandleImage = async (file: File) => {
+    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+      setValidImage(false);
+    } else {
+      setValidImage(true);
+
+      setNewAwardImage(file);
+      //setAwardImageString(file.name);
+    }
+  };
+
+  const handleNewAwardImage = async () => {
+    if (typeof newAwardImage !== "undefined") {
+      console.log("newAwardImage:", newAwardImage);
+      console.log("newAwardString:", awardImageString);
+
+      let formData = new FormData();
+
+      formData.append("award", newAwardImage);
+      setLoading(true);
+
+      const response = uploadAwardImage(formData)
+        .then((response) => {
+          const data = response;
+          return data;
+        })
+        .then((data) => {
+          console.log(data);
+          setLoading(false);
+          console.log();
+        });
+    }
+  };
+
   const handleAddAward = async () => {
     // call the API to  add award
     console.log(newAward);
@@ -163,13 +206,15 @@ const Dashboard = () => {
       const award = {} as TAward;
 
       console.log("Adding the award:", newAward);
+      console.log("New award image:", awardImageString);
 
-      addParameter(newAward, "award", token)
+      addAward(newAward, "award", token, awardImageString)
         // update the awards (need to create a TAward object based on response using the interface)
         .then((data) => {
           award._id = data._id;
           award.value = data.value;
           award.parameterType = data.parameterType;
+          award.image = data.image;
 
           setAwards([...awards, award]);
         });
@@ -182,13 +227,16 @@ const Dashboard = () => {
     setNewAward("");
   };
 
-  const handleDeleteAward = async (awardId: string) => {
+  const handleDeleteAward = async (awardId: string, awardImage: string) => {
     // call the API to  delete award
     const token = auth.getToken();
     if (token) {
       if (window.confirm("Are you sure you want to delete this award?")) {
         deleteParameter(awardId, token).then(() => {
-          // we need to update the awards.
+          // we also need to delete the associated award image from s3
+          deleteAwardImage(awardImage);
+
+          // we need to update the awards display.
           const updatedAwards = awards.filter((award) => award._id != awardId);
           setAwards(updatedAwards);
         });
@@ -389,7 +437,8 @@ const Dashboard = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ width: "50%" }}>Awards</TableCell>
+                    <TableCell style={{ width: "20%" }}>Awards</TableCell>
+                    <TableCell style={{ width: "30%" }}></TableCell>
                     <TableCell style={{ width: "50%" }}></TableCell>
                   </TableRow>
                 </TableHead>
@@ -398,10 +447,27 @@ const Dashboard = () => {
                     <TableRow key={award._id}>
                       <TableCell>{award.value}</TableCell>
                       <TableCell>
+                        <Box
+                          display="flex"
+                          width="50px"
+                          height="50px"
+                          component="img"
+                          src={award.image}
+                          alt="badge"
+                          alignSelf="center"
+                          sx={{
+                            objectFit: "cover",
+                            objectPosition: "bottom right",
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
                         <Button
                           variant="contained"
                           color="error"
-                          onClick={() => handleDeleteAward(award._id)}
+                          onClick={() =>
+                            handleDeleteAward(award._id, award.image)
+                          }
                         >
                           Delete
                         </Button>
@@ -412,8 +478,52 @@ const Dashboard = () => {
               </Table>
             </TableContainer>
           </Box>
+
           <Typography paddingTop={5} variant="h6">
-            Add award
+            Add new award image
+          </Typography>
+          <Box
+            width={{ xs: "300px", sm: "600px" }}
+            component={"form"}
+            display={"flex"}
+            alignItems={"center"}
+            gap={2}
+          >
+            <TextField
+              label="New award image"
+              //value={newCategory}
+              //onChange={handleNewCategory}
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              type="file"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              error={!validImage}
+              helperText={
+                !validImage
+                  ? "Select a valid image type"
+                  : "The order is sorted by fileaname e.g Alpha.jpg then Bravo.jpg"
+              }
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                if (event.target.files) {
+                  constHandleImage(event.target.files[0]);
+                }
+              }}
+            />
+            <Box alignSelf="flex-start" paddingTop="25px">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleNewAwardImage}
+              >
+                Submit
+              </Button>
+            </Box>
+          </Box>
+          <Typography paddingTop={5} variant="h6">
+            Add new award name
           </Typography>
           <Box
             sx={{ width: 600 }}

@@ -123,7 +123,7 @@ const DashboardMobileHeroBanners = ({
           </TableContainer>
         </Box>
         <Typography paddingTop={5} variant="h6">
-          Add category
+          Add new banner
         </Typography>
         <Box
           width={{ xs: "300px", sm: "600px" }}

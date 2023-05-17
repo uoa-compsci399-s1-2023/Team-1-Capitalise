@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+
 import { deleteHeroBanner, uploadHeroBanner } from "../../api/adminHeroBanner";
 
 interface Props {
@@ -113,7 +114,7 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
           </TableContainer>
         </Box>
         <Typography paddingTop={5} variant="h6">
-          Add category
+          Add new banner
         </Typography>
         <Box
           width={{ xs: "300px", sm: "600px" }}
