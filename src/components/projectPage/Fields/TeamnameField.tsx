@@ -100,7 +100,9 @@ export default function TeamnameField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Team name:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.teamname}</Typography>
 
-        <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small'/>
+        {auth.isAllowed(['admin'], project.members) &&
+          <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
+        }
       </Box>
     </>
   )

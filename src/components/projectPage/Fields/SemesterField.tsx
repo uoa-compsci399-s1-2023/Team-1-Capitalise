@@ -20,9 +20,9 @@ export default function SemesterField() {
   const theme = useTheme();
   const auth = useAuth();
 
-  useEffect( () => {
+  useEffect(() => {
     fetchCurrentParameters()
-  },[])
+  }, [])
 
   const handleMouseIn = () => {
     if (auth.user && auth.isAllowed(['admin'], project.members)) {
@@ -97,7 +97,9 @@ export default function SemesterField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Semester:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.semester.value}</Typography>
 
-        <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
+        {auth.isAllowed(['admin'], project.members) &&
+          <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
+        }
       </Box>
     </>
   )

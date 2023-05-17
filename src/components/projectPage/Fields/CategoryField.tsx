@@ -23,12 +23,12 @@ export default function CategoryField() {
   const auth = useAuth();
   const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 
-  useEffect( () => {
+  useEffect(() => {
     fetchCurrentParameters()
-  },[])
+  }, [])
 
   const handleMouseIn = () => {
-    if (auth.user && auth.isAllowed(['admin'], project.members)) {
+    if (auth.isAllowed(['admin'], project.members)) {
       setIsHovering(true);
     }
   }
@@ -47,7 +47,7 @@ export default function CategoryField() {
     setValue(e.target.value);
   }
 
-  const handleClose = (evt: React.SyntheticEvent, reason: string='') => {
+  const handleClose = (evt: React.SyntheticEvent, reason: string = '') => {
     if (reason && reason === 'backdropClick') {
       return;
     }
@@ -102,10 +102,12 @@ export default function CategoryField() {
         onMouseEnter={handleMouseIn}
         onMouseLeave={handleMouseOut}
       >
-        <Typography fontWeight={400} minWidth={'100px'}  mr={1} variant="body1">Category:</Typography>
+        <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Category:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.category.value}</Typography>
 
-        <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small'/> 
+        {auth.isAllowed(['admin'], project.members) &&
+          <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
+        }
       </Box>
     </>
   )

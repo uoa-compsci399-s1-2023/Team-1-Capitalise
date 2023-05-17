@@ -5,13 +5,12 @@ import { ProjectContext } from '../../../routes/ProjectPage'
 import { TProjectPost } from '../../../model/TPostProject'
 
 
-interface TextBlockDialogProps {
+interface LinksDialogProps {
   isDialogOpen: boolean
   setIsDialogOpen: React.Dispatch<SetStateAction<boolean>>
-  initialLinks: TProject['links']
 }
 
-export default function TextBlockDialog({ isDialogOpen, setIsDialogOpen, initialLinks }: TextBlockDialogProps) {
+export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDialogProps) {
 
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [githubLink, setGithubLink] = useState<TProject['links'][0]['value'] | ''>('');
@@ -23,6 +22,7 @@ export default function TextBlockDialog({ isDialogOpen, setIsDialogOpen, initial
 
 
   useEffect(() => {
+    const initialLinks = project.links
     const github = initialLinks.filter(link => link.type === 'github');
     const codeSandbox = initialLinks.filter(link => link.type === 'codesandbox');
     const demo = initialLinks.filter(link => link.type === 'deployedSite');
@@ -102,8 +102,9 @@ export default function TextBlockDialog({ isDialogOpen, setIsDialogOpen, initial
       <DialogContent
       >
         <TextField
+          label="Github"
           id='github-link-edit'
-          placeholder='Github link'
+          // placeholder='Github link'
           variant='outlined'
           error={!!githubError}
           helperText={githubError}
@@ -115,8 +116,9 @@ export default function TextBlockDialog({ isDialogOpen, setIsDialogOpen, initial
         />
 
         <TextField
+          label="CodeSandbox"
           id='codesandbox-link-edit'
-          placeholder='CodeSandbox link'
+          // placeholder='CodeSandbox link'
           variant='outlined'
           error={!!codeSandboxError}
           helperText={codeSandboxError}
@@ -128,8 +130,9 @@ export default function TextBlockDialog({ isDialogOpen, setIsDialogOpen, initial
         />
 
         <TextField
+          label="Deployed Artefact"
           id='demo-link-edit'
-          placeholder='Deployed artefact link'
+          // placeholder='Deployed artefact link'
           variant='outlined'
           error={!!demoError}
           helperText={demoError}

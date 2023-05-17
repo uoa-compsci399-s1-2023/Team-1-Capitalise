@@ -175,9 +175,8 @@ export default function ProjectPage() {
                   />
                 ))
                 :
-                <Typography variant="body2" color="neutral">No content to display.</Typography>
+                <Typography variant="body2" color="text.secondary">No content to display.</Typography>
               }
-
             </Stack>
             <ProjectDetails />
           </Stack>
