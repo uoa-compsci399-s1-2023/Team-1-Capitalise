@@ -333,14 +333,11 @@ const searchUsers = async (req, res) => {
 
   let searchQuery = {
     name: { $regex: nameQuery, $options: "i" },
+    userType: { $regex: '^' + userRole + '$', $options: "i" }
   };
   if (isAvailable === "true") {
     searchQuery.project = null;
   } 
-
-  if (userRole) {
-    searchQuery.userType = userRole
-  }
 
   try {
     const users = await User.find(searchQuery)
