@@ -21,12 +21,17 @@ const About = () => {
     setEditChecked(event.target.checked);
   };
 
-  const handleEditSubmit = (title: string, body: string, index: number) => {
-    let newData = mockAboutData;
+  const handleEditSection = (title: string, body: string, index: number) => {
+    let newData = mockAboutData.slice();
+    console.log(index);
     newData[index] = { title: title, body: body };
     setMockAboutData(newData);
-    console.log("set");
-    console.log(mockAboutData);
+  };
+
+  const handleAddSection = () => {
+    let newData = mockAboutData.slice();
+    newData.push({ title: "title", body: "body" });
+    setMockAboutData(newData);
   };
 
   return (
@@ -91,13 +96,16 @@ const About = () => {
               </Stack>
               <Button
                 variant="contained"
-                onClick={() => handleEditSubmit(title, body, i)}
+                onClick={() => handleEditSection(title, body, i)}
               >
                 {"submit"}
               </Button>
             </Stack>
           );
         })}
+      <Button variant="contained" onClick={() => handleAddSection()}>
+        {"Add section"}
+      </Button>
     </Stack>
   );
 };
