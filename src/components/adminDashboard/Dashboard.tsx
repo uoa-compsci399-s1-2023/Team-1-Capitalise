@@ -185,16 +185,9 @@ const Dashboard = () => {
       formData.append("award", newAwardImage);
       setLoading(true);
 
-      const response = uploadAwardImage(formData)
-        .then((response) => {
-          const data = response;
-          return data;
-        })
-        .then((data) => {
-          console.log(data);
-          setLoading(false);
-          console.log();
-        });
+      const response = await uploadAwardImage(formData)
+      setLoading(false)
+      setAwardImageString(response)
     }
   };
 
