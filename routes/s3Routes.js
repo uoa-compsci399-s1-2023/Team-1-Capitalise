@@ -66,7 +66,7 @@ router.get('/heroBanner' , getHeroBanners) //WORKS
 router.post('/heroBanner' , projectPictureRoute.array('heroBanner', 5), uploadHeroBanners) //WORKS
 router.delete('/heroBanner/:heroBannerName' , deleteHeroBanner) //WORKS
 
-router.post('/award' , projectPictureRoute.array('award', 5), uploadAward) //WORKS
+router.post('/award' , projectPictureRoute.single('award'), uploadAward) //WORKS
 router.get('/award' , getAwards) //WORKS
 router.delete('/award/:awardName' , deleteAward) //WORKS
 
@@ -133,7 +133,6 @@ router.patch('/gallerySingleS3/:projectId/:tabName/:key', deleteGalleryImageS3) 
 router.post('/image/:projectId/:tabName', projectPictureRoute.array('image', 5), uploadTabSingle) 
 router.post('/poster/:projectId/:tabName', projectPictureRoute.array('poster', 5), uploadTabSingle)
 router.post('/video/:projectId/:tabName', projectPictureRoute.array('video', 5), uploadTabSingle)
-
 
 
 //Uploads a new gallery to a tab name
