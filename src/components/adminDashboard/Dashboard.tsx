@@ -227,8 +227,9 @@ const Dashboard = () => {
     if (token) {
       if (window.confirm("Are you sure you want to delete this award?")) {
         deleteParameter(awardId, token).then(() => {
-          // we also need to delete the associated award image from s3
-          deleteAwardImage(awardImage);
+          // we also need to delete the associated award image from s3 by grabbing the image name
+          var last = awardImage.substring(awardImage.lastIndexOf("/") + 1, awardImage.length);
+          deleteAwardImage(last);
 
           // we need to update the awards display.
           const updatedAwards = awards.filter((award) => award._id != awardId);
