@@ -187,6 +187,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 </Button>
               </Stack>
               <TextField
+                id="edit-profile"
                 label="Change profile picture"
                 type="file"
                 fullWidth
@@ -206,6 +207,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             </Stack>
           </Box>
           <TextField
+            id="edit-name"
             margin="dense"
             label="Name"
             fullWidth
@@ -217,6 +219,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }}
           />
           <TextField
+            id="edit-bio"
             multiline
             margin="dense"
             label="Bio"
@@ -231,7 +234,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="github"
+            id="edit-github"
             label="GitHub link"
             fullWidth
             variant="standard"
@@ -249,7 +252,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="linkedin"
+            id="edit-linkedin"
             label="LinkedIn link"
             fullWidth
             variant="standard"
@@ -267,7 +270,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="deployedSite"
+            id="edit-deployedSite"
             label="Website link"
             fullWidth
             variant="standard"
