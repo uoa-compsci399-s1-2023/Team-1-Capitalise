@@ -30,7 +30,8 @@ export type TProject = {
   likes: number;
   comments: string[]; // array of ids
   tags: { name: string }[];
-  badges: { value: "Peoples Choice" | "Top Excellence" | "Community Impact" }; // There should be an apostrophe in people's choice!
+  // badges: { value: "Peoples Choice" | "Top Excellence" | "Community Impact" }; // There should be an apostrophe in people's choice!
+  badges: string[]; // array of ids
   isBeingEdited: false;
   createdAt: string;
   updatedAt: string;

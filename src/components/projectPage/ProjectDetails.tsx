@@ -29,7 +29,7 @@ export default function ProjectDetails() {
       sx={{ display: { xs: 'none', md: 'flex' }, position: 'relative' }}
     >
 
-      {project.badges && <AwardBadge {...project.badges} />}
+      {project.badges && <AwardBadge badgeId={project.badges} />}
 
       <CategoryField />
       <SemesterField />
@@ -44,7 +44,7 @@ export default function ProjectDetails() {
           <Chip key={i} size='small' label={tag.name} />
         ))}
       </Stack>
-      
+
     </Stack>
   )
 }
