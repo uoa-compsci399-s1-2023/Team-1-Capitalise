@@ -15,7 +15,7 @@ export async function deleteGalleryImgs(pId: string, tabName: string, galleryId:
   let projJson: TProject | null = null;
 
   for (let i=0; i < filenames.length; i++ ) {
-    const resp = await fetch(`${S3_API_URL}/gallerySingle/${pId}/${tabName}/${galleryId}/${filenames[i]}`, {
+    const resp = await fetch(`${S3_API_URL}/api/s3/gallerySingle/${pId}/${tabName}/${galleryId}/${filenames[i]}`, {
       method: 'PATCH',
     })
     if (resp.ok) {
@@ -26,13 +26,4 @@ export async function deleteGalleryImgs(pId: string, tabName: string, galleryId:
   }
 
   return projJson;
-  
-  
-  // const promises: Promise<Response>[] = []
-  // filenames.forEach(filename => {
-  //   promises.push(deleteImg(pId, tabName, galleryId, filename));
-  // });
-  // await Promise.all(promises);
-  // const project = await getProject(pId);
-  // return project
 }
