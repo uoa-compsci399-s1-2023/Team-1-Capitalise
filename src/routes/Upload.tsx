@@ -13,7 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProjectInfoForm from "../components/upload/ProjectInfo";
 import ProjectUploadFileForm from "../components/upload/ProjectUploadFile";
 import ProjectTeamSelectionForm from "../components/upload/ProjectTeamSelection";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import UploadComplete from "../components/upload/UploadComplete";
 
 import { useAuth } from "../customHooks/useAuth";
@@ -33,6 +33,8 @@ interface TProjectInfo {
   projectDescription: string | null;
   tags:string [];
 }
+
+
 
 // different stages of the project upload form.
 const steps = ["Team Details", "Project Details", "Project Files", "Upload"];
@@ -64,9 +66,9 @@ export default function Upload() {
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>(infoHold);
   const [projectLink, setProjectLink] = useState([]);
   const [projectID, setProjectID] = useState('');
-  const [bannerInfo, setBannerInfo] = useState('');
-  const [imagesInfo, setImagesInfo] = useState('');
-  const [thumbnailInfo, setThumbnailInfo] = useState('');
+  let bannerInfo = useRef<File | undefined>();
+  let imagesInfo =  useRef([]);
+  let thumbnailInfo = useRef< File | undefined>();
   // seperate out fields into variables to avoid "possibly undefined".
   // force some of the fields to be string so we avoid "possibly undefined".
   // we are using the same logic of forcing the variable to be a string even though it could be undefined. Like we did with the auth token.
@@ -111,18 +113,23 @@ export default function Upload() {
     // navigates to next page
     handleNext();
   };
+  const projectFileStore = (banner:any, images:any, thumbnail: any, projectLinks:any) => {
+    // stores Project Info into Project State
+    if ( banner != undefined) {
+      bannerInfo.current = banner;
+    }
+    if ( images.length > 0 ) {
+      imagesInfo.current = images;
+    }
 
-  const projectLinkToUpload = (projectLinks: any) => {
-    setProjectLink(projectLinks);
+    if ( thumbnail != undefined ) {
+      thumbnailInfo.current = thumbnail;
+    }
 
-  }
+  
+  };
 
-  const projectFileToUpload = (banner: any, images: any, thumbnail: any) => {
-    // stores Project Files into respective states
-    setThumbnailInfo(thumbnail);
-    setBannerInfo(banner);
-    setImagesInfo(images);
-    
+  const projectFileToUpload = (banner:any, images:any, thumbnail: any, projectLinks:any) => {
     // we want to check if these files are null or not.
     if (banner == null) {
       //console.log("Banner is null");
@@ -223,8 +230,8 @@ export default function Upload() {
         return (
           <ProjectUploadFileForm
             projectFileToUpload={projectFileToUpload}
+            projectFileStore={projectFileStore}
             handleBack={handleBack}
-            projectLinkToUpload={projectLinkToUpload}
             projectResources={[bannerInfo, imagesInfo, thumbnailInfo, projectLink]}
             handleUpload={handleUpload}
           />

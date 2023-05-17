@@ -19,7 +19,7 @@ import {
   styled,
 } from "@mui/material";
 import validator from 'validator';
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProjectLinksForm from "./ProjectLinks";
 const projectTags = [{ tag: "Mobile" }];
 
@@ -60,7 +60,11 @@ const FileInputField = styled(TextField)({
 });
 
 export default function ProjectUploadFileForm(
-  { projectFileToUpload, projectLinkToUpload, handleBack, projectResources, handleUpload}: any) {
+  { projectFileToUpload,
+    projectFileStore,
+    handleBack, 
+    projectResources, 
+    handleUpload}: any) {
     const [githubLinkError, setgithubLinkError] = useState('');
     const [codepenLinkError, setcodepenLinkError] = useState('');
     const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
@@ -69,30 +73,52 @@ export default function ProjectUploadFileForm(
     const [deployedSiteLinkError, setdeployedSiteLinkError] = useState('');
   // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
   // const [banner, setBanner] = useState(null);
-  const [banner, setBanner] = useState<
-    File | undefined
-  >();
+  console.log(projectResources, 'ok!');
 
-  const [thumbnail, setThumbnail] = useState<
-    File | undefined
-  >();
 
-  const [images, setImages] = useState<File[]>([]);
+  let bannerR = useRef< File|undefined>();
+
+
+  let thumbnailR = useRef< File|undefined>();
+
+  let imagesR = useRef<File[]>([]);
 
   const [projectLinks, setProjectLinks] = useState(
     options.map((option) => ({ value: '', type: option.type, label: option.label }))
   );
+  let projectLinksR = useRef(options.map((option) => ({ value: '', type: option.type, label: option.label }))
+  );
+
+  if(bannerR.current == undefined) {
+      bannerR.current = projectResources[0].current
+      console.log(projectResources[0].current, 'PR 0');
+  }
+
+  if(imagesR.current.length == 0) {
+      //setImages(projectResources[1]);
+      imagesR.current = projectResources[1].current
+  }
+  if(thumbnailR.current == undefined) {
+      thumbnailR.current = projectResources[2].current;
+
+  }
+  if(projectResources[3]) {
+
+      projectLinksR.current = projectResources[3].current;
+  }
+ 
+  
 
   const handleLinkChange = (event: any, index: any) => {
-    const newSelectedOptions = [...projectLinks];
+    const newSelectedOptions = [...projectLinksR.current];
     newSelectedOptions[index].value = event.target.value;
-    setProjectLinks(newSelectedOptions);
+    projectLinksR.current = (newSelectedOptions);
   };
 
   const handleBannerFile = (event: any) => {
     event.preventDefault();
-    setBanner(event.target.files[0]);
-    //console.log(event.target.files[0]);
+    bannerR.current = (event.target.files[0]);
+    projectFileStore(bannerR.current, [], undefined);
   };
 
   const handleProjectImages = (event: any) => {
@@ -101,24 +127,21 @@ export default function ProjectUploadFileForm(
       alert(`Only 5 files are allowed to upload.`);
       return;
     }
-    setImages(Array.from(event.target.files));
+    imagesR.current = (Array.from(event.target.files));
+    projectFileStore(undefined, imagesR.current, undefined);
   };
 
   const handleThumbnail = (event: any) => {
     event.preventDefault();
-    setThumbnail(event.target.files[0]);
-    //console.log("Thumbnail from form:", thumbnail);
+    thumbnailR.current =(event.target.files[0]);
+    projectFileStore(undefined, undefined, thumbnailR.current);
   };
-  const handleProjectLinks = (projLinksFromChild: any) => {
-    setProjectLinks(projLinksFromChild);
-    projectLinkToUpload (projectLinks);
 
-    //console.log("Project links from form:", projectLinks);
-  };
-  
+
   const handleGoBack = (event: any) => {
     event.preventDefault();
-    projectFileToUpload(banner, images, thumbnail);
+    projectFileStore(bannerR.current, imagesR.current, thumbnailR.current);
+    console.log(bannerR.current, imagesR.current, "ok" )
     handleBack();}
   
   const validateGithub = () => {   if(projectLinks[0].type == 'github') {
@@ -188,11 +211,11 @@ export default function ProjectUploadFileForm(
       const ds = validateDeployedWebsite();
       if (g && cp && n && sb && k && ds) {
         console.log('passed')
-        projectFileToUpload(banner, images, thumbnail);
+        projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current);
         }
     } else {
       if (window.confirm("Ready to submit?")) {
-        projectFileToUpload(banner, images, thumbnail);
+        projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current);
         
       }
       
@@ -226,8 +249,8 @@ export default function ProjectUploadFileForm(
             />
             <FileInputField
               disabled
-              
-              value={banner ? banner.name : projectResources[0].name}
+
+              value={bannerR.current ? bannerR.current.name : ''}
               
               fullWidth
               helperText="*This features at the top of your project page!"
@@ -253,19 +276,15 @@ export default function ProjectUploadFileForm(
               type="file"
               accept="image/*"
               id="projectImagesInput"
+          
               multiple
               style={{ display: "none" }}
               onChange={handleProjectImages}
             />
             <FileInputField
               disabled
-              
               helperText="*Select images you would like to feature on the gallery"
-              value={
-                images.length
-                  ? `The number of files uploaded: ${images.length}`
-                  : `The number of files uploaded: ${projectResources[1].length}`
-              }
+              value={imagesR.current ? `The number of files uploaded: ${imagesR.current.length}`: ''}
               fullWidth
             />
           </Grid>
@@ -294,14 +313,12 @@ export default function ProjectUploadFileForm(
             />
             <FileInputField
               disabled
-            
-              value={thumbnail ? thumbnail.name : projectResources[2].name}
+              value={thumbnailR.current ? thumbnailR.current.name : ''}
               fullWidth
               helperText="*What people see when looking for your project!"
             />
           </Grid>
           <Grid item xs={12}>
-            {" "}
             <label htmlFor="projectCardImageInput">
               <Button variant="contained" component="span" size="small">
                 Select file
@@ -321,7 +338,7 @@ export default function ProjectUploadFileForm(
                 key={option.type}
                 fullWidth
                 label={option.label}
-                defaultValue={'HI'}
+                defaultValue={'yo'}
                 value={option.value}
                 error={eval(`${option.type}` + `LinkError`)}
                 helperText={ eval(`${option.type}` + `LinkError`) ? eval(`${option.type}` + `LinkError`)  : ''}
