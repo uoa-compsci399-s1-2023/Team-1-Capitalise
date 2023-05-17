@@ -71,14 +71,17 @@ export default function ProjectUploadFileForm(
     const [kaggleLinkError, setkaggleLinkError] = useState('');
     const [notionLinkError, setnotionLinkError] = useState('');
     const [deployedSiteLinkError, setdeployedSiteLinkError] = useState('');
+
+
   // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
   // const [banner, setBanner] = useState(null);
   console.log(projectResources, 'ok!');
 
 
   let bannerR = useRef< File|undefined>();
-
-
+  const [banner, setBanner] = useState<File | undefined>();
+  const [thumbnail, setThumbnail] = useState<File | undefined>();
+  const [images, setImages] = useState<File[]>([]);
   let thumbnailR = useRef< File|undefined>();
 
   let imagesR = useRef<File[]>([]);
@@ -91,7 +94,6 @@ export default function ProjectUploadFileForm(
 
   if(bannerR.current == undefined) {
       bannerR.current = projectResources[0].current
-      console.log(projectResources[0].current, 'PR 0');
   }
 
   if(imagesR.current.length == 0) {
@@ -118,15 +120,18 @@ export default function ProjectUploadFileForm(
   const handleBannerFile = (event: any) => {
     event.preventDefault();
     bannerR.current = (event.target.files[0]);
+    setBanner(event.target.files[0]);
     projectFileStore(bannerR.current, [], undefined);
   };
 
   const handleProjectImages = (event: any) => {
+    
     event.preventDefault();
     if (Array.from(event.target.files).length > 5) {
       alert(`Only 5 files are allowed to upload.`);
       return;
     }
+    setImages(Array.from(event.target.files));
     imagesR.current = (Array.from(event.target.files));
     projectFileStore(undefined, imagesR.current, undefined);
   };
@@ -134,6 +139,7 @@ export default function ProjectUploadFileForm(
   const handleThumbnail = (event: any) => {
     event.preventDefault();
     thumbnailR.current =(event.target.files[0]);
+    setThumbnail(event.target.files[0]);
     projectFileStore(undefined, undefined, thumbnailR.current);
   };
 
@@ -210,22 +216,18 @@ export default function ProjectUploadFileForm(
       const k = validateKaggle()
       const ds = validateDeployedWebsite();
       if (g && cp && n && sb && k && ds) {
+        if (window.confirm("Ready to submit?")) {
         console.log('passed')
         projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current);
+        handleUpload();
         }
-    } else {
-      if (window.confirm("Ready to submit?")) {
-        projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current);
-        
       }
-      
-    }
+  
     
-    console.log(githubLinkError)
    
   };  
 
-
+  }
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -250,7 +252,7 @@ export default function ProjectUploadFileForm(
             <FileInputField
               disabled
 
-              value={bannerR.current ? bannerR.current.name : ''}
+              value={banner ? banner.name : bannerR.current ? bannerR.current.name: ''}
               
               fullWidth
               helperText="*This features at the top of your project page!"
@@ -284,7 +286,7 @@ export default function ProjectUploadFileForm(
             <FileInputField
               disabled
               helperText="*Select images you would like to feature on the gallery"
-              value={imagesR.current ? `The number of files uploaded: ${imagesR.current.length}`: ''}
+              value={images.length  ? `The number of files uploaded: ${images.length}`: imagesR.current ? `The number of files uploaded: ${imagesR.current.length}` : ''}
               fullWidth
             />
           </Grid>
@@ -313,7 +315,7 @@ export default function ProjectUploadFileForm(
             />
             <FileInputField
               disabled
-              value={thumbnailR.current ? thumbnailR.current.name : ''}
+              value={thumbnail ? thumbnail.name : thumbnailR.current ? thumbnailR.current.name : ''}
               fullWidth
               helperText="*What people see when looking for your project!"
             />

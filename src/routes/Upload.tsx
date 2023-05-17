@@ -159,7 +159,7 @@ export default function Upload() {
   // the final call to create a Project
   const handleUpload = () => {
     // API Call here!
-
+    handleNext();
     // for now, maybe just pass the required fields to test?
     const newProject: TNewProject = {
       name: projectName,
