@@ -188,6 +188,7 @@ const Dashboard = () => {
       const response = await uploadAwardImage(formData)
       setLoading(false)
       setAwardImageString(response)
+      
     }
   };
 

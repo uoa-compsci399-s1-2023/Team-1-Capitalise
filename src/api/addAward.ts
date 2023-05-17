@@ -26,8 +26,8 @@ export async function uploadAwardImage(award: FormData) {
   const resp = await fetch(`${S3_API_URL}/api/s3/award`, {
     method: "POST",
     body: award,
-  }).then(async (data) => {
-    return await data.text()
+  }).then((data) => {
+    return data.text()
   })
   return resp;
 }
