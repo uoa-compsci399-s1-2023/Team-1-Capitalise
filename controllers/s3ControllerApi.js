@@ -1311,42 +1311,25 @@ const getHeroBanners = async (req, res) => {
 
 
 const uploadAward = async (req, res) => {
-    const files = req.files
-    const uploadPromise = []
-    const urls = []
-    files.forEach(file => {
-        const fileType = checkFileType(file.mimetype.split('/')[1])
-        const fileName = file.originalname.split('.')[0] +'.'+ fileType
-        const fileParams = {
-            Bucket: process.env.BUCKET,
-            Key: `capitaliseAssets/awards/${fileName}`,
-            Body: file.buffer,
-            ContentType: file.mimetype
-        }
-        //create the urls
-        urls.push(URL + `capitaliseAssets/awards/${checkString(fileName)}`)
-        // upload to s3
-        const uploadCommand = new PutObjectCommand(fileParams)
-        uploadPromise.push(s3Upload(uploadCommand))
-        })
+    const file = req.file
+    const fileType = checkFileType(file.mimetype.split('/')[1])
+    const fileName = file.originalname.split('.')[0] +'.'+ fileType
+    const fileParams = {
+        Bucket: process.env.BUCKET,
+        Key: `capitaliseAssets/awards/${fileName}`,
+        Body: file.buffer,
+        ContentType: file.mimetype
+    }
+
+    //create the url
+    const url = URL + `capitaliseAssets/awards/${checkString(fileName)}`
+
+    // upload to s3
+    const uploadCommand = new PutObjectCommand(fileParams)
+    await s3Upload(uploadCommand)
+
     try{
-        await Promise.all(uploadPromise)
-        const keyPrefix = `capitaliseAssets/awards/`
-        const updatedUrls =[]
-        const getAwards = {
-            Bucket: process.env.BUCKET,
-            Prefix: keyPrefix
-        }
-    
-        const fileExist = (await client.send(new ListObjectsV2Command(getAwards))).Contents
-        //Iterate through the contents of fileExist skipping the first index where it is just the folder
-        if(fileExist){
-            for(let i = 0; i < fileExist.length; i++){
-                if(fileExist[i].Size > 0){
-                updatedUrls.push(URL + checkString(fileExist[i].Key))
-                }}
-        }
-        return res.status(200).send(updatedUrls)
+        return res.status(200).send(url)
     }
     catch(err){
         return res.status(404).send({awards :null, msg: err})
