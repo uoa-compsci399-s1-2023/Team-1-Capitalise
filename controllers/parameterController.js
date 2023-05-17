@@ -106,10 +106,6 @@ const createParameter = async (req, res) => {
         .json({ fail: "Semesters must take on the form of SX 20YY" });
     }
 
-    if (req.body.image) {
-      req.body.image = `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/awards/${req.body.image}`;
-    }
-
     let parameter = "";
     if (parameterType === "award") {
       parameter = new Parameter({
