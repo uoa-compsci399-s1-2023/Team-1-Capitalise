@@ -59,7 +59,7 @@ const Hero = () => {
   useEffect(() => {
     const checkAuth = () => {
       if (auth.user) {
-        if (auth.user.userType == "graduate" || auth.user.userType == "admin") {
+        if (auth.user.userType == "graduate") {
           setIsStudent(true);
           if (auth.user.project) {
             setHasProject(true);
