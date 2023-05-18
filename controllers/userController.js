@@ -493,9 +493,7 @@ const resetPasswordForm = async (req, res) => {
           },
         })
           .then((response) => response.json())
-          .then((json) => {
-            if (json.success) {alert(json.success)} else {alert(json.fail)}});
-      } );
+          .then((json) => alert(json.success));
 
       }
     </script>
