@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-    default: "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/default_pfp.svg"
+    default:
+      "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/default_pfp.svg",
   },
   password: {
     type: String,
@@ -79,13 +80,18 @@ const userSchema = new mongoose.Schema({
     },
   ],
   status: {
-    type: String, 
-    enum: ['Pending', 'Active'],
-    default: 'Pending'
+    type: String,
+    enum: ["Pending", "Active"],
+    default: "Pending",
   },
-  confirmationCode: { 
-    type: String, 
-    unique: true },
+  confirmationCode: {
+    type: String,
+    unique: true,
+  },
+  passwordResetToken: {
+    type: String,
+    unique: true,
+  },
 });
 
 //Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user.

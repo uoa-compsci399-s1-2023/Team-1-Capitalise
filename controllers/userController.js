@@ -16,6 +16,25 @@ const transport = nodemailer.createTransport({
   },
 });
 
+const sendPasswordResetEmail = (name, email) => {
+  //Get user
+
+  //If user does not exist return 400
+
+  //Send the mail
+  transport
+    .sendMail({
+      from: process.env.NODEMAILEREMAIL,
+      to: email,
+      subject: "Capitalise.space - Reset your password",
+      html: `<h2>Hey, ${name}!</h2>
+      <p>Please reset your password by clicking on the following link:</p>
+      <a href=https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/resetpassword/${passwordResetToken}>Click here to reset your password</a>
+      </div>`,
+    })
+    .catch((err) => console.log(err));
+};
+
 const sendConfirmationEmail = (name, email, confirmationCode) => {
   transport
     .sendMail({
@@ -329,15 +348,15 @@ const getCurrentUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   const nameQuery = req.query.name || "";
   const isAvailable = req.query.isAvailable || "";
-  const userRole = req. query.userRole || "";
+  const userRole = req.query.userRole || "";
 
   let searchQuery = {
     name: { $regex: nameQuery, $options: "i" },
-    userType: { $regex: '^' + userRole + '$', $options: "i" }
+    userType: { $regex: "^" + userRole + "$", $options: "i" },
   };
   if (isAvailable === "true") {
     searchQuery.project = null;
-  } 
+  }
 
   try {
     const users = await User.find(searchQuery)

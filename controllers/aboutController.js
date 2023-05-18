@@ -58,7 +58,7 @@ const deleteAbout = async (req, res) => {
   try {
     myAbout = await About.findById(req.params.id);
     await About.findByIdAndDelete(req.params.id);
-    res.status(200).send(`${myAbout.title} was succesfully deleted.`);
+    res.status(200).send({removed: `Section ${myAbout._id} was succesfully deleted.`});
   } catch (err) {
     return res.status(500).send(`Server Error: ${err}`);
   }
