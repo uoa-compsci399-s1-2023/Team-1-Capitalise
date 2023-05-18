@@ -1,6 +1,6 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useContext, useState } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, MenuItem, OutlinedInput, Select, SelectChangeEvent } from '@mui/material';
-import { uploadBanner } from '../../../api/uploadBanner';
+import { uploadBanner } from '../../../api/projectBannerApi';
 import { ProjectContext } from '../../../routes/ProjectPage';
 import LoadingDialog from './LoadingDialog';
 import { getProject } from '../../../api/getProject';
@@ -63,6 +63,7 @@ export default function EditBannerDialog({ isDialogOpen, setIsDialogOpen }: Edit
         <DialogContent>
           <FormControl fullWidth>
             <OutlinedInput
+              fullWidth
               type='file'
               inputProps={{ accept: "image/*" }}
               onChange={(e) => handleFileUploaded(e as ChangeEvent<HTMLInputElement>)}

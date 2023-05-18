@@ -9,3 +9,10 @@ export async function uploadBanner(pId: string, data: FormData) {
   });
   return resp;
 }
+
+export async function removeBanner(pId: string) {
+  const resp = fetch(`${S3_API_URL}/api/s3/banner/${pId}`, {
+    method: "DELETE",
+  });
+  return resp;
+}
