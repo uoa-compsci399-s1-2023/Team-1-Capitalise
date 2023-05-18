@@ -228,8 +228,7 @@ export default function ProjectInfoForm(
         tags: selectedTags,
         projectDescription: projDesc,
       };
-      //console.log("Info sent from ProjectInfo:", infoSend);
-      
+
       projectInfoToUpload(infoSend);
       handleNext();
       
@@ -246,7 +245,6 @@ export default function ProjectInfoForm(
     };
     
     projectInfoToUpload(infoHold);
-    console.log(infoHold, 'hold info')
     handleBack();}
 
   return (

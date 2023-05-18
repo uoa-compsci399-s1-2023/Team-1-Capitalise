@@ -9,7 +9,6 @@ import {
   Box,
   Button,
   Chip,
-  FormControl,
   FormHelperText,
   Input,
   InputLabel,
@@ -76,7 +75,7 @@ export default function ProjectUploadFileForm(
 
   // need to look at this again to see if we need to set it back to File, if null is giving us trouble bellow.
   // const [banner, setBanner] = useState(null);
-  console.log(projectResources, 'ok!');
+  
 
 
   let bannerR = useRef< File|undefined>();
@@ -153,7 +152,7 @@ export default function ProjectUploadFileForm(
   const handleGoBack = (event: any) => {
     event.preventDefault();
     projectFileStore(bannerR.current, imagesR.current, thumbnailR.current);
-    console.log(bannerR.current, imagesR.current, "ok" )
+
     handleBack();}
   
   const validateGithub = () => {   if(projectLinks[0].type == 'github') {
@@ -224,7 +223,6 @@ export default function ProjectUploadFileForm(
       if (g && cp && n && sb && k && ds) {
         projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
         if (window.confirm("Ready to submit?")) {
-        console.log('passed')
         handleUpload();
         }
       }

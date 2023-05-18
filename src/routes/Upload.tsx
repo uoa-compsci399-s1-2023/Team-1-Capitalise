@@ -162,11 +162,9 @@ export default function Upload() {
   const projectFileToUpload = (banner:any, images:any, thumbnail: any, projectLinks:any) => {
     // we want to check if these files are null or not.
     if (banner == null) {
-      //console.log("Banner is null");
       isBannerEmpty = true;
     }
     if (thumbnail == null) {
-      //console.log("Thumbnail is null");
       isThumbnailEmpty = true;
     }
 
@@ -174,12 +172,12 @@ export default function Upload() {
     thumbnailData.append("thumbnail", thumbnail);
 
     numImages = images.length;
-    //console.log("How many images:", numImages);
+
 
     // go through image files and append as formdata
     images.forEach((image: any) => {
       imagesData.append("gallery", image);
-      //console.log(image);
+  
     });
     setProjectLink(projectLinks);
     // navigates to loading page
@@ -193,9 +191,7 @@ export default function Upload() {
     // for now, maybe just pass the required fields to test?
     const newProject: TNewProject = {
       name: projectName,
-      teamname: team,
-      //banner: banner,             // these only accept URLs, not files.
-      //thumbnail: thumbnail,       
+      teamname: team,     
       semester: projectSemester,
       category: projectCategory,
       links: projectLink,
@@ -215,15 +211,12 @@ export default function Upload() {
     };
   
 
-    //console.log("New project:", newProject);
-
     const createdProject = createProject(
       newProject,
       auth.getToken() as string
     ).then((data) => {
       projectID.current = data._id;
 
-      console.log(projectID.current, 'project id set')
 
       // need to perform file validation checks to check if images are null.
       if (!isBannerEmpty) {
@@ -278,7 +271,6 @@ export default function Upload() {
 
       // An API call screen. Shows a successful response for Users.
       case 3:
-          console.log('PROJECT ID',projectID);
           return (
             <UploadComplete projectID={projectID}/>
           )

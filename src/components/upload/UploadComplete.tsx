@@ -7,7 +7,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { BounceLoader } from "react-spinners";
 
 export default function UploadComplete({projectID}: any) {
-  console.log("ID", projectID.current);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [color, setColor] = useState("#1976D2");

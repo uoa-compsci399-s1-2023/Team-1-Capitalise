@@ -20,7 +20,6 @@ export default function ProjectTeamSelectionForm({teamToUpload, currentTeamInfor
     //Ignore Spaces and 's e.g The Best Team's Project is accepted.
     if (isAlphanumeric(t,'en-US',{ignore: " '"})) { 
       setTeamName(t);
-      console.log(teamName, 'teamname');
       teamToUpload(t);
       
     } else {
