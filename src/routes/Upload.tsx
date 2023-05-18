@@ -68,7 +68,7 @@ interface TProjectInfo {
 
 // different stages of the project upload form.
 const steps = ["Team Details", "Project Details", "Project Files", "Upload"];
-
+const delay = (ms: number | undefined) => new Promise(res => setTimeout(res, ms));
 // set the new project
 
 export default function Upload() {
@@ -96,7 +96,7 @@ export default function Upload() {
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>(infoHold);
   const [projectLinkTemp, setProjectLinkTemp] = useState(options.map((option) => ({ value: '', type: option.type, label: option.label })));
   const [projectLink, setProjectLink] = useState([]);
-  const [projectID, setProjectID] = useState('');
+  let projectID = useRef('');
   let bannerInfo = useRef<File | undefined>();
   let imagesInfo =  useRef([]);
   let thumbnailInfo = useRef< File | undefined>();
@@ -181,15 +181,15 @@ export default function Upload() {
       imagesData.append("gallery", image);
       //console.log(image);
     });
-
+    setProjectLink(projectLinks);
     // navigates to loading page
     // check if user wants to submit their project, otherwise keep them on this page.
 
   }
   // the final call to create a Project
-  const handleUpload = () => {
+  const handleUpload = async () => {
     // API Call here!
-    handleNext();
+   
     // for now, maybe just pass the required fields to test?
     const newProject: TNewProject = {
       name: projectName,
@@ -221,7 +221,9 @@ export default function Upload() {
       newProject,
       auth.getToken() as string
     ).then((data) => {
-      setProjectID(data._id)
+      projectID.current = data._id;
+
+      console.log(projectID.current, 'project id set')
 
       // need to perform file validation checks to check if images are null.
       if (!isBannerEmpty) {
@@ -236,6 +238,12 @@ export default function Upload() {
         addGallery(data._id, "Overview", imagesData);
       }
     });
+    await delay(2000);
+      if(projectID.current) {
+        handleNext();
+      }
+    
+    
   };
 
   // this acts as a Navigator for each of upload pages rendered.

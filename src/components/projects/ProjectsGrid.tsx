@@ -31,7 +31,7 @@ export default function ProjectsGrid({
               category={project.category.value}
               likes={project.likes}
               badges={
-                typeof project.badges != "undefined" ? project.badges.value : ""
+                project.badges ? project.badges.value : "default"
               }
               projectID={project._id}
             ></ProjectCard>

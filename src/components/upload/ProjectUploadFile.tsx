@@ -222,9 +222,9 @@ export default function ProjectUploadFileForm(
       const k = validateKaggle()
       const ds = validateDeployedWebsite();
       if (g && cp && n && sb && k && ds) {
+        projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
         if (window.confirm("Ready to submit?")) {
         console.log('passed')
-        projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current);
         handleUpload();
         }
       }
@@ -291,7 +291,7 @@ export default function ProjectUploadFileForm(
             />
             <FileInputField
               disabled
-              helperText="*Select images you would like to feature on the gallery"
+              helperText="Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"
               value={images.length  ? `The number of files uploaded: ${images.length}`: imagesR.current ? `The number of files uploaded: ${imagesR.current.length}` : ''}
               fullWidth
             />
@@ -323,7 +323,7 @@ export default function ProjectUploadFileForm(
               disabled
               value={thumbnail ? thumbnail.name : thumbnailR.current ? thumbnailR.current.name : ''}
               fullWidth
-              helperText="*What people see when looking for your project!"
+              helperText="Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"
             />
           </Grid>
           <Grid item xs={12}>

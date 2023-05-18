@@ -72,7 +72,7 @@ const Carousel = ({ items, backgroundColor, category }: Props) => {
             category={project.category.value}
             likes={project.likes}
             badges={
-              typeof project.badges != "undefined" ? project.badges.value : ""
+              project.badges ? project.badges.value : "" 
             }
             projectID={project._id}
             key={project._id}
