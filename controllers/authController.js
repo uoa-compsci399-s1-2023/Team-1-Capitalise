@@ -129,7 +129,9 @@ const verifyUser = async (req, res) => {
     }
 
     if (user.status === "Active") {
-      return res.status(400).send({ fail: "You have already confirmed your email!" });
+      return res
+        .status(400)
+        .send({ fail: "You have already confirmed your email!" });
     }
 
     await User.findByIdAndUpdate(user._id, {
@@ -139,7 +141,6 @@ const verifyUser = async (req, res) => {
     const token = user.generateAuthToken();
     //res.send(token);
     res.redirect(`//www.capitalise.space/googleSuccessRedirect?token=${token}`);
-
   } catch (err) {
     return res.status(500).send(`Server failure: ${err}`);
   }

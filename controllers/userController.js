@@ -16,25 +16,6 @@ const transport = nodemailer.createTransport({
   },
 });
 
-const sendPasswordResetEmail = (name, email) => {
-  //Get user
-
-  //If user does not exist return 400
-
-  //Send the mail
-  transport
-    .sendMail({
-      from: process.env.NODEMAILEREMAIL,
-      to: email,
-      subject: "Capitalise.space - Reset your password",
-      html: `<h2>Hey, ${name}!</h2>
-      <p>Please reset your password by clicking on the following link:</p>
-      <a href=https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/resetpassword/${passwordResetToken}>Click here to reset your password</a>
-      </div>`,
-    })
-    .catch((err) => console.log(err));
-};
-
 const sendConfirmationEmail = (name, email, confirmationCode) => {
   transport
     .sendMail({
@@ -389,6 +370,169 @@ const getUserComments = async (req, res) => {
   }
 };
 
+//Reset user password
+const sendResetPasswordEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email: email }).populate(
+    "project",
+    "_id, name"
+  );
+
+  if (!user) {
+    return res
+      .status(400)
+      .json({ fail: `No account is associated with this email address.` });
+  }
+  if (user.isGoogleCreated === true) {
+    return res.status(400).json({ fail: `Please sign in using Google!` });
+  }
+  const passwordResetToken = jwt.sign(
+    { email: user.email },
+    process.env.JWT_PRIVATE_KEY,
+    {
+      expiresIn: "24h", // expires in 24 hours
+    }
+  );
+
+  sendPasswordResetNodemailer(user.name, user.email, passwordResetToken);
+  return res.status(200).json({
+    success: `Success! We have sent a confirmation email to ${user.email}.`,
+  });
+};
+
+const sendPasswordResetNodemailer = (name, email, passwordResetToken) => {
+  //Send the mail
+  transport
+    .sendMail({
+      from: process.env.NODEMAILEREMAIL,
+      to: email,
+      subject: "Capitalise.space - Reset your password",
+      html: `<h2>Hey, ${name}!</h2>
+      <p>Please reset your password by clicking on the following link:</p>
+      <a href=https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/users/resetPasswordForm?passwordResetToken=${passwordResetToken}>Click here to reset your password</a>
+      <p>Note that this confirmation link will expire in 24 hours.</p>
+      </div>`,
+    })
+    .catch((err) => console.log(err));
+};
+
+const submitResetPass = async (req, res) => {
+  res.send(`<html>
+  <head>
+    <title>Capitalise - Reset Password</title>
+  </head>
+  <body>
+  <h1>So you forgot your password, ya goob.</h1>
+  <p>Reset your password!</p>
+    <form onsubmit="postData(event)" method="post">
+      <input type="text" id="email" name="email" />
+      <label for="email">Enter your email:</label>
+      <input type="submit" value="Submit" />
+    </form>
+    <script>
+      function postData(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = new FormData(form);
+        const object = {};
+        data.forEach((value, key) => (object[key] = value));
+
+        console.log(object)
+
+        //make the reset call
+        fetch("https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/users/sendResetPasswordEmail", {
+          method: "POST",
+          body: JSON.stringify(object),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        })
+          .then((response) => response.json())
+          .then((json) => {alert(json.success)} );
+      }
+    </script>
+  </body>
+</html>`);
+};
+
+const resetPasswordForm = async (req, res) => {
+  res.send(`<html>
+  <head>
+    <title>Capitalise - Reset Password</title>
+  </head>
+  <body>
+    <h1>Reset your password!</h1>
+    <p>I promise I will not steal your password and sell it on the darkweb.</p>
+    <form onsubmit="postData(event)" method="post">
+      <input type="text" id="password" name="password" />
+      <label for="password">Enter your password:</label>
+      <input type="submit" value="Submit" />
+    </form>
+    <script>
+      function postData(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = new FormData(form);
+        const object = {};
+        data.forEach((value, key) => (object[key] = value));
+
+        let params = new URLSearchParams(document.location.search);
+
+        let passwordResetToken = params.get("passwordResetToken");
+
+        object.passwordResetToken = passwordResetToken;
+
+        //make the reset call
+        fetch("https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/users/resetPassword", {
+          method: "POST",
+          body: JSON.stringify(object),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        })
+          .then((response) => response.json())
+          .then((json) => {alert(json.success)} );
+
+      }
+    </script>
+  </body>
+</html>
+`);
+};
+
+//Reset Password
+const resetPassword = async (req, res) => {
+  try {
+    const decodedUser = jwt.verify(
+      req.body.passwordResetToken,
+      process.env.JWT_PRIVATE_KEY
+    );
+    try {
+      let user = await User.findOne({
+        email: decodedUser.email,
+      });
+      if (!user) {
+        return res.status(400).send({ fail: "User Not found." });
+      }
+      const password = await bcrypt.hash(req.body.password, 10);
+      await User.updateOne(
+        { email: decodedUser.email },
+        { password: password }
+      );
+      return res.status(200).send({
+        success: "Your password was updated succesfully. Please sign in again.",
+      });
+    } catch (err) {
+      return res.status(500).send({ fail: `Server failure: ${err}` });
+    }
+  } catch (err) {
+    return res.status(403).send({
+      fail: err,
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -401,4 +545,8 @@ module.exports = {
   postGoogleUser,
   searchUsers,
   getUserComments,
+  sendResetPasswordEmail,
+  resetPassword,
+  resetPasswordForm,
+  submitResetPass,
 };
