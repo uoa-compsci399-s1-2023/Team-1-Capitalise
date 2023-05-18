@@ -30,7 +30,7 @@ export default function ProjectDetails() {
       sx={{ display: { xs: 'none', md: 'flex' }, position: 'relative' }}
     >
 
-      {<AwardBadge badgeId={project.badges?._id} />}
+      {project.badges && <AwardBadge badgeId={project.badges._id} />}
 
       <CategoryField />
       <SemesterField />

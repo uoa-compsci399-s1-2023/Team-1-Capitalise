@@ -78,7 +78,7 @@ export default function ProjectPage() {
       ).then(resp => {
         if (resp.ok) {
           // Set project to display updated project.
-          resp.json().then(data =>  setProject(data));
+          resp.json().then(data => setProject(data));
         } else {
           // Log error and do nothing.
           resp.text().then(err => console.log(err))

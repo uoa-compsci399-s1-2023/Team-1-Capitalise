@@ -9,7 +9,7 @@ import { useAuth } from '../../customHooks/useAuth'
 
 
 interface AwardBadgeProps {
-  badgeId: string | null
+  badgeId: string
 }
 
 
@@ -21,19 +21,13 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
   const auth = useAuth();
   const theme = useTheme();
 
-  console.log(badgeId);
-
   useEffect(() => {
-    if (badgeId) {
-      getBadgeById(badgeId)
-        .then(badge => {
-          if (badge) {
-            setBadge(badge);
-          }
-        })
-    } else {
-      setBadge(null);
-    }
+    getBadgeById(badgeId)
+      .then(badge => {
+        if (badge) {
+          setBadge(badge);
+        }
+      })
   }, [badgeId])
 
   let badgeContent: ReactNode = null
@@ -48,7 +42,11 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
         justifyContent={'center'}
         position={'relative'}
       >
-        <Stack my={2}>
+        <EditAwardDialog
+          isOpen={isDialogOpen}
+          setIsOpen={setIsDialogOpen}
+        />
+        <Stack my={2} flex={1}>
           <img
             src={badge.image}
             width={'80'}
@@ -63,51 +61,39 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
           >
             {badge.value}
           </Typography>
-          {auth.isAllowed(['admin']) &&
-            // <Tooltip title="Edit Award">
+        </Stack>
+        {auth.isAllowed(['admin']) &&
+          <Tooltip title="Edit Award">
             <Button
               sx={{
-                // position: 'absolute',
-                // top: 0,
-                // left: 0,
-                // width: '100%',
-                // height: '100%',
-                // justifyContent: 'end',
-                mx: 2,
-                mt: 2
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                justifyContent: 'end',
+                // pr: 2,
               }}
-              variant='outlined'
-              color='black'
+              color='neutral'
               onClick={() => setIsDialogOpen(true)}
             >
-              Change Award
+              {/* <EditIcon
+                fontSize='small'
+                sx={{
+                  color: theme.palette.editBtnGrey.main,
+                }}
+              /> */}
             </Button>
-          // /* </Tooltip> *//
+          </Tooltip>
         }
-        </Stack>
-
       </Stack>
   } else if (auth.isAllowed(['admin'])) {
     badgeContent =
-      <Button
-        variant='outlined'
-        onClick={() => setIsDialogOpen(true)}
-        sx={{
-          mx: 2
-        }}
-      >
+      <Button>
         Add Award
       </Button>
   }
 
 
-  return (
-    <>
-      <EditAwardDialog
-        isOpen={isDialogOpen}
-        setIsOpen={setIsDialogOpen}
-      />
-      {badgeContent}
-    </>
-  )
+  return badgeContent
 }
