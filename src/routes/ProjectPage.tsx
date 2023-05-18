@@ -2,6 +2,7 @@ import React, { useState, SetStateAction, useContext, createContext, useEffect }
 import ProjectDetails from '../components/projectPage/ProjectDetails';
 import ContentBlock, { ContentBlockProps } from '../components/projectPage/ContentBlock';
 import ProjectHeader from '../components/projectPage/ProjectHeader';
+import ProjectBanner from '../components/projectPage/ProjectBanner';
 import TabButton from '../components/projectPage/TabButton';
 import { getProject } from '../api/getProject'
 import { Stack, Box, useTheme, Container, Typography, Button, Divider } from '@mui/material';
@@ -78,7 +79,7 @@ export default function ProjectPage() {
       ).then(resp => {
         if (resp.ok) {
           // Set project to display updated project.
-          resp.json().then(data =>  setProject(data));
+          resp.json().then(data => setProject(data));
         } else {
           // Log error and do nothing.
           resp.text().then(err => console.log(err))
@@ -95,15 +96,7 @@ export default function ProjectPage() {
       <ProjectContext.Provider value={{ project, setProject, setProjectChanges }}>
 
         {/* Banner */}
-        <img
-          src={project.banner}
-          alt='Project cover photo'
-          width={'100%'}
-          height={150}
-          style={{
-            objectFit: 'cover'
-          }}
-        />
+        <ProjectBanner />
 
         {/* Everything else */}
         <Stack

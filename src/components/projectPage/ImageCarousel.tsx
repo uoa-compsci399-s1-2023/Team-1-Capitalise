@@ -21,7 +21,7 @@ export function Image({ url }: { url: string }) {
           style={{
             objectFit: 'scale-down',
           }}
-          alt="image"
+          alt="Gallery Image"
         />
       </a>
     </Stack>

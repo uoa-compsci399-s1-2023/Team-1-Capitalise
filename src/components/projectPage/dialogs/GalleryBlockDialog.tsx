@@ -6,7 +6,6 @@ import ImgThumbnail from '../ImgThumbnail'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { addGalleryImgs } from '../../../api/addGalleryImg'
 import { deleteGalleryImgs } from '../../../api/deleteGalleryImgs'
-import CircularProgress from '@mui/material/CircularProgress';
 
 
 interface GalleryBlockDialogProps {
