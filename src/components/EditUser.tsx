@@ -44,12 +44,14 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [deployedSite, setDeployedSite] = useState(getLink("deployedSite"));
   const [openDelete, setOpenDelete] = useState(false);
   const [validImage, setValidImage] = useState(true);
+  const [validImageErrorMessage, setValidImageErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
   const nameCharacterLimit = 500;
   const bioCharacterLimit = 2000;
   const linkCharacterLimit = 500;
+  const maxProfileSizeMB = 4;
 
   let links: any[] = [];
 
@@ -88,6 +90,13 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const constHandleImage = async (file: File) => {
     if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
       setProfilePicture(user.profilePicture);
+      setValidImageErrorMessage("Select a valid image type");
+      setValidImage(false);
+    } else if (file.size / (1024 * 1024) > maxProfileSizeMB) {
+      setProfilePicture(user.profilePicture);
+      setValidImageErrorMessage(
+        `File is too big. Must be less than ${maxProfileSizeMB}MB`
+      );
       setValidImage(false);
     } else {
       setProfilePicture(URL.createObjectURL(file));
@@ -178,6 +187,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 </Button>
               </Stack>
               <TextField
+                id="edit-profile"
                 label="Change profile picture"
                 type="file"
                 fullWidth
@@ -187,7 +197,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 }}
                 variant="outlined"
                 error={!validImage}
-                helperText={!validImage ? "Select a valid image type" : ""}
+                helperText={!validImage ? validImageErrorMessage : ""}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   if (event.target.files) {
                     constHandleImage(event.target.files[0]);
@@ -197,6 +207,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             </Stack>
           </Box>
           <TextField
+            id="edit-name"
             margin="dense"
             label="Name"
             fullWidth
@@ -208,6 +219,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }}
           />
           <TextField
+            id="edit-bio"
             multiline
             margin="dense"
             label="Bio"
@@ -222,7 +234,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="github"
+            id="edit-github"
             label="GitHub link"
             fullWidth
             variant="standard"
@@ -240,7 +252,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="linkedin"
+            id="edit-linkedin"
             label="LinkedIn link"
             fullWidth
             variant="standard"
@@ -258,7 +270,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="deployedSite"
+            id="edit-deployedSite"
             label="Website link"
             fullWidth
             variant="standard"

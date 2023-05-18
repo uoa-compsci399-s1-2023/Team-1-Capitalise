@@ -232,7 +232,7 @@ const UserProfile = () => {
             <Typography
               width="100%"
               variant="h6"
-              style={{ wordBreak: "break-all" }}
+              style={{ wordBreak: "break-word" }}
             >
               {user.name}
             </Typography>

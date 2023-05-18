@@ -59,7 +59,7 @@ const Hero = () => {
   useEffect(() => {
     const checkAuth = () => {
       if (auth.user) {
-        if (auth.user.userType == "graduate" || auth.user.userType == "admin") {
+        if (auth.user.userType == "graduate") {
           setIsStudent(true);
           if (auth.user.project) {
             setHasProject(true);
@@ -97,7 +97,7 @@ const Hero = () => {
               src={banner}
               alt="hero"
               alignSelf="center"
-              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
+              sx={{ objectFit: "cover", objectPosition: "center" }}
               key={i}
             ></Box>
           ))}
@@ -120,7 +120,7 @@ const Hero = () => {
               src={banner}
               alt="hero"
               alignSelf="center"
-              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
+              sx={{ objectFit: "cover", objectPosition: "center" }}
               key={i}
             ></Box>
           ))}

@@ -49,11 +49,13 @@ export const SearchContext = createContext<TSearchContext>(
 
 const initialProjectsPerPage = () => {
   let width = window.innerWidth;
-  if (width > 2140) {
+  if (width >= 2510) {
+    return 18;
+  } else if (width < 2510 && width >= 2140) {
     return 15;
-  } else if (width < 2140 && width > 1770) {
+  } else if (width < 2140 && width >= 1770) {
     return 12;
-  } else if (width < 1770 && width > 1400) {
+  } else if (width < 1770 && width >= 1400) {
     return 9;
   } else if (width < 1400) {
     return 6;
