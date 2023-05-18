@@ -50,6 +50,7 @@ export default function EditAwardDialog({ isOpen, setIsOpen }: EditAwardDialogPr
         })
       }
     }
+    setIsOpen(false);
   }
 
   return (

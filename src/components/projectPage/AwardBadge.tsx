@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { Typography, Stack, useTheme, Box, Button, Tooltip } from '@mui/material'
 import { TParameter } from '../../model/TParameter'
 import { getBadgeById } from '../../api/getBadges'
 import EditButton from './EditButton'
+import EditIcon from '@mui/icons-material/Edit'
 import EditAwardDialog from './dialogs/EditAwardDialog'
+import { useAuth } from '../../customHooks/useAuth'
 
 
 interface AwardBadgeProps {
@@ -16,6 +18,7 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
   const [badge, setBadge] = useState<TParameter | null>(null);
   const [isHover, setIsHover] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const auth = useAuth();
   const theme = useTheme();
 
   useEffect(() => {
@@ -27,9 +30,10 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
       })
   }, [badgeId])
 
+  let badgeContent: ReactNode = null
 
-  return (
-    badge ?
+  if (badge) {
+    badgeContent =
       <Stack
         flexDirection={'row'}
         onMouseEnter={() => setIsHover(true)}
@@ -38,7 +42,7 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
         justifyContent={'center'}
         position={'relative'}
       >
-        <EditAwardDialog 
+        <EditAwardDialog
           isOpen={isDialogOpen}
           setIsOpen={setIsDialogOpen}
         />
@@ -58,21 +62,38 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
             {badge.value}
           </Typography>
         </Stack>
-        <Tooltip title="Edit Award">          
-          <Button
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%'
-            }}
-            color='editBtnGrey'
-            onClick={() => setIsDialogOpen(true)}
-          />
-        </Tooltip>
+        {auth.isAllowed(['admin']) &&
+          <Tooltip title="Edit Award">
+            <Button
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                justifyContent: 'end',
+                // pr: 2,
+              }}
+              color='neutral'
+              onClick={() => setIsDialogOpen(true)}
+            >
+              {/* <EditIcon
+                fontSize='small'
+                sx={{
+                  color: theme.palette.editBtnGrey.main,
+                }}
+              /> */}
+            </Button>
+          </Tooltip>
+        }
       </Stack>
-      :
-      null
-  )
+  } else if (auth.isAllowed(['admin'])) {
+    badgeContent =
+      <Button>
+        Add Award
+      </Button>
+  }
+
+
+  return badgeContent
 }

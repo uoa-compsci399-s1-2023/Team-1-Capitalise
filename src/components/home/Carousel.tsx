@@ -84,9 +84,7 @@ const Carousel = ({
                 category={project.category.value}
                 likes={project.likes}
                 badges={
-                  typeof project.badges != "undefined"
-                    ? project.badges.value
-                    : ""
+                  project.badges ? project.badges.value : "" // Yathi - Updated to fix null error
                 }
                 projectID={project._id}
                 key={project._id}
