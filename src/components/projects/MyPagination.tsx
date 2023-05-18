@@ -35,13 +35,15 @@ const MyPagination = () => {
 
   const handleResize = () => {
     let width = window.innerWidth;
-    if (width > 2140) {
+    if (width >= 2510) {
+      setGridWidth("2170px");
+    } else if (width < 2510 && width >= 2140) {
       setGridWidth("1800px");
-    } else if (width < 2140 && width > 1770) {
+    } else if (width < 2140 && width >= 1770) {
       setGridWidth("1430px");
-    } else if (width < 1770 && width > 1400) {
+    } else if (width < 1770 && width >= 1400) {
       setGridWidth("1060px");
-    } else if (width < 1400 && width > 1040) {
+    } else if (width < 1400 && width >= 1040) {
       setGridWidth("690px");
     } else if (width < 1040) {
       setGridWidth("320px");

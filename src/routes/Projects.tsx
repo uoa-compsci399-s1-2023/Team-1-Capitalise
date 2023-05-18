@@ -18,11 +18,13 @@ const Projects = () => {
   const handleResize = () => {
     setLoading(true);
     let width = window.innerWidth;
-    if (width > 2140) {
+    if (width >= 2510) {
+      setNumProjDisp(18);
+    } else if (width < 2510 && width >= 2140) {
       setNumProjDisp(15);
-    } else if (width < 2140 && width > 1770) {
+    } else if (width < 2140 && width >= 1770) {
       setNumProjDisp(12);
-    } else if (width < 1770 && width > 1400) {
+    } else if (width < 1770 && width >= 1400) {
       setNumProjDisp(9);
     } else if (width < 1400) {
       setNumProjDisp(6);
