@@ -7,6 +7,9 @@ import { useAuth } from '../../customHooks/useAuth';
 import { styled } from '@mui/material/styles'
 import pluralize from 'pluralize';
 
+function InfoField({label, value}: {label:string, value:number}) {
+
+}
 
 export default function LikeBtn() {
 
@@ -14,12 +17,12 @@ export default function LikeBtn() {
   const { project, setProject } = useContext(ProjectContext);
   const theme = useTheme();
 
-  const InfoBoxStyle = {
-    padding: '5px 10px',
-    border: `1px solid ${theme.palette.neutral.main}`,
-    borderRadius: '10px',
-    whiteSpace: 'nowrap'
-  }
+  // const InfoBoxStyle = {
+  //   padding: '5px 10px',
+  //   border: `1px solid ${theme.palette.neutral.main}`,
+  //   borderRadius: '10px',
+  //   whiteSpace: 'nowrap'
+  // }
 
   const handleLike = () => {
     auth.onlyAuthenticated();
@@ -52,14 +55,15 @@ export default function LikeBtn() {
         sx={{
           pl: {md: 0, xs: 1}
         }}
+        alignItems={'start'}
       >
-        <Typography variant='subtitle2' color={'text.secondary'}>
+        <Typography variant='body2' color={'text.secondary'}>
           Likes: {project.likes}
         </Typography>
-        <Typography variant='subtitle2' color={'text.secondary'}>
+        <Typography variant='body2' color={'text.secondary'}>
           Views: {project.views}
         </Typography>
-        <Typography variant='subtitle2' color={'text.secondary'}>
+        <Typography variant='body2' color={'text.secondary'}>
           Comments: {project.comments.length}
         </Typography>
       </Stack>

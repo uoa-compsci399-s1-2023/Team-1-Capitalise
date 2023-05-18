@@ -170,13 +170,16 @@ const ProjectCard = ({
                 paddingBottom="0.35em"
               >
                 <FavoriteIcon
-                  sx={{ color: theme.customColors.likes }}
-                  fontSize="small"
+                  sx={{ 
+                    color: theme.customColors.likes,
+                    fontSize: 16
+                  }}
+                  // fontSize="small"
                 />
                 <Typography
                   variant="body2"
                   color={theme.customColors.likes}
-                  fontSize="1.25em"
+                  fontSize="16px" // Yathi - the default size is too big
                   lineHeight={1}
                 >
                   {likes}

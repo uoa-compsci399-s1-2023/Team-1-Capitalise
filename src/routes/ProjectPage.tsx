@@ -113,8 +113,6 @@ export default function ProjectPage() {
             pl: { md: 6, xs: 1 },
             pr: { md: 4, xs: 1 }
           }}
-          // pl={6}
-          // pr={4}
           maxWidth={'1600px'}
           mx={'auto'}
         >
@@ -137,31 +135,30 @@ export default function ProjectPage() {
             {/* Tab content */}
             <Stack flex={1} alignItems={'center'} mr={1} mb={6}>
 
-              {/* Only render tab buttons if there's more than one tab */}
-              {project.content.length > 1 &&
-                <Stack
-                  className='tab-btns'
-                  flexDirection={'row'}
-                  justifyContent={'center'}
-                  mb={2
-                  }
-                  pb={3}
-                  borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
-                  width={'90%'}
-                  flexWrap={'wrap'}
-                >
-                  {
-                    project.content.map((tab, index) => (
-                      <TabButton
-                        key={index}
-                        isSelected={selectedTab === index}
-                        value={tab.tabName}
-                        setSelected={setSelectedTab}
-                        index={index}
-                      />
-                    ))
-                  }
-                </Stack>}
+
+              <Stack
+                className='tab-btns'
+                flexDirection={'row'}
+                justifyContent={'center'}
+                mb={2
+                }
+                pb={3}
+                borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
+                width={'90%'}
+                flexWrap={'wrap'}
+              >
+                {
+                  project.content.map((tab, index) => (
+                    <TabButton
+                      key={index}
+                      isSelected={selectedTab === index}
+                      value={tab.tabName}
+                      setSelected={setSelectedTab}
+                      index={index}
+                    />
+                  ))
+                }
+              </Stack>
 
               {/* If content is not empty, otherwise show "no content msg" */}
               {project.content[selectedTab] ?
@@ -178,6 +175,8 @@ export default function ProjectPage() {
                 :
                 <Typography variant="body2" color="text.secondary">No content to display.</Typography>
               }
+
+
             </Stack>
             <ProjectDetails />
           </Stack>

@@ -67,7 +67,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
   const handleAddContentBlock = () => {
     setIsAddDialogOpen(true);
-    setIsHovering(false);
+    // setIsHovering(false);
   }
 
   const handleDeleteContentBlock = () => {
@@ -78,15 +78,13 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     })
   }
 
-
-
-  let Content: FC = () => <></>;
-  let Heading: FC = () => <></>;
-  let Dialog: FC = () => <></>;
+  let Content: ReactNode = <></>;
+  let Heading: ReactNode = <></>;
+  let Dialog: ReactNode = <></>;
 
 
   if (subHeading) {
-    Heading = () => (
+    Heading = 
       <Typography
         component='p'
         fontSize={20}
@@ -95,13 +93,13 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       >
         {subHeading}
       </Typography>
-    )
+
   }
 
   // Switch block depending on content type
   switch (type) {
     case 'text':
-      Content = () => (value.length > 0 ?
+      Content = (value.length > 0 ?
         <Typography
           variant='body1'
         >
@@ -110,7 +108,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         :
         <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty text block&gt;</Typography>
       )
-      Dialog = () => (
+      Dialog = 
         <TextBlockDialog
           setIsDialogOpen={setIsDialogOpen}
           isDialogOpen={isDialogOpen}
@@ -118,10 +116,10 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           blockIndex={blockIndex}
           initialValue={value[0]}
         />
-      )
+
       break;
     case 'quote':
-      Content = () => (value.length > 0 ?
+      Content = value.length > 0 ?
         <Typography
           component='p'
           fontSize={20}
@@ -132,20 +130,19 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         </Typography>
         :
         <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty quote block&gt;</Typography>
-      )
       break;
     case 'gallery':
       // Only render gallery if more than one image.
       if (value.length === 0) {
-        Content = () => (
+        Content = 
           <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty gallery block&gt;</Typography>
-        )
+
       } else if (value.length === 1) {
-        Content = () => (<Image url={value[0]} />)
+        Content = <Image url={value[0]} />
       } else {
-        Content = () => (<MemoizedImageCarousel urls={value} />);
+        Content = <MemoizedImageCarousel urls={value} />
       }
-      Dialog = () => (
+      Dialog = 
         <GalleryBlockDialog
           setIsDialogOpen={setIsDialogOpen}
           isDialogOpen={isDialogOpen}
@@ -153,15 +150,15 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           blockIndex={blockIndex}
           initialUrls={value}
         />
-      )
+
       break;
     case 'video':
-      Content = () => (value.length > 0 ?
+      Content = value.length > 0 ?
         <VideoPlayer url={value[0]} />
         :
         <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty video block&gt;</Typography>
-      )
-      Dialog = () => (
+
+      Dialog = 
         <VideoBlockDialog
           setIsDialogOpen={setIsDialogOpen}
           isDialogOpen={isDialogOpen}
@@ -169,14 +166,14 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           blockIndex={blockIndex}
           initialValue={value[0]}
         />
-      )
+
       break;
   }
 
   return (
     <>
       {/* Dialog for editing content */}
-      <Dialog />
+      {Dialog}
 
       {/* Dialog for adding new content */}
       {isAddDialogOpen &&
@@ -209,8 +206,8 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           >
             {/* Content and heading */}
             <Stack width={'100%'}>
-              {Heading({})}
-              {Content({})}
+              {Heading}
+              {Content}
             </Stack>
 
             {/* Edit and delete buttons */}
@@ -232,6 +229,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
                 <EditButton
                   sx={{
+                    display: tabIndex === 0 ? 'none' : 'block',
                     visibility: isHovering ? 'visible' : 'hidden',
                     '&:hover': {
                       backgroundColor: theme.customColors.DividerGrey

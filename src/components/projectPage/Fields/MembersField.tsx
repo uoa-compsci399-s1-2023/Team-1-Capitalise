@@ -75,33 +75,35 @@ export default function MembersField() {
         Members ({members.length}):
       </Typography>
 
+      <Box pl={1}>
+        {members.map((m, i) => (
+          <TeamMember
+            key={i}
+            name={m.name}
+            avatar={m.profilePicture}
+            userId={m._id}
+            isDeletable={auth.isAllowed(['admin'], project.members)}
+            onDelete={() => handleDelete(m)}
+          />
+        ))}
+        {auth.isAllowed(['admin'], project.members) &&
+          <Button
+            color='editBtnGrey'
+            onClick={handleOpenDialog}
+            fullWidth
+            sx={{
+              visibility: isHover ? 'visible' : 'hidden',
+              ':hover': {
+                backgroundColor: theme.customColors.DividerGrey
+              }
+            }}
+          >
+            <AddIcon />
+          </Button>
+        }
+      </Box>
 
-      {members.map((m, i) => (
-        <TeamMember
-          key={i}
-          name={m.name}
-          avatar={m.profilePicture}
-          userId={m._id}
-          isDeletable={auth.isAllowed(['admin'], project.members)}
-          onDelete={() => handleDelete(m)}
-        />
-      ))}
 
-      {auth.isAllowed(['admin'], project.members) &&
-        < Button
-          color='editBtnGrey'
-          onClick={handleOpenDialog}
-          fullWidth
-          sx={{
-            visibility: isHover ? 'visible' : 'hidden',
-            ':hover': {
-              backgroundColor: theme.customColors.DividerGrey
-            }
-          }}
-        >
-          <AddIcon />
-        </Button>
-      }
 
     </Box >
   )

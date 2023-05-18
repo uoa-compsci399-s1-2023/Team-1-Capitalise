@@ -48,10 +48,10 @@ export default function AdminDeleteButton() {
         variant="outlined"
         startIcon={<DeleteOutlineIcon />}
         onClick={() => adminDeleteProject()}
-        size="small"
+        size="medium"
         color="error"
       >
-        Delete project
+        Delete Project
       </Button>
       :
       null

@@ -12,22 +12,13 @@ interface EditButtonProps {
   fontSize: "small" | "inherit" | "large" | "medium"
 }
 
+
 export default function EditButton({ clickHandler, isShow, fontSize }: EditButtonProps) {
 
   const theme = useTheme();
   const { project, setProject } = useContext(ProjectContext);
   const auth = useAuth();
 
-  const EditButton = styled(Button)({
-    height: "100%",
-    paddingLeft: '0',
-    paddingRight: '0',
-    minWidth: '64px',
-    marginLeft: '5px',
-    ':hover': {
-      backgroundColor: theme.customColors.DividerGrey
-    }
-  });
 
   // Fetch latest project. 
   // If isBeingEdit set to true then user can't edit.
@@ -60,13 +51,23 @@ export default function EditButton({ clickHandler, isShow, fontSize }: EditButto
 
   return (
     <>
-      <EditButton
-        sx={{ visibility: isShow ? 'visible' : 'hidden' }}
+      <Button
+        sx={{
+          visibility: isShow ? 'visible' : 'hidden',
+          height: "100%",
+          paddingLeft: '0',
+          paddingRight: '0',
+          minWidth: '64px',
+          marginLeft: '5px',
+          ':hover': {
+            backgroundColor: theme.customColors.DividerGrey
+          }
+        }}
         onClick={handleClick}
         color='editBtnGrey'
       >
         <EditIcon fontSize={fontSize} />
-      </EditButton>
+      </Button>
     </>
   )
 }

@@ -77,7 +77,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
       open={isDialogOpen}
       onClose={handleClose}
       fullWidth
-      maxWidth='lg'
+      maxWidth='md'
       PaperProps= {{sx: {p: 2}}}
     >
 

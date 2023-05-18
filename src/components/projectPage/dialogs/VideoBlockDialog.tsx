@@ -30,13 +30,13 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
 
   const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
-    // const regexp = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})/
-    // if (!value.match(regexp)) {
-    //   setValueError('Please enter a valid youtube link')
-    // } else {
-    //   setValueError('')
-    // }
-    setValue(e.target.value);
+    const regexp = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})/
+    if (!value.match(regexp)) {
+      setValueError('Please enter a valid Youtube link')
+    } else {
+      setValueError('')
+    }
+    setValue(value);
   }
 
   const handleSubHeadingChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -74,10 +74,11 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
 
   return (
     <Dialog
+      // keepMounted
       open={isDialogOpen}
       onClose={handleClose}
       fullWidth
-      maxWidth='lg'
+      maxWidth='md'
       PaperProps= {{sx: {p: 2}}}
     >
 
@@ -85,12 +86,11 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
       <DialogContent
       >
         <TextField
-          id='block-heading-edit'
           hiddenLabel
           placeholder='Enter sub-heading...'
           variant='outlined'
           error={!!headingError}
-          helperText={headingError}
+          helperText={headingError ? headingError : ' '}
           value={subHeading}
           onChange={handleSubHeadingChange}
           onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}} // Save if enter pressed
@@ -103,11 +103,10 @@ export default function VideoBlockDialog({ tabIndex, blockIndex, isDialogOpen, s
       <DialogContent>
 
         <TextField
-          id='block-content-edit'
           hiddenLabel
           variant='outlined'
           error={!!valueError}
-          helperText={valueError}
+          helperText={valueError ? valueError : " "}
           value={value}
           onChange={handleValueChange}
           onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}}
