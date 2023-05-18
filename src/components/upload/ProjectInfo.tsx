@@ -18,7 +18,7 @@ import {
   SelectChangeEvent,
   styled,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getSemesters } from "../../api/getSemesters";
 import { TSemester } from "../../model/TSemester";
 import { getCategories } from "../../api/getCategories";
@@ -36,12 +36,16 @@ interface TProjectInfo {
 
 export default function ProjectInfoForm(
   {projectInfoToUpload, 
+  handleNext,
   handleBack, 
   projectInformation,
 
 
   }: any,
 ) {
+  
+ 
+  
     //API Fetches for Semester and Category lists 
   // Map the semesters to the MenuItems.
   const [semesterList, setSemesterList] = useState<JSX.Element[]>([]);
@@ -75,9 +79,12 @@ export default function ProjectInfoForm(
 
   
   //Project Name State
+  const projectNA = useRef('');
+  
   const [projectNameErrorText, setProjectNameErrorText] = useState('');
   
   //Project Description State 
+  const projectDA = useRef('');
   const [projectDescErrorText, setProjectDescErrorText] = useState('');
   
   //Semester States
@@ -93,7 +100,12 @@ export default function ProjectInfoForm(
   const [selectedTags, setSelectedTags] = useState(projectInformation.tags);
 
   const [tagErrorText, setTagErrorText] = useState('');
-  
+  if(projectInformation.projN) {
+    projectNA.current = projectInformation.projN;
+  }
+  if(projectInformation.projectDescription) {
+    projectDA.current = projectInformation.projectDescription;
+  }
   
   const validateProjectName= (projectN: any) => { 
     //Project Name Validation 
@@ -181,14 +193,26 @@ export default function ProjectInfoForm(
     event.preventDefault();
     setSemester(event.target.value);
   };
+  
+  const handleNameChange = (event: any) => {
+    event.preventDefault();
+    projectNA.current = (event.target.value);
+  }
+  const handleDescChange = (event: any) => {
+    event.preventDefault();
+    projectDA.current = (event.target.value);
+  }
+  
   //Submitting data on Next press to the main Upload parent component to store.
-  const handleNext = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleProjectUpload = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const projectN = data.get("projectName") as string;
+    projectNA.current = projectN;
     const sem = semester;
     const cat = category;
     const projDesc = data.get("projectDesc") as string;
+    projectDA.current = projDesc;
     //Validation Checks on correct data.
     const okProjectName = validateProjectName(projectN);
     const okProjectSem = validateProjectSemester(sem);
@@ -207,16 +231,30 @@ export default function ProjectInfoForm(
       //console.log("Info sent from ProjectInfo:", infoSend);
       
       projectInfoToUpload(infoSend);
+      handleNext();
       
     }
   };
+  const handleGoBack = () => {
+  
+    const infoHold: TProjectInfo = {
+      projN: projectNA.current,
+      categoryN: category,
+      semesterN: semester,
+      tags: selectedTags,
+      projectDescription: projectDA.current,
+    };
+    
+    projectInfoToUpload(infoHold);
+    console.log(infoHold, 'hold info')
+    handleBack();}
 
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
         1. Project Details
       </Typography>
-      <Box component="form" noValidate onSubmit={handleNext}>
+      <Box component="form" noValidate onSubmit={handleProjectUpload}>
         <Grid container spacing={2}>
           {/*Semester Selector*/}
           <Grid item xs={4}>
@@ -270,7 +308,7 @@ export default function ProjectInfoForm(
               label="Project Name"
               defaultValue={projectInformation.projN? projectInformation.projN : ''}
               fullWidth
-        
+              onChange={handleNameChange}
               error={!!projectNameErrorText}
               helperText={projectNameErrorText ? projectNameErrorText : ''}
               variant="outlined"
@@ -321,7 +359,7 @@ export default function ProjectInfoForm(
               rows={10}
               error={!!projectDescErrorText}
               helperText={projectDescErrorText? projectDescErrorText : 'Enter a short description about your project'}
-             
+              onChange={handleDescChange}
             />
           </Grid>
         </Grid>
@@ -330,7 +368,7 @@ export default function ProjectInfoForm(
             type="button"
             variant="outlined"
             sx={{ mt: 3, ml: 1 }}
-            onClick={() => handleBack()}
+            onClick={handleGoBack}
           >
             Back
           </Button>

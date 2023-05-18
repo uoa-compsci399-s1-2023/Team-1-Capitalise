@@ -141,8 +141,6 @@ export default function Upload() {
     // stores Project Info into Project State
     setProjectInfo(projectInfoData);
 
-    // navigates to next page
-    handleNext();
   };
   const projectFileStore = (banner:any, images:any, thumbnail: any, projectLinks:any) => {
     // stores Project Info into Project State
@@ -252,6 +250,7 @@ export default function Upload() {
         return (
           <ProjectInfoForm
             projectInfoToUpload={projectInfoToUpload}
+            handleNext={handleNext}
             handleBack={handleBack}
             projectInformation={projectInfo}
           />
