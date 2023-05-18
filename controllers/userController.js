@@ -449,7 +449,8 @@ const submitResetPass = async (req, res) => {
           },
         })
           .then((response) => response.json())
-          .then((json) => {alert(json.success)} );
+          .then((json) => {
+            if (json.success) {alert(json.success)} else {alert(json.fail)}});
       }
     </script>
   </body>
@@ -492,7 +493,9 @@ const resetPasswordForm = async (req, res) => {
           },
         })
           .then((response) => response.json())
-          .then((json) => {alert(json.success)} );
+          .then((json) => {
+            if (json.success) {alert(json.success)} else {alert(json.fail)}});
+      } );
 
       }
     </script>
