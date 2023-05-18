@@ -44,7 +44,7 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
     setMembersToDelete([]);
     setSelectedOption(null);
     setOptions([])
-    setInputValue('null')
+    setInputValue('')
   }, [isDialogOpen])
 
   // Adds selected user to current members list

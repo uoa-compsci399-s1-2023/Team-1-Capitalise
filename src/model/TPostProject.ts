@@ -15,6 +15,6 @@ export type TProjectPost = {
     value: string
   }[]
   content?: TProject['content']
-  badges?: TProject['badges']['value']
+  badges?: TProject['badges']['value'] | null
   tags?: TProject['badges']['value'][] // Max 20 characters
 }

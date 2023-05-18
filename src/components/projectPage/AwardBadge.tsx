@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Typography, Stack, useTheme } from '@mui/material'
-import topExcellence from '../../assets/topExcellence.svg'
-import peoplesChoice from '../..assets/peoplesChoice.svg'
-import communityImpact from '../..assets/communityImpact.svg'
+import { Typography, Stack, useTheme, Box, Button, Tooltip } from '@mui/material'
 import { TParameter } from '../../model/TParameter'
-import { getBadges } from '../../api/getBadges'
-
+import { getBadgeById } from '../../api/getBadges'
+import EditButton from './EditButton'
+import EditAwardDialog from './dialogs/EditAwardDialog'
 
 
 interface AwardBadgeProps {
@@ -16,44 +14,63 @@ interface AwardBadgeProps {
 export default function AwardBadge({ badgeId }: AwardBadgeProps) {
 
   const [badge, setBadge] = useState<TParameter | null>(null);
+  const [isHover, setIsHover] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const theme = useTheme();
-  let color;
 
   useEffect(() => {
-    getBadges().then(resp => {
-      if (resp.ok) {
-        resp.json().then(data => setBadge(data));
-      } else {
-        resp.json().then(err => console.log(err));
-      }
-    })
+    getBadgeById(badgeId)
+      .then(badge => {
+        if (badge) {
+          setBadge(badge);
+        }
+      })
   }, [badgeId])
 
 
   return (
     badge ?
-      <Stack width={'100%'} >
-        <img
-          src={badge.image}
-          width={100}
-          style={{ margin: '0 auto' }}
+      <Stack
+        flexDirection={'row'}
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+        width={'100%'}
+        justifyContent={'center'}
+        position={'relative'}
+      >
+        <EditAwardDialog 
+          isOpen={isDialogOpen}
+          setIsOpen={setIsDialogOpen}
         />
-        <Typography
-          mt={2}
-          textAlign={'center'}
-          color={color}
-        >
-          {badge.value}
-        </Typography>
-        <span
-          style={{
-            textAlign: 'center',
-            color: badge.gradient ? badge.gradient[0] : 'black',
-            width: '100%'
-          }}
-        >
-          {badge.value}
-        </span>
+        <Stack my={2} flex={1}>
+          <img
+            src={badge.image}
+            width={'80'}
+            style={{ margin: '0 auto' }}
+          />
+          <Typography
+            mt={2}
+            textAlign={'center'}
+            sx={{
+              color: badge.gradient ? badge.gradient[0] : 'black'
+            }}
+          >
+            {badge.value}
+          </Typography>
+        </Stack>
+        <Tooltip title="Edit Award">          
+          <Button
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%'
+            }}
+            color='editBtnGrey'
+            onClick={() => setIsDialogOpen(true)}
+          />
+        </Tooltip>
       </Stack>
       :
       null
