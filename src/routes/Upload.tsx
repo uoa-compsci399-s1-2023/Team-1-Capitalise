@@ -25,6 +25,36 @@ import { postTab } from "../api/postTab";
 import { addGallery } from "../api/addGallery";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+const options = [
+  {
+    value: 'gitHub',
+    type: 'github',
+    label: 'GitHub',
+  },
+  {
+    value: 'codePen',
+    type: 'codepen',
+    label: 'CodePen',
+  },
+  {
+    value: 'notion',
+    type: 'notion',
+    label: 'Notion',
+  },
+  {
+    value: 'codesandbox',
+    type: 'codesandbox',
+    label: 'CodeSandbox',
+  },
+  {
+    value: 'kaggle',
+    type: 'kaggle',
+    label: 'Kaggle',
+  },
+  { value: 'deployedSite',
+    type: 'deployedSite', 
+    label: 'Deployed Site'},
+];
 
 interface TProjectInfo {
   projN: string;
@@ -64,6 +94,7 @@ export default function Upload() {
 
   // array of Project attributes - Project Name, Project Semester, Project Category, Project Description
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>(infoHold);
+  const [projectLinkTemp, setProjectLinkTemp] = useState(options.map((option) => ({ value: '', type: option.type, label: option.label })));
   const [projectLink, setProjectLink] = useState([]);
   const [projectID, setProjectID] = useState('');
   let bannerInfo = useRef<File | undefined>();
@@ -125,6 +156,7 @@ export default function Upload() {
     if ( thumbnail != undefined ) {
       thumbnailInfo.current = thumbnail;
     }
+    setProjectLink(projectLinks);
 
   
   };
@@ -232,7 +264,7 @@ export default function Upload() {
             projectFileToUpload={projectFileToUpload}
             projectFileStore={projectFileStore}
             handleBack={handleBack}
-            projectResources={[bannerInfo, imagesInfo, thumbnailInfo, projectLink]}
+            projectResources={[bannerInfo, imagesInfo, thumbnailInfo, projectLinkTemp]}
             handleUpload={handleUpload}
           />
         );

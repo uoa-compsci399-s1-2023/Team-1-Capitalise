@@ -24,36 +24,7 @@ import ProjectLinksForm from "./ProjectLinks";
 const projectTags = [{ tag: "Mobile" }];
 
 
-const options = [
-  {
-    value: 'gitHub',
-    type: 'github',
-    label: 'GitHub',
-  },
-  {
-    value: 'codePen',
-    type: 'codepen',
-    label: 'CodePen',
-  },
-  {
-    value: 'notion',
-    type: 'notion',
-    label: 'Notion',
-  },
-  {
-    value: 'codesandbox',
-    type: 'codesandbox',
-    label: 'CodeSandbox',
-  },
-  {
-    value: 'kaggle',
-    type: 'kaggle',
-    label: 'Kaggle',
-  },
-  { value: 'deployedSite',
-    type: 'deployedSite', 
-    label: 'Deployed Site'},
-];
+
 const FileInputField = styled(TextField)({
   minWidth: 200,
   maxWidth: 450,
@@ -65,6 +36,36 @@ export default function ProjectUploadFileForm(
     handleBack, 
     projectResources, 
     handleUpload}: any) {
+      const options = [
+        {
+          value: 'gitHub',
+          type: 'github',
+          label: 'GitHub',
+        },
+        {
+          value: 'codePen',
+          type: 'codepen',
+          label: 'CodePen',
+        },
+        {
+          value: 'notion',
+          type: 'notion',
+          label: 'Notion',
+        },
+        {
+          value: 'codesandbox',
+          type: 'codesandbox',
+          label: 'CodeSandbox',
+        },
+        {
+          value: 'kaggle',
+          type: 'kaggle',
+          label: 'Kaggle',
+        },
+        { value: 'deployedSite',
+          type: 'deployedSite', 
+          label: 'Deployed Site'},
+      ];
     const [githubLinkError, setgithubLinkError] = useState('');
     const [codepenLinkError, setcodepenLinkError] = useState('');
     const [codesandboxLinkError, setcodesandboxLinkError] = useState('');
@@ -89,8 +90,7 @@ export default function ProjectUploadFileForm(
   const [projectLinks, setProjectLinks] = useState(
     options.map((option) => ({ value: '', type: option.type, label: option.label }))
   );
-  let projectLinksR = useRef(options.map((option) => ({ value: '', type: option.type, label: option.label }))
-  );
+
 
   if(bannerR.current == undefined) {
       bannerR.current = projectResources[0].current
@@ -104,17 +104,23 @@ export default function ProjectUploadFileForm(
       thumbnailR.current = projectResources[2].current;
 
   }
-  if(projectResources[3]) {
+  if(thumbnailR.current == undefined) {
+    thumbnailR.current = projectResources[2].current;
 
-      projectLinksR.current = projectResources[3].current;
+  }
+  if(projectResources[3] != projectLinks) {
+
+    setProjectLinks(projectResources[3]);
   }
  
   
 
   const handleLinkChange = (event: any, index: any) => {
-    const newSelectedOptions = [...projectLinksR.current];
+    const newSelectedOptions = [...projectLinks];
     newSelectedOptions[index].value = event.target.value;
-    projectLinksR.current = (newSelectedOptions);
+    setProjectLinks(newSelectedOptions);
+  
+    
   };
 
   const handleBannerFile = (event: any) => {
@@ -340,7 +346,6 @@ export default function ProjectUploadFileForm(
                 key={option.type}
                 fullWidth
                 label={option.label}
-                defaultValue={'yo'}
                 value={option.value}
                 error={eval(`${option.type}` + `LinkError`)}
                 helperText={ eval(`${option.type}` + `LinkError`) ? eval(`${option.type}` + `LinkError`)  : ''}
