@@ -50,7 +50,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
   // Adds selected tag to current tags list
   useEffect(() => {
     if (selectedOption) {
-      console.log(selectedOption)
       // Set the currently displayed tags
       currTags.push(selectedOption.tag)
       setCurrTags(currTags);
@@ -66,8 +65,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
       }
       setSelectedOption(null);
       setInputValue('')
-      console.log(tagsToCreate)
-      console.log(tagsToAdd)
     }
   }, [selectedOption])
 
@@ -109,78 +106,91 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
     //...the lambda endpoints are alot slower.
     const patchTags = async () => {
       let latestProject = project
-      const tagsToPatch: TTag[] = JSON.parse(JSON.stringify(project))
-      const promises: Promise<Response>[] = []
+      const tagsToPatch: TTag[] = JSON.parse(JSON.stringify(project.tags))
 
       // Remove tags
       tagsToRemove.forEach((tag) => {
-        // const i = tagsToPatch.findIndex((t) => t._id === tag._id)
-        // tagsToPatch.splice(i);
-        // const resp = removeTagFromProject()
-        promises.push(removeTagFromProject(
-          project._id, 
-          tag.name, 
-          auth.getToken() as string
-        ))
+        const i = tagsToPatch.findIndex((t) => t._id === tag._id)
+        tagsToPatch.splice(i, 1);
+        console.log(`removing ${tag.name}`)
+        // console.log(tagsToPatch);
+        // promises.push(removeTagFromProject(
+        //   project._id, 
+        //   tag.name, 
+        //   auth.getToken() as string
+        // ))
       })
 
       // Add tags
       tagsToAdd.forEach((tag) => {
-        // tagsToPatch.push(tag);
-        promises.push(addTagToProject(
-          project._id, 
-          tag.name, 
-          auth.getToken() as string
-        ))
+        tagsToPatch.push(tag);
+        // console.log(tagsToPatch);
+        console.log(`adding ${tag.name}`)
+
+        // promises.push(addTagToProject(
+        //   project._id, 
+        //   tag.name, 
+        //   auth.getToken() as string
+        // ))
       })
 
-      // // Patch changes first
-      // if (tagsToPatch.length > 0) {
-      //   const resp = await patchProject(
-      //     project._id,
-      //     { "tags": tagsToPatch },
-      //     auth.getToken() as string
-      //   )
-      //   if (resp.ok) {
-      //     latestProject = await resp.json()
-      //   } else {
-      //     console.log(await resp.text())
-      //   }
-      // }
+      // Patch changes first
+      if (tagsToPatch.length > 0) {
+        console.log(tagsToPatch)
+        const resp = await patchProject(
+          project._id,
+          { "tags": tagsToPatch.map(tag => tag.name) },
+          auth.getToken() as string
+        )
+        if (resp.ok) {
+          latestProject = await resp.json()
+        } else {
+          console.log(await resp.text())
+        }
+      }
 
       // Now create new tags.
-      // for (let i = 0; i < tagsToCreate.length; i++) {
-      //   const resp = await createNewTag(
-      //     project._id,
-      //     tagsToCreate[i].name,
-      //     auth.getToken() as string
-      //   );
-      //   if (resp.ok) {
-      //     latestProject = await resp.json();
-      //   } else {
-      //     console.log(await resp.text());
-      //   }
-      // }
-
-      tagsToCreate.forEach(t => {
-        promises.push(createNewTag(
+      for (let i = 0; i < tagsToCreate.length; i++) {
+        console.log('running')
+        const resp = await createNewTag(
           project._id,
-          t.name,
+          tagsToCreate[i].name,
           auth.getToken() as string
-        ))
-      })
+        );
+        if (resp.ok) {
+          latestProject = await resp.json();
+        } else {
+          console.log(await resp.text());
+        }
+      }
+      
+      setProject(latestProject)
+      setIsDialogOpen(false);
+      setIsLoading(false);
 
-      // After all changes are made fetch the latest project.
-      Promise.all(promises)
-        .then(() => getProject(project._id))
-        .then((proj) => {
-          if (proj) {
-            setProject(proj);
-          }
-        }).finally(() => {
-          setIsLoading(false);
-          setIsDialogOpen(false);
-        })
+      // setProjectChanges()
+
+      // patchProject()
+
+      // tagsToCreate.forEach(t => {
+      //   promises.push(createNewTag(
+      //     project._id,
+      //     t.name,
+      //     auth.getToken() as string
+      //   ))
+      // })
+
+      // // After all changes are made fetch the latest project.
+      // Promise.all(promises)
+      //   .then(() => getProject(project._id))
+      //   .then((proj) => {
+      //     if (proj) {
+      //       setProject(proj);
+      //     }
+      //   }).finally(() => {
+      //     setIsLoading(false);
+      //     setIsDialogOpen(false);
+      //   })
     }
 
     patchTags();
