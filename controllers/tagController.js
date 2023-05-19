@@ -105,18 +105,20 @@ const postNewTagAddToProject = async (req, res) => {
     projects: [],
     mentions: 0,
   });
+
   newTag.projects.push({ _id: projectId });
   newTag.mentions += 1;
+  await Project.findByIdAndUpdate(projectId, { $push: { tags: { _id: newTag._id } } })
 
-  const project = await Project.findByIdAndUpdate(projectId, { $push: { tags: { _id: newTag._id } } }, { new: true })
+  
+  newTag = await newTag.save();
+  const project = await Project.findById(projectId)
   .populate("members", "_id, name")
   .populate("semester", "value -_id")
   .populate("category", "value -_id")
   .populate("badges", "value -_id")
   .populate("tags", "name -_id")
-
-
-  newTag = await newTag.save();
+    
   return res.status(200).send(project);
 };
 
