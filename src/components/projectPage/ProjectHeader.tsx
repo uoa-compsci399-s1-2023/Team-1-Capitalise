@@ -16,8 +16,7 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
 
   const theme = useTheme();
   const auth = useAuth();
-  const { project, setProject } = useContext(ProjectContext);
-  const isScreenSmall = useMediaQuery(theme.breakpoints.down("md"));
+  const { project, checkIsEdit } = useContext(ProjectContext);
 
   // Name states
   const [isHoverName, setIsHoverName] = useState(false);
@@ -85,8 +84,7 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
             >
               {name}
             </Typography>
-            {!isScreenSmall &&
-              auth.isAllowed(['admin'], project.members) &&
+            {checkIsEdit() &&
               <EditButton
                 clickHandler={handleNameEdit}
                 isShow={isHoverName}

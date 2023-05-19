@@ -8,7 +8,7 @@ import LinksDialog from '../dialogs/LinksDialog';
 
 export default function LinksField() {
 
-  const { project, } = useContext(ProjectContext);
+  const { project, checkIsEdit } = useContext(ProjectContext);
   const auth = useAuth();
   const [isHovering, setIsHovering] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,7 +38,7 @@ export default function LinksField() {
 
       <Stack flexDirection={'row'} alignItems={'center'} mb={2}>
         <Typography fontWeight={400} width={'50px'} flex={1} variant="body1" >Links:</Typography>
-        {auth.isAllowed(['admin'], project.members) &&
+        {checkIsEdit() &&
           <EditButton clickHandler={handleDialogOpen} isShow={isHovering} fontSize='small' />
         }
       </Stack>

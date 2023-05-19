@@ -38,9 +38,8 @@ const AddButton = styled(Button)({
 export default function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: ContentBlockProps) {
 
   const theme = useTheme();
-  const auth = useAuth();
   const [isHovering, setIsHovering] = useState(false);
-  const { project, setProjectChanges, setSelectedTab } = useContext(ProjectContext);
+  const { project, setProjectChanges, setSelectedTab, checkIsEdit } = useContext(ProjectContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
@@ -48,7 +47,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (auth.isAllowed(['admin'], project.members)) {
+    if (checkIsEdit()) {
       setIsHovering(true);
       // Change border to grey
       if (!isSmall && contentStackRef.current) {

@@ -14,7 +14,7 @@ function InfoField({label, value}: {label:string, value:number}) {
 export default function LikeBtn() {
 
   const auth = useAuth();
-  const { project, setProject } = useContext(ProjectContext);
+  const { project, setProject, checkIsEdit } = useContext(ProjectContext);
   const theme = useTheme();
 
   // const InfoBoxStyle = {
@@ -41,10 +41,7 @@ export default function LikeBtn() {
 
   return (
 
-    auth.user && (
-      auth.isAllowed(undefined, project.members)
-      || auth.isAllowed(['admin'])
-    ) ?
+  checkIsEdit() ?
 
       // If member or admin, show likes, views, and comments info
 

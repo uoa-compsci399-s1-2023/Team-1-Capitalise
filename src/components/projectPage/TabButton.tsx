@@ -21,7 +21,7 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
 
   const [isHover, setIsHover] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { project } = useContext(ProjectContext);
+  const { project, checkIsEdit } = useContext(ProjectContext);
   const auth = useAuth();
   const theme = useTheme();
 
@@ -60,7 +60,7 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
 
         <Button
           sx={{
-            display: auth.isAllowed(['admin'], project.members) ? 'block' : 'none',
+            display: checkIsEdit() ? 'block' : 'none',
             visibility: (isHover && index !== 0) ? 'visible' : 'hidden',
             height: "100%",
             minWidth: '0',

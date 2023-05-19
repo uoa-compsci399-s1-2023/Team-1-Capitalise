@@ -14,7 +14,7 @@ import TeamMembersDialog from '../dialogs/TeamMembersDialog';
 export default function MembersField() {
 
   const [isHover, setIsHover] = useState(false);
-  const { project, setProject } = useContext(ProjectContext);
+  const { project, checkIsEdit } = useContext(ProjectContext);
   const [members, setMembers] = useState<TUser[]>([]);
   const [userToDelete, setUserToDelete] = useState<TUser | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -82,11 +82,11 @@ export default function MembersField() {
             name={m.name}
             avatar={m.profilePicture}
             userId={m._id}
-            isDeletable={auth.isAllowed(['admin'], project.members)}
+            isDeletable={checkIsEdit()}
             onDelete={() => handleDelete(m)}
           />
         ))}
-        {auth.isAllowed(['admin'], project.members) &&
+        {checkIsEdit() &&
           <Button
             color='editBtnGrey'
             onClick={handleOpenDialog}
