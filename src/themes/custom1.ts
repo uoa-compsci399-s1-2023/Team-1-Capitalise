@@ -68,6 +68,12 @@ declare module "@mui/material/CircularProgress" {
   }
 }
 
+declare module "@mui/material/Chip" {
+  interface ChipPropsColorOverrides {
+    neutral: true
+  }
+}
+
 let theme = createTheme({
   breakpoints: {
     values: {

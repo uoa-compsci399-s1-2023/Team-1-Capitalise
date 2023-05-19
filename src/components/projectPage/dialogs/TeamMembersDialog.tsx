@@ -50,9 +50,7 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
   // Adds selected user to current members list
   useEffect(() => {
     if (selectedOption) {
-      console.log(currMembers)
-      currMembers.indexOf(selectedOption.user)
-      console.log(currMembers.indexOf(selectedOption.user))
+
       let members = [...currMembers]
       members.push(selectedOption.user)
       setCurrMembers(members);

@@ -21,8 +21,6 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
   const auth = useAuth();
   const theme = useTheme();
 
-  console.log(badgeId);
-
   useEffect(() => {
     if (badgeId) {
       getBadgeById(badgeId)

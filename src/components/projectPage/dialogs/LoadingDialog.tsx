@@ -9,7 +9,7 @@ export default function LoadingDialog({ isOpen }: LoadingDialogProps) {
   return (
     <Dialog open={isOpen}>
       <DialogContent>
-        <Typography variant="body1">Hang tight, this takes a few seconds...</Typography>
+        <Typography variant="body1">Hang tight, this might take a few seconds...</Typography>
         <Stack
           alignItems={'center'}
           width={'100%'}

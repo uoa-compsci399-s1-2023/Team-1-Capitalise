@@ -6,12 +6,12 @@ import TeamnameField from './Fields/TeamnameField'
 import CategoryField from './Fields/CategoryField'
 import SemesterField from './Fields/SemesterField'
 import MembersField from './Fields/MembersField'
-import ExternalLinkBtn from './ExternalLinkBtn'
+import LinksField from './Fields/LinksField'
+import TagsField from './Fields/TagsField'
 import AwardBadge from './AwardBadge'
 import { ProjectContext } from '../../routes/ProjectPage'
-import LinksField from './Fields/LinksField'
 
-
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 
 export default function ProjectDetails() {
@@ -30,7 +30,9 @@ export default function ProjectDetails() {
       sx={{ display: { xs: 'none', md: 'flex' }, position: 'relative' }}
     >
 
-      {<AwardBadge badgeId={project.badges?._id} />}
+      <AwardBadge badgeId={project.badges?._id} />
+
+      <TagsField />
 
       <CategoryField />
       <SemesterField />
@@ -39,12 +41,8 @@ export default function ProjectDetails() {
 
       {/* If there are links to show */}
       {project.links[0] && <LinksField />}
-      
-      <Stack mt={8} flexDirection={'row'} gap={1} flexWrap={'wrap'}>
-        {project.tags.map((tag, i) => (
-          <Chip key={i} size='small' label={tag.name} />
-        ))}
-      </Stack>
+
+
 
     </Stack>
   )

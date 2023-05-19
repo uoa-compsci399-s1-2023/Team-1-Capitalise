@@ -50,7 +50,7 @@ export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTab
       fullWidth
       maxWidth='sm'
     >
-      <DialogTitle>Edit Project Name</DialogTitle>
+      <DialogTitle>Edit Tab Name</DialogTitle>
       <DialogContent>
         <FormControl error={!!error} fullWidth>
           <OutlinedInput
