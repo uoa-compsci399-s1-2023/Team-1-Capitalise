@@ -149,7 +149,9 @@ export default function ProjectInfoForm(
       for (const element of selectedTags) {
         //Check against a blacklist, inappropriate word list.
         if (nw.en.includes(element)) {
-          msgError += element + ' ';   
+          msgError += element + '(blacklisted)' + '';   
+        } else if (element > 50) {
+          msgError += element + '(max char)' + ' ';   
         }
         
       }
@@ -255,7 +257,7 @@ export default function ProjectInfoForm(
       <Box component="form" noValidate onSubmit={handleProjectUpload}>
         <Grid container spacing={2}>
           {/*Semester Selector*/}
-          <Grid item xs={4}>
+          <Grid item xs={12}sm={6} md={5}>
             <FormControl sx={{ minWidth: 120 }} size="small">
               <InputLabel id="demo-select-small-label">Semester</InputLabel>
               <Select
@@ -276,8 +278,8 @@ export default function ProjectInfoForm(
 
           {/*Category Selector*/}
 
-          <Grid item xs={8}>
-            <FormControl sx={{ minWidth: 120 }} size="small">
+          <Grid item xs={12} sm={6} md={5}>
+            <FormControl sx={{ minWidth: 120}} size="small">
               <InputLabel id="demo-select-small-label2">Category</InputLabel>
               <Select
                 labelId="demo-select-small-label2"

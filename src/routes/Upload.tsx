@@ -69,6 +69,7 @@ interface TProjectInfo {
 // different stages of the project upload form.
 const steps = ["Team Details", "Project Details", "Project Files", "Upload"];
 const delay = (ms: number | undefined) => new Promise(res => setTimeout(res, ms));
+const isMobile = window.innerWidth <= 600;
 // set the new project
 
 export default function Upload() {
@@ -86,6 +87,18 @@ export default function Upload() {
       nav("/")
     }
   })
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 600);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   // holds the counter for navigation between pages.
   const [activeStep, setActiveStep] = useState(0);
 
@@ -311,7 +324,8 @@ export default function Upload() {
         <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              {!isMobile ? <StepLabel>{label}</StepLabel> : <StepLabel></StepLabel>}
+          
             </Step>
           ))}
         </Stepper>
