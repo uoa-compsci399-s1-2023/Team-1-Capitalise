@@ -14,6 +14,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../../customHooks/useAuth";
+import { ChromePicker, ColorResult } from "react-color";
 
 import { getCategories } from "../../api/getCategories";
 import { TCategory } from "../../model/TCategory";
@@ -55,7 +56,16 @@ const Dashboard = () => {
   const [newAwardImage, setNewAwardImage] = useState<File | undefined>();
   const [awardImageString, setAwardImageString] = useState("");
 
+  // check if image has been added
+  const [imageAdded, setImageAdded] = useState(false);
+
   const [validImage, setValidImage] = useState(true);
+
+  // set gradient colours
+  const [colour1, setColour1] = useState("#fff");
+  const [colour2, setColour2] = useState("#fff");
+  const [showColourPicker1, setShowColourPicker1] = useState(false);
+  const [showColourPicker2, setShowColourPicker2] = useState(false);
 
   const [heroBanners, setHeroBanners] = useState<string[]>([]);
   const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
@@ -175,19 +185,24 @@ const Dashboard = () => {
     }
   };
 
+  const handleColour1Change = (newColour: ColorResult) => {
+    setColour1(newColour.hex);
+  };
+
+  const handleColour2Change = (newColour: ColorResult) => {
+    setColour2(newColour.hex);
+  };
+
   const handleNewAwardImage = async () => {
     if (typeof newAwardImage !== "undefined") {
-      console.log("newAwardImage:", newAwardImage);
-      console.log("newAwardString:", awardImageString);
-
       let formData = new FormData();
-
       formData.append("award", newAwardImage);
       setLoading(true);
 
       const response = await uploadAwardImage(formData);
       setLoading(false);
       setAwardImageString(response);
+      setImageAdded(true);
     }
   };
 
@@ -477,7 +492,10 @@ const Dashboard = () => {
           </Box>
 
           <Typography paddingTop={5} variant="h6">
-            Add new award image
+            Create a new award
+          </Typography>
+          <Typography paddingTop={5} variant="body1">
+            1) Add new award image
           </Typography>
           <Box
             width={{ xs: "300px", sm: "600px" }}
@@ -517,15 +535,16 @@ const Dashboard = () => {
               </Button>
             </Box>
           </Box>
-          <Typography paddingTop={5} variant="h6">
-            Add new award name
+          <Typography paddingTop={5} variant="body1">
+            2) Add new award name
           </Typography>
           <Box
-            width={{ xs: "300px", sm: "600px" }}
+            width={{ xs: "400px", sm: "505px" }}
             component={"form"}
             display={"flex"}
             alignItems={"center"}
             gap={2}
+            paddingBottom={0}
           >
             <TextField
               label="New award"
@@ -535,13 +554,51 @@ const Dashboard = () => {
               fullWidth
               margin="normal"
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddAward}
-            >
-              Submit
-            </Button>
+          </Box>
+
+          <Typography paddingTop={5} variant="body1">
+            3) Add gradient to new award
+          </Typography>
+          <Box
+            width={{ xs: "500px", sm: "600px" }}
+            component={"form"}
+            display={"flex"}
+            alignItems={"center"}
+            gap={2}
+            paddingBottom={5}
+          >
+            <Stack paddingTop={5}>
+              {showColourPicker1 && (
+                <ChromePicker
+                  color={colour1}
+                  onChange={(updatedColor1) => setColour1(updatedColor1.hex)}
+                />
+              )}
+              <Typography paddingTop={5} paddingLeft={5} variant="body2">
+                Colour 1: {colour1}
+              </Typography>
+            </Stack>
+
+            <Stack paddingLeft={5} paddingTop={5}>
+              <ChromePicker
+                color={colour2}
+                onChange={(updatedColor2) => setColour2(updatedColor2.hex)}
+              />
+
+              <Typography paddingTop={5} paddingLeft={5} variant="body2">
+                Colour 2: {colour2}
+              </Typography>
+            </Stack>
+            <Box paddingLeft={5} paddingTop={25}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!imageAdded}
+                onClick={handleAddAward}
+              >
+                Submit
+              </Button>
+            </Box>
           </Box>
         </Box>
       ),
