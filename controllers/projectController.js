@@ -778,7 +778,7 @@ const searchProjects = async (req, res) => {
     sortQuery = {};
     if (req.query.sortBy) {
       if (
-        ["semester", "category", "name", "awards", "likes", "createdat", "updatedat"].includes(
+        ["semester", "category", "name", "badges", "likes", "createdat", "updatedat"].includes(
           req.query.sortBy.toLowerCase()
         )
       ) {
