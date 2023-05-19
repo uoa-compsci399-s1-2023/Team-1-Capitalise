@@ -112,8 +112,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
       tagsToRemove.forEach((tag) => {
         const i = tagsToPatch.findIndex((t) => t._id === tag._id)
         tagsToPatch.splice(i, 1);
-        console.log(`removing ${tag.name}`)
-        // console.log(tagsToPatch);
         // promises.push(removeTagFromProject(
         //   project._id, 
         //   tag.name, 
@@ -124,8 +122,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
       // Add tags
       tagsToAdd.forEach((tag) => {
         tagsToPatch.push(tag);
-        // console.log(tagsToPatch);
-        console.log(`adding ${tag.name}`)
 
         // promises.push(addTagToProject(
         //   project._id, 
@@ -136,7 +132,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
 
       // Patch changes first
       if (tagsToPatch.length > 0) {
-        console.log(tagsToPatch)
         const resp = await patchProject(
           project._id,
           { "tags": tagsToPatch.map(tag => tag.name) },
