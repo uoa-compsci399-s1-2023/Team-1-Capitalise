@@ -568,12 +568,11 @@ const Dashboard = () => {
             paddingBottom={5}
           >
             <Stack paddingTop={5}>
-              {showColourPicker1 && (
-                <ChromePicker
-                  color={colour1}
-                  onChange={(updatedColor1) => setColour1(updatedColor1.hex)}
-                />
-              )}
+              <ChromePicker
+                color={colour1}
+                onChange={(updatedColor1) => setColour1(updatedColor1.hex)}
+              />
+
               <Typography paddingTop={5} paddingLeft={5} variant="body2">
                 Colour 1: {colour1}
               </Typography>
