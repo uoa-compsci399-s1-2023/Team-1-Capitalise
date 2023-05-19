@@ -21,6 +21,7 @@ const projectSchema = new mongoose.Schema(
     },
     teamname: {
       type: String,
+      default: "",
     },
     blurb: {
       type: String,
