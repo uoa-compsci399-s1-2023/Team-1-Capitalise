@@ -26,7 +26,7 @@ export default function ProjectDetails() {
       style={theme.contentBlock}
       padding={'20px'}
       gap={1}
-      mt={4}
+      mt={0}
       sx={{ display: { xs: 'none', md: 'flex' }, position: 'relative' }}
     >
 

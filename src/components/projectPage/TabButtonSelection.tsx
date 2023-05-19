@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction, useContext, useState } from 'react'
-import { Stack, Button } from '@mui/material'
-import theme from '../../themes/custom1'
+import { Stack, Button, useMediaQuery, useTheme } from '@mui/material'
 import TabButton from './TabButton'
 import { ProjectContext } from '../../routes/ProjectPage'
 import AddIcon from '@mui/icons-material/Add';
@@ -16,6 +15,8 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 
 	const { project, setProjectChanges, checkIsEdit } = useContext(ProjectContext);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const theme = useTheme();
+	const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
 	const handleAddBtnClick = () => {
 		project.content.push({

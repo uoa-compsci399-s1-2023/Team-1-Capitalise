@@ -63,7 +63,7 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
           >
             {badge.value}
           </Typography>
-          {checkIsAdminEdit() &&
+        {checkIsAdminEdit() &&
             // <Tooltip title="Edit Award">
             <Button
               sx={{

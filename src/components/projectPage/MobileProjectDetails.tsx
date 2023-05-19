@@ -10,6 +10,7 @@ import { Box, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles'
 import MemberChip from './Fields/MemberChip';
 import ExternalLinkBtn from './ExternalLinkBtn';
+import AwardBadge from './AwardBadge';
 
 const NoExpandAccordianSummary = styled(AccordionSummary)({
   // Set hover pointer to default
@@ -32,8 +33,31 @@ export default function ProjectDetailsAccordian() {
       sx={{ display: { md: 'none', sm: 'block' } }}
       p={'20px'}
     >
+      {project.badges &&
+        <Accordion expanded={expanded === 'panel1'} >
+          <NoExpandAccordianSummary
+            sx={{
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+            // expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
+            aria-controls="panel1bh-content"
+            id="panel1bh-header"
+          >
+            <Stack>
+              <Typography fontWeight={500} width={'100%'} textAlign={'center'}>
+                Award
+              </Typography>
+              <AwardBadge badgeId={project.badges._id} />
+            </Stack>
+
+          </NoExpandAccordianSummary>
+        </Accordion>
+
+      }
+
       {/* Category */}
-      <Accordion expanded={expanded === 'panel1'} >
+      <Accordion expanded={expanded === 'panel2'} >
         <NoExpandAccordianSummary
           expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
           aria-controls="panel1bh-content"
@@ -47,7 +71,7 @@ export default function ProjectDetailsAccordian() {
       </Accordion>
 
       {/* Semester */}
-      <Accordion expanded={expanded === 'panel2'}>
+      <Accordion expanded={expanded === 'panel3'}>
         <NoExpandAccordianSummary
           expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
           aria-controls="panel2bh-content"
@@ -62,7 +86,7 @@ export default function ProjectDetailsAccordian() {
 
       {/* Links */}
       {project.links.length > 0 &&
-        < Accordion expanded={expanded === 'panel4'}>
+        <Accordion expanded={expanded === 'panel4'}>
           <NoExpandAccordianSummary
             expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
             aria-controls="panel4bh-content"
@@ -83,7 +107,7 @@ export default function ProjectDetailsAccordian() {
       }
 
       {/* Teamname / members */}
-      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+      <Accordion expanded={expanded === 'panel5'} onChange={handleChange('panel5')}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel3bh-content"
