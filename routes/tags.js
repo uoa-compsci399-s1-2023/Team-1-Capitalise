@@ -12,13 +12,12 @@ const {
     addTagToProject,
     deleteTag,
     deleteTagFromProject,
-    getTagByNameOrId
+    getTagByNameOrId,
+    postNewTagAddToProject
 } = require("../controllers/tagController")
 
 //Get all tags in no order
 router.get('/', getAllTags)
-
-
 
 //Search for a tag
 router.get('/search', searchTag)
@@ -31,7 +30,7 @@ router.get('/:tagName', getTagByNameOrId)
 router.post('/:tagName', [auth, graduate], postNewTag)
 
 //Post a new tag which requires a project to have that tag
-router.post('/:tagName/:projectId', [auth, graduate], postNewTag)
+router.post('/:tagName/:projectId', [auth, graduate], postNewTagAddToProject)
 
 //Patch add a tag to a project
 router.patch('/:tagName/:projectId', [auth, graduate], addTagToProject)

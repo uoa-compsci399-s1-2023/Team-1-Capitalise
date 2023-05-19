@@ -58,43 +58,67 @@ const getTagByNameOrId = async(req, res) => {
 }
 
 const postNewTag = async (req, res) => {
-    const { projectId, tagName } = req.params;
-  
-    //Make so tag is exactly
-    let searchQuery = {
-      name: tagName,
-    };
-  
-    const tag = await Tag.findOne(searchQuery);
-    //check if tag exist already
-    if (tag) {
-      return res.status(400).send({ tag: null, msg: 'Tag already exists' });
-    }
-  
-    let newTag = new Tag({
-      name: tagName,
-      projects: [],
-      mentions: 0,
-    });
-  
-    //Check if there is a projectId given
-    if (projectId) {
-      const project = await checkProject(projectId);
-  
-      if (!project) {
-        return res.status(404).send({ project: null, msg: 'No project found' });
-      }
-  
-      newTag.projects.push({ _id: projectId });
-      newTag.mentions += 1;
-  
-      await Project.findByIdAndUpdate(projectId, { $push: { tags: { _id: newTag._id } } });
-    }
-  
-    newTag = await newTag.save();
-    return res.status(200).send(newTag);
+  const {tagName} = req.params;
+
+  //Make so tag is exactly
+  let searchQuery = {
+    name: tagName,
   };
-  
+
+  const tag = await Tag.findOne(searchQuery);
+  //check if tag exist already
+  if (tag) {
+    return res.status(400).send({ tag: null, msg: 'Tag already exists' });
+  }
+
+  let newTag = new Tag({
+    name: tagName,
+    projects: [],
+    mentions: 0,
+  });
+
+  newTag = await newTag.save();
+  return res.status(200).send(newTag);
+};
+
+const postNewTagAddToProject = async (req, res) => {
+  const { projectId, tagName } = req.params;
+
+  //Make so tag is exactly
+  let searchQuery = {
+    name: tagName,
+  };
+
+  const tag = await Tag.findOne(searchQuery);
+  //check if tag exist already
+  if (tag) {
+    return res.status(400).send({ tag: null, msg: 'Tag already exists' });
+  }
+
+  //Check if there is a projectId given
+  if (!(await checkProject(projectId) )) {
+    return res.status(404).send({ project: null, msg: 'No project found' });
+  }
+
+  let newTag = new Tag({
+    name: tagName,
+    projects: [],
+    mentions: 0,
+  });
+  newTag.projects.push({ _id: projectId });
+  newTag.mentions += 1;
+
+  const project = await Project.findByIdAndUpdate(projectId, { $push: { tags: { _id: newTag._id } } }, { new: true })
+  .populate("members", "_id, name")
+  .populate("semester", "value -_id")
+  .populate("category", "value -_id")
+  .populate("badges", "value -_id")
+  .populate("tags", "name -_id")
+
+
+  newTag = await newTag.save();
+  return res.status(200).send(project);
+};
 
 const searchTag = async (req, res) => {
     const nameQuery = req.query.name || "";
@@ -248,4 +272,5 @@ module.exports = {
     deleteTag,
     deleteTagFromProject,
     getTagByNameOrId,
+    postNewTagAddToProject,
 }
