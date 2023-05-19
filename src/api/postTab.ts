@@ -6,7 +6,7 @@ export async function postTab(
   tabData: FormData
 ) {
   const response = await fetch(
-    `${S3_API_URL}/project/${projectId}/${tabName}`,
+    `${S3_API_URL}/api/s3/project/${projectId}/${tabName}`,
     {
       method: "POST",
       body: tabData,
