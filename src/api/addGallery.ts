@@ -6,7 +6,7 @@ export async function addGallery(
   galleryData: FormData
 ) {
   const response = await fetch(
-    `${S3_API_URL}/gallery/${projectId}/${tabName}`,
+    `${S3_API_URL}/api/s3/gallery/${projectId}/${tabName}`,
     {
       method: "POST",
       body: galleryData,
