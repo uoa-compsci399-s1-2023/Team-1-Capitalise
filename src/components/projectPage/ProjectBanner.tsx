@@ -80,7 +80,6 @@ export default function ProjectBanner() {
             width: '100%',
             height: '100%',
             backgroundColor: "rgba(0, 0, 0, 0.05)",
-            // opacity: '20%'
           }}
         >
           <Stack flexDirection={'row'} gap={2}>
@@ -89,7 +88,6 @@ export default function ProjectBanner() {
                 startIcon={<ClearIcon />}
                 color='black'
                 variant='outlined'
-                // disableRipple
                 onClick={() => handleRemoveBanner()}
               >
                 Remove
@@ -98,7 +96,6 @@ export default function ProjectBanner() {
               startIcon={<EditIcon />}
               color='black'
               variant='outlined'
-              // disableRipple
               onClick={() => setIsDialogOpen(true)}
             >
               Edit

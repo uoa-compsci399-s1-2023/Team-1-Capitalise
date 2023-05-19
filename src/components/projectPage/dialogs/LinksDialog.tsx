@@ -94,7 +94,7 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
       open={isDialogOpen}
       onClose={handleClose}
       fullWidth
-      maxWidth='lg'
+      maxWidth='md'
       PaperProps={{ sx: { p: 2 } }}
     >
 

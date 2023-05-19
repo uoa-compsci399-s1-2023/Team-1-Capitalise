@@ -6,6 +6,9 @@ import LikeBtn from './LikeBtn';
 import EditButton from './EditButton';
 import EditNameDialog from './dialogs/EditNameDialog';
 import AdminDeleteBtn from './AdminDeleteBtn';
+import ThumbnailField from './Fields/ThumbnailField';
+
+
 
 interface ProjectHeaderProps {
   name: string
@@ -67,10 +70,15 @@ export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }
         setIsOpen={setIsNameDialogOpen}
         initialValue={name}
       />
+
       <Stack
         sx={headerStyle}
       >
+        {/* Project name and blurb */}
         <Box>
+
+          <ThumbnailField />
+
           <Stack
             id="project-name-field"
             flexDirection={'row'}
@@ -106,6 +114,7 @@ export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }
           </Typography>
         </Box>
 
+        {/* Edit mode toggle and project info */}
         <Stack
           gap={2}
           width={'180px'}
