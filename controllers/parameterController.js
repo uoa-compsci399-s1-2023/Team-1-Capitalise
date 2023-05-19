@@ -183,10 +183,10 @@ const deleteParameter = async (req, res) => {
     else if (parameter.parameterType === "award") {
       await Project.updateMany(
         {
-          award: parameter._id,
+          badges: parameter._id,
         },
         {
-          award: null,
+          badges: null,
         }
       );
     }
