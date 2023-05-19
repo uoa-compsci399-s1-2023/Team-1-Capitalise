@@ -477,6 +477,9 @@ const Dashboard = () => {
           </Box>
 
           <Typography paddingTop={5} variant="h6">
+            Create new award
+          </Typography>
+          <Typography paddingTop={5} variant="body1">
             Add new award image
           </Typography>
           <Box
@@ -517,7 +520,7 @@ const Dashboard = () => {
               </Button>
             </Box>
           </Box>
-          <Typography paddingTop={5} variant="h6">
+          <Typography paddingTop={5} variant="body1">
             Add new award name
           </Typography>
           <Box
