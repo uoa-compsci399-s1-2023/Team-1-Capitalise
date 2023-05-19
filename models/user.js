@@ -92,6 +92,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  displayEmail: {
+    type: String,
+    default: ""
+  }
 });
 
 //Create a method for the userSchema which generates the authentication token. The token will store the _id, username and userType of a user.

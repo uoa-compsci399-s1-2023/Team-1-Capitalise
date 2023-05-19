@@ -108,11 +108,14 @@ const createParameter = async (req, res) => {
 
     let parameter = "";
     if (parameterType === "award") {
+      if (!req.body.gradient) {
+        req.body.gradient = [randomColor(), randomColor()];
+      }
       parameter = new Parameter({
         value: value.capitalize(),
         image: req.body.image,
         parameterType,
-        gradient: [randomColor(), randomColor()],
+        gradient: req.body.gradient,
       });
     } else {
       parameter = new Parameter({

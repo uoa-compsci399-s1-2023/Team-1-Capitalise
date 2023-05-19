@@ -778,15 +778,19 @@ const searchProjects = async (req, res) => {
     sortQuery = {};
     if (req.query.sortBy) {
       if (
-        ["semester", "category", "name", "awards", "likes"].includes(
+        ["semester", "category", "name", "awards", "likes", "createdat", "updatedat"].includes(
           req.query.sortBy.toLowerCase()
         )
       ) {
         const mySortRequest = req.query.sortBy.toLowerCase();
-        //Note this is a very naive approach to sorting by semester. Due to complexity, it is easier to assume the semesters will be added in order.
-        mySortRequest == "likes" || mySortRequest == "semester"
+        mySortRequest == "likes"
           ? (sortQuery = { [mySortRequest]: -1 })
           : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending.
+        if (mySortRequest == "createdat")  {
+          sortQuery = { ["createdAt"]: -1 }
+        } else if (mySortRequest == "updatedat") {
+          sortQuery = { ["updatedAt"]: -1 }
+        }
       } else {
         return res.status(400).send({ projects: null, msg: "invalid query" });
       }
