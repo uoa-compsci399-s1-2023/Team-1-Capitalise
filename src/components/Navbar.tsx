@@ -15,23 +15,34 @@ import {
 
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
+import DefaultPFP from "../assets/default_pfp.svg";
 import SearchBar from "./SearchBar";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-import { AppRegistration, Login, Logout } from "@mui/icons-material";
+
+import {
+  AppRegistration,
+  Login,
+  Logout,
+  AdminPanelSettings,
+} from "@mui/icons-material";
 import { useAuth } from "../customHooks/useAuth";
 import { useState } from "react";
 
+//Navigation Tabs
 const pages = ["About", "Projects"];
+
+//Pages without Navigation Bars
 const NoNavPages = [
   "/register",
   "/login",
   "/googleSuccessRedirect",
   "/googleFailure",
 ];
+
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
   padding: "2px 10%",
@@ -58,8 +69,13 @@ const AuthButton = styled(Button)({
 function ResponsiveAppBar() {
   //Auth Header
   const auth = useAuth();
+
   //Fetch Current User (Check if Logged in)
   const uCheck = auth.user != null;
+
+  // check if user is admin
+  const isAdmin = auth.user?.userType == "admin";
+
   //Functionality for opening/closing sidebar
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -83,6 +99,7 @@ function ResponsiveAppBar() {
   const goToPage = (pageName: any) => {
     navigate("/" + pageName);
   };
+
   // App bar
   if (NoNavPages.includes(window.location.pathname)) {
     return null;
@@ -139,7 +156,16 @@ function ResponsiveAppBar() {
             {/* Check if User is logged in */}
             {uCheck
               ? [
-                <Button sx={{padding: "0 25px"}} key="upload" variant="contained" onClick={() => {goToPage("upload")}}>Upload</Button>,
+                  <Button
+                    sx={{ padding: "0 25px" }}
+                    key="upload"
+                    variant="contained"
+                    onClick={() => {
+                      goToPage("upload");
+                    }}
+                  >
+                    Upload
+                  </Button>,
                   <IconButton
                     key="profilepic"
                     onClick={handleOpenUserMenu}
@@ -159,8 +185,7 @@ function ResponsiveAppBar() {
                     }}
                     variant="outlined"
                   >
-                    {" "}
-                    Log In{" "}
+                    Log In
                   </AuthButton>,
                   <AuthButton
                     key="register"
@@ -246,10 +271,11 @@ function ResponsiveAppBar() {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Logged In" src={auth.user?.profilePicture}>
-                  {" "}
-                  <img referrerPolicy="no-referrer" />
-                </Avatar>
+                <Avatar
+                  alt="Logged In"
+                  src={auth.user ? auth.user.profilePicture : DefaultPFP}
+                  imgProps={{ referrerPolicy: "no-referrer" }}
+                />
               </IconButton>
             </Tooltip>
             <Menu
@@ -296,27 +322,45 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {/*The dropdown options*/}
-              <MenuItem
-                onClick={() => {
-                  handleCloseUserMenu();
-                  navigate(`../user/${auth.user?._id}`);
-                }}
-              >
-                {/*If User is logged in, render his name*/}
-                {uCheck
-                  ? [
-                      <Avatar
-                        key="userAva"
-                        // Yathi - Added referrerPolicy for google
-                        imgProps={{ referrerPolicy: "no-referrer" }}
-                        src={auth.user?.profilePicture}
-                      />,
-                      // <img key="refPolicy" referrerPolicy="no-referrer" /> ,
-                      auth.user?.name,
-                    ]
-                  : "Guest"}
-              </MenuItem>
-              <Divider />
+              {uCheck && (
+                <Box>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate(`../user/${auth.user?._id}`);
+                    }}
+                  >
+                    {/*If User is logged in, render his name*/}
+                    <Avatar
+                      key="userAva"
+                      // Yathi - Added referrerPolicy for google
+                      imgProps={{ referrerPolicy: "no-referrer" }}
+                      src={auth.user?.profilePicture}
+                    ></Avatar>
+                    {auth.user?.name}
+                  </MenuItem>
+                  <Divider />
+                </Box>
+              )}
+
+              {/*CHeck if isAdmin for dashboard*/}
+
+              {uCheck &&
+                isAdmin && [
+                  <MenuItem
+                    key="admin"
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate("/adminDashboard");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <AdminPanelSettings fontSize="small" />
+                    </ListItemIcon>
+                    Admin Dashboard
+                  </MenuItem>,
+                ]}
+
               {/*Display settings based on login status*/}
               {uCheck
                 ? [
@@ -361,7 +405,7 @@ function ResponsiveAppBar() {
                       </ListItemIcon>
                       Login
                     </MenuItem>,
-                  ]}{" "}
+                  ]}
               {/*End of Check condition*/}
             </Menu>
           </Box>

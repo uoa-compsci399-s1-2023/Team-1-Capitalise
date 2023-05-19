@@ -1,3 +1,4 @@
+// api/projects/:projectId
 import { API_URL } from "./config";
 
 export async function adminDeleteProject(projectId: string, token: string) {

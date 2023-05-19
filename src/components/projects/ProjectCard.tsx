@@ -8,12 +8,14 @@ import {
   useTheme,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import communityImpact from "../../assets/communityImpact.svg";
-import peoplesChoice from "../../assets/peoplesChoice.svg";
-import topExcellence from "../../assets/topExcellence.svg";
-
+import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../customHooks/useAuth";
+import { useContext } from "react";
+import { AwardTypeContext } from "../../app";
+import { API_URL } from "../../api/config";
+import { incrementViews } from "../../api/incrementViews";
 
 interface Props {
   title: string;
@@ -41,132 +43,159 @@ const ProjectCard = ({
     e.target.src = DefaultProjectImage;
   };
   const theme = useTheme();
-
-  // Yathi - Have to properly define type or build fails.
-  let colour: (typeof theme)["customColors"] | string = "lightgrey";
-
+  const awardTypes = useContext(AwardTypeContext);
+  let gradientColours = ["lightgrey", "lightgrey"];
   let awardText = "";
   let awardIcon = null;
 
+  //delete in final build
+  let loggedInAdmin = 0;
+  const auth = useAuth();
+  if (auth.user) {
+    if (auth.user._id === "6432f8826cce2fc1706572d3") {
+      loggedInAdmin = 1000;
+    }
+  }
+  //delete end
+
   const setBadge = (badges: string) => {
-    if (badges === "Community Impact") {
-      colour = theme.customColors.communityImpact!;
-      awardText = "Community Impact Award";
-      awardIcon = communityImpact;
-    } else if (badges === "Top Excellence") {
-      colour = theme.customColors.excellenceAward!;
-      awardText = "Top Excellence Award";
-      awardIcon = topExcellence;
-    } else if (badges === "Peoples Choice") {
-      colour = theme.customColors.peoplesChoice!;
-      awardText = "People's Choice Award";
-      awardIcon = peoplesChoice;
+    if (badges !== "default") {
+      for (const awardType of awardTypes) {
+        if (awardType.value === badges) {
+          gradientColours = awardType.gradient;
+          awardText = awardType.value + " Award";
+          awardIcon = awardType.image;
+        }
+      }
     }
   };
 
   setBadge(badges);
 
   return (
-    <Card
-      sx={{
-        minWidth: 320,
-        maxWidth: 320,
-        border: "none",
-        ":hover": {
-          boxShadow: 10,
-        },
-      }}
-    >
-      <CardActionArea component={Link} to={`../projects/${projectID}`}>
-        <CardMedia
-          component="img"
-          alt="error loading image"
-          height="125px"
-          src={image}
-          onError={handleDefaultImage}
-        />
-        <Box bgcolor={colour} height="8px" />
+    <Fade in={true} timeout={loggedInAdmin}>
+      <Card
+        sx={{
+          minWidth: 320,
+          maxWidth: 320,
+          border: "none",
+          ":hover": {
+            boxShadow: 10,
+          },
+        }}
+      >
+        <CardActionArea 
+          component={Link} 
+          to={`../projects/${projectID}`} 
+          onClick={() => incrementViews(projectID)} // views are only counted if user clicks on card
+        >
+          <CardMedia
+            component="img"
+            alt="error loading image"
+            height="125px"
+            src={image}
+            onError={handleDefaultImage}
+          />
+          <Box
+            height="8px"
+            sx={{
+              background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[1]})`,
+            }}
+          />
 
-        <CardContent
-          sx={{
-            paddingTop: "15px",
-            paddingBottom: "13px",
-            "&:last-child": {
+          <CardContent
+            sx={{
               paddingTop: "15px",
               paddingBottom: "13px",
-            },
-          }}
-        >
-          <Box display="flex">
-            {awardIcon && (
-              <Box paddingRight="10px">
-                <img src={awardIcon}></img>
+              "&:last-child": {
+                paddingTop: "15px",
+                paddingBottom: "13px",
+              },
+            }}
+          >
+            <Box display="flex">
+              {awardIcon && (
+                <Box paddingRight="10px">
+                  <img src={awardIcon} width="40px"></img>
+                </Box>
+              )}
+              <Box display="grid">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ lineHeight: 1, fontSize: "12px" }}
+                >
+                  {semester}
+                </Typography>
+                <Typography
+                  noWrap
+                  variant="h5"
+                  sx={{ lineHeight: 1, fontWeight: 600 }}
+                >
+                  {title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  marginBottom="0.9em"
+                  height="14px"
+                  sx={{
+                    fontSize: "12px",
+                    background: `linear-gradient(to right, ${gradientColours[0]}, ${gradientColours[0]})`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {awardText}
+                </Typography>
               </Box>
-            )}
-            <Box display="grid">
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ lineHeight: 0.4, fontSize: "10px" }}
-              >
-                {semester}
-              </Typography>
-              <Typography noWrap variant="h5" sx={{ fontWeight: 600 }}>
-                {title}
-              </Typography>
-              <Typography
-                variant="body2"
-                marginBottom="1.5em"
-                height="4px"
-                sx={{ lineHeight: 0.4, fontSize: "10px", color: colour }}
-              >
-                {awardText}
-              </Typography>
             </Box>
-          </Box>
 
-          <Box display="flex" justifyContent="space-between" alignItems="end">
-            <Box>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                lineHeight={1.5}
-                fontSize="12px"
+            <Box display="flex" justifyContent="space-between" alignItems="end">
+              <Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  lineHeight={1.5}
+                  fontSize="12px"
+                >
+                  {teamname}
+                </Typography>
+                <Typography
+                  gutterBottom
+                  variant="body2"
+                  lineHeight={1}
+                  fontSize="12px"
+                >
+                  {category}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                alignItems="end"
+                gap="2px"
+                paddingBottom="0.35em"
               >
-                {teamname}
-              </Typography>
-              <Typography
-                gutterBottom
-                variant="body2"
-                lineHeight={1}
-                fontSize="12px"
-              >
-                {category}
-              </Typography>
+                <FavoriteIcon
+                  sx={{ 
+                    color: theme.customColors.likes,
+                    fontSize: 16
+                  }}
+                  // fontSize="small"
+                />
+                <Typography
+                  variant="body2"
+                  color={theme.customColors.likes}
+                  fontSize="16px" // Yathi - the default size is too big
+                  lineHeight={1}
+                >
+                  {likes}
+                </Typography>
+              </Box>
             </Box>
-            <Box
-              display="flex"
-              alignItems="end"
-              gap="2px"
-              paddingBottom="0.35em"
-            >
-              <FavoriteIcon
-                sx={{ color: theme.customColors.likes }}
-                fontSize="small"
-              />
-              <Typography
-                variant="body2"
-                color={theme.customColors.likes}
-                fontSize="1.25em"
-                lineHeight={1}
-              >
-                {likes}
-              </Typography>
-            </Box>
-          </Box>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Fade>
   );
 };
 

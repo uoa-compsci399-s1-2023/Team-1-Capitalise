@@ -14,6 +14,8 @@ import { useParams } from 'react-router-dom';
 import { TComment } from '../model/TComment';
 import Comments from '../components/projectPage/Comments/Comments';
 import { getProjectComments } from '../api/getProjectComments';
+import CircularProgress from '@mui/material/CircularProgress';
+import AddIcon from '@mui/icons-material/Add';
 
 
 type TabContent = {
@@ -63,6 +65,7 @@ export default function ProjectPage() {
   // Sends changes to backend and releases lock.
   // If patch request fails, changes are rolled back.
   // Perhaps we need to implement a session timer to release the lock on fail?
+  // Too many api calls so commented out - Yathi 17/05/2022 
   useEffect(() => {
     if (projectChanges) {
       patchProject(
@@ -90,8 +93,8 @@ export default function ProjectPage() {
   if (!isLoading) {
     return (
       <ProjectContext.Provider value={{ project, setProject, setProjectChanges }}>
-      
-      {/* Banner */}
+
+        {/* Banner */}
         <img
           src={project.banner}
           alt='Project cover photo'
@@ -101,13 +104,15 @@ export default function ProjectPage() {
             objectFit: 'cover'
           }}
         />
-      
-      {/* Everything else */}
+
+        {/* Everything else */}
         <Stack
           bgcolor={'white'}
           minHeight={'92vh'}
-          pl={6}
-          pr={4}
+          sx={{
+            pl: { md: 6, xs: 1 },
+            pr: { md: 4, xs: 1 }
+          }}
           maxWidth={'1600px'}
           mx={'auto'}
         >
@@ -115,7 +120,6 @@ export default function ProjectPage() {
           <ProjectHeader
             name={project.name}
             blurb={project.blurb}
-            likes={project.likes}
           />
 
           {/* Project details for mobile view */}
@@ -129,17 +133,19 @@ export default function ProjectPage() {
             mt={2}>
 
             {/* Tab content */}
-            <Stack flex={1} alignItems={'center'} mr={1} mb={10} >
+            <Stack flex={1} alignItems={'center'} mr={1} mb={6}>
 
-              {/* Only render tab buttons if there's more than one tab */}
-              {project.content.length > 1 && <Stack
+
+              <Stack
                 className='tab-btns'
                 flexDirection={'row'}
                 justifyContent={'center'}
-                mb={6}
+                mb={2
+                }
                 pb={3}
                 borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
                 width={'90%'}
+                flexWrap={'wrap'}
               >
                 {
                   project.content.map((tab, index) => (
@@ -152,22 +158,30 @@ export default function ProjectPage() {
                     />
                   ))
                 }
-              </Stack>}
+              </Stack>
 
               {/* If content is not empty, otherwise show "no content msg" */}
               {project.content[selectedTab] ?
                 project.content[selectedTab].tabContent.map((cb, index) => (
-                  <ContentBlock key={index} {...cb as ContentBlockProps} />
+                  <ContentBlock
+                    key={index}
+                    {...{
+                      ...cb,
+                      ['tabIndex']: selectedTab,
+                      ['blockIndex']: index
+                    }}
+                  />
                 ))
                 :
-                <Typography variant="body2" color="neutral">No content to display.</Typography>
+                <Typography variant="body2" color="text.secondary">No content to display.</Typography>
               }
+
 
             </Stack>
             <ProjectDetails />
           </Stack>
 
-        {/* Comments Section */}
+          {/* Comments Section */}
           {comments &&
             <Box mt={10} width={'100%'}>
               <Comments comments={comments} projectId={projectId} />
@@ -178,7 +192,16 @@ export default function ProjectPage() {
     )
   } else {
     // Need to replace with loading animation.
-    return <h1>Loading...</h1>
+    return (
+      <Stack
+        width={'100%'}
+        height={'92vh'}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        <CircularProgress color='spinnerColor' />
+      </Stack>
+    )
   }
 
 }

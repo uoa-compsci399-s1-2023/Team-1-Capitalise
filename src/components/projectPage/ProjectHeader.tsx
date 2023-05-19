@@ -1,26 +1,41 @@
-import { Box, Stack, Typography, useTheme, Button, Chip } from '@mui/material'
-
-import { likeProject } from '../../api/likeProject';
+import { useContext, useState } from 'react';
+import { Box, Stack, Typography, useTheme, Button, Chip, useMediaQuery } from '@mui/material'
 import { ProjectContext } from '../../routes/ProjectPage';
-import { useContext } from 'react';
 import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';
+import EditButton from './EditButton';
+import EditNameDialog from './dialogs/EditNameDialog';
 import AdminDeleteBtn from './AdminDeleteBtn';
 
 interface ProjectHeaderProps {
   name: string
   blurb?: string
-  likes: number
 }
 
-export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps) {
+export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
 
   const theme = useTheme();
-  const { project, setProject } = useContext(ProjectContext);
   const auth = useAuth();
+  const { project, setProject } = useContext(ProjectContext);
+  const isScreenSmall = useMediaQuery(theme.breakpoints.down("md"));
 
-  const isSmall = theme.breakpoints.down("md");
+  // Name states
+  const [isHoverName, setIsHoverName] = useState(false);
+  const [isNameDialogOpen, setIsNameDialogOpen] = useState(false);
 
+  // Blurb states
+  const [isHoverBlurb, setIsHoverBlurb] = useState(false);
+  const [isBlurbDialogOpen, setIsBlurbDialogOpen] = useState(false);
+
+
+  const handleNameEdit = () => {
+    setIsNameDialogOpen(true);
+    setIsHoverName(false);
+  }
+
+  const handleBlurbEdit = () => {
+
+  }
 
   const headerStyle = {
     padding: '0 20px',
@@ -34,32 +49,52 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
     gap: 0,
 
     // Only apply in phone mode
-    [isSmall]: {
+    [theme.breakpoints.down("md")]: {
       flexDirection: 'column',
       justifyContent: 'normal',
       alignItems: 'start',
       gap: 3,
       mb: 2
     }
-
   }
 
   return (
     <>
+      <EditNameDialog
+        isOpen={isNameDialogOpen}
+        setIsOpen={setIsNameDialogOpen}
+        initialValue={name}
+      />
       <Stack
-
         sx={headerStyle}
       >
         <Box>
-          <Typography
-            variant="h1"
-            color="initial"
+          <Stack
+            id="project-name-field"
+            flexDirection={'row'}
+            alignItems={'center'}
+            onMouseEnter={() => setIsHoverName(true)}
+            onMouseLeave={() => setIsHoverName(false)}
             mt={1}
-            fontWeight={600}
-            alignSelf={'center'}
           >
-            {name}
-          </Typography>
+            <Typography
+              variant="h1"
+              color="black"
+              fontWeight={600}
+              alignSelf={'center'}
+            >
+              {name}
+            </Typography>
+            {!isScreenSmall &&
+              auth.isAllowed(['admin'], project.members) &&
+              <EditButton
+                clickHandler={handleNameEdit}
+                isShow={isHoverName}
+                fontSize='medium'
+              />
+            }
+          </Stack>
+
           <Typography
             component='p'
             variant='body2'
@@ -70,21 +105,13 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
           </Typography>
         </Box>
 
-        { <AdminDeleteBtn /> }
-
-        { <LikeBtn /> }
-
-        
-
-          {/* Design change, no more comment button */}
-          {/* <Button
-            variant='outlined'
-            color='neutral'
-            startIcon={<ChatOutlinedIcon />}
-          >
-            Comment
-          </Button> */}
-
+      <Stack
+      gap={2}
+      // alignItems={'end'}
+      >
+        <AdminDeleteBtn />
+        <LikeBtn />
+      </Stack>
       </Stack>
 
     </>

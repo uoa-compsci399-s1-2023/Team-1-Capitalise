@@ -7,9 +7,9 @@ import { useAuth } from '../../customHooks/useAuth';
 import { styled } from '@mui/material/styles'
 import pluralize from 'pluralize';
 
+function InfoField({label, value}: {label:string, value:number}) {
 
-
-
+}
 
 export default function LikeBtn() {
 
@@ -17,12 +17,12 @@ export default function LikeBtn() {
   const { project, setProject } = useContext(ProjectContext);
   const theme = useTheme();
 
-  const InfoBox = styled(Typography)({
-    padding: '5px 10px',
-    border: `1px solid ${theme.palette.neutral.main}`,
-    borderRadius: '10px',
-    whiteSpace: 'nowrap'
-  })
+  // const InfoBoxStyle = {
+  //   padding: '5px 10px',
+  //   border: `1px solid ${theme.palette.neutral.main}`,
+  //   borderRadius: '10px',
+  //   whiteSpace: 'nowrap'
+  // }
 
   const handleLike = () => {
     auth.onlyAuthenticated();
@@ -48,16 +48,24 @@ export default function LikeBtn() {
 
       // If member or admin, show likes, views, and comments info
 
-      <Stack flexDirection={'row'} gap={2} flexWrap={'wrap'}>
-        <InfoBox>
-          {pluralize('likes', project.likes, true)}
-        </InfoBox>
-        <InfoBox>
-          {pluralize('views', project.views, true)}
-        </InfoBox>
-        <InfoBox>
-          {pluralize('comments', project.comments.length, true)}
-        </InfoBox>
+      <Stack
+        flexDirection={'column'}
+        gap={0.5}
+        flexWrap={'wrap'}
+        sx={{
+          pl: {md: 0, xs: 1}
+        }}
+        alignItems={'start'}
+      >
+        <Typography variant='body2' color={'text.secondary'}>
+          Likes: {project.likes}
+        </Typography>
+        <Typography variant='body2' color={'text.secondary'}>
+          Views: {project.views}
+        </Typography>
+        <Typography variant='body2' color={'text.secondary'}>
+          Comments: {project.comments.length}
+        </Typography>
       </Stack>
 
       :
@@ -76,7 +84,6 @@ export default function LikeBtn() {
         <Button
           variant='contained'
           color='error'
-          startIcon={<FavoriteIcon />}
           onClick={handleLike}
         >
           {`Like (${project.likes})`}

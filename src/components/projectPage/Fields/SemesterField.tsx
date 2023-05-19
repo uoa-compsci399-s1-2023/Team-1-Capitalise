@@ -8,26 +8,36 @@ import { ProjectContext } from '../../../routes/ProjectPage';
 import useSearchParams from '../../../customHooks/useSearchParams';
 import EditButton from '../EditButton';
 import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "../../search/AvailableParams";
+import { useAuth } from '../../../customHooks/useAuth';
 
 
 export default function SemesterField() {
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { project, setProjectChanges } = useContext(ProjectContext);
   const [value, setValue] = useState<string>('');
   const theme = useTheme();
-  
-  // const searchParams = useSearchParams();
+  const auth = useAuth();
 
   useEffect(() => {
-    setValue(project.semester.value)
-  }, [project])
+    fetchCurrentParameters()
+  }, [])
 
+  const handleMouseIn = () => {
+    if (auth.user && auth.isAllowed(['admin'], project.members)) {
+      setIsHovering(true);
+    }
+  }
+
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  }
 
   const handleOpen = () => {
     setValue(project.semester.value);
     setIsOpen(true);
+    setIsHovering(false);
   }
 
   const handleChange = (e: SelectChangeEvent<any>) => {
@@ -53,7 +63,7 @@ export default function SemesterField() {
         fullWidth
         maxWidth='sm'
       >
-        <DialogTitle>Edit semester</DialogTitle>
+        <DialogTitle>Edit Semester</DialogTitle>
         <DialogContent>
           <FormControl fullWidth>
             <Select
@@ -81,13 +91,15 @@ export default function SemesterField() {
         minHeight={'40px'}
         flexDirection={'row'}
         alignItems={'center'}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+        onMouseEnter={handleMouseIn}
+        onMouseLeave={handleMouseOut}
       >
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Semester:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.semester.value}</Typography>
 
-        <EditButton clickHandler={handleOpen} isShow={isHovering} />
+        {auth.isAllowed(['admin'], project.members) &&
+          <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
+        }
       </Box>
     </>
   )

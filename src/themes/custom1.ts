@@ -36,11 +36,14 @@ declare module "@mui/material/styles" {
   interface ThemeOptions extends CustomThemeStyles {}
 
   interface CustomPalette {
+    primary: SimplePaletteColorOptions;
+    primaryDark: PaletteColorOptions;
     neutral: SimplePaletteColorOptions;
     black: PaletteColorOptions;
-    editBtnGrey: PaletteColorOptions;
+    editBtnGrey: SimplePaletteColorOptions;
     githubBtn: PaletteColorOptions;
     linkedinBtn: PaletteColorOptions;
+    spinnerColor: SimplePaletteColorOptions;
   }
   interface Palette extends CustomPalette {}
   interface PaletteOptions extends CustomPalette {}
@@ -48,16 +51,41 @@ declare module "@mui/material/styles" {
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
+    primary: true;
+    primaryDark: true;
     neutral: true;
     black: true;
     editBtnGrey: true;
     githubBtn: true;
     linkedinBtn: true;
+    spinnerColor: true;
+  }
+}
+
+declare module "@mui/material/CircularProgress" {
+  interface CircularProgressPropsColorOverrides {
+    spinnerColor: true
   }
 }
 
 let theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1220,
+      xl: 1820,
+    },
+  },
   palette: {
+    primary: {
+      main: "#3388FF",
+    },
+    primaryDark: {
+      main: "#2260B7",
+      contrastText: "#ffffff",
+    },
     neutral: {
       main: "#898989",
     },
@@ -76,6 +104,9 @@ let theme = createTheme({
     linkedinBtn: {
       main: "#007EBB",
     },
+    spinnerColor: {
+      main: "#f7f7f7"
+    }
   },
   typography: {
     button: {

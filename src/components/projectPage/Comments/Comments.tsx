@@ -55,7 +55,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
         })
         .then((data) => {
           comment._id = data._id;
-          comment.projectId = data.project;
+          comment.project = data.project;
 
           comment.commentBody = data.commentBody;
           comment.parentComment = data.parentComment;
@@ -91,7 +91,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   // ...and backend will also do another check.
   const deleteComment = async (commentId: string) => {
     const token = auth.getToken();
-    if (token) {
+    if (token)  {
       // Yathi - Need to replace with a mui modal.
       // if (window.confirm("Are you sure you want to remove comment?")) {
       fetch(`${API_URL}/api/projects/comment/${commentId}`, {
@@ -117,7 +117,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   };
 
   return (
-    <div className="comments" style={{ width: "100%", marginLeft: "20px" }}>
+    <div className="comments" style={{ margin: "0 20px" }}>
       {/* Yathi - Changed variant from body1 to h4 and made component h2 */}
       <Typography
         variant="h4"

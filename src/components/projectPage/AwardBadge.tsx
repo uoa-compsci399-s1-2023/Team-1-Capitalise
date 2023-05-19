@@ -1,54 +1,99 @@
-import React from 'react'
-import { Typography, Stack, useTheme } from '@mui/material'
-import topExcellence from '../../assets/topExcellence.svg'
-import peoplesChoice from '../..assets/peoplesChoice.svg'
-import communityImpact from '../..assets/communityImpact.svg'
+import React, { ReactNode, useEffect, useState } from 'react'
+import { Typography, Stack, useTheme, Box, Button, Tooltip } from '@mui/material'
+import { TParameter } from '../../model/TParameter'
+import { getBadgeById } from '../../api/getBadges'
+import EditButton from './EditButton'
+import EditIcon from '@mui/icons-material/Edit'
+import EditAwardDialog from './dialogs/EditAwardDialog'
+import { useAuth } from '../../customHooks/useAuth'
 
-type TBadge = {
-  value: string,
-  image?: string
+
+interface AwardBadgeProps {
+  badgeId: string
 }
 
 
-export default function AwardBadge({ value, image }: TBadge) {
+export default function AwardBadge({ badgeId }: AwardBadgeProps) {
 
+  const [badge, setBadge] = useState<TParameter | null>(null);
+  const [isHover, setIsHover] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const auth = useAuth();
   const theme = useTheme();
-  let color;
 
-  
+  useEffect(() => {
+    getBadgeById(badgeId)
+      .then(badge => {
+        if (badge) {
+          setBadge(badge);
+        }
+      })
+  }, [badgeId])
 
-  switch (value) {
-    case 'Top Excellence':
-      color = theme.customColors.excellenceAward
-      break;
+  let badgeContent: ReactNode = null
 
-    case 'Community Impact':
-      color = theme.customColors.communityImpact
-      break;
-    case 'Peoples Choice':
-      color = theme.customColors.peoplesChoice
+  if (badge) {
+    badgeContent =
+      <Stack
+        flexDirection={'row'}
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+        width={'100%'}
+        justifyContent={'center'}
+        position={'relative'}
+      >
+        <EditAwardDialog
+          isOpen={isDialogOpen}
+          setIsOpen={setIsDialogOpen}
+        />
+        <Stack my={2} flex={1}>
+          <img
+            src={badge.image}
+            width={'80'}
+            style={{ margin: '0 auto' }}
+          />
+          <Typography
+            mt={2}
+            textAlign={'center'}
+            sx={{
+              color: badge.gradient ? badge.gradient[0] : 'black'
+            }}
+          >
+            {badge.value}
+          </Typography>
+        </Stack>
+        {auth.isAllowed(['admin']) &&
+          <Tooltip title="Edit Award">
+            <Button
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                justifyContent: 'end',
+                // pr: 2,
+              }}
+              color='neutral'
+              onClick={() => setIsDialogOpen(true)}
+            >
+              {/* <EditIcon
+                fontSize='small'
+                sx={{
+                  color: theme.palette.editBtnGrey.main,
+                }}
+              /> */}
+            </Button>
+          </Tooltip>
+        }
+      </Stack>
+  } else if (auth.isAllowed(['admin'])) {
+    badgeContent =
+      <Button>
+        Add Award
+      </Button>
   }
 
-  return (
-    <Stack width={'100%'} >
-      <img
-        src={image}
-        width={100}
-        style={{ margin: '0 auto' }}
-      />
-      <Typography
-        mt={2}
-        textAlign={'center'}
-        color={color}
-      >
-        {value}
-      </Typography>
-      <Typography
-        textAlign={'center'}
-        color={color}
-      >
-        Award
-      </Typography>
-    </Stack>
-  )
+
+  return badgeContent
 }

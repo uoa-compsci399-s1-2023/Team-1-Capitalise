@@ -167,9 +167,10 @@ function useProvideAuth(): TAuthReturnType {
     {
     if (!user) {
       return false;
-    } else if (allowedIds && !allowedIds.includes(user._id)) {
-      return false;
-    } else if (allowedRoles && !allowedRoles.includes(user.userType)) {
+    } else if (
+      (allowedIds && !allowedIds.includes(user._id)) && 
+      (allowedRoles && !allowedRoles.includes(user.userType))
+    ) {
       return false;
     }
     return true

@@ -1,4 +1,5 @@
 import { TComment } from "./TComment";
+import { TContentTab } from "./TContentTab";
 
 export type TProject = {
   _id: string;
@@ -25,20 +26,15 @@ export type TProject = {
   members: string[];
   banner: string;
   thumbnail: string;
-  content: {
-    tabName: string;
-    tabContent: {
-      type: string;
-      subHeading?: string;
-      value: string[];
-      _id: string;
-    }[];
-    _id: string;
-  }[];
+  content: TContentTab[]
   likes: number;
   comments: string[]; // array of ids
   tags: { name: string }[];
-  badges: { value: "Peoples Choice" | "Top Excellence" | "Community Impact" }; // There should be an apostrophe in people's choice!
+  // badges: { value: "Peoples Choice" | "Top Excellence" | "Community Impact" }; // There should be an apostrophe in people's choice!
+  badges: {
+    _id: string
+    value: string
+  };
   isBeingEdited: false;
   createdAt: string;
   updatedAt: string;

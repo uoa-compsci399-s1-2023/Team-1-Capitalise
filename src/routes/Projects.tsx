@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
@@ -7,17 +7,46 @@ import MyPagination from "../components/projects/MyPagination";
 
 // Other
 import { fetchCurrentParameters } from "../components/search/AvailableParams";
-
-
+import { SearchContext } from "../app";
 
 const Projects = () => {
-
   const theme = useTheme();
+  const { currFilters, setFilters } = useContext(SearchContext);
+  const [loading, setLoading] = useState(true);
+  const [numProjDisp, setNumProjDisp] = useState(1);
 
+  const handleResize = () => {
+    setLoading(true);
+    let width = window.innerWidth;
+    if (width >= 2510) {
+      setNumProjDisp(18);
+    } else if (width < 2510 && width >= 2140) {
+      setNumProjDisp(15);
+    } else if (width < 2140 && width >= 1770) {
+      setNumProjDisp(12);
+    } else if (width < 1770 && width >= 1400) {
+      setNumProjDisp(9);
+    } else if (width < 1400) {
+      setNumProjDisp(6);
+    }
+  };
   // Fetch available search parameters on initial render
   useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
     fetchCurrentParameters();
-  }, [])
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    setFilters({
+      ...currFilters,
+      ["projectsPerPage"]: numProjDisp,
+    });
+    setLoading(false);
+  }, [numProjDisp]);
 
   return (
     <Box bgcolor={theme.customColors.bgGrey} width="100%" minHeight="92vh">
