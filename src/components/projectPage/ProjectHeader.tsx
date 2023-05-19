@@ -50,7 +50,7 @@ export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }
     // Only apply in desktop mode
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
     gap: 0,
 
     // Only apply in phone mode
@@ -85,7 +85,7 @@ export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }
             alignItems={'center'}
             onMouseEnter={() => setIsHoverName(true)}
             onMouseLeave={() => setIsHoverName(false)}
-            mt={1}
+            mt={2}
           >
             <Typography
               variant="h1"
@@ -95,6 +95,7 @@ export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }
             >
               {name}
             </Typography>
+
             {checkIsEdit() &&
               <EditButton
                 clickHandler={handleNameEdit}
@@ -121,14 +122,15 @@ export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }
         >
           {isDesktop &&
             auth.isAllowed(['admin'], project.members) &&
-            <Stack flexDirection={'row'} gap={0} alignItems={'center'}>
-              <Typography variant="body1">Edit mode:</Typography>
-              <Switch
-                checked={isEditMode}
-                onChange={(e, checked) => setIsEditMode(checked)}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            </Stack>
+              <Stack flexDirection={'row'} gap={0} alignItems={'center'}>
+                <Typography variant="body1">Edit mode:</Typography>
+                <Switch
+                  checked={isEditMode}
+                  onChange={(e, checked) => setIsEditMode(checked)}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              </Stack>
+
           }
           <AdminDeleteBtn />
           <LikeBtn />
