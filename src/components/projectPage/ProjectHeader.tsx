@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react';
-import { Box, Stack, Typography, useTheme, Button, Chip, useMediaQuery } from '@mui/material'
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { Box, Stack, Typography, useTheme, Button, Chip, useMediaQuery, Switch } from '@mui/material'
 import { ProjectContext } from '../../routes/ProjectPage';
 import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';
@@ -10,13 +10,16 @@ import AdminDeleteBtn from './AdminDeleteBtn';
 interface ProjectHeaderProps {
   name: string
   blurb?: string
+  isEditMode: boolean
+  setIsEditMode: Dispatch<SetStateAction<boolean>>
 }
 
-export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
+export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }: ProjectHeaderProps) {
 
   const theme = useTheme();
   const auth = useAuth();
   const { project, checkIsEdit } = useContext(ProjectContext);
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   // Name states
   const [isHoverName, setIsHoverName] = useState(false);
@@ -103,13 +106,24 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
           </Typography>
         </Box>
 
-      <Stack
-      gap={2}
-      // alignItems={'end'}
-      >
-        <AdminDeleteBtn />
-        <LikeBtn />
-      </Stack>
+        <Stack
+          gap={2}
+          width={'180px'}
+        >
+          {isDesktop &&
+            auth.isAllowed(['admin'], project.members) &&
+            <Stack flexDirection={'row'} gap={0} alignItems={'center'}>
+              <Typography variant="body1">Edit mode:</Typography>
+              <Switch
+                checked={isEditMode}
+                onChange={(e, checked) => setIsEditMode(checked)}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            </Stack>
+          }
+          <AdminDeleteBtn />
+          <LikeBtn />
+        </Stack>
       </Stack>
 
     </>

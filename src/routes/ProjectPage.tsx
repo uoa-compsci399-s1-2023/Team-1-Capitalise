@@ -49,7 +49,7 @@ export default function ProjectPage() {
   // Holds modified project that needs to patched in backend
   const [projectChanges, setProjectChanges] = useState<TProjectPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditMode, setIsEditMode] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [comments, setComments] = useState<TComment[] | undefined>();
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -157,6 +157,7 @@ export default function ProjectPage() {
             <ProjectHeader
               name={project.name}
               blurb={project.blurb}
+              {...{isEditMode, setIsEditMode}}
             />
 
             {/* Project details for mobile view */}

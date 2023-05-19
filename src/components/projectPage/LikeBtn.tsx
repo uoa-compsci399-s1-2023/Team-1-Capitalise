@@ -41,7 +41,7 @@ export default function LikeBtn() {
 
   return (
 
-  checkIsEdit() ?
+  auth.isAllowed(['admin'], project.members) ?
 
       // If member or admin, show likes, views, and comments info
 
