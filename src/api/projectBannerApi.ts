@@ -16,3 +16,11 @@ export async function removeBanner(pId: string) {
   });
   return resp;
 }
+
+
+export async function getDefaultBanners() {
+  const resp = fetch(`${S3_API_URL}/api/s3/defaultBanners`, {
+    method: "GET",
+  });
+  return resp;
+}

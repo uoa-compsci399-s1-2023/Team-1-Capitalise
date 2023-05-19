@@ -4,15 +4,27 @@ import { Box, Button, Stack } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'
 import ClearIcon from '@mui/icons-material/Clear'
 import EditBannerDialog from './dialogs/EditBannerDialog';
-import { removeBanner } from '../../api/projectBannerApi';
+import { getDefaultBanners, removeBanner } from '../../api/projectBannerApi';
 import LoadingDialog from './dialogs/LoadingDialog';
 
 export default function ProjectBanner() {
 
-  const { project, setProject } = useContext(ProjectContext);
+  const { project, setProject, checkIsEdit } = useContext(ProjectContext);
   const [isHover, setIsHover] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [defaultBanners, setDefaultBanners] = useState<string[]>([])
+
+  useEffect(() => {
+    getDefaultBanners()
+      .then(resp => {
+        if (resp.ok) {
+          resp.json().then(data => setDefaultBanners(data))
+        } else {
+          resp.text().then(err => console.log(err));
+        }
+      })
+  }, [])
 
   const handleRemoveBanner = () => {
     setIsHover(false);
@@ -31,6 +43,10 @@ export default function ProjectBanner() {
           setIsLoading(false)
         })
     }
+  }
+
+  const checkIsDefaultBanner = () => {
+    return defaultBanners.includes(project.banner)
   }
 
   return (
@@ -53,7 +69,7 @@ export default function ProjectBanner() {
           objectFit: 'cover'
         }}
       />
-      {isHover &&
+      {isHover && checkIsEdit() &&
         <Stack
           justifyContent={'center'}
           alignItems={'center'}
@@ -68,15 +84,16 @@ export default function ProjectBanner() {
           }}
         >
           <Stack flexDirection={'row'} gap={2}>
-            <Button
-              startIcon={<ClearIcon />}
-              color='black'
-              variant='outlined'
-              // disableRipple
-              onClick={() => handleRemoveBanner()}
-            >
-              Remove
-            </Button>
+            {!checkIsDefaultBanner() &&
+              <Button
+                startIcon={<ClearIcon />}
+                color='black'
+                variant='outlined'
+                // disableRipple
+                onClick={() => handleRemoveBanner()}
+              >
+                Remove
+              </Button>}
             <Button
               startIcon={<EditIcon />}
               color='black'
