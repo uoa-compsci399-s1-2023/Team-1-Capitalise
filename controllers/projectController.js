@@ -619,7 +619,8 @@ const removeUserFromProject = async (req, res) => {
     //user must be an admin or their projectId is valid if above functions are not run
 
     //Check if user to be removed is in project
-    let project = await Project.findById(projectId);
+    let project = await Project.findById(projectId)
+
 
     //If we find the id in members attribute
     const memberIn = project.members.filter((member) => member._id == id);
@@ -633,14 +634,13 @@ const removeUserFromProject = async (req, res) => {
 
     //If user is found
     //Remove user from project
-    project = await Project.findByIdAndUpdate(
-      project._id,
-      {
-        //Pop
-        $pull: { members: id },
-      },
-      { new: true }
-    );
+    project = await Project.findByIdAndUpdate(project._id, { $pull: { members: id }, }, { new: true })
+    .populate("members", "_id, name")
+    .populate("semester", "value -_id")
+    .populate("category", "value -_id")
+    .populate("badges", "value -_id")
+    .populate("tags", "_id, name")
+
     //Remove project from user
     await User.findByIdAndUpdate(id, {
       project: null,

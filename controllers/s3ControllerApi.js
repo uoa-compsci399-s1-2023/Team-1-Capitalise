@@ -5,8 +5,11 @@ const { S3Client,
     PutObjectCommand,
 } = require("@aws-sdk/client-s3")
 const dotenv = require('dotenv').config()
-const { User, validate } = require('../models/user');
-const { Project } = require('../models/project');
+const { Project, validate } = require("../models/project");
+const { User } = require("../models/user");
+const { Comment, validateComment } = require("../models/comment");
+const { Tag, validateTag } = require("../models/tag");
+const { Parameter, validateParameter } = require("../models/parameter");
 const { checkUser, checkProject } = require('./checkParamValid');
 const { date } = require("joi");
 
@@ -77,7 +80,7 @@ const deleteAllTabImagesInMongoDb = async (projectId, tabName) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
 
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
     if(tabIndex == -1){
@@ -173,7 +176,7 @@ const createTab = async (projectId, files) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
 
     const {tabName, image, gallery, video, poster} = files
     const newTab = {
@@ -229,7 +232,7 @@ const deleteSingleTabFolderImageMongo = async (projectId, tabName, folder, url) 
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
 
     const projectContent = project.content
     const tabIndex = projectContent.findIndex(tab => tab.tabName == tabName)
@@ -264,7 +267,7 @@ const singleUpdateToMongo = async (projectId, tabName, folder, urlKey) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
      //Gets project
     const projectContent = project.content
 
@@ -650,7 +653,7 @@ const addGalleryToMongoDb = async(projectId, tabName,  listOfUrls) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
 
     if(tabIndex == -1){
@@ -687,7 +690,7 @@ const uploadImageToGallery = async (req, res) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
     //get tabContent
     const tabContent = project.content[tabIndex].tabContent
@@ -772,7 +775,7 @@ const deleteGalleryImageS3 = async(req, res) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
 
     //Gets the tabContent of the tab
@@ -848,7 +851,7 @@ const deleteGalleryImage = async(req, res) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
 
     const tabIndex= project.content.findIndex(tab => tab.tabName == tabName)
     const tabContent = project.content[tabIndex].tabContent
@@ -891,7 +894,7 @@ const deleteGallery = async (req, res) => {
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
-    .populate("tags", "name -_id")
+    .populate("tags", "_id, name")
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
 
     const galleryIndex = project.content[tabIndex].tabContent.findIndex(imageObject => imageObject._id == galleryId)
@@ -917,7 +920,7 @@ const deleteGalleryS3 = async (req, res) => {
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
       .populate("badges", "value -_id")
-      .populate("tags", "name -_id")
+      .populate("tags", "_id, name")
       if (!project) {
         return res.status(404).send({ project: null, msg: "No project found" })
       }
@@ -1043,7 +1046,7 @@ const bannerUpload = async (req, res) => {
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
-        .populate("tags", "name -_id")
+        .populate("tags", "_id, name")
         //Returns picture URL
         return res.status(200).send(project)
     }
@@ -1085,13 +1088,13 @@ const bannerDelete = async (req, res) => {
         const bannerNumber = Math.floor(Math.random() * (bannerLength))
         await client.send(new DeleteObjectCommand(deleteBannerParams))
         await Project.findByIdAndUpdate(projectId, {banner: `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/banners/banner${bannerNumber}.png`})
+
+        const project = await Project.findById(projectId)
         .populate("members", "_id, name")
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
-        .populate("tags", "name -_id")
-
-        const project = await Project.findById(projectId)
+        .populate("tags", "_id, name")
         return res.status(200).send(project)
     }
     catch(err){
@@ -1148,7 +1151,8 @@ const thumbnailUpload = async (req, res) => {
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
-        .populate("tags", "name -_id")
+        .populate("tags", "_id, name")
+        
         return res.status(200).send(project)
     }
     catch(err){
@@ -1172,24 +1176,24 @@ const thumbnailDelete = async (req, res) => {
     }
 
     const thumbnailExist = (await client.send(new ListObjectsV2Command(checkThumbnailParams))).Contents
-    if(!thumbnailExist){
-        return res.status(404).send({project: null, msg: 'no thumbnail found'})
+    if(thumbnailExist){
+        imageKey = thumbnailExist[0].Key
+        const deleteThumbnailParams = {
+            Bucket: process.env.BUCKET,
+            Key: imageKey
+        }
+        await client.send(new DeleteObjectCommand(deleteThumbnailParams))
     }
 
-    imageKey = thumbnailExist[0].Key
-    const deleteThumbnailParams = {
-        Bucket: process.env.BUCKET,
-        Key: imageKey
-    }
+
     try{
         await Project.findByIdAndUpdate(projectId, {thumbnail: process.env.DEFAULTTHUMBNAIL})
-        await client.send(new DeleteObjectCommand(deleteThumbnailParams))
         const project = await Project.findById(projectId)
         .populate("members", "_id, name")
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
-        .populate("tags", "name -_id")
+        .populate("tags", "_id, name")
         return res.status(200).send(project)
     }
     catch(err){
@@ -1511,6 +1515,60 @@ const deleteMobileHeroBanner = async (req, res) => {
 }
 
 
+const getDefaultBanners = async (req, res) => {
+    const getBannersParams = {
+        Bucket: process.env.BUCKET,
+        Prefix: `capitaliseAssets/banners/`
+    }
+
+    const listBannersCommand = new ListObjectsV2Command(getBannersParams)
+    try{
+        let banners = (await client.send(listBannersCommand)).Contents
+
+        if(!banners){
+            return res.status(204)
+        }
+
+        //Make sure only the banner images are returned
+        banners = banners.filter(item => item.Size > 0)
+
+        //Remake the array so it only returns the urls of the banners
+        banners = banners.map(item => {return URL + item.Key})
+
+        return res.status(200).send(banners)
+    }
+    catch{
+        return res.status(404).send({msg: 'No banners found'})
+    }
+}
+
+const getDefaultThumbnail = async (req, res) => {
+    const getThumbnailParams = {
+        Bucket: process.env.BUCKET,
+        Prefix: `capitaliseAssets/backgroundImages/`
+    }
+
+    const listThumbnailCommand = new ListObjectsV2Command(getThumbnailParams)
+    try{
+        let thumbnail = (await client.send(listThumbnailCommand)).Contents
+
+        if(!thumbnail){
+            return res.status(204)
+        }
+        
+        //Make sure only the banner images are returned
+        thumbnail = thumbnail.filter(item => item.Size > 0)
+
+        //Remake the array so it only returns the urls of the banners
+        thumbnail = thumbnail.map(item => {return URL + item.Key})
+
+        return res.status(200).send(thumbnail)
+    }
+    catch{
+        return res.status(404).send({msg: 'No thumbnail found'})
+    }
+}
+
 
 module.exports = {
     uploadUserProfilePicture,
@@ -1538,5 +1596,6 @@ module.exports = {
     uploadMobileHeroBanners,
     getMobileHeroBanners,
     deleteMobileHeroBanner,
-
+    getDefaultBanners,
+    getDefaultThumbnail,
 }

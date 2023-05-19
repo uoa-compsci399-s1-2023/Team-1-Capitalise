@@ -31,6 +31,8 @@ const {
     uploadMobileHeroBanners,
     getMobileHeroBanners,
     deleteMobileHeroBanner,
+    getDefaultBanners,
+    getDefaultThumbnail,
 } = require('../controllers/s3ControllerApi')
 
 
@@ -59,7 +61,8 @@ router.delete('/userProfilePic/:id' , deleteUserProfilePic) //WORKS
 router.post('/userProfilePic/:id' , uploadUserPicture.single('profilePicture'), uploadUserProfilePicture) //WORKS
 
 
-
+router.get('/defaultBanners' , getDefaultBanners) //WORKS
+router.get('/defaultThumbnails' , getDefaultThumbnail) //WORKS
 
 //Uploads a new gallery to a tab name
 router.get('/heroBanner' , getHeroBanners) //WORKS
