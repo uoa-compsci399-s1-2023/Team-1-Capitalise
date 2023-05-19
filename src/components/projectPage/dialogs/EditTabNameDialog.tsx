@@ -68,6 +68,5 @@ export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTab
         <Button onClick={handleSave}>Save</Button>
       </DialogActions>
     </Dialog >
-
   )
 }

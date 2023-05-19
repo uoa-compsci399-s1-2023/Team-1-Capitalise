@@ -38,6 +38,8 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
       />
       <Stack
         flexDirection={'row'}
+        alignItems={'center'}
+        // height={'100%'}
         gap={0}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
@@ -59,10 +61,10 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
         <Button
           sx={{
             display: auth.isAllowed(['admin'], project.members) ? 'block' : 'none',
-            visibility: isHover ? 'visible' : 'hidden',
+            visibility: (isHover && index !== 0) ? 'visible' : 'hidden',
             height: "100%",
             minWidth: '0',
-            mr: 3,
+            mr: 2,
             ':hover': {
               backgroundColor: theme.customColors.DividerGrey
             }
