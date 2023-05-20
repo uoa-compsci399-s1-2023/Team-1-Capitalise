@@ -1,5 +1,12 @@
+import { useEffect, useState } from "react";
 import { Category, DateRange, EmojiEvents } from "@mui/icons-material";
-import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Box, Grid, Paper, Stack, Typography, useTheme } from "@mui/material";
+import Carousel from "../../components/home/Carousel";
+import { TFrontCategory } from "../../model/TFrontCategory";
+
+import { TProject } from "../../model/TProject";
+import { TFiltersState } from "../../app";
+import { getAdminProjects } from "../../api/getAdminProjects";
 
 interface Props {
   categoryCount: number;
@@ -12,6 +19,23 @@ const DashboardOverview = ({
   semesterCount,
   awardCount,
 }: Props) => {
+  const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
+  const carouselColours = [theme.customColors.bgGrey, "white"];
+
+  const [adminProjects, setAdminProjects] = useState<TProject[]>([]);
+
+  useEffect(() => {
+    fetchAdminProjects();
+  }, []);
+
+  const fetchAdminProjects = async () => {
+    setIsLoading(true);
+    const response = await getAdminProjects("updatedAt", 10);
+    setAdminProjects(response.projects);
+    setIsLoading(false);
+  };
+
   return (
     <Stack height="100%">
       <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
@@ -81,6 +105,16 @@ const DashboardOverview = ({
           {/* Show newly created projects over a timeframe (maybe for the week??) */}
           Recently created projects
         </Typography>
+        {adminProjects.length !== 0 && (
+          <Box>
+            <Carousel
+              items={adminProjects}
+              backgroundColor={"white"}
+              category={"Recently Created Projects"}
+              display={{ xs: "flex", md: "none" }}
+            />
+          </Box>
+        )}
       </Box>
     </Stack>
   );

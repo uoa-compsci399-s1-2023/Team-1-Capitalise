@@ -536,7 +536,7 @@ const Dashboard = () => {
             </Box>
           </Box>
           <Typography paddingTop={5} variant="body1">
-            2) Add new award name
+            2) Add new award name and pick a gradient
           </Typography>
           <Box
             width={{ xs: "400px", sm: "505px" }}
@@ -556,9 +556,6 @@ const Dashboard = () => {
             />
           </Box>
 
-          <Typography paddingTop={5} variant="body1">
-            3) Add gradient to new award
-          </Typography>
           <Box
             width={{ xs: "500px", sm: "600px" }}
             component={"form"}
