@@ -108,11 +108,14 @@ const createParameter = async (req, res) => {
 
     let parameter = "";
     if (parameterType === "award") {
+      if (!req.body.gradient) {
+        req.body.gradient = [randomColor(), randomColor()];
+      }
       parameter = new Parameter({
         value: value.capitalize(),
         image: req.body.image,
         parameterType,
-        gradient: [randomColor(), randomColor()],
+        gradient: req.body.gradient,
       });
     } else {
       parameter = new Parameter({
@@ -141,8 +144,7 @@ const deleteParameter = async (req, res) => {
     //Check if parameter is Miscellaneous category or SX 20XX semester. Do NOT allow these to be deleted.
     if (
       (parameter.parameterType === "category" &&
-        parameter.value === "Miscellaneous") ||
-      (parameter.parameterType === "semester" && parameter.value === "SX 20XX")
+        parameter.value === "Miscellaneous")
     ) {
       return res.status(400).send({
         fail: "Error - You cannot delete this parameter! It is required by the system for error handling!",
@@ -171,12 +173,9 @@ const deleteParameter = async (req, res) => {
         parameterType: "semester",
       });
 
-      await Project.updateMany(
+      await Project.deleteMany(
         {
           semester: parameter._id,
-        },
-        {
-          semester: miscSem._id,
         }
       );
     } //If the parameter is an award, remove the award from all projects that have it

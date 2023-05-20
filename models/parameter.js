@@ -33,7 +33,8 @@ function validateParameter(Parameter) {
         value: Joi.string().min(1).max(50).required(),
         parameterType: Joi.string().valid('category', 'semester', 'award', 'sortBy').required(),
         runnerUp: Joi.boolean(),
-        image: Joi.string()
+        image: Joi.string(),
+        gradient: Joi.array().items(Joi.string()),
     });
 
     return schema.validate(Parameter);

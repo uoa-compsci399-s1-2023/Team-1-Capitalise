@@ -48,7 +48,9 @@ async function deleteComments(commentId) {
 // Gets all users and sorts by name
 const getAllUsers = async (req, res) => {
   // Added populate method to dynamically fetch information of project document!
-  const users = await User.find().populate("project", "_id, name").sort("name");
+  const users = await User.find({}, "-password -email -username")
+    .populate("project", "_id, name")
+    .sort("name");
   res.send(users);
 };
 
@@ -59,7 +61,10 @@ const getUserById = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(400).json({ fail: `${id} is not a valid ID!` });
 
-  const user = await User.findOne({ _id: id }).populate("project", "_id, name");
+  const user = await User.findOne(
+    { _id: id },
+    "-password -email -username"
+  ).populate("project", "_id, name");
 
   if (!user) {
     return res.status(400).json({ fail: `no user with id ${id} found!` });
@@ -118,6 +123,7 @@ const postUser = async (req, res) => {
       myComments: [],
       userType: myUserType,
       isGoogleCreated: false,
+      displayEmail: req.body.displayEmail,
       skills: req.body.skills,
       confirmationCode: jwt.sign(
         { email: req.body.email },
@@ -136,8 +142,7 @@ const postUser = async (req, res) => {
 
     user = await user.save();
     const token = user.generateAuthToken();
-
-    //res.header("x-auth-token", token).status(201).send(user);
+    
     res.send(user);
     sendConfirmationEmail(user.name, user.email, user.confirmationCode);
   } catch (ex) {
@@ -213,7 +218,7 @@ const updateUserDetails = async (req, res) => {
 
     const updateUser = await User.findByIdAndUpdate(id, req.body, {
       new: true,
-    });
+    }).select("-password -email -username");
     res.json(updateUser);
   } catch (ex) {
     res.status(500).send(`Internal Server Error: ${ex}`);
@@ -319,7 +324,9 @@ const adminUpdateUserDetails = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.user._id).select(
+      "-password -username -email"
+    );
     res.send(user);
   } catch (error) {
     res.status(500).send({ error: "Server error" });
@@ -329,11 +336,13 @@ const getCurrentUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   const nameQuery = req.query.name || "";
   const isAvailable = req.query.isAvailable || "";
-  const userRole = req.query.userRole || "";
+  req.query.userRole
+    ? (userRole = "^" + req.query.userRole + "$")
+    : (userRole = "");
 
   let searchQuery = {
     name: { $regex: nameQuery, $options: "i" },
-    userType: { $regex: "^" + userRole + "$", $options: "i" },
+    userType: { $regex: userRole, $options: "i" },
   };
   if (isAvailable === "true") {
     searchQuery.project = null;
@@ -342,7 +351,8 @@ const searchUsers = async (req, res) => {
   try {
     const users = await User.find(searchQuery)
       .skip(req.query.startIndex)
-      .limit(req.query.numUsers);
+      .limit(req.query.numUsers)
+      .select("-password -username -email");
     res.send(users);
   } catch (error) {
     res.status(500).send({ error: "Server error" });

@@ -253,10 +253,12 @@ const updateProjectById = async (req, res) => {
     let myTagIdArr = [];
     if (req.body.tags) {
       for (const tagName of req.body.tags) {
-        const tag = await Tag.findOne({ name: tagName });
+        const tag = await Tag.findOne({
+          name: { $regex: "^" + tagName + "$", $options: "i" },
+        });
         if (!tag) {
           let tag = new Tag({
-            name: tagName,
+            name: tagName.charAt(0).toUpperCase() + tagName.slice(1),
             mentions: 1,
             projects: [
               {
@@ -283,12 +285,18 @@ const updateProjectById = async (req, res) => {
 
       //Get tag objects to delete
       let existingTagArr = [];
+      let adjustedTags = [];
       for (const tagId of myProj.tags) {
         tag = await Tag.findById(tagId);
         existingTagArr.push(tag.name);
       }
-      let difference = existingTagArr.filter((x) => !req.body.tags.includes(x));
-      //console.log(existingTagArr, req.body.tags, difference);
+
+      for (const tagName of req.body.tags) {
+        adjustedTags.push(tagName.charAt(0).toUpperCase() + tagName.slice(1));
+      }
+
+      let difference = existingTagArr.filter((x) => !adjustedTags.includes(x));
+      //console.log(existingTagArr, adjustedTags, difference);
 
       for (const tagName of difference) {
         const tag2 = await Tag.findOneAndUpdate(
@@ -296,8 +304,12 @@ const updateProjectById = async (req, res) => {
           {
             $inc: { mentions: -1 },
             $pull: { projects: myProj._id },
-          }
+          },
+          {new: true}
         );
+        if (tag2.mentions === 0) {
+          await Tag.findByIdAndDelete(tag2._id)
+        }
       }
 
       req.body.tags = myTagIdArr;
@@ -349,8 +361,7 @@ const addNewProject = async (req, res) => {
       parameterType: "category",
     });
     if (!cat)
-    return res.status(400).send({ project: null, msg: "Invalid semester!" });
-
+      return res.status(400).send({ project: null, msg: "Invalid semester!" });
 
     let project = new Project({
       name: req.body.name,
@@ -383,10 +394,12 @@ const addNewProject = async (req, res) => {
     //Create or fetch tag objects.
     if (req.body.tags) {
       for (const tagName of req.body.tags) {
-        const tag = await Tag.findOne({ name: tagName });
+        const tag = await Tag.findOne({
+          name: { $regex: "^" + tagName + "$", $options: "i" },
+        });
         if (!tag) {
           let tag = new Tag({
-            name: tagName,
+            name: tagName.charAt(0).toUpperCase() + tagName.slice(1),
             mentions: 1,
             projects: [
               {
@@ -619,8 +632,7 @@ const removeUserFromProject = async (req, res) => {
     //user must be an admin or their projectId is valid if above functions are not run
 
     //Check if user to be removed is in project
-    let project = await Project.findById(projectId)
-
+    let project = await Project.findById(projectId);
 
     //If we find the id in members attribute
     const memberIn = project.members.filter((member) => member._id == id);
@@ -634,12 +646,16 @@ const removeUserFromProject = async (req, res) => {
 
     //If user is found
     //Remove user from project
-    project = await Project.findByIdAndUpdate(project._id, { $pull: { members: id }, }, { new: true })
-    .populate("members", "_id, name")
-    .populate("semester", "value -_id")
-    .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "_id, name")
+    project = await Project.findByIdAndUpdate(
+      project._id,
+      { $pull: { members: id } },
+      { new: true }
+    )
+      .populate("members", "_id, name")
+      .populate("semester", "value -_id")
+      .populate("category", "value -_id")
+      .populate("badges", "value -_id")
+      .populate("tags", "_id, name");
 
     //Remove project from user
     await User.findByIdAndUpdate(id, {
@@ -760,9 +776,7 @@ const searchProjects = async (req, res) => {
     // If keyword is specified as a parameter, add it to the query. It may be in either the name or tag.
     if (req.query.keyword) {
       const tag = await Tag.findOne({
-        name:
-          req.query.keyword[0].toUpperCase() +
-          req.query.keyword.substring(1).toLowerCase(),
+        name: { $regex: "^" + req.query.keyword + "$", $options: "i" },
       });
       if (tag) {
         query.$or = [
@@ -778,15 +792,25 @@ const searchProjects = async (req, res) => {
     sortQuery = {};
     if (req.query.sortBy) {
       if (
-        ["semester", "category", "name", "awards", "likes"].includes(
-          req.query.sortBy.toLowerCase()
-        )
+        [
+          "semester",
+          "category",
+          "name",
+          "badges",
+          "likes",
+          "createdat",
+          "updatedat",
+        ].includes(req.query.sortBy.toLowerCase())
       ) {
         const mySortRequest = req.query.sortBy.toLowerCase();
-        //Note this is a very naive approach to sorting by semester. Due to complexity, it is easier to assume the semesters will be added in order.
-        mySortRequest == "likes" || mySortRequest == "semester"
+        mySortRequest == "likes"
           ? (sortQuery = { [mySortRequest]: -1 })
           : (sortQuery = { [mySortRequest]: 1 }); //If sorting by likes, make it descending.
+        if (mySortRequest == "createdat") {
+          sortQuery = { ["createdAt"]: -1 };
+        } else if (mySortRequest == "updatedat") {
+          sortQuery = { ["updatedAt"]: -1 };
+        }
       } else {
         return res.status(400).send({ projects: null, msg: "invalid query" });
       }
