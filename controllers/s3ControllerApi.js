@@ -86,8 +86,7 @@ const deleteAllTabImagesInMongoDb = async (projectId, tabName) => {
     if(tabIndex == -1){
         return null
     }
-    const indexesToDelete = []
-    const count = 0
+
     const folders = ['image', 'poster', 'video', 'gallery']
     
     const remainingFolders = project.content[tabIndex].tabContent.filter(imageObject => !folders.includes(imageObject.type))
@@ -108,14 +107,16 @@ const deleteAllTabImagesInMongoDb = async (projectId, tabName) => {
 //Gets all the folders in the s3 bucket based on the projectId and the tabName
 const getTabFolder = async (projectId, tabName) => {
     // return files
+
     const files = {
-        "tabName": checkString(tabName),
+        "tabName": tabName,
         "image": [],
         "gallery": [],
         "video": [],
         "poster": []
     }
 
+    //Grage the image objects from the tabname
     const imageCommand = new ListObjectsV2Command({ Bucket: process.env.BUCKET, Prefix: `capitaliseProjects/${projectId}/${tabName}/image/` })
     const galleryCommand = new ListObjectsV2Command({ Bucket: process.env.BUCKET, Prefix: `capitaliseProjects/${projectId}/${tabName}/gallery/` })
     const videoCommand = new ListObjectsV2Command({ Bucket: process.env.BUCKET, Prefix: `capitaliseProjects/${projectId}/${tabName}/video/` })
@@ -130,7 +131,10 @@ const getTabFolder = async (projectId, tabName) => {
 
     //Checks if there is any image returned
     if (imageContents.Contents) {
+        //Filters the data where it only returns the image and not folder
+        //Then for each image returned revert create the url and push it
         imageContents.Contents.filter(data => data.Key != `capitaliseProjects/${projectId}/image/`).forEach(picture => {;
+        //Adds + to where their are spaces
         const key = checkString(picture.Key)
         files.image.push(URL + key);})
     }
@@ -180,7 +184,7 @@ const createTab = async (projectId, files) => {
 
     const {tabName, image, gallery, video, poster} = files
     const newTab = {
-        "tabName": revertString(tabName),
+        "tabName": tabName,
         "tabContent": []
         }
     
@@ -398,8 +402,6 @@ const uploadTabPictures = async (req, res) => {
     const { projectId, tabName } = req.params;
 
     const files = req.files;
-    const projectMembers = (await Project.findById(projectId)).members
-
 
     const fileOrg = ["image", "gallery", "video", "poster"];
     
@@ -412,11 +414,11 @@ const uploadTabPictures = async (req, res) => {
     if(files.image == null && files.poster == null && files.gallery == null && files.video == null ){
         return res.status(204)
     }
-
+    const noFunnyBusinessInTabName = revertString(tabName)
     //check if tabName already exist in project.
     const existParmas = {
         Bucket:process.env.BUCKET,
-        Prefix: `capitaliseProjects/${projectId}/${tabName}/`
+        Prefix: `capitaliseProjects/${projectId}/${noFunnyBusinessInTabName}/`
     }
 
     
@@ -440,10 +442,11 @@ const uploadTabPictures = async (req, res) => {
         fileOrg.forEach((folder) => {
             const folderFiles = files[folder];
             if(folderFiles != null){
+                //Iterates through each file array image, poster, video and gallery and uploads them
                 folderFiles.forEach((image) => {
                     const fileType = checkFileType(image.mimetype.split('/')[1])
                     const fileOriginalName = image.originalname.split('.')[0]
-                    const fileName = fileOriginalName + '.' + fileType
+                    const fileName = fileOriginalName +' '+ `${getDate()}`+'.' + fileType
                     params.Key = `capitaliseProjects/${projectId}/${tabName}/${image.fieldname}/${fileName}`
                     params.Body = image.buffer
                     params.ContentType = image.mimetype
@@ -454,7 +457,8 @@ const uploadTabPictures = async (req, res) => {
         });
     
     await Promise.all(promises);
-    const s3TabFiles = await getTabFolder(projectId, tabName)
+    //Grabs the urls of all files from newly uploaded files
+    const s3TabFiles = await getTabFolder(projectId, noFunnyBusinessInTabName)
     const result = await createTab(projectId, s3TabFiles)
     return res.status(200).send(result)
     
@@ -471,7 +475,7 @@ const uploadTabPictures = async (req, res) => {
 //And updates the equivalent mongoDb project tab contents
 const deleteAllFolders = async (req, res) => {
     const {projectId, tabName} = req.params
-    
+    const noFunnyBusinessInTabName = revertString(tabName)
     if(!(await checkProject(projectId))){
         return res.status(404).send({ project: null, msg: 'no project exist' });
     }
@@ -500,7 +504,7 @@ const deleteAllFolders = async (req, res) => {
     }
 
     try{
-        const result = await deleteAllTabImagesInMongoDb(projectId, tabName)
+        const result = await deleteAllTabImagesInMongoDb(projectId, noFunnyBusinessInTabName)
         return res.status(200).send(result) 
     }
     catch(err){
@@ -514,7 +518,7 @@ const deleteAllFolders = async (req, res) => {
 
 
 //When a tab has been created, uploads a single image to s3 and mongoDb
-//Only if its an image, banner, or poster
+//Only if its an image, video, or poster
 const uploadTabSingle = async(req, res) => {
     const {projectId, tabName} = req.params
     if (!(await checkProject(projectId))) {
@@ -529,7 +533,7 @@ const uploadTabSingle = async(req, res) => {
         //Get the image type
         const imageType = checkFileType(file.mimetype.split('/')[1])
         //Get image name
-        const imageName = (file.originalname).split('.')[0]
+        const imageName = (file.originalname).split('.')[0] +` ${getDate()}`
 
         //Create parameters to add to bucket
         const uploadParams = {
@@ -546,6 +550,7 @@ const uploadTabSingle = async(req, res) => {
     })
 
     await Promise.all(promiseUploads)
+
     const result = await singleUpdateToMongo(projectId, tabName, fieldName, urlKey)
     if(result == null){
         return res.status(404).send({project: null, msg: 'no tab exist with that name'})
@@ -580,10 +585,11 @@ const deleteTabSingleFolderImage = async (req, res) => {
         return res.status(404).send({project: null, msg: 'no folder exist'})
     }
 
-    //List the contents in folder
+    //List the contents in folder where it gets the objects with the keyname
+    //Most likely will retrieve only one as key contains time of upload now
     const findProjectFolderCommand = new ListObjectsV2Command({
         Bucket: process.env.BUCKET,
-        Prefix: `capitaliseProjects/${projectId}/${tabName}/${folder}/`
+        Prefix: `capitaliseProjects/${projectId}/${tabName}/${folder}/${revertKey}`
     })
 
     const checkFolderExist = (await client.send(findProjectFolderCommand)).Contents
@@ -591,11 +597,7 @@ const deleteTabSingleFolderImage = async (req, res) => {
         return res.status(404).send({project: null, msg: 'No folder exist'})
     }
 
-    const images =  checkFolderExist.filter(imageObject => imageObject.Key.includes(revertKey))
-    if(images.length == 0){
-        return res.status(404).send({project: null, msg: 'no image exist'})
-    }
-    const image = images[0]
+    const image = checkFolderExist[0]
 
     const deleteImageParams= {
         Bucket: process.env.BUCKET,
@@ -603,6 +605,7 @@ const deleteTabSingleFolderImage = async (req, res) => {
     }
 
     await client.send(new DeleteObjectCommand(deleteImageParams))
+    //Updates the mongoDb
     const result = await deleteSingleTabFolderImageMongo(projectId, tabName, folder, URL+checkString(deleteImageParams.Key))
     if(result == null){
         return res.status(404).send({project:null, msg: "deleteSingleTabFolderImageMongo error"})
@@ -621,17 +624,18 @@ const uploadGallery = async (req, res) => {
     }
     const files = req.files
     const uploadPromise = []
-    
+    const noFunnyBusinessInTabName = revertString(tabName)
     const urlKey = []
+
     files.forEach(file => {
         //gets file type
         const fileType = checkFileType(file.mimetype.split('/')[1])
         //Create the filename and check if it contains any spaces
         const originalName = file.originalname.split('.')[0]
-        const fileName = originalName +"." + fileType
+        const fileName = originalName +' '+ `${getDate()}.` + fileType
         const uploadParams = {
             Bucket: process.env.BUCKET,
-            Key: `capitaliseProjects/${projectId}/${tabName}/gallery/${fileName}`,
+            Key: `capitaliseProjects/${projectId}/${noFunnyBusinessInTabName}/gallery/${fileName}`,
             Body: file.buffer,
             ContentType: file.mimetype
         }
@@ -640,13 +644,14 @@ const uploadGallery = async (req, res) => {
     })
     await Promise.all(uploadPromise)
 
-    const result = await addGalleryToMongoDb(projectId, tabName, urlKey)
+    const result = await addGalleryToMongoDb(projectId, noFunnyBusinessInTabName, urlKey)
     if(result == null){
         return res.status(404).send({project:null, msg: "addGalleryToMongo error"})
     }
     return res.status(200).send(result)
 }
 
+//Adds urls of the gallery into the tabname.content
 const addGalleryToMongoDb = async(projectId, tabName,  listOfUrls) => {
     const project = await Project.findById(projectId)
     .populate("members", "_id, name")
@@ -684,6 +689,7 @@ const uploadImageToGallery = async (req, res) => {
     const {projectId, tabName, galleryId} = req.params
     const files = req.files
 
+    const noFunnyBusinessInTabName = revertString(tabName)
     //find the gallery based galleryId
     const project = await Project.findById(projectId)
     .populate("members", "_id, name")
@@ -691,18 +697,19 @@ const uploadImageToGallery = async (req, res) => {
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
     .populate("tags", "_id, name")
-    const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
+
+    const tabIndex = project.content.findIndex(tab => tab.tabName == noFunnyBusinessInTabName)
     //get tabContent
     const tabContent = project.content[tabIndex].tabContent
-
     const galleryIndex = tabContent.findIndex(index => index._id == galleryId)
+
     if(galleryIndex == -1){
-        return res.status(204)
+        return res.status(204).send()
     }
+
 
     //need to check if a file with that original name already exist in the gallery
     const values = tabContent[galleryIndex].value
-
     const lengthOfValues = values.length
 
         //Check the length of value
@@ -711,35 +718,19 @@ const uploadImageToGallery = async (req, res) => {
         return res.status(400).send({project:null, msg: `Please remove ${files.length + lengthOfValues - 5} files from the gallery or the files you want to upload`})
     }
 
-    const sameFileName = []
-    files.forEach(file => {
-        const fileType = checkFileType(file.mimetype.split('/')[1])
-        const fileName = checkString(file.originalname.split('.')[0] +'.'+ fileType)
-        if(values.includes(URL + `capitaliseProjects/${projectId}/${tabName}/gallery/${fileName}`)){
-            sameFileName.push(fileName)
-        }
-    })
-
-
-
-
-    if(sameFileName.length != 0){
-        return res.status(400).send(`Please remove these file(s) ${sameFileName} as the gallery already contains files with this name`)
-    }
-
     const uploadPromise = []
     const urls = []
     files.forEach(file => {
         const fileType = checkFileType(file.mimetype.split('/')[1])
-        const fileName = file.originalname.split('.')[0] +'.'+ fileType
+        const fileName = file.originalname.split('.')[0] +` ${getDate()}.`+ fileType
         const fileParams = {
             Bucket: process.env.BUCKET,
-            Key: `capitaliseProjects/${projectId}/${tabName}/gallery/${fileName}`,
+            Key: `capitaliseProjects/${projectId}/${noFunnyBusinessInTabName}/gallery/${fileName}`,
             Body: file.buffer,
             ContentType: file.mimetype
         }
         //create the urls
-        urls.push(URL + `capitaliseProjects/${projectId}/${tabName}/gallery/${checkString(fileName)}`)
+        urls.push(URL + checkString(`capitaliseProjects/${projectId}/${noFunnyBusinessInTabName}/gallery/${fileName}`))
         const uploadCommand = new PutObjectCommand(fileParams)
         //else upload to s3
         uploadPromise.push(s3Upload(uploadCommand))
@@ -776,7 +767,8 @@ const deleteGalleryImageS3 = async(req, res) => {
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
     .populate("tags", "_id, name")
-    const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
+    //Tab names should have no + in their names
+    const tabIndex = project.content.findIndex(tab => tab.tabName == revertString(tabName))
 
     //Gets the tabContent of the tab
     const tabContent = project.content[tabIndex].tabContent
@@ -790,7 +782,8 @@ const deleteGalleryImageS3 = async(req, res) => {
 
         }
     })
-    const keyUrl = `capitaliseProjects/${projectId}/${tabName}/gallery/${key}`
+    //Replace all spaces with +
+    const keyUrl = checkString(`capitaliseProjects/${projectId}/${tabName}/gallery/${key}`)
     /***************************************
      * Removes the url from every gallery  *
     ***************************************/
@@ -818,11 +811,11 @@ const deleteGalleryImageS3 = async(req, res) => {
 
     await project.save()
 
+    const revertURL = revertString(`capitaliseProjects/${projectId}/${tabName}/gallery/${key}`)
     //Checks and gives us a string with a space in it.
-    const revertKey = revertString(key)
     const checkImageExist = {
         Bucket: process.env.BUCKET,
-        Prefix: `capitaliseProjects/${projectId}/${tabName}/gallery/${revertKey}`
+        Prefix: revertURL
     }
 
     const s3ImageExist = (await client.send(new ListObjectsV2Command(checkImageExist))).Contents
@@ -830,9 +823,10 @@ const deleteGalleryImageS3 = async(req, res) => {
         return res.status(404).send({project:null, msg: "Image does not exist"})
     }
 
+    //Need Key of
     const deleteImageParams = {
         Bucket: process.env.BUCKET,
-        Key: `capitaliseProjects/${projectId}/${tabName}/gallery/${revertKey}`
+        Key: revertURL
     }
 
     await client.send(new DeleteObjectCommand(deleteImageParams))
@@ -840,79 +834,9 @@ const deleteGalleryImageS3 = async(req, res) => {
 
 }
 
-
-//Deletes the url from a gallery tabContent object
-//Only used when a user want to get rid of an image, but wants to keep the image in other galleries
-const deleteGalleryImage = async(req, res) => {
-    const {projectId, tabName, galleryId, key} = req.params
-
-    const project = await Project.findById(projectId)
-    .populate("members", "_id, name")
-    .populate("semester", "value -_id")
-    .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "_id, name")
-
-    const tabIndex= project.content.findIndex(tab => tab.tabName == tabName)
-    const tabContent = project.content[tabIndex].tabContent
-    const galleryIndex = tabContent.findIndex(imageObject => imageObject._id == galleryId)
-    if(galleryIndex == -1){
-        return res.status(404).send({project:null, msg: "No gallery found"})
-    }
-    const galleryURL = URL +`capitaliseProjects/${projectId}/${tabName}/gallery/${key}`
-
-    const gallery = tabContent[galleryIndex].value
-
-    //If url is not in gallery
-    if(!gallery.includes(galleryURL)){
-        return res.status(404).send({project:null, msg:"image is not part of this gallery"})
-    }
-
-    const urlIndex = gallery.findIndex(urlLink => urlLink == galleryURL)
-    
-    project.content[tabIndex].tabContent[galleryIndex].value.splice(urlIndex, 1)
-
-    if(project.content[tabIndex].tabContent[galleryIndex].value.length == 0){
-        project.content[tabIndex].tabContent.splice(galleryIndex, 1)
-    }
-    await project.save()
-
-    return res.status(200).send(project)
-
-}
-
-//Deletes a gallery from tabcontents, but does not delete the s3 equivlents
-const deleteGallery = async (req, res) => {
-    const {projectId, tabName, galleryId} = req.params
-    
-    if(!(await checkProject(projectId))){
-        return res.status(404).send({project:null, msg: "projectId invalid"})
-    }
-
-    const project = await Project.findById(projectId)
-    .populate("members", "_id, name")
-    .populate("semester", "value -_id")
-    .populate("category", "value -_id")
-    .populate("badges", "value -_id")
-    .populate("tags", "_id, name")
-    const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
-
-    const galleryIndex = project.content[tabIndex].tabContent.findIndex(imageObject => imageObject._id == galleryId)
-    if(galleryIndex == -1){
-        return res.status(404).send({project:null, msg: "No gallery with that id found"})
-    }
-
-    project.content[tabIndex].tabContent.splice(galleryIndex, 1)
-
-    await project.save()
-    return res.status(200).send(project)
-
-}
-
-
 const deleteGalleryS3 = async (req, res) => {
     const { projectId, tabName, galleryId } = req.params
-  
+    const noFunnyBusinessInTabName = revertString(tabName)
     try {
       // Check if project exists in mongoDB
       const project = await Project.findById(projectId)
@@ -926,7 +850,7 @@ const deleteGalleryS3 = async (req, res) => {
       }
   
       // Get the index of the tab in project.content
-      const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
+      const tabIndex = project.content.findIndex(tab => tab.tabName == noFunnyBusinessInTabName)
       if (tabIndex == -1) {
         return res.status(404).send({ project: null, msg: "No tab found" })
       }
@@ -946,7 +870,8 @@ const deleteGalleryS3 = async (req, res) => {
       const deleteObjects = deleteURLs.map(url => {
         const splitURL = url.split("/")
         const imageName = splitURL[splitURL.length - 1]
-        const keyName = `capitaliseProjects/${projectId}/${tabName}/gallery/${revertString(imageName)}`
+        //Revert the string so it contains spaces instead of +
+        const keyName = revertString(`capitaliseProjects/${projectId}/${noFunnyBusinessInTabName}/gallery/${imageName}`)
         return { Key: keyName }
       })
   
@@ -957,6 +882,7 @@ const deleteGalleryS3 = async (req, res) => {
   
       await client.send(deleteCommandParams)
   
+      /*
       // Remove the deleted URLs from other galleries
       project.content[tabIndex].tabContent.forEach(imageObject => {
         if (imageObject.type == "gallery" && imageObject._id !== galleryId && imageObject.value.some(url => deleteURLs.includes(url))) {
@@ -975,7 +901,7 @@ const deleteGalleryS3 = async (req, res) => {
           }
         }
       })
-    
+    */
         //Removes the gallery from mongoDB 
         project.content[tabIndex].tabContent.splice(galleryIndex, 1)
       
@@ -1012,7 +938,7 @@ const bannerUpload = async (req, res) => {
     const imageType = checkFileType(bannerPic.mimetype.split('/')[1])
     const params = {
         Bucket: process.env.BUCKET,
-        Key: `capitaliseProjects/${projectId}/banner.${imageType}`,
+        Key: `capitaliseProjects/${projectId}/banner ${getDate()}.${imageType}`,
         Body: bannerPic.buffer,
         ContentType: bannerPic.mimetype
     }
@@ -1039,7 +965,7 @@ const bannerUpload = async (req, res) => {
     try{
         //upload the image
         await s3Upload(uploadCommand)
-        const bannerURL = URL + params.Key
+        const bannerURL = checkString(URL + params.Key)
         await Project.findByIdAndUpdate(projectId, { banner:  bannerURL})
         const project = await Project.findById(projectId)
         .populate("members", "_id, name")
@@ -1062,11 +988,14 @@ const bannerDelete = async (req, res) => {
         return res.status(404).send({project:null, msg: 'no project exist'});
     }
 
+    //Get the amount of default banners 
     const checkBannerLength = {
         Bucket: process.env.BUCKET,
         Prefix: `capitaliseAssets/banners`
     }
-    const bannerLength = (await client.send(new ListObjectsV2Command(checkBannerLength))).Contents.length
+
+    //Grabs the banners and filters it so it only contains images 
+    const bannerLength = (await client.send(new ListObjectsV2Command(checkBannerLength))).Contents.filter(image => image.Size > 0).length
 
     //check to see if a banner already exist
     const checkBannerParams = {
@@ -1085,7 +1014,9 @@ const bannerDelete = async (req, res) => {
         Key: imageKey
     }
     try{
-        const bannerNumber = Math.floor(Math.random() * (bannerLength))
+        //Grabe a number between 1 and the banner length (exclusive)
+        const bannerNumber = Math.floor(Math.random() * (bannerLength)) + 1
+
         await client.send(new DeleteObjectCommand(deleteBannerParams))
         await Project.findByIdAndUpdate(projectId, {banner: `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/banners/banner${bannerNumber}.png`})
 
@@ -1118,7 +1049,7 @@ const thumbnailUpload = async (req, res) => {
     const imageType = checkFileType(thumbnail.mimetype.split('/')[1])
     const params = {
         Bucket: process.env.BUCKET,
-        Key: `capitaliseProjects/${projectId}/thumbnail.${imageType}`,
+        Key: `capitaliseProjects/${projectId}/thumbnail ${getDate()}.${imageType}`,
         Body: thumbnail.buffer,
         ContentType: thumbnail.mimetype
     }
@@ -1144,7 +1075,7 @@ const thumbnailUpload = async (req, res) => {
 
     try{
         await s3Upload(uploadCommand)
-        const url = URL + params.Key
+        const url = checkString(URL + params.Key)
         await Project.findByIdAndUpdate(projectId, {thumbnail: url})
         const project = await Project.findById(projectId)
         .populate("members", "_id, name")
@@ -1169,13 +1100,15 @@ const thumbnailDelete = async (req, res) => {
     }
 
 
-    //check to see if a banner already exist
+    //check to see if a thumbnail already exist
     const checkThumbnailParams = {
         Bucket: process.env.BUCKET,
         Prefix: `capitaliseProjects/${projectId}/thumbnail`
     }
 
-    const thumbnailExist = (await client.send(new ListObjectsV2Command(checkThumbnailParams))).Contents
+    //Ensures that the returned array only contains the image
+    const thumbnailExist = (await client.send(new ListObjectsV2Command(checkThumbnailParams))).Contents.filter(image => image.Size > 0)
+
     if(thumbnailExist){
         imageKey = thumbnailExist[0].Key
         const deleteThumbnailParams = {
@@ -1209,7 +1142,7 @@ const uploadHeroBanners = async (req, res) => {
     const urls = []
     files.forEach(file => {
         const fileType = checkFileType(file.mimetype.split('/')[1])
-        const fileName = file.originalname.split('.')[0] +'.'+ fileType
+        const fileName = file.originalname.split('.')[0] +` ${getDate()}.`+ fileType
         const fileParams = {
             Bucket: process.env.BUCKET,
             Key: `capitaliseAssets/heroBanners/${fileName}`,
@@ -1247,7 +1180,6 @@ const uploadHeroBanners = async (req, res) => {
 
 const deleteHeroBanner = async (req, res) => {
     const {heroBannerName} = req.params
-    var fileKey = ''
     const keyPrefix = `capitaliseAssets/heroBanners/`
     const updatedUrls = []
 
@@ -1300,7 +1232,6 @@ const getHeroBanners = async (req, res) => {
     const fileExist = (await client.send(new ListObjectsV2Command(getHeroBanners))).Contents
     //Iterate through the contents of fileExist skipping the first index where it is just the folder
     if(fileExist){
-
     for(let i = 0; i < fileExist.length; i++){
         if(fileExist[i].Size > 0){
            updatedUrls.push(URL + checkString(fileExist[i].Key)) 
@@ -1317,7 +1248,7 @@ const getHeroBanners = async (req, res) => {
 const uploadAward = async (req, res) => {
     const file = req.file
     const fileType = checkFileType(file.mimetype.split('/')[1])
-    const fileName = file.originalname.split('.')[0] +'.'+ fileType
+    const fileName = file.originalname.split('.')[0] + ` ${getDate()}.`+ fileType
     const fileParams = {
         Bucket: process.env.BUCKET,
         Key: `capitaliseAssets/awards/${fileName}`,
@@ -1326,7 +1257,7 @@ const uploadAward = async (req, res) => {
     }
 
     //create the url
-    const url = URL + `capitaliseAssets/awards/${checkString(fileName)}`
+    const url = URL + checkString(fileParams.Key)
 
     // upload to s3
     const uploadCommand = new PutObjectCommand(fileParams)
@@ -1363,7 +1294,6 @@ const getAwards = async (req, res) => {
 
 const deleteAward= async (req, res) => {
     const {awardName} = req.params
-    var fileKey = ''
     const keyPrefix = `capitaliseAssets/awards/`
     const updatedUrls = []
 
@@ -1410,7 +1340,7 @@ const uploadMobileHeroBanners = async (req, res) => {
     const urls = []
     files.forEach(file => {
         const fileType = checkFileType(file.mimetype.split('/')[1])
-        const fileName = file.originalname.split('.')[0] +'.'+ fileType
+        const fileName = file.originalname.split('.')[0] +` ${getDate()}.`+ fileType
         const fileParams = {
             Bucket: process.env.BUCKET,
             Key: `capitaliseAssets/mobileHeroBanners/${fileName}`,
@@ -1473,7 +1403,6 @@ const getMobileHeroBanners = async (req, res) => {
 
 const deleteMobileHeroBanner = async (req, res) => {
     const {heroBannerName} = req.params
-    var fileKey = ''
     const keyPrefix = `capitaliseAssets/mobileHeroBanners/`
     const updatedUrls = []
 
@@ -1574,10 +1503,8 @@ module.exports = {
     uploadUserProfilePicture,
     uploadGallery,
     deleteUserProfilePic,
-    deleteGallery,
     deleteGalleryS3,
     deleteGalleryImageS3,
-    deleteGalleryImage,
     uploadImageToGallery,
     uploadTabPictures,
     uploadTabSingle,

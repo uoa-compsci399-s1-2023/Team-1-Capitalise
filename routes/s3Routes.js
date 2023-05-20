@@ -9,10 +9,8 @@ const {
     uploadUserProfilePicture,
     uploadGallery,
     deleteUserProfilePic,
-    deleteGallery,
     deleteGalleryS3,
     deleteGalleryImageS3,
-    deleteGalleryImage,
     uploadImageToGallery,
     uploadTabPictures,
     uploadTabSingle,
@@ -106,9 +104,6 @@ router.delete('/project/:projectId/:tabName/:folder/:key' ,  deleteTabSingleFold
 //Uploads a new gallery to a tab name
 router.post('/gallery/:projectId/:tabName' , projectPictureRoute.array('gallery', 5), uploadGallery) //WORKS
 
-//Deletes only a gallery and keeps other galleries intact
-router.delete('/gallery/:projectId/:tabName/:galleryId' ,  deleteGallery) //WORKS
-
 
 //Deletes an entire gallery and removes any urls within this gallery that is in other galleries in the same tab
 //And deletes the images from s3
@@ -117,8 +112,6 @@ router.delete('/allGallery/:projectId/:tabName/:galleryId' ,  deleteGalleryS3) /
 //Adds images to a gallery and only accepts 4 uploads at a time. 
 router.patch('/uploadGallery/:projectId/:tabName/:galleryId' , projectPictureRoute.array('gallery', 4), uploadImageToGallery) //WORKS 
 
-//Deletes one image in gallery and keeps all the same url intact in other galleries 
-router.patch('/gallerySingle/:projectId/:tabName/:galleryId/:key' , deleteGalleryImage) //WORKS
 
 //Deletes one image in gallery and removes the image from s3 and the url from other galleries
 router.patch('/gallerySingleS3/:projectId/:tabName/:key', deleteGalleryImageS3) //WORKS
@@ -132,7 +125,7 @@ router.patch('/gallerySingleS3/:projectId/:tabName/:key', deleteGalleryImageS3) 
 * poster or video object to a tab and     *
 * accept maximum of 5 uploads at a time   *
 ******************************************/
-//Need to check case where not file is submitted
+
 router.post('/image/:projectId/:tabName', projectPictureRoute.array('image', 5), uploadTabSingle) 
 router.post('/poster/:projectId/:tabName', projectPictureRoute.array('poster', 5), uploadTabSingle)
 router.post('/video/:projectId/:tabName', projectPictureRoute.array('video', 5), uploadTabSingle)
