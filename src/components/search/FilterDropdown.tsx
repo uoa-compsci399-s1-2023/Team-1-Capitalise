@@ -1,15 +1,21 @@
 import { Select, FormControl, InputLabel, MenuItem } from '@mui/material'
 import { TAvailParameters } from './AvailableParams'
+import { useContext, useEffect } from 'react';
+import { SearchContext } from '../../app';
 
-export type FilterDpdownProps = { 
-  value: string, 
-  name: string, 
-  label: string, 
+export type FilterDpdownProps = {
+  value: string,
+  name: string,
+  label: string,
   options: TAvailParameters[keyof TAvailParameters], // Accepts any value of TAvailParameters
-  handleChange: (e: any) => void 
+  handleChange: (e: any) => void
 }
 
 export default function FilterDropdown({ value, name, label, options, handleChange }: FilterDpdownProps) {
+  
+  const { currFilters } = useContext(SearchContext);
+
+
   return (
     <FormControl sx={{ mb: 4 }} size='small' variant='outlined' fullWidth>
       <InputLabel id={`${name}-select-label`}>{label}</InputLabel>
