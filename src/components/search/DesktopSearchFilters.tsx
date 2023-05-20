@@ -31,7 +31,8 @@ export default function DesktopSearchFilters() {
   const handleKeywordsChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFilters({
       ...currFilters,
-      keywords: e.target.value
+      keywords: e.target.value,
+      currPage: 1
     })
   }
 
