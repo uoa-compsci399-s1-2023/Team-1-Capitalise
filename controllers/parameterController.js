@@ -144,8 +144,7 @@ const deleteParameter = async (req, res) => {
     //Check if parameter is Miscellaneous category or SX 20XX semester. Do NOT allow these to be deleted.
     if (
       (parameter.parameterType === "category" &&
-        parameter.value === "Miscellaneous") ||
-      (parameter.parameterType === "semester" && parameter.value === "SX 20XX")
+        parameter.value === "Miscellaneous")
     ) {
       return res.status(400).send({
         fail: "Error - You cannot delete this parameter! It is required by the system for error handling!",
