@@ -27,9 +27,7 @@ const MyPagination = () => {
   const [gridWidth, setGridWidth] = useState("0px");
   const [isLoading, setIsLoading] = useState(true);
   const { currFilters, setFilters } = useContext(SearchContext);
-  const [paginationSize, setPaginationSize] = useState<"small" | "medium">(
-    "medium"
-  );
+  const [paginationSize, setPaginationSize] = useState<"small" | "medium">("medium");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 

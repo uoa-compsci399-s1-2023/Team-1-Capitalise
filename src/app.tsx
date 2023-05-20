@@ -41,6 +41,7 @@ export type TFiltersState = {
 interface TSearchContext {
   currFilters: TFiltersState;
   setFilters: React.Dispatch<SetStateAction<TFiltersState>>;
+  getDefaultFilters: () => TFiltersState
 }
 
 export const SearchContext = createContext<TSearchContext>(
@@ -98,7 +99,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AwardTypeContext.Provider value={awardTypes}>
-          <SearchContext.Provider value={{ currFilters, setFilters }}>
+          <SearchContext.Provider value={{ currFilters, setFilters, getDefaultFilters }}>
             <ThemeProvider theme={customTheme1}>
               <Navbar />
               <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey}>

@@ -37,23 +37,27 @@ export default function ProjectDetailsAccordian() {
     // borderBottom: "none"
   }
 
+  let tags = ''
+  project.tags.forEach(tag => {
+    tags += ` ${tag.name}`
+  })
+  tags = tags.trim()
+
+
   return (
     <Box
-      sx={{ 
+      sx={{
         display: { md: 'none', sm: 'block' },
       }}
       p={'20px'}
     >
       {project.badges &&
-        <Accordion expanded={expanded === 'panel1'} sx={accordianSx} >
+        <Accordion expanded={false} sx={accordianSx} >
           <NoExpandAccordianSummary
             sx={{
               flexDirection: 'column',
               alignItems: 'center'
             }}
-            // expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
-            aria-controls="panel1bh-content"
-            id="panel1bh-header"
           >
             <Stack>
               <Typography fontWeight={500} width={'100%'} textAlign={'center'}>
@@ -67,8 +71,41 @@ export default function ProjectDetailsAccordian() {
 
       }
 
+      {/* Tags */}
+      <Accordion expanded={expanded === 'panel0'} disableGutters onChange={handleChange('panel0')} sx={accordianSx}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel3bh-content"
+          id="panel3bh-header"
+        >
+          <Typography sx={{ width: '33%', flexShrink: 0 }}>
+            Tags:
+          </Typography>
+          <Typography 
+            sx={{ 
+              color: 'text.secondary', 
+              textOverflow: 'ellipsis',
+              width: '100%',
+              whiteSpace: 'nowrap'
+              }}>
+            {tags}
+          </Typography>
+        </AccordionSummary>
+
+        <AccordionDetails>
+          <Stack
+            flexDirection={'row'}
+            flexWrap={'wrap'}
+          >
+            {project.members.map((member, index) => (
+              <MemberChip userId={member} key={index} />
+            ))}
+          </Stack>
+        </AccordionDetails>
+      </Accordion>
+
       {/* Category */}
-      <Accordion expanded={expanded === 'panel2'} sx={accordianSx} >
+      <Accordion expanded={false} sx={accordianSx} >
         <NoExpandAccordianSummary
           expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
           aria-controls="panel1bh-content"
@@ -82,7 +119,7 @@ export default function ProjectDetailsAccordian() {
       </Accordion>
 
       {/* Semester */}
-      <Accordion expanded={expanded === 'panel3'} sx={accordianSx}>
+      <Accordion expanded={false} sx={accordianSx}>
         <NoExpandAccordianSummary
           expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
           aria-controls="panel2bh-content"
@@ -97,7 +134,7 @@ export default function ProjectDetailsAccordian() {
 
       {/* Links */}
       {project.links.length > 0 &&
-        <Accordion expanded={expanded === 'panel4'} sx={accordianSx}>
+        <Accordion expanded={false} sx={accordianSx}>
           <NoExpandAccordianSummary
             expandIcon={<ExpandMoreIcon sx={{ visibility: 'hidden' }} />} // Maintain spacing
             aria-controls="panel4bh-content"
