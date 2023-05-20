@@ -77,7 +77,7 @@ const getUserById = async (req, res) => {
 const postUser = async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return res.status(400).send({fail: error.details[0].message});
   }
   try {
     let user = await User.findOne({ email: req.body.email });
