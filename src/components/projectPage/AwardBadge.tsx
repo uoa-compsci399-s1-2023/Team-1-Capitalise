@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import { Typography, Stack, useTheme, Box, Button, Tooltip } from '@mui/material'
 import { TParameter } from '../../model/TParameter'
 import { getBadgeById } from '../../api/getBadges'
@@ -6,6 +6,7 @@ import EditButton from './EditButton'
 import EditIcon from '@mui/icons-material/Edit'
 import EditAwardDialog from './dialogs/EditAwardDialog'
 import { useAuth } from '../../customHooks/useAuth'
+import { ProjectContext } from '../../routes/ProjectPage'
 
 
 interface AwardBadgeProps {
@@ -17,6 +18,7 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
 
   const [badge, setBadge] = useState<TParameter | null>(null);
   const [isHover, setIsHover] = useState(false);
+  const { checkIsAdminEdit } = useContext(ProjectContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const auth = useAuth();
   const theme = useTheme();
@@ -61,9 +63,9 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
           >
             {badge.value}
           </Typography>
-        </Stack>
-        {auth.isAllowed(['admin']) &&
-          <Tooltip title="Edit Award">
+
+        {checkIsAdminEdit() &&
+            // <Tooltip title="Edit Award">
             <Button
               sx={{
                 position: 'absolute',
@@ -84,10 +86,12 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
                 }}
               /> */}
             </Button>
-          </Tooltip>
-        }
+            // /* </Tooltip> *//
+          }
+        </Stack>
       </Stack>
-  } else if (auth.isAllowed(['admin'])) {
+      
+  } else if (checkIsAdminEdit()) {
     badgeContent =
       <Button>
         Add Award

@@ -75,7 +75,12 @@ export default function EditAwardDialog({ isOpen, setIsOpen }: EditAwardDialogPr
                 }
               }}
             >
-              <MenuItem key={"No badge"} value={"No badge"}>{"No badge"}</MenuItem>
+              <MenuItem 
+                key={"No badge"} 
+                value={"No badge"}
+                color='black'
+              >
+                {"No Award"}</MenuItem>
               {
                 badges.map(
                   (b, i) => <MenuItem key={b._id} value={b._id}>{b.value}</MenuItem>

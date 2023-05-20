@@ -13,43 +13,44 @@ import { API_URL } from "../../api/config";
 
 export default function AdminDeleteButton() {
 
-    const auth = useAuth();
-    const { project, setProject } = useContext(ProjectContext);
-    const theme = useTheme();
-    const navigate = useNavigate();
+  const auth = useAuth();
+  const { project, setProject, checkIsAdminEdit } = useContext(ProjectContext);
+  const theme = useTheme();
+  const navigate = useNavigate();
 
-    const InfoBox = styled(Typography)({
-      padding: '5px 10px',
-      border: `1px solid ${theme.palette.neutral.main}`,
-      borderRadius: '10px',
-      whiteSpace: 'nowrap'
-    })
+  const InfoBox = styled(Typography)({
+    padding: '5px 10px',
+    border: `1px solid ${theme.palette.neutral.main}`,
+    borderRadius: '10px',
+    whiteSpace: 'nowrap'
+  })
 
-    const adminDeleteProject = async () => {
-      const token = auth.getToken();
-      if (token) {
-        if (window.confirm("Are you sure you want to remove this project?")) {
-          fetch(`${API_URL}/api/projects/${project._id}`, {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "x-auth-token": token,
-            },
-            body: JSON.stringify({
-              projectId: project._id,
-            }),
-          }).then(() => {
-            // we need to redirect admin back to projects page upon project delete.
-            navigate("/projects");
-          });
-        }
+  const adminDeleteProject = async () => {
+    const token = auth.getToken();
+    if (token) {
+      if (window.confirm("Are you sure you want to remove this project?")) {
+        fetch(`${API_URL}/api/projects/${project._id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+          body: JSON.stringify({
+            projectId: project._id,
+          }),
+        }).then(() => {
+          // we need to redirect admin back to projects page upon project delete.
+          navigate("/projects");
+        });
       }
-    };
+    }
+  };
 
-    return (
-      auth.isAllowed(["admin"]) && auth.user ?
-        <Button
+  return (
+    checkIsAdminEdit() ?
+      <Button
+        sx={{maxWidth: "180px"}}
         variant="outlined"
         startIcon={<DeleteOutlineIcon />}
         onClick={() => adminDeleteProject()}

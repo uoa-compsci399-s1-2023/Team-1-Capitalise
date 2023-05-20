@@ -14,23 +14,20 @@ import { useAuth } from '../../../customHooks/useAuth';
 
 export default function CategoryField() {
 
-  const { project, setProjectChanges } = useContext(ProjectContext) // Project context
+  const { project, setProjectChanges, checkIsEdit } = useContext(ProjectContext) // Project context
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false); // For opening dialog box
   const [value, setValue] = useState<string>(''); // For onchange input validation
   const theme = useTheme();
   const auth = useAuth();
-  const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     fetchCurrentParameters()
   }, [])
 
   const handleMouseIn = () => {
-    if (auth.isAllowed(['admin'], project.members)) {
-      setIsHovering(true);
-    }
+    setIsHovering(true);
   }
 
   const handleMouseOut = () => {
@@ -104,7 +101,7 @@ export default function CategoryField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Category:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.category.value}</Typography>
 
-        {auth.isAllowed(['admin'], project.members) &&
+        {checkIsEdit() &&
           <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
         }
       </Box>
