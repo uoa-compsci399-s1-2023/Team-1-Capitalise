@@ -38,7 +38,7 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
       />
       <Stack
         flexDirection={'row'}
-        alignItems={'center'}
+        // alignItems={'center'}
         // height={'100%'}
         gap={0}
         onMouseEnter={() => setIsHover(true)}
@@ -48,11 +48,15 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
         <Button
           variant='text'
           color='black'
-          onClick={() => setSelected(index)}>
+          onClick={() => setSelected(index)}
+        >
+  
+
           <Box
             borderBottom={isSelected ? `3px solid ${theme.palette.neutral.main}` : `3px solid transparent`}
             p={0.5}
             fontSize={16}
+            whiteSpace={'nowrap'}
           >
             {value}
           </Box>

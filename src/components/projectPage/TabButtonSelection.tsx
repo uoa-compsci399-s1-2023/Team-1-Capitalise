@@ -38,13 +38,18 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 		<Stack
 			className='tab-btns'
 			flexDirection={'row'}
-			justifyContent={'center'}
+			// justifyContent={'center'}
 			alignItems={'center'}
 			mb={2}
-			pb={3}
 			borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
 			width={'90%'}
-			flexWrap={'wrap'}
+			sx={{
+				flexWrap: {md: 'wrap', xs: 'nowrap'},
+				overflowX: 'auto',
+				justifyContent: {md: 'center', xs: 'start'},
+				pb: {md: 3, xs: 1},
+				mb: {md: 2, xs: 0}
+			}}
 		>
 			
 			{
@@ -61,8 +66,8 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 
 			{checkIsEdit() &&
 				<Button
-					color='neutral'
-					variant='outlined'
+					color='black'
+					variant='text'
 					size='small'
 					onClick={() => {handleAddBtnClick()}}
 					sx={{
