@@ -196,12 +196,18 @@ function SignInSide() {
               direction="column"
               justifyContent="flex-end"
               alignItems="center">
+                <Grid item>
+                  <Link href="/ResetPassword" underline="hover" variant="body2">
+                    {"Forgot password?"}
+                  </Link>
+                </Grid>
                 
                 <Grid item>
                   <Link href="/register" underline="hover" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
+                
 
               </Grid>
             </Box>

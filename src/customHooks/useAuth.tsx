@@ -19,6 +19,7 @@ type TAuthReturnType = {
   getToken: () => string | null; // For restricted api calls.
   getLatestUser: () => void;
   error: string; // Set with server message if signin or signout fails.
+  success: string; //Set with server message if api succeeds.
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
   googleAuth: () => void;
   resetPassword: (email: any) => void;
@@ -27,6 +28,7 @@ type TAuthReturnType = {
 function useProvideAuth(): TAuthReturnType {
   const [user, setUser] = useState<TUser | null>(null);
   const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -156,6 +158,8 @@ function useProvideAuth(): TAuthReturnType {
   }
   //Reset Password API
   function resetPassword(email: any) {
+    setError('');
+    setSuccess('');
     //make the reset call
     fetch(`${API_URL}/api/users/sendResetPasswordEmail`, {
       method: "POST",
@@ -166,7 +170,12 @@ function useProvideAuth(): TAuthReturnType {
     })
       .then((response) => response.json())
       .then((json) => {
-        if (json.success) {alert(json.success)} else {alert(json.fail)}});
+        if (json.success) {
+          setSuccess(json.success);
+        } else {
+          setError(json.fail);
+        }
+      });
   }
 
   // Returns the currently saved token.
@@ -201,6 +210,7 @@ function useProvideAuth(): TAuthReturnType {
     getToken,
     getLatestUser,
     error,
+    success,
     isLoading,
     googleAuth,
     resetPassword
