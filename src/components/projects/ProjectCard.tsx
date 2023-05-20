@@ -114,9 +114,18 @@ const ProjectCard = ({
           >
             <Box display="flex">
               {awardIcon && (
-                <Box paddingRight="10px">
-                  <img src={awardIcon} width="40px"></img>
-                </Box>
+                <Box
+                  display="flex"
+                  maxWidth="50px"
+                  height="50px"
+                  component="img"
+                  src={awardIcon}
+                  alt="award icon"
+                  referrerPolicy="no-referrer"
+                  paddingRight="10px"
+                  justifySelf="start"
+                  sx={{ objectFit: "contain" }}
+                ></Box>
               )}
               <Box display="grid">
                 <Typography
