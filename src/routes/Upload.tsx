@@ -83,7 +83,7 @@ export default function Upload() {
   const nav = useNavigate();
   const auth = useAuth();
   useEffect(() => {
-    if (!auth.user) {
+    if (!auth.user || auth.user.userType === "visitor") {
       nav("/")
     }
   })

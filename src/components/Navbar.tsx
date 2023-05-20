@@ -155,9 +155,7 @@ function ResponsiveAppBar() {
           >
             <SearchBar />
             {/* Check if User is logged in */}
-            {uCheck
-              ? [
-                  <Button
+            {uCheck && auth.user?.userType === "graduate" && [<Button
                     sx={{ padding: "0 25px" }}
                     key="upload"
                     variant="contained"
@@ -167,7 +165,9 @@ function ResponsiveAppBar() {
                     }}
                   >
                     Upload
-                  </Button>,
+                  </Button>]}
+            {uCheck 
+              ? [
                   <IconButton
                     key="profilepic"
                     onClick={handleOpenUserMenu}
@@ -346,7 +346,7 @@ function ResponsiveAppBar() {
               
               )}
 
-              {uCheck && [<MenuItem disabled = {auth.user?.project ? true : false}
+              {uCheck && auth.user?.userType === "graduate" && [<MenuItem disabled = {auth.user?.project ? true : false}
                     key="upload"
                     onClick={() => {
                       handleCloseUserMenu();
