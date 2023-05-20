@@ -106,7 +106,8 @@ export default function ResetPasswordForm() {
                label="Email Address"
                name="email"
                autoComplete="off"
-               variant={"filled"}
+               color={emailSuccessText ? 'success' : 'primary'}
+               variant={emailSuccessText ? "filled" : 'standard'}
                autoFocus
                value={email}
                error={!!emailErrorText}
