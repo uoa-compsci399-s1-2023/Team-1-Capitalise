@@ -776,9 +776,7 @@ const searchProjects = async (req, res) => {
     // If keyword is specified as a parameter, add it to the query. It may be in either the name or tag.
     if (req.query.keyword) {
       const tag = await Tag.findOne({
-        name:
-          req.query.keyword[0].toUpperCase() +
-          req.query.keyword.substring(1).toLowerCase(),
+        name: { $regex: "^" + req.query.keyword + "$", $options: "i" },
       });
       if (tag) {
         query.$or = [
