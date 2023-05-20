@@ -131,13 +131,15 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
     setLoading(true);
   };
 
+  // Helper for link validation
   const isUrlValid = (url: string, urlWebsite: string) => {
     return (
-      url.startsWith("https://www." + urlWebsite) ||
-      url.startsWith("https://" + urlWebsite) ||
-      url.startsWith("http://" + urlWebsite) ||
-      !url
-    );
+      !url.includes(" ") &&
+      (url.startsWith("https://www." + urlWebsite) ||
+        url.startsWith("https://" + urlWebsite) ||
+        url.startsWith("http://" + urlWebsite) ||
+        !url
+      ));
   };
 
   const generateLink = () => {
