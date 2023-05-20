@@ -76,7 +76,7 @@ const s3Upload = async (params) => {
 //Deletes all images related objects in mongoDb
 const deleteAllTabImagesInMongoDb = async (projectId, tabName) => {
     const project = await Project.findById(projectId)
-    .populate("members", "_id")
+
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -176,7 +176,7 @@ const getTabFolder = async (projectId, tabName) => {
 const createTab = async (projectId, files) => {
     //Gets the projects contents    
     const project = await Project.findById(projectId)
-    .populate("members", "_id")
+
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -232,7 +232,7 @@ const createTab = async (projectId, files) => {
 //Doesn't delete image from s3
 const deleteSingleTabFolderImageMongo = async (projectId, tabName, folder, url) => {
     const project = await Project.findById(projectId)
-    .populate("members", "_id")
+
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -267,7 +267,7 @@ const deleteSingleTabFolderImageMongo = async (projectId, tabName, folder, url) 
 //Expects there to be tabContent
 const singleUpdateToMongo = async (projectId, tabName, folder, urlKey) => {
     const project = await Project.findById(projectId)
-    .populate("members", "_id")
+
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -654,7 +654,6 @@ const uploadGallery = async (req, res) => {
 //Adds urls of the gallery into the tabname.content
 const addGalleryToMongoDb = async(projectId, tabName,  listOfUrls) => {
     const project = await Project.findById(projectId)
-    .populate("members", "_id")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -692,7 +691,6 @@ const uploadImageToGallery = async (req, res) => {
     const noFunnyBusinessInTabName = revertString(tabName)
     //find the gallery based galleryId
     const project = await Project.findById(projectId)
-    .populate("members", "_id")
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -762,7 +760,7 @@ const deleteGalleryImageS3 = async(req, res) => {
         return res.status(404).send({project:null, msg: "No project found"})
     }
     const project = await Project.findById(projectId)
-    .populate("members", "_id")
+
     .populate("semester", "value -_id")
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
@@ -840,7 +838,7 @@ const deleteGalleryS3 = async (req, res) => {
     try {
       // Check if project exists in mongoDB
       const project = await Project.findById(projectId)
-      .populate("members", "_id")
+  
       .populate("semester", "value -_id")
       .populate("category", "value -_id")
       .populate("badges", "value -_id")
@@ -968,7 +966,7 @@ const bannerUpload = async (req, res) => {
         const bannerURL = checkString(URL + params.Key)
         await Project.findByIdAndUpdate(projectId, { banner:  bannerURL})
         const project = await Project.findById(projectId)
-        .populate("members", "_id")
+    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
@@ -1021,7 +1019,7 @@ const bannerDelete = async (req, res) => {
         await Project.findByIdAndUpdate(projectId, {banner: `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/banners/banner${bannerNumber}.png`})
 
         const project = await Project.findById(projectId)
-        .populate("members", "_id")
+    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
@@ -1078,7 +1076,7 @@ const thumbnailUpload = async (req, res) => {
         const url = checkString(URL + params.Key)
         await Project.findByIdAndUpdate(projectId, {thumbnail: url})
         const project = await Project.findById(projectId)
-        .populate("members", "_id")
+    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
@@ -1122,7 +1120,7 @@ const thumbnailDelete = async (req, res) => {
     try{
         await Project.findByIdAndUpdate(projectId, {thumbnail: process.env.DEFAULTTHUMBNAIL})
         const project = await Project.findById(projectId)
-        .populate("members", "_id")
+    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
