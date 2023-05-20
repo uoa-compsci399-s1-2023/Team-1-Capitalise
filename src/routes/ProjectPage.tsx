@@ -115,11 +115,7 @@ export default function ProjectPage() {
   }
 
   const checkIsAdminEdit = () => {
-    return (
-      isEditMode &&
-      isDesktop &&
-      auth.isAllowed(['admin'])
-    )
+    return isEditMode && isDesktop && auth.isAllowed(['admin'])
   }
 
   return (
