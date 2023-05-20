@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useContext } from 'react'
 import { SearchContext } from '../../app'
-import { Box, TextField, SelectChangeEvent, Typography } from '@mui/material'
+import { Box, TextField, SelectChangeEvent, Typography, Button } from '@mui/material'
 import FilterDropdown from './FilterDropdown'
 import { searchFilterParams, TAvailParameters } from './AvailableParams'
 
@@ -11,7 +11,7 @@ import { searchFilterParams, TAvailParameters } from './AvailableParams'
 
 export default function DesktopSearchFilters() {
 
-  const { currFilters, setFilters } = useContext(SearchContext);
+  const { currFilters, setFilters, getDefaultFilters } = useContext(SearchContext);
 
   const size = 'small';
   const variant = 'outlined';
@@ -25,6 +25,12 @@ export default function DesktopSearchFilters() {
       ...currFilters,
       [name]: param,
       currPage: 1
+    })
+  }
+
+  const handleClear = () => {
+    setFilters({
+      ...getDefaultFilters()
     })
   }
 
@@ -65,6 +71,13 @@ export default function DesktopSearchFilters() {
         <FilterDropdown value={currFilters.semester.value} name='semester' label='Semester' options={searchFilterParams.semester} handleChange={handleChange} />
         <FilterDropdown value={currFilters.award.value} name='award' label='Award' options={searchFilterParams.award} handleChange={handleChange} />
         <FilterDropdown value={currFilters.sortBy.value} name='sortBy' label='Sort by' options={searchFilterParams.sortBy} handleChange={handleChange} />
+
+        <Button
+          variant='outlined'
+          onClick={() => handleClear()}
+        >
+          Clear
+        </Button>
       </Box>
     </Box>
   )
