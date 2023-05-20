@@ -6,29 +6,46 @@ const {graduate} = require("../middleware/graduate");
 
 const multer = require('multer')
 const {
+    //User profile endpoints
     uploadUserProfilePicture,
-    uploadGallery,
     deleteUserProfilePic,
+
+    //Gallery endpoints - requires a tab to exist
+    uploadGallery,
     deleteGalleryS3,
     deleteGalleryImageS3,
     uploadImageToGallery,
+
+    //Uploads image, gallery, video, poster acts as initial creation of a tab
     uploadTabPictures,
+    
+    //Upload max 5 phots of type image, video or poster
     uploadTabSingle,
+    //Delete the photo from a tab
     deleteTabSingleFolderImage,
+
+    //Delete all photos in the tab
     deleteAllFolders,
+
+    //Banner for project
     bannerUpload,
     bannerDelete,
+    //Thumbnail for project
     thumbnailUpload,
     thumbnailDelete,
+    //Admin uploads of heroBanners for landing page
     uploadHeroBanners,
     deleteHeroBanner,
     getHeroBanners,
+    //Adming uploads of new awards
     uploadAward,
     deleteAward,
     getAwards,
+    //Mobile Banners
     uploadMobileHeroBanners,
     getMobileHeroBanners,
     deleteMobileHeroBanner,
+    //Get the default banners and thumnails
     getDefaultBanners,
     getDefaultThumbnail,
 } = require('../controllers/s3ControllerApi')
