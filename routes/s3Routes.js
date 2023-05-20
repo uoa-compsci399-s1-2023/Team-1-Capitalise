@@ -96,7 +96,7 @@ router.delete('/mobileHeroBanner/:heroBannerName' , deleteMobileHeroBanner) //WO
 
 
 /***************************************************
-*         PROJECT CREATION POST REQUEST            *
+*               PROJECT CRUD REQUEST               *
 ****************************************************
 * Creates a new tab in a project                   *
 * accepts image, gallery, video or poster files    *
@@ -104,10 +104,6 @@ router.delete('/mobileHeroBanner/:heroBannerName' , deleteMobileHeroBanner) //WO
 
 //Upload all images. Should only be used when users create the project in client side
 router.post('/project/:projectId/:tabName' , projectFields, uploadTabPictures)  //Works
-
-/***************************************************
-*        PROJECT CREATION DELETE REQUEST           *
-***************************************************/
 //Delete all project pictures in a tab
 router.delete('/project/:projectId/:tabName' , deleteAllFolders) //WORKS
 //Delete either banner, video or poster image in a tab
@@ -120,7 +116,6 @@ router.delete('/project/:projectId/:tabName/:folder/:key' ,  deleteTabSingleFold
 
 //Uploads a new gallery to a tab name
 router.post('/gallery/:projectId/:tabName' , projectPictureRoute.array('gallery', 5), uploadGallery) //WORKS
-
 
 //Deletes an entire gallery and removes any urls within this gallery that is in other galleries in the same tab
 //And deletes the images from s3
