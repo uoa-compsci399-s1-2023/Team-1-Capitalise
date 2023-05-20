@@ -54,7 +54,10 @@ export default function SignUp() {
   const validateName = () => {
     if (!name) {
       setNameErrorText("Please enter a name.");
+
       
+    } else if(name.length > 50) {
+      setNameErrorText("Name has reached maximum characters of 50");
     } else if (spCh.test(name)) {
       setNameErrorText("Please enter a name without special characters");
     
