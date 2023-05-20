@@ -143,7 +143,7 @@ const postUser = async (req, res) => {
     user = await user.save();
     const token = user.generateAuthToken();
     
-    res.stauts(201).send(user);
+    res.status(201).send(user);
     sendConfirmationEmail(user.name, user.email, user.confirmationCode);
   } catch (ex) {
     res.status(500).send(`Internal Server Error: ${ex}`);
