@@ -47,7 +47,8 @@ export default function ThumbnailField() {
 					width={'250px'}
 					src={project.thumbnail}
 					style={{
-						borderRadius: '10px'
+						borderRadius: '10px',
+						objectFit: 'cover'
 					}}
 				/>
 				<Stack

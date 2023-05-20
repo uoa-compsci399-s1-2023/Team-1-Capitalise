@@ -130,7 +130,11 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
         // ))
       })
 
-      // Patch changes first
+      tagsToCreate.forEach(tag => {
+        tagsToPatch.push(tag)
+      })
+
+      // Patch changes
       if (tagsToPatch.length > 0) {
         const resp = await patchProject(
           project._id,
@@ -144,20 +148,20 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
         }
       }
 
-      // Now create new tags.
-      for (let i = 0; i < tagsToCreate.length; i++) {
-        console.log('running')
-        const resp = await createNewTag(
-          project._id,
-          tagsToCreate[i].name,
-          auth.getToken() as string
-        );
-        if (resp.ok) {
-          latestProject = await resp.json();
-        } else {
-          console.log(await resp.text());
-        }
-      }
+      // // Now create new tags.
+      // for (let i = 0; i < tagsToCreate.length; i++) {
+      //   console.log('running')
+      //   const resp = await createNewTag(
+      //     project._id,
+      //     tagsToCreate[i].name,
+      //     auth.getToken() as string
+      //   );
+      //   if (resp.ok) {
+      //     latestProject = await resp.json();
+      //   } else {
+      //     console.log(await resp.text());
+      //   }
+      // }
       
       setProject(latestProject)
       setIsDialogOpen(false);
@@ -293,7 +297,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                       key={option.tag._id}
                       // Display add option in different colour
                       style={{
-                        fontWeight: option.tag._id === 'new tag' ? 450 : 400
+                        fontWeight: option.tag._id === option.tag.name ? 450 : 400
                       }}
 
                     >
