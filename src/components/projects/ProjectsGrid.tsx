@@ -30,9 +30,7 @@ export default function ProjectsGrid({
               teamname={project.teamname ? project.teamname : "teamname"}
               category={project.category.value}
               likes={project.likes}
-              badges={
-                project.badges ? project.badges.value : "default"
-              }
+              badges={project.badges ? project.badges.value : "default"}
               projectID={project._id}
             ></ProjectCard>
           </Box>

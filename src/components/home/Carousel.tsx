@@ -83,9 +83,7 @@ const Carousel = ({
                 teamname={project.teamname ? project.teamname : "teamname"}
                 category={project.category.value}
                 likes={project.likes}
-                badges={
-                  project.badges ? project.badges.value : "" // Yathi - Updated to fix null error
-                }
+                badges={project.badges ? project.badges.value : "default"}
                 projectID={project._id}
                 key={project._id}
               ></ProjectCard>
