@@ -88,7 +88,7 @@ const DashboardMobileHeroBanners = ({
                     <TableCell>
                       <Box
                         display="flex"
-                        width="450"
+                        width="450px"
                         height="200px"
                         component="img"
                         src={url}

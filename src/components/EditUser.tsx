@@ -49,7 +49,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
-  const nameCharacterLimit = 500;
+  const nameCharacterLimit = 100;
   const bioCharacterLimit = 2000;
   const linkCharacterLimit = 500;
   const maxProfileSizeMB = 4;
