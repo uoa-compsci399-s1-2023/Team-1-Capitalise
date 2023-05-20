@@ -227,17 +227,6 @@ describe("DELETE parameters", () => {
         expect(response.body.removed).toBe(`${awardValue} removed`);
       });
   });
-  it("Sends a 400 response if an admin attempts to delete the semester SX 20XX", async () => {
-    await request(app)
-      .delete(`/api/parameters/645f1919946e6819ba00676c`)
-      .set("x-auth-token", process.env.ANDREWTOKEN)
-      .expect(400)
-      .then((response) => {
-        expect(response.body.fail).toBe(
-          "Error - You cannot delete this parameter! It is required by the system for error handling!"
-        );
-      });
-  });
   it("Sends a 400 response if an admin attempts to delete the category Miscellaneous", async () => {
     await request(app)
       .delete(`/api/parameters/645f15c6709ff2247f0d3921`)

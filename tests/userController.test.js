@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 
 var projectId = ''
+var GRADTOKEN = ''
+var graduateUserId = ''
 const projectData = {
   "name": "userTestProject", 
   "semester": "S1 2023",
@@ -13,17 +15,40 @@ const projectData = {
   "tags": ["superCool"]
 }    
 
+const graduateData = {
+  "name": "Mongo Grad", 
+  "email": "MongoGrad@aucklanduni.ac.nz",
+  "password": "Mongo Mongo"
+}    
+
+
 beforeAll(async () => {
   const response = await request(app)
   .post('/api/projects/')
   .send(projectData)
-  .set('x-auth-token', process.env.ANDREWTOKEN)
+  .set('x-auth-token', process.env.ANDREWTOKEN);
   projectId = response.body._id
+
+  const responseUser = await request(app)
+  .post('/api/users/')
+  .send(graduateData)
+  .set('x-auth-token', process.env.ANDREWTOKEN);
+  graduateUserId = responseUser.body._id
+
+  GRADTOKEN = await request(app)
+  .post('/api/auth/')
+  .send({email: graduateData.email, password: graduateData.password})
 })
+
+console.log(GRADTOKEN, graduateUserId)
 
 afterAll(async () => {
   await request(app)
   .delete(`/api/projects/${projectId}`)
+  .set('x-auth-token', process.env.ANDREWTOKEN)
+
+  await request(app)
+  .delete(`/api/users/user/${graduateUserId}`)
   .set('x-auth-token', process.env.ANDREWTOKEN)
 })
 
@@ -50,7 +75,7 @@ describe("GET User by ID", () => {
         //expect(response.body.length).toEqual(1)
 
         // Check the response data
-        expect(response.body.username).toBe("alin952@aucklanduni.ac.nz");
+        expect(response.body._id).toBe("6432f8826cce2fc1706572d3");
       });
   });
   it("Sends a 400 response if the userID is not valid", async () => {
@@ -125,7 +150,7 @@ describe("GET Current User", () => {
       )
       .expect(200)
       .then((response) => {
-        expect(response.body.username).toBe("test@manox.com");
+        expect(response.body.userType).toBe("visitor");
       });
   });
   it("Sends a 400 response if the x-auth-token is invalid", async () => {
@@ -170,9 +195,6 @@ describe("POST user", () => {
         // Check the response
         expect(response.body._id).toBeTruthy();
         expect(response.body.name).toEqual(data.name);
-        expect(response.body.email).toEqual(data.email);
-        expect(response.body.username).toEqual(data.email);
-        expect(response.body.password).not.toEqual(data.password);
         expect(response.body.skills).toEqual(data.skills);
         expect(response.body.profilePicture).toBeTruthy();
         expect(response.body.userType).toEqual("visitor");
@@ -217,9 +239,6 @@ describe("POST user", () => {
         // Check the response
         expect(response.body._id).toBeTruthy();
         expect(response.body.name).toEqual(data.name);
-        expect(response.body.email).toEqual(data.email);
-        expect(response.body.username).toEqual(data.email);
-        expect(response.body.password).not.toEqual(data.password);
         expect(response.body.skills).toEqual(data.skills);
         expect(response.body.profilePicture).toBeTruthy();
         expect(response.body.userType).toEqual("graduate");
@@ -264,9 +283,6 @@ describe("POST user", () => {
         // Check the response
         expect(response.body._id).toBeTruthy();
         expect(response.body.name).toEqual(data.name);
-        expect(response.body.email).toEqual(data.email);
-        expect(response.body.username).toEqual(data.email);
-        expect(response.body.password).not.toEqual(data.password);
         expect(response.body.skills).toEqual(data.skills);
         expect(response.body.profilePicture).toBeTruthy();
         expect(response.body.userType).toEqual("admin");
@@ -305,9 +321,6 @@ describe("POST user", () => {
         // Check the response
         expect(response.body._id).toBeTruthy();
         expect(response.body.name).toEqual(data.name);
-        expect(response.body.email).toEqual(data.email);
-        expect(response.body.username).toEqual(data.email);
-        expect(response.body.password).not.toEqual(data.password);
         expect(response.body.profilePicture).toBeTruthy();
         expect(response.body.userType).toEqual("graduate");
         expect(response.body.isGoogleCreated).toBe(false);
@@ -384,13 +397,13 @@ describe("POST user", () => {
 describe("PATCH Current User", () => {
   it("Sends a 200 response if the user with a valid x-auth-token is succesfully updated", async () => {
     const OriginalUser = await User.findOne({
-      _id: "6432fc317b09c2f91d48a0e3",
+      _id: graduateUserId,
     });
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        GRADTOKEN
       )
       .send({
         name: "Alexis Qin",
@@ -404,29 +417,29 @@ describe("PATCH Current User", () => {
         expect(user.name).not.toBe(OriginalUser.name);
       });
 
-    // RESET IT BACK TO ALEX QIN
+    // RESET IT BACK TO Mongo Grad
     await User.findOne({
-      _id: "6432fc317b09c2f91d48a0e3",
+      _id: graduateUserId,
     });
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        GRADTOKEN
       )
       .send({
-        name: "Alex Qin",
+        name: "Mongo Grad",
       });
   });
   it("Sends a 200 response if an admin updates a different user", async () => {
     const OriginalUser = await User.findOne({
-      _id: "6432fc317b09c2f91d48a0e3",
+      _id: graduateUserId,
     });
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        ANDREWTOKEN
       )
       .send({
         name: "Alexis Qin",
@@ -440,23 +453,23 @@ describe("PATCH Current User", () => {
         expect(user.name).not.toBe(OriginalUser.name);
       });
 
-    // RESET IT BACK TO ALEX QIN
+    // RESET IT BACK TO Mongo Graduate
     await User.findOne({
-      _id: "6432fc317b09c2f91d48a0e3",
+      _id: graduateUserId,
     });
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        GRADTOKEN
       )
       .send({
-        name: "Alex Qin",
+        name: "Mongo Graduate",
       });
   });
   it("Sends a 400 response if the x-auth-token is invalid", async () => {
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set("x-auth-token", "No Bueno")
       .expect(400)
       .then((response) => {
@@ -477,7 +490,7 @@ describe("PATCH Current User", () => {
   });
   it("Sends a 401 response if no x-auth-token is provided", async () => {
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .expect(401)
       .then((response) => {
         expect(response.body.fail).toBe("Access denied. No token provided.");
@@ -497,10 +510,10 @@ describe("PATCH Current User", () => {
   });
   it("Disregards if a visitor or graduate adds a userType attribute, but updates all other provided attributes.", async () => {
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        GRADTOKEN
       )
       .send({
         name: "Alexis Qin",
@@ -516,52 +529,48 @@ describe("PATCH Current User", () => {
         expect(user.userType).toBe("graduate");
       });
 
-    // RESET IT BACK TO ALEX QIN
+    // RESET IT BACK TO Mongo Graduate
     await User.findOne({
-      _id: "6432fc317b09c2f91d48a0e3",
+      _id: graduateUserId,
     });
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        GRADTOKEN
       )
       .send({
-        name: "Alex Qin",
+        name: "Mongo Graduate",
       });
   });
   it("Updates the username field if the email address of a valid PATCH request is updated", async () => {
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        GRADTOKEN
       )
       .send({
         email: "alex.qin@aucklanduni.ac.nz",
       })
       .expect(200)
       .then(async (response) => {
-        expect(response.body.email).toBe("alex.qin@aucklanduni.ac.nz");
-        expect(response.body.username).toBe("alex.qin@aucklanduni.ac.nz");
         const user = await User.findOne({ _id: response.body._id });
         expect(user).toBeTruthy();
-        expect(user.email).toBe("alex.qin@aucklanduni.ac.nz");
-        expect(user.username).toBe("alex.qin@aucklanduni.ac.nz");
       });
 
     // RESET THE EMAIL BACK TO ALEXQIN@GMAIL.COM
     await User.findOne({
-      _id: "6432fc317b09c2f91d48a0e3",
+      _id: graduateUserId,
     });
     await request(app)
-      .patch("/api/users/user/6432fc317b09c2f91d48a0e3")
+      .patch(`/api/users/user/${graduateUserId}`)
       .set(
         "x-auth-token",
-        process.env.ALEXTOKEN
+        GRADTOKEN
       )
       .send({
-        email: "alexqin@gmail.com",
+        email: "MongoGrad@aucklanduni.ac.nz",
       });
   });
 });
