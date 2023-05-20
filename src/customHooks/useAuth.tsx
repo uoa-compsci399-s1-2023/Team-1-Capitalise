@@ -1,7 +1,8 @@
-import { useState, useContext, createContext, useEffect } from "react";
+import { useState, useContext, createContext, useEffect, Dispatch, SetStateAction } from "react";
 import { TUser } from "../model/TUser";
 import { API_URL } from "../api/config";
 import { useNavigate } from "react-router-dom";
+import { Snackbar, Alert } from "@mui/material";
 
 interface SignUpProps {
   name: TUser["name"];
@@ -21,12 +22,21 @@ type TAuthReturnType = {
   error: string; // Set with server message if signin or signout fails.
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
   googleAuth: () => void;
+  openVerifyAlert: boolean;
+  setOpenVerifyAlert: Dispatch<SetStateAction<boolean>>;
+  signUpError: TServerResponseError | null;
 };
+
+type TServerResponseError = {
+  fail: string
+}
 
 function useProvideAuth(): TAuthReturnType {
   const [user, setUser] = useState<TUser | null>(null);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
+  const [signUpError, setSignUpError] = useState<TServerResponseError | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [openVerifyAlert, setOpenVerifyAlert] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,7 +65,6 @@ function useProvideAuth(): TAuthReturnType {
     })
   }
 
-
   // validates token
   function validateToken() {
     const savedToken = localStorage.getItem('jwtToken');
@@ -66,10 +75,11 @@ function useProvideAuth(): TAuthReturnType {
           // sign out if token invalid.
           if (!resp.ok) {
             signout();
-          } 
+          }
         })
     }
   }
+
   function googleAuth() {
     setUser(null);
     setIsLoading(true);
@@ -77,7 +87,6 @@ function useProvideAuth(): TAuthReturnType {
     const queryParameters = new URLSearchParams(window.location.search);
     const token = queryParameters.get('token');
     localStorage.setItem('jwtToken', token as string);
-
   }
 
   // signs in user from given username and password
@@ -91,7 +100,7 @@ function useProvideAuth(): TAuthReturnType {
       .then(resp => {
         if (!resp.ok) {
           // Set login error
-          resp.text().then(err => {setError(err); setIsLoading(false)} );
+          resp.text().then(err => { setError(err); setIsLoading(false) });
         } else {
           // Otherwise save token and signin.
           resp.text().then(token => {
@@ -133,9 +142,11 @@ function useProvideAuth(): TAuthReturnType {
       body: postBody,
     }).then(resp => {
       if (resp.ok) {
-        signin(newUser.email, newUser.password); // signin user if signup successful
+        // signin(newUser.email, newUser.password); // signin user if signup successful
+        setSignUpError(null);
+        setOpenVerifyAlert(true);
       } else {
-        resp.text().then(err => setError(err));
+        resp.json().then(err => setSignUpError(err));
       }
     }).finally(() => setIsLoading(false));
   }
@@ -161,19 +172,13 @@ function useProvideAuth(): TAuthReturnType {
   }
 
   // Checks if the current user is authorised based on given roles and ids
-  function isAllowed(
-    allowedRoles?: TUser['userType'][],
-    allowedIds?: string[] | null) 
-    {
-    if (!user) {
-      return false;
-    } else if (
-      (allowedIds && !allowedIds.includes(user._id)) && 
-      (allowedRoles && !allowedRoles.includes(user.userType))
-    ) {
-      return false;
+  function isAllowed(allowedRoles?: TUser['userType'][], allowedIds?: string[] | null) {
+    if (user && allowedRoles && allowedRoles.includes(user.userType)) {
+      return true;
+    } else if (user && allowedIds && allowedIds.includes(user._id)) {
+      return true
     }
-    return true
+    return false;
   }
 
   return {
@@ -187,7 +192,10 @@ function useProvideAuth(): TAuthReturnType {
     getLatestUser,
     error,
     isLoading,
-    googleAuth
+    googleAuth,
+    openVerifyAlert,
+    setOpenVerifyAlert,
+    signUpError
   };
 }
 
@@ -198,6 +206,7 @@ const authContext = createContext<TAuthReturnType>({} as TAuthReturnType);
 export function AuthProvider({ children }: { children: any }) { // Gave any type but might need to be React.ReactNode
   return (
     <authContext.Provider value={useProvideAuth()}>
+
       {children}
     </authContext.Provider>
   )
