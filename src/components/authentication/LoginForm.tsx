@@ -20,8 +20,7 @@ import Logo from "../../assets/Logo.svg";
 import { useAuth } from '../../customHooks/useAuth';
 import { Divider } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-//Theme
-const theme = createTheme();
+
 
 import { useNavigate } from "react-router-dom";
 
@@ -103,7 +102,6 @@ function SignInSide() {
     
 
   return (
-    <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -124,29 +122,31 @@ function SignInSide() {
           <Box
             
             sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              
+                minHeight: '100vh',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent:'center'
             }}
           >
-            <Box sx={{mb: 3, mt: "11vh"}}>
-            <Box
-              padding="0 30px"
-              component="img"
-              src={Logo}
-              alt="logo"
-              sx={{
-                width: "300px",
-                height: "auto",
-                flexGrow: 1,
-                display: { xs: "flex", md: "flex" },
-              }}
-            ></Box>
             
+            <Box sx={{mb: 3}}>
+            <Link href="/">
+              <Box
+                padding="0 30px"
+                component="img"
+                src={Logo}
+                alt="logo"
+                sx={{
+                  width: "300px",
+                  height: "auto",
+                  flexGrow: 1,
+                  display: { xs: "flex", md: "flex" },
+                }}
+              ></Box>
+            </Link>
             </Box>
+            
             <Typography component="h1" variant="h5" sx={{fontWeight: 500}}>
               Login
             </Typography>
@@ -214,7 +214,7 @@ function SignInSide() {
           </Box>
         </Grid>
       </Grid>
-    </ThemeProvider>
+
   );
 }
 

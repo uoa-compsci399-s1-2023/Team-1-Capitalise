@@ -27,6 +27,7 @@ import Upload from "./routes/Upload";
 import { getAwardTypes } from "./api/getAwardTypes";
 import { TAward } from "./model/TAward";
 import ResetPassword from "./routes/ResetPassword";
+import ChangePassword from "./routes/ChangePassword";
 
 export type TFiltersState = {
   keywords: string;
@@ -116,10 +117,8 @@ export default function App() {
                   <Route path="/user/:userID" element={<UserProfile />} />
                   <Route path="/Register" element={<Registration />} />
                   <Route path="/ResetPassword" element={<ResetPassword />} />
-                  <Route
-                    path="/googleSuccessRedirect"
-                    element={<GoogleSuccessRedirect />}
-                  />
+                  <Route path="/ChangePassword" element={<ChangePassword />} />
+                  <Route path="/googleSuccessRedirect" element={<GoogleSuccessRedirect />}/>
                   <Route path="/googleFailure" element={<GoogleFailure />} />
                   <Route path="/upload" element={<Upload />} />
                   <Route path="/adminDashboard" element={<AdminDashboard />} />

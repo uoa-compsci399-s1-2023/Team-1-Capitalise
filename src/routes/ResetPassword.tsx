@@ -7,8 +7,8 @@ import ResetPasswordForm from "../components/authentication/ResetPasswordForm";
 export default function ResetPassword() {
 
     return (
-
-    <Box mt={'-8vh'}> 
+    <Box mt='-8vh'>
+        
         <ResetPasswordForm />
     </Box>
     );

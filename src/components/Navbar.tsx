@@ -41,6 +41,7 @@ const NoNavPages = [
   "/login",
   "/googleSuccessRedirect",
   "/googleFailure",
+  "/ResetPassword",
 ];
 
 const StyledToolBar = styled(Toolbar)({
@@ -160,6 +161,7 @@ function ResponsiveAppBar() {
                     sx={{ padding: "0 25px" }}
                     key="upload"
                     variant="contained"
+                    disabled = {auth.user?.project ? true : false}
                     onClick={() => {
                       goToPage("upload");
                     }}
@@ -344,7 +346,7 @@ function ResponsiveAppBar() {
               
               )}
 
-              {uCheck && [<MenuItem
+              {uCheck && [<MenuItem disabled = {auth.user?.project ? true : false}
                     key="upload"
                     onClick={() => {
                       handleCloseUserMenu();

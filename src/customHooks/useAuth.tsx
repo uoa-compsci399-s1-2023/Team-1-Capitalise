@@ -23,6 +23,7 @@ type TAuthReturnType = {
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
   googleAuth: () => void;
   resetPassword: (email: any) => void;
+  changePassword: (password: any) => void;
 };
 
 function useProvideAuth(): TAuthReturnType {
@@ -177,6 +178,22 @@ function useProvideAuth(): TAuthReturnType {
         }
       });
   }
+  //Change Password once User has accepted email.
+  function changePassword(newPassword: any) {
+    fetch("https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/users/resetPassword", {
+      method: "POST",
+      body: JSON.stringify(newPassword),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+          setSuccess(json.success)
+      });
+
+  }
+  
 
   // Returns the currently saved token.
   // Useful for api calls that need authorisation.
@@ -213,7 +230,8 @@ function useProvideAuth(): TAuthReturnType {
     success,
     isLoading,
     googleAuth,
-    resetPassword
+    resetPassword,
+    changePassword
   };
 }
 
