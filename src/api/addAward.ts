@@ -5,7 +5,8 @@ export async function addAward(
   value: string,
   parameterType: string,
   token: string,
-  image: string
+  image: string,
+  gradient: string[]
 ) {
   const resp = await fetch(`${API_URL}/api/parameters`, {
     method: "POST",
@@ -17,6 +18,7 @@ export async function addAward(
       value: value,
       parameterType: parameterType,
       image: image,
+      gradient: gradient,
     }),
   });
   return resp.json();
@@ -27,7 +29,7 @@ export async function uploadAwardImage(award: FormData) {
     method: "POST",
     body: award,
   }).then((data) => {
-    return data.text()
-  })
+    return data.text();
+  });
   return resp;
 }

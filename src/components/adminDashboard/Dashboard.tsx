@@ -62,10 +62,8 @@ const Dashboard = () => {
   const [validImage, setValidImage] = useState(true);
 
   // set gradient colours
-  const [colour1, setColour1] = useState("#fff");
-  const [colour2, setColour2] = useState("#fff");
-  const [showColourPicker1, setShowColourPicker1] = useState(false);
-  const [showColourPicker2, setShowColourPicker2] = useState(false);
+  const [colour1, setColour1] = useState("#FFFFFF");
+  const [colour2, setColour2] = useState("#FFFFFF");
 
   const [heroBanners, setHeroBanners] = useState<string[]>([]);
   const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
@@ -215,14 +213,17 @@ const Dashboard = () => {
 
       console.log("Adding the award:", newAward);
       console.log("New award image:", awardImageString);
+      console.log("New gradient:", [colour1, colour2]);
+      const newGradient = [colour1, colour2];
 
-      addAward(newAward, "award", token, awardImageString)
+      addAward(newAward, "award", token, awardImageString, newGradient)
         // update the awards (need to create a TAward object based on response using the interface)
         .then((data) => {
           award._id = data._id;
           award.value = data.value;
           award.parameterType = data.parameterType;
           award.image = data.image;
+          award.gradient = data.gradient;
 
           setAwards([...awards, award]);
         });
@@ -233,6 +234,7 @@ const Dashboard = () => {
 
     // reset input field
     setNewAward("");
+    setImageAdded(false);
   };
 
   const handleDeleteAward = async (awardId: string, awardImage: string) => {
@@ -557,7 +559,7 @@ const Dashboard = () => {
           </Box>
 
           <Box
-            width={{ xs: "500px", sm: "600px" }}
+            width={{ xs: "500px", sm: "550px" }}
             component={"form"}
             display={"flex"}
             alignItems={"center"}
@@ -567,7 +569,9 @@ const Dashboard = () => {
             <Stack paddingTop={5}>
               <ChromePicker
                 color={colour1}
-                onChange={(updatedColor1) => setColour1(updatedColor1.hex)}
+                onChange={(updatedColor1) =>
+                  setColour1(updatedColor1.hex.toUpperCase())
+                }
               />
 
               <Typography paddingTop={5} paddingLeft={5} variant="body2">
@@ -575,17 +579,19 @@ const Dashboard = () => {
               </Typography>
             </Stack>
 
-            <Stack paddingLeft={5} paddingTop={5}>
+            <Stack paddingLeft={3} paddingTop={5}>
               <ChromePicker
                 color={colour2}
-                onChange={(updatedColor2) => setColour2(updatedColor2.hex)}
+                onChange={(updatedColor2) =>
+                  setColour2(updatedColor2.hex.toUpperCase())
+                }
               />
 
-              <Typography paddingTop={5} paddingLeft={5} variant="body2">
+              <Typography paddingTop={5} paddingLeft={3} variant="body2">
                 Colour 2: {colour2}
               </Typography>
             </Stack>
-            <Box paddingLeft={5} paddingTop={25}>
+            <Box paddingLeft={3} paddingTop={25}>
               <Button
                 variant="contained"
                 color="primary"
