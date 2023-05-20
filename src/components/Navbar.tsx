@@ -22,6 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
+import validator from "validator";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import {
   AppRegistration,
@@ -42,7 +43,8 @@ const NoNavPages = [
   "/googleSuccessRedirect",
   "/googleFailure",
   "/ResetPassword",
-];
+  "/changepassword"
+]
 
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",

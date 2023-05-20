@@ -2,7 +2,7 @@ import { Box, Button, Container, Grid, Paper, TextField, Typography } from "@mui
 import { useEffect, useState } from "react";
 import { useAuth } from "../customHooks/useAuth"
 import Logo from "../assets/Logo.svg";
-
+import { Navigate, useNavigate } from "react-router-dom";
 export default function ResetPassword() {
 const [password, setPassword] = useState("");
 const [passwordSuccess, setPasswordSuccess] = useState("");
@@ -11,11 +11,15 @@ const [passwordErrorText, setPasswordErrorText] = useState("");
 
 // Auth Provider
 const auth = useAuth();
+const nav = useNavigate();
 useEffect(() => {
   if (auth.success) {
     setPasswordSuccess(auth.success);
+    nav('/')
   }
+
   }, [auth.success]
+
 )
 // Reg Expressions for validation
 
@@ -69,7 +73,7 @@ return (
     
     <Container component="main"  maxWidth="sm" sx={{background: 'transparent'}}>
     <Paper elevation={4
-    } sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, border:8,borderColor: '#42A5F5' }}>
+    } sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, border:4,borderColor: '#42A5F5' }}>
       <Box
         sx={{
 
