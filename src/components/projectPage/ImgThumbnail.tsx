@@ -19,16 +19,18 @@ interface ThumbnailProps {
     imgIndex: number
     setImgUrls: Dispatch<React.SetStateAction<string[]>>
     imgsToDelete: string[]
+    setImgsToDelete:  Dispatch<React.SetStateAction<string[]>>
     imgUrls: string[]
 }
 
-export default function ImgThumbnail({ url, tabIndex, blockIndex, setImgUrls, imgUrls, imgIndex, imgsToDelete }: ThumbnailProps) {
+export default function ImgThumbnail({ url, tabIndex, blockIndex, setImgUrls, imgUrls, setImgsToDelete, imgsToDelete }: ThumbnailProps) {
     const [isHover, setIsHover] = useState(false)
     const theme = useTheme();
 
     const handleImgDelete = () => {
         const index = imgUrls.indexOf(url)
         imgsToDelete.push(getFilenameFromURL(imgUrls[index]));
+        setImgsToDelete(imgsToDelete)
         const newUrls = [...imgUrls]
         newUrls.splice(index, 1)
         setImgUrls(newUrls)

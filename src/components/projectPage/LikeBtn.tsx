@@ -78,7 +78,7 @@ export default function LikeBtn() {
           {`Liked! (${project.likes})`}
         </Button>
         :
-        <Button
+        <Button 
           variant='contained'
           color='error'
           onClick={handleLike}

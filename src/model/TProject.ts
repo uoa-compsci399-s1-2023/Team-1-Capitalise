@@ -10,7 +10,7 @@ export type TProject = {
   views: number;
   semester: { value: string };
   category: {
-    value: "Mobile Development" | "Game Development" | "Web Development";
+    value: string;
   };
   links: {
     value: string;
@@ -24,14 +24,13 @@ export type TProject = {
       | "linkedin";
     _id: string;
   }[];
-  members: string[];
+  members: string[]; // Array of ids!
   banner: string;
   thumbnail: string;
   content: TContentTab[]
   likes: number;
   comments: string[]; // array of ids
   tags: TTag[]
-  // badges: { value: "Peoples Choice" | "Top Excellence" | "Community Impact" }; // There should be an apostrophe in people's choice!
   badges: {
     _id: string
     value: string

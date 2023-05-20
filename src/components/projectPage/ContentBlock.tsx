@@ -1,10 +1,9 @@
-import React, { useState, FC, useContext, useRef, ReactNode } from 'react'
+import React, { useState, FC, useContext, useRef, ReactNode, useEffect } from 'react'
 import { useMediaQuery, Box, Stack, Typography, useTheme, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TProject } from '../../model/TProject';
-import { useAuth } from '../../customHooks/useAuth';
 import { ProjectContext } from '../../routes/ProjectPage';
 import TextBlockDialog from './dialogs/TextBlockDialog';
 import GalleryBlockDialog from './dialogs/GalleryBlockDialog';
@@ -13,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddBlockDialog from './dialogs/AddBlockDialog';
 import VideoBlockDialog from './dialogs/VideoBlockDialog';
 import VideoPlayer from './VideoPlayer';
+import { removeGalleryImg } from '../../api/galleryApis';
 
 
 export interface ContentBlockProps {
@@ -70,6 +70,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   }
 
   const handleDeleteContentBlock = () => {
+
     const tabContent = project.content[tabIndex].tabContent
     if (tabContent.length > 1) {
       project.content[tabIndex].tabContent.splice(blockIndex, 1);

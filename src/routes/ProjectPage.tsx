@@ -16,8 +16,6 @@ import { useParams } from 'react-router-dom';
 import { TComment } from '../model/TComment';
 import Comments from '../components/projectPage/Comments/Comments';
 import { getProjectComments } from '../api/getProjectComments';
-import CircularProgress from '@mui/material/CircularProgress';
-import AddIcon from '@mui/icons-material/Add';
 import LoadingDialog from '../components/projectPage/dialogs/LoadingDialog';
 
 
@@ -34,6 +32,8 @@ export interface ProjectProps {
   setSelectedTab: React.Dispatch<SetStateAction<number>>
   checkIsEdit: () => boolean
   checkIsAdminEdit: () => boolean
+  // isLoading: boolean
+  // setIsLoading: React.Dispatch<SetStateAction<boolean>>
 }
 
 export const ProjectContext = createContext<ProjectProps>({} as ProjectProps)
@@ -49,7 +49,7 @@ export default function ProjectPage() {
   // Holds modified project that needs to patched in backend
   const [projectChanges, setProjectChanges] = useState<TProjectPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(true);
   const [comments, setComments] = useState<TComment[] | undefined>();
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -69,6 +69,7 @@ export default function ProjectPage() {
         }
       })
       .finally(() => setIsLoading(false));
+    console.log('mounted')
   }, [])
 
   // Sends changes to backend and releases lock.
@@ -126,7 +127,9 @@ export default function ProjectPage() {
         setProjectChanges,
         checkIsEdit,
         checkIsAdminEdit,
-        setSelectedTab
+        setSelectedTab,
+        // isLoading,
+        // setIsLoading
       }}
     >
       {isLoading ?
@@ -153,7 +156,7 @@ export default function ProjectPage() {
             <ProjectHeader
               name={project.name}
               blurb={project.blurb}
-              {...{isEditMode, setIsEditMode}}
+              {...{ isEditMode, setIsEditMode }}
             />
 
             {/* Project details for mobile view */}
@@ -170,6 +173,22 @@ export default function ProjectPage() {
               <Stack flex={1} alignItems={'center'} mr={1} mb={6}>
 
                 <TabButtonSelection {...{ selectedTab, setSelectedTab }} />
+
+                {/* {
+                  project.content.map(tab => (
+                    tab.tabContent.map((cb, index) => (
+                      <ContentBlock
+                        key={cb._id}
+                        
+                        {...{
+                          ...cb,
+                          ['tabIndex']: selectedTab,
+                          ['blockIndex']: index
+                        }}
+                      />
+                    ))
+                  ))
+                } */}
 
                 {/* If content is not empty, otherwise show "no content msg" */}
                 {project.content[selectedTab] ?
