@@ -38,7 +38,7 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
       />
       <Stack
         flexDirection={'row'}
-        // alignItems={'center'}
+        alignItems={'center'}
         // height={'100%'}
         gap={0}
         onMouseEnter={() => setIsHover(true)}

@@ -38,11 +38,7 @@ export default function ProjectDetails() {
       <SemesterField />
       <TeamnameField />
       <MembersField />
-
-      {/* If there are links to show */}
-      {project.links[0] && <LinksField />}
-
-
+      <LinksField />
 
     </Stack>
   )
