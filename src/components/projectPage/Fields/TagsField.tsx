@@ -1,4 +1,4 @@
-import { Stack, Chip } from '@mui/material'
+import { Stack, Chip, useTheme, useMediaQuery } from '@mui/material'
 import React, { useContext, useState } from 'react'
 import theme from '../../../themes/custom1'
 import { ProjectContext } from '../../../routes/ProjectPage'
@@ -13,6 +13,7 @@ export default function TagsField() {
 	const { project, checkIsEdit } = useContext(ProjectContext);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const nav = useNavigate()
+	const theme = useTheme();
 
 	const handleTagClick = (tag: TTag) => {
 		setFilters({
@@ -23,7 +24,20 @@ export default function TagsField() {
 	}
 
 	return (
-		<Stack my={2} flexDirection={'row'} gap={1} flexWrap={'wrap'}>
+		<Stack
+			my={2}
+			flexDirection={'row'}
+			gap={1}
+			flexWrap={'wrap'}
+			sx={{
+				[theme.breakpoints.down('md')]: {
+					width: '100%',
+					flexWrap: 'nowrap',
+					overflowX: 'auto',
+					my: 0
+				}
+			}}
+		>
 
 			<EditTagsDialog {...{ isDialogOpen, setIsDialogOpen }} />
 

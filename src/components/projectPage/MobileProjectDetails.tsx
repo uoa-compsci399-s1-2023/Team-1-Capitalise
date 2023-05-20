@@ -11,6 +11,7 @@ import { styled, useTheme } from '@mui/material/styles'
 import MemberChip from './Fields/MemberChip';
 import ExternalLinkBtn from './ExternalLinkBtn';
 import AwardBadge from './AwardBadge';
+import TagsField from './Fields/TagsField';
 
 const NoExpandAccordianSummary = styled(AccordionSummary)({
   // border: "none",
@@ -72,16 +73,31 @@ export default function ProjectDetailsAccordian() {
       }
 
       {/* Tags */}
-      <Accordion expanded={expanded === 'panel0'} disableGutters onChange={handleChange('panel0')} sx={accordianSx}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel3bh-content"
-          id="panel3bh-header"
+      <Accordion
+        expanded={false}
+        disableGutters
+        sx={{
+          ...accordianSx,
+        }}>
+        <NoExpandAccordianSummary
+          sx={{
+            flexWrap: 'wrap',
+            width: "100%",
+            ".MuiAccordionSummary-content": {
+              justifyContent: 'start',
+              alignItems: 'start',
+              width: '100%'
+            }
+
+          }}
         >
           <Typography sx={{ width: '33%', flexShrink: 0 }}>
             Tags:
           </Typography>
-          <Typography 
+          <Box width={'67%'}>
+            <TagsField />
+          </Box>
+          {/* <Typography 
             sx={{ 
               color: 'text.secondary', 
               textOverflow: 'ellipsis',
@@ -89,19 +105,8 @@ export default function ProjectDetailsAccordian() {
               whiteSpace: 'nowrap'
               }}>
             {tags}
-          </Typography>
-        </AccordionSummary>
-
-        <AccordionDetails>
-          <Stack
-            flexDirection={'row'}
-            flexWrap={'wrap'}
-          >
-            {project.members.map((member, index) => (
-              <MemberChip userId={member} key={index} />
-            ))}
-          </Stack>
-        </AccordionDetails>
+          </Typography> */}
+        </NoExpandAccordianSummary>
       </Accordion>
 
       {/* Category */}
