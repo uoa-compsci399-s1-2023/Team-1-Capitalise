@@ -22,7 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import {
   AppRegistration,
   Login,
@@ -341,7 +341,21 @@ function ResponsiveAppBar() {
                   </MenuItem>
                   <Divider />
                 </Box>
+              
               )}
+
+              {uCheck && [<MenuItem
+                    key="upload"
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate("/upload");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <UploadFileIcon fontSize="small" />
+                    </ListItemIcon>
+                    Upload Project
+                  </MenuItem>,]}
 
               {/*CHeck if isAdmin for dashboard*/}
 

@@ -29,17 +29,13 @@ export default function ProjectDetails() {
       mt={0}
       sx={{ display: { xs: 'none', md: 'flex' }, position: 'relative' }}
     >
-
       <AwardBadge badgeId={project.badges?._id} />
-
       <TagsField />
-
       <CategoryField />
       <SemesterField />
       <TeamnameField />
       <MembersField />
       <LinksField />
-
     </Stack>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Button, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 import { ProjectContext } from '../../routes/ProjectPage';
 import { useAuth } from '../../customHooks/useAuth';
 import { styled } from '@mui/material/styles'
@@ -17,7 +17,13 @@ export default function AdminDeleteButton() {
   const { project, setProject, checkIsAdminEdit } = useContext(ProjectContext);
   const theme = useTheme();
   const navigate = useNavigate();
-  // const isScreenSmall = useMediaQuery(theme.breakpoints.down('md'));
+
+  const InfoBox = styled(Typography)({
+    padding: '5px 10px',
+    border: `1px solid ${theme.palette.neutral.main}`,
+    borderRadius: '10px',
+    whiteSpace: 'nowrap'
+  })
 
   const adminDeleteProject = async () => {
     const token = auth.getToken();
@@ -48,12 +54,12 @@ export default function AdminDeleteButton() {
         variant="outlined"
         startIcon={<DeleteOutlineIcon />}
         onClick={() => adminDeleteProject()}
-        size="medium"
+        size="small"
         color="error"
-      >
-        Delete Project
-      </Button>
-      :
+        >
+          Delete project
+       </Button>
+       :
       null
-  )
-}
+    )
+  }

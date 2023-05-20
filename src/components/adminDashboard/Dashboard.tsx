@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import {
   Table,
   TableHead,
@@ -10,13 +8,9 @@ import {
   TableContainer,
   Box,
   Typography,
-  Paper,
-  Grid,
   Button,
   Stack,
 } from "@mui/material";
-
-import { DateRange, Category, EmojiEvents } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../../customHooks/useAuth";
@@ -33,11 +27,16 @@ import { TAward } from "../../model/TAward";
 import MyTabs from "../../components/MyTabs";
 
 import { addParameter } from "../../api/addParameter";
+import { addAward, uploadAwardImage } from "../../api/addAward";
+
 import { deleteParameter } from "../../api/deleteParameter";
+import { deleteAwardImage } from "../../api/deleteAwardImage";
+import DashboardOverview from "./DashboardOverview";
+import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
+import DashboardHeroBanners from "./DashboardHeroBanners";
+import DashboardMobileHeroBanners from "./DashboardMobileHeroBanners";
 
 const Dashboard = () => {
-  const [open, setOpen] = useState(false);
-
   const auth = useAuth();
 
   // counts displayed in paper components of overview page.
@@ -53,6 +52,15 @@ const Dashboard = () => {
 
   const [awards, setAwards] = useState<TAward[]>([]);
   const [newAward, setNewAward] = useState("");
+  const [newAwardImage, setNewAwardImage] = useState<File | undefined>();
+  const [awardImageString, setAwardImageString] = useState("");
+
+  const [validImage, setValidImage] = useState(true);
+
+  const [heroBanners, setHeroBanners] = useState<string[]>([]);
+  const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
+
+  const [loading, setLoading] = useState(false);
 
   const handleNewCategory = (event: any) => {
     setNewCategory(event.target.value);
@@ -156,6 +164,33 @@ const Dashboard = () => {
     }
   };
 
+  const constHandleImage = async (file: File) => {
+    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+      setValidImage(false);
+    } else {
+      setValidImage(true);
+
+      setNewAwardImage(file);
+      //setAwardImageString(file.name);
+    }
+  };
+
+  const handleNewAwardImage = async () => {
+    if (typeof newAwardImage !== "undefined") {
+      console.log("newAwardImage:", newAwardImage);
+      console.log("newAwardString:", awardImageString);
+
+      let formData = new FormData();
+
+      formData.append("award", newAwardImage);
+      setLoading(true);
+
+      const response = await uploadAwardImage(formData);
+      setLoading(false);
+      setAwardImageString(response);
+    }
+  };
+
   const handleAddAward = async () => {
     // call the API to  add award
     console.log(newAward);
@@ -164,13 +199,15 @@ const Dashboard = () => {
       const award = {} as TAward;
 
       console.log("Adding the award:", newAward);
+      console.log("New award image:", awardImageString);
 
-      addParameter(newAward, "award", token)
+      addAward(newAward, "award", token, awardImageString)
         // update the awards (need to create a TAward object based on response using the interface)
         .then((data) => {
           award._id = data._id;
           award.value = data.value;
           award.parameterType = data.parameterType;
+          award.image = data.image;
 
           setAwards([...awards, award]);
         });
@@ -183,13 +220,20 @@ const Dashboard = () => {
     setNewAward("");
   };
 
-  const handleDeleteAward = async (awardId: string) => {
+  const handleDeleteAward = async (awardId: string, awardImage: string) => {
     // call the API to  delete award
     const token = auth.getToken();
     if (token) {
       if (window.confirm("Are you sure you want to delete this award?")) {
         deleteParameter(awardId, token).then(() => {
-          // we need to update the awards.
+          // we also need to delete the associated award image from s3 by grabbing the image name
+          var last = awardImage.substring(
+            awardImage.lastIndexOf("/") + 1,
+            awardImage.length
+          );
+          deleteAwardImage(last);
+
+          // we need to update the awards display.
           const updatedAwards = awards.filter((award) => award._id != awardId);
           setAwards(updatedAwards);
         });
@@ -200,22 +244,37 @@ const Dashboard = () => {
     }
   };
 
+  const fetchHeroBanners = async () => {
+    const respData = await getHeroBanners();
+    if (respData.length !== 0) {
+      setHeroBanners(respData);
+    }
+  };
+  const fetchMobileHeroBanners = async () => {
+    const respData = await getMobileHeroBanners();
+    if (respData.length !== 0) {
+      setMobileHeroBanners(respData);
+    }
+  };
+
   useEffect(() => {
-    const fetchCategories = getCategories().then((data) => {
+    // grab the categories from the API
+    getCategories().then((data) => {
       setCategories(data);
+      setCategoryCount(data.length);
     });
-  }, []);
-
-  useEffect(() => {
-    const fetchSemesters = getSemesters().then((data) => {
+    // grab the semesters from the API
+    getSemesters().then((data) => {
       setSemesters(data);
+      setSemesterCount(data.length);
     });
-  }, []);
-
-  useEffect(() => {
-    const fetchAwards = getAwards().then((data) => {
+    // grab the awards from the API
+    getAwards().then((data) => {
       setAwards(data);
+      setAwardCount(data.length);
     });
+    fetchHeroBanners();
+    fetchMobileHeroBanners();
   }, []);
 
   const dashboardTabs = [
@@ -223,76 +282,11 @@ const Dashboard = () => {
       label: "Overview",
       index: "1",
       Component: (
-        <Stack height="100%">
-          <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
-            <Typography paddingTop={2} variant="h6">
-              Summary
-            </Typography>
-
-            <Grid container spacing={3} paddingTop={3}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h4">Categories</Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Category
-                      color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
-                    />
-                    <Typography variant="h4">{categoryCount}</Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h4">Semesters</Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <DateRange
-                      color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
-                    />
-                    <Typography variant="h4">{semesterCount}</Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h4">Awards</Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <EmojiEvents
-                      color="primary"
-                      sx={{ height: 100, width: 100, opacity: 0.8, mr: 1 }}
-                    />
-                    <Typography variant="h4">{awardCount}</Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            </Grid>
-            <Typography paddingTop={10} variant="h6">
-              {/* Show newly created projects over a timeframe (maybe for the week??) */}
-              Recently created projects
-            </Typography>
-          </Box>
-        </Stack>
+        <DashboardOverview
+          categoryCount={categoryCount}
+          semesterCount={semesterCount}
+          awardCount={awardCount}
+        />
       ),
     },
     {
@@ -336,7 +330,7 @@ const Dashboard = () => {
               Add category
             </Typography>
             <Box
-              sx={{ width: 600 }}
+              width={{ xs: "300px", sm: "600px" }}
               component={"form"}
               display={"flex"}
               alignItems={"center"}
@@ -402,7 +396,7 @@ const Dashboard = () => {
             Add semester
           </Typography>
           <Box
-            sx={{ width: 600 }}
+            width={{ xs: "300px", sm: "600px" }}
             component={"form"}
             display={"flex"}
             alignItems={"center"}
@@ -440,7 +434,8 @@ const Dashboard = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ width: "50%" }}>Awards</TableCell>
+                    <TableCell style={{ width: "20%" }}>Awards</TableCell>
+                    <TableCell style={{ width: "30%" }}></TableCell>
                     <TableCell style={{ width: "50%" }}></TableCell>
                   </TableRow>
                 </TableHead>
@@ -449,10 +444,27 @@ const Dashboard = () => {
                     <TableRow key={award._id}>
                       <TableCell>{award.value}</TableCell>
                       <TableCell>
+                        <Box
+                          display="flex"
+                          width="50px"
+                          height="50px"
+                          component="img"
+                          src={award.image}
+                          alt="badge"
+                          alignSelf="center"
+                          sx={{
+                            objectFit: "cover",
+                            objectPosition: "bottom right",
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
                         <Button
                           variant="contained"
                           color="error"
-                          onClick={() => handleDeleteAward(award._id)}
+                          onClick={() =>
+                            handleDeleteAward(award._id, award.image)
+                          }
                         >
                           Delete
                         </Button>
@@ -463,11 +475,56 @@ const Dashboard = () => {
               </Table>
             </TableContainer>
           </Box>
+
           <Typography paddingTop={5} variant="h6">
-            Add award
+            Create new award
+          </Typography>
+          <Typography paddingTop={5} variant="body1">
+            Add new award image
           </Typography>
           <Box
-            sx={{ width: 600 }}
+            width={{ xs: "300px", sm: "600px" }}
+            component={"form"}
+            display={"flex"}
+            alignItems={"center"}
+            gap={2}
+          >
+            <TextField
+              label="New award image"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              type="file"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              error={!validImage}
+              helperText={
+                !validImage
+                  ? "Select a valid image type"
+                  : "match the name of the file with the award name"
+              }
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                if (event.target.files) {
+                  constHandleImage(event.target.files[0]);
+                }
+              }}
+            />
+            <Box alignSelf="flex-start" paddingTop="25px">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleNewAwardImage}
+              >
+                Submit
+              </Button>
+            </Box>
+          </Box>
+          <Typography paddingTop={5} variant="body1">
+            Add new award name
+          </Typography>
+          <Box
+            width={{ xs: "300px", sm: "600px" }}
             component={"form"}
             display={"flex"}
             alignItems={"center"}
@@ -492,36 +549,27 @@ const Dashboard = () => {
         </Box>
       ),
     },
+    {
+      label: "Hero Banners",
+      index: "5",
+      Component: (
+        <DashboardHeroBanners
+          heroBanners={heroBanners}
+          refreshBanners={fetchHeroBanners}
+        />
+      ),
+    },
+    {
+      label: "Mobile Hero Banners",
+      index: "6",
+      Component: (
+        <DashboardMobileHeroBanners
+          mobileHeroBanners={mobileHeroBanners}
+          refreshBanners={fetchMobileHeroBanners}
+        />
+      ),
+    },
   ];
-
-  useEffect(() => {
-    // grab the categories from the API
-    const fetchCategories = getCategories().then((data) => {
-      setCategoryCount(data.length);
-    });
-  }, []);
-
-  useEffect(() => {
-    // grab the semesters from the API
-    const fetchCategories = getSemesters().then((data) => {
-      setSemesterCount(data.length);
-    });
-  }, []);
-
-  useEffect(() => {
-    // grab the semesters from the API
-    const fetchAwards = getAwards().then((data) => {
-      setAwardCount(data.length);
-    });
-  }, []);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Stack

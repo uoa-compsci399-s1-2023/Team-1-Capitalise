@@ -7,4 +7,3 @@ export const API_URL =
 export const S3_API_URL = 
     // API_URL;
 // "https://mbw0ut8bmf.execute-api.ap-southeast-2.amazonaws.com/staging";
-  "https://l27nrectig.execute-api.ap-southeast-2.amazonaws.com/dev";

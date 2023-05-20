@@ -12,23 +12,21 @@ interface EditAwardDialogProps {
 
 export default function EditAwardDialog({ isOpen, setIsOpen }: EditAwardDialogProps) {
 
-  const [value, setValue] = useState('No badge'); // For onchange input validation
+  const [value, setValue] = useState(''); // For onchange input validation
   const [badges, setBadges] = useState<TParameter[]>([])
   const { project, setProjectChanges } = useContext(ProjectContext);
   // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getBadges()
-    .then((resp) => {
-      if (resp.ok) {
-        resp.json().then((data) => setBadges(data))
-      } else {
-        resp.text().then((err) => console.log(err))
-      }
-    });
-    if (project.badges) {
-      setValue(project.badges._id)
-    }
+      .then((resp) => {
+        if (resp.ok) {
+          resp.json().then((data) => setBadges(data))
+        } else {
+          resp.text().then((err) => console.log(err))
+        }
+      });
+    setValue(project.badges._id)
   }, [isOpen])
 
   function handleChange(e: SelectChangeEvent<string>): void {
