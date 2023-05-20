@@ -47,7 +47,7 @@ const DashboardOverview = ({
   return (
     <Stack height="100%">
       <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
-        <Typography paddingTop={2} variant="h6">
+        <Typography paddingTop={2} variant="h5">
           Summary
         </Typography>
 

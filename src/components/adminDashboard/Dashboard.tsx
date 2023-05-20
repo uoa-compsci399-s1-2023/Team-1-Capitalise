@@ -587,7 +587,7 @@ const Dashboard = () => {
                 }
               />
 
-              <Typography paddingTop={5} paddingLeft={3} variant="body2">
+              <Typography paddingTop={5} paddingLeft={5} variant="body2">
                 Colour 2: {colour2}
               </Typography>
             </Stack>
