@@ -174,12 +174,9 @@ const deleteParameter = async (req, res) => {
         parameterType: "semester",
       });
 
-      await Project.updateMany(
+      await Project.deleteMany(
         {
           semester: parameter._id,
-        },
-        {
-          semester: miscSem._id,
         }
       );
     } //If the parameter is an award, remove the award from all projects that have it
