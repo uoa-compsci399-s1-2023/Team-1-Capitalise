@@ -39,6 +39,10 @@ function useProvideAuth(): TAuthReturnType {
   const [openVerifyAlert, setOpenVerifyAlert] = useState(false);
   const navigate = useNavigate();
 
+  if (user) {
+    console.log(user);
+  }
+
   useEffect(() => {
     // Auto sigin in on mount
     getLatestUser()

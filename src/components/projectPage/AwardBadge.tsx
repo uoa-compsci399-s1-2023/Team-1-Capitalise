@@ -10,7 +10,7 @@ import { ProjectContext } from '../../routes/ProjectPage'
 
 
 interface AwardBadgeProps {
-  badgeId: string
+  badgeId: string | null
 }
 
 
@@ -24,12 +24,16 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
   const theme = useTheme();
 
   useEffect(() => {
-    getBadgeById(badgeId)
-      .then(badge => {
-        if (badge) {
-          setBadge(badge);
-        }
-      })
+    if (badgeId) {
+      getBadgeById(badgeId)
+        .then(badge => {
+          if (badge) {
+            setBadge(badge);
+          }
+        })
+    } else {
+      setBadge(null);
+    }
   }, [badgeId])
 
   let badgeContent: ReactNode = null
@@ -44,11 +48,7 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
         justifyContent={'center'}
         position={'relative'}
       >
-        <EditAwardDialog
-          isOpen={isDialogOpen}
-          setIsOpen={setIsDialogOpen}
-        />
-        <Stack my={2} flex={1}>
+        <Stack my={2}>
           <img
             src={badge.image}
             width={'80'}
@@ -63,41 +63,51 @@ export default function AwardBadge({ badgeId }: AwardBadgeProps) {
           >
             {badge.value}
           </Typography>
-
         {checkIsAdminEdit() &&
             // <Tooltip title="Edit Award">
             <Button
               sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                justifyContent: 'end',
-                // pr: 2,
+                // position: 'absolute',
+                // top: 0,
+                // left: 0,
+                // width: '100%',
+                // height: '100%',
+                // justifyContent: 'end',
+                mx: 2,
+                mt: 2
               }}
-              color='neutral'
+              variant='outlined'
+              color='black'
               onClick={() => setIsDialogOpen(true)}
             >
-              {/* <EditIcon
-                fontSize='small'
-                sx={{
-                  color: theme.palette.editBtnGrey.main,
-                }}
-              /> */}
+              Change Award
             </Button>
             // /* </Tooltip> *//
           }
         </Stack>
+
       </Stack>
-      
   } else if (checkIsAdminEdit()) {
     badgeContent =
-      <Button>
+      <Button
+        variant='outlined'
+        onClick={() => setIsDialogOpen(true)}
+        sx={{
+          mx: 2
+        }}
+      >
         Add Award
       </Button>
   }
 
 
-  return badgeContent
+  return (
+    <>
+      <EditAwardDialog
+        isOpen={isDialogOpen}
+        setIsOpen={setIsDialogOpen}
+      />
+      {badgeContent}
+    </>
+  )
 }
