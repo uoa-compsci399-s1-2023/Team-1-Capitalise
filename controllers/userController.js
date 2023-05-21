@@ -125,6 +125,7 @@ const postUser = async (req, res) => {
       isGoogleCreated: false,
       displayEmail: req.body.displayEmail,
       skills: req.body.skills,
+      status: "Active",
       confirmationCode: jwt.sign(
         { email: req.body.email },
         process.env.JWT_PRIVATE_KEY
@@ -140,11 +141,9 @@ const postUser = async (req, res) => {
       await project.save();
     }
 
-    user = await user.save();
-    const token = user.generateAuthToken();
-    
+    user = await user.save();    
     res.status(201).send(user);
-    sendConfirmationEmail(user.name, user.email, user.confirmationCode);
+    //sendConfirmationEmail(user.name, user.email, user.confirmationCode);
   } catch (ex) {
     res.status(500).send(`Internal Server Error: ${ex}`);
   }
