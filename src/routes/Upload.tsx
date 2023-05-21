@@ -108,7 +108,8 @@ export default function Upload() {
   // array of Project attributes - Project Name, Project Semester, Project Category, Project Description
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>(infoHold);
   const [projectLinkTemp, setProjectLinkTemp] = useState(options.map((option) => ({ value: '', type: option.type, label: option.label })));
-  const [projectLink, setProjectLink] = useState([]);
+ 
+  let projectLink = useRef([]);
   let projectID = useRef('');
   let bannerInfo = useRef<File | undefined>();
   let imagesInfo =  useRef([]);
@@ -167,13 +168,14 @@ export default function Upload() {
     if ( thumbnail != undefined ) {
       thumbnailInfo.current = thumbnail;
     }
-    setProjectLink(projectLinks);
+    projectLink.current = (projectLinks);
 
   
   };
 
   const projectFileToUpload = (banner:any, images:any, thumbnail: any, projectLinks:any) => {
     // we want to check if these files are null or not.
+    console.log(projectLinks, 'Comign through from upload')
     if (banner == null) {
       isBannerEmpty = true;
     }
@@ -192,22 +194,22 @@ export default function Upload() {
       imagesData.append("gallery", image);
   
     });
-    setProjectLink(projectLinks);
-    // navigates to loading page
-    // check if user wants to submit their project, otherwise keep them on this page.
-
+    const newLinks = projectLinks.map(({ value, type }: { value: string, type: string }) => ({ value, type }));
+    projectLink.current = (newLinks);
+    console.log(projectLink, 'UPLOADED')
   }
   // the final call to create a Project
   const handleUpload = async () => {
     // API Call here!
-   
+    console.log(projectLink, 'handleUpload links')
+    let pL = projectLink.current
     // for now, maybe just pass the required fields to test?
     const newProject: TNewProject = {
       name: projectName,
       teamname: team,     
       semester: projectSemester,
       category: projectCategory,
-      links: projectLink,
+      links: pL,
       content: [
         {
           tabName: "Overview", // first tab name will be "Overview" by default.

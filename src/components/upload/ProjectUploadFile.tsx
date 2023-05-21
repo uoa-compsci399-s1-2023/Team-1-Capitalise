@@ -209,7 +209,7 @@ export default function ProjectUploadFileForm(
         
   
 
-  const handleFileUpload = (event: any) => {
+  const handleFileUpload = async (event: any) => {
     event.preventDefault();
     
     // handle file upload logic here
@@ -221,9 +221,11 @@ export default function ProjectUploadFileForm(
       const k = validateKaggle()
       const ds = validateDeployedWebsite();
       if (g && cp && n && sb && k && ds) {
-        projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
+        await projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
         if (window.confirm("Ready to submit?")) {
-        handleUpload();
+          console.log(projectLinks, "UPLOADFILEPROJECT")
+          handleUpload();
+        
         }
       }
   
