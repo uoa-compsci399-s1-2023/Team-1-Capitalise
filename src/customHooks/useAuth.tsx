@@ -210,15 +210,12 @@ function useProvideAuth(): TAuthReturnType {
     allowedRoles?: TUser['userType'][],
     allowedIds?: string[] | null) 
     {
-    if (!user) {
+      if (user && allowedRoles && allowedRoles.includes(user.userType)) {
+        return true;
+      } else if (user && allowedIds && allowedIds.includes(user._id)) {
+        return true
+      }
       return false;
-    } else if (
-      (allowedIds && !allowedIds.includes(user._id)) && 
-      (allowedRoles && !allowedRoles.includes(user.userType))
-    ) {
-      return false;
-    }
-    return true
   }
 
   return {
