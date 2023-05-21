@@ -14,10 +14,9 @@ const SearchBar = () => {
   const { currFilters, setFilters } = useContext(SearchContext);
   const [value, setValue] = useState<string>('');
 
-  // Clear keyword on mount
   useEffect(() => {
-    setValue('')
-  }, [])
+    setValue(currFilters.keywords)
+  }, [currFilters])
 
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -37,6 +36,7 @@ const SearchBar = () => {
     <Box width='80%'>
       <TextField
         onKeyDown={handleKeyDown}
+        placeholder="Search projects..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
         fullWidth

@@ -1,4 +1,4 @@
-import { CircularProgress, Dialog, DialogContent, DialogTitle, Typography } from '@mui/material'
+import { CircularProgress, Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material'
 import React from 'react'
 
 interface LoadingDialogProps {
@@ -8,10 +8,15 @@ interface LoadingDialogProps {
 export default function LoadingDialog({ isOpen }: LoadingDialogProps) {
   return (
     <Dialog open={isOpen}>
-      {/* <DialogTitle>{title}</DialogTitle> */}
       <DialogContent>
-        <Typography variant="body1">Hang tight, this takes a few seconds...</Typography>
-        <CircularProgress color='primary' />
+        <Typography variant="body1">Hang tight, this might take a few seconds...</Typography>
+        <Stack
+          alignItems={'center'}
+          width={'100%'}
+          py={4}
+        >
+          <CircularProgress color='primary' />
+        </Stack>
       </DialogContent>
     </Dialog>
   )

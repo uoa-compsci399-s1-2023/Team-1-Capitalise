@@ -14,10 +14,10 @@ import { API_URL } from "../../api/config";
 export default function AdminDeleteButton() {
 
   const auth = useAuth();
-  const { project, setProject } = useContext(ProjectContext);
+  const { project, setProject, checkIsAdminEdit } = useContext(ProjectContext);
   const theme = useTheme();
   const navigate = useNavigate();
-  const isScreenSmall = useMediaQuery(theme.breakpoints.down('md'));
+  // const isScreenSmall = useMediaQuery(theme.breakpoints.down('md'));
 
   const adminDeleteProject = async () => {
     const token = auth.getToken();
@@ -42,7 +42,7 @@ export default function AdminDeleteButton() {
   };
 
   return (
-    auth.isAllowed(["admin"]) && !isScreenSmall ?
+    checkIsAdminEdit() ?
       <Button
         sx={{maxWidth: "180px"}}
         variant="outlined"

@@ -107,9 +107,17 @@ const ShowcaseProjectCard = ({
           >
             <Box display="flex">
               {awardIcon && (
-                <Box paddingRight="10px">
-                  <img src={awardIcon} width="60px"></img>
-                </Box>
+                <Box
+                  width="70px"
+                  height="70px"
+                  component="img"
+                  src={awardIcon}
+                  alt="award icon"
+                  referrerPolicy="no-referrer"
+                  paddingRight="10px"
+                  justifySelf="center"
+                  sx={{ objectFit: "contain" }}
+                ></Box>
               )}
               <Box display="grid">
                 <Typography

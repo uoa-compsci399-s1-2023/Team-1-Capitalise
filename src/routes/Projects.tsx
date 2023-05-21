@@ -12,11 +12,9 @@ import { SearchContext } from "../app";
 const Projects = () => {
   const theme = useTheme();
   const { currFilters, setFilters } = useContext(SearchContext);
-  const [loading, setLoading] = useState(true);
   const [numProjDisp, setNumProjDisp] = useState(1);
 
   const handleResize = () => {
-    setLoading(true);
     let width = window.innerWidth;
     if (width >= 2510) {
       setNumProjDisp(18);
@@ -43,9 +41,9 @@ const Projects = () => {
   useEffect(() => {
     setFilters({
       ...currFilters,
+      ["currPage"]: 1,
       ["projectsPerPage"]: numProjDisp,
     });
-    setLoading(false);
   }, [numProjDisp]);
 
   return (

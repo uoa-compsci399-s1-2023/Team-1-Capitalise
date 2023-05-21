@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Box, Stack, Typography } from '@mui/material'
+import { Box, Button, Stack, Typography } from '@mui/material'
 import ExternalLinkBtn from '../ExternalLinkBtn'
 import { ProjectContext } from '../../../routes/ProjectPage'
 import { useAuth } from '../../../customHooks/useAuth';
@@ -8,7 +8,7 @@ import LinksDialog from '../dialogs/LinksDialog';
 
 export default function LinksField() {
 
-  const { project, } = useContext(ProjectContext);
+  const { project, checkIsEdit } = useContext(ProjectContext);
   const auth = useAuth();
   const [isHovering, setIsHovering] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -26,30 +26,68 @@ export default function LinksField() {
   }
 
   return (
-    <Box
-      mt={1}
-      gap={2}
-      onMouseEnter={mouseIn}
-      onMouseLeave={mouseOut}
-    >
+    <>
       <LinksDialog
         {...{ isDialogOpen, setIsDialogOpen }}
       />
 
-      <Stack flexDirection={'row'} alignItems={'center'} mb={2}>
-        <Typography fontWeight={400} width={'50px'} flex={1} variant="body1" >Links:</Typography>
-        {auth.isAllowed(['admin'], project.members) &&
-          <EditButton clickHandler={handleDialogOpen} isShow={isHovering} fontSize='small' />
-        }
-      </Stack>
-      <Stack
-        gap={2}
-        alignItems={'center'}
-      >
-        {project.links.map((link, i) => (
-          <ExternalLinkBtn {...link} key={i} />
-        ))}
-      </Stack>
-    </Box>
+      {
+        project.links[0] ?
+          <>
+            <Box
+              mt={1}
+              gap={2}
+              onMouseEnter={mouseIn}
+              onMouseLeave={mouseOut}
+            >
+
+              <Stack flexDirection={'row'} alignItems={'center'} mb={2}>
+                <Typography fontWeight={400} width={'50px'} flex={1} variant="body1" >Links:</Typography>
+                {checkIsEdit() &&
+                  <EditButton clickHandler={handleDialogOpen} isShow={isHovering} fontSize='small' />
+                }
+              </Stack>
+              <Stack
+                gap={2}
+                alignItems={'center'}
+              >
+                {project.links.map((link, i) => (
+                  <ExternalLinkBtn {...link} key={i} />
+                ))}
+              </Stack>
+            </Box>
+
+            {/* {
+              checkIsEdit() &&
+              <Button
+                variant='text'
+                color='black'
+                onClick={handleDialogOpen}
+                // sx={{
+                //   mt: 2,
+                //   mx: 2
+                // }}
+              >
+                Edit Links
+              </Button>
+            } */}
+          </>
+          : checkIsEdit() ?
+            <>
+              <Typography fontWeight={400} width={'50px'} variant="body1" >Links:</Typography>
+              <Button
+                variant='outlined'
+                onClick={handleDialogOpen}
+                sx={{
+                  mt: 2,
+                  mx: 2
+                }}
+              >
+                Add Links
+              </Button>
+            </>
+            : null
+      }
+    </>
   )
 }

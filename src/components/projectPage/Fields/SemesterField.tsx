@@ -13,9 +13,9 @@ import { useAuth } from '../../../customHooks/useAuth';
 
 export default function SemesterField() {
 
+  const { project, setProjectChanges, checkIsEdit } = useContext(ProjectContext);
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = useState(false);
-  const { project, setProjectChanges } = useContext(ProjectContext);
   const [value, setValue] = useState<string>('');
   const theme = useTheme();
   const auth = useAuth();
@@ -25,9 +25,7 @@ export default function SemesterField() {
   }, [])
 
   const handleMouseIn = () => {
-    if (auth.user && auth.isAllowed(['admin'], project.members)) {
-      setIsHovering(true);
-    }
+    setIsHovering(true);
   }
 
   const handleMouseOut = () => {
@@ -97,7 +95,7 @@ export default function SemesterField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Semester:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.semester.value}</Typography>
 
-        {auth.isAllowed(['admin'], project.members) &&
+        {checkIsEdit() &&
           <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
         }
       </Box>

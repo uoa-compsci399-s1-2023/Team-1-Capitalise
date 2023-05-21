@@ -21,6 +21,7 @@ const Member = styled(Button)({
   textTransform: 'capitalize',
   fontWeight: 300,
   display: "flex",
+  textAlign: "left",
   justifyContent: "flex-start",
   // paddingLeft: "40px",
   color: 'black',

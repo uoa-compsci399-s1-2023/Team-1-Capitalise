@@ -14,6 +14,7 @@ import { uploadProfilePicture } from "../api/uploadProfilePicture";
 import { deleteProfilePicture } from "../api/deleteProfilePicture";
 import { useAuth } from "../customHooks/useAuth";
 import DefaultPFP from "../assets/default_pfp.svg";
+import LoadingDialog from "./projectPage/dialogs/LoadingDialog";
 
 interface Props {
   open: boolean;
@@ -34,6 +35,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
 
   const defaultURL = DefaultPFP;
   const [name, setName] = useState(user.name);
+  const [displayEmail, setDisplayEmail] = useState(user.displayEmail);
   const [bio, setBio] = useState(user.bio);
   const [profilePicture, setProfilePicture] = useState(user.profilePicture);
   const [profilePictureFile, setProfilePictureFile] = useState<
@@ -49,7 +51,8 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
-  const nameCharacterLimit = 500;
+  const nameCharacterLimit = 100;
+  const emailCharacterLimit = 320;
   const bioCharacterLimit = 2000;
   const linkCharacterLimit = 500;
   const maxProfileSizeMB = 4;
@@ -113,6 +116,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       email: user.email,
       bio: bio,
       links: links,
+      displayEmail: displayEmail,
     };
 
     patchUser(user._id, body, token).then(() => {
@@ -132,13 +136,15 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
     setLoading(true);
   };
 
+  // Helper for link validation
   const isUrlValid = (url: string, urlWebsite: string) => {
     return (
-      url.startsWith("https://www." + urlWebsite) ||
-      url.startsWith("https://" + urlWebsite) ||
-      url.startsWith("http://" + urlWebsite) ||
-      !url
-    );
+      !url.includes(" ") &&
+      (url.startsWith("https://www." + urlWebsite) ||
+        url.startsWith("https://" + urlWebsite) ||
+        url.startsWith("http://" + urlWebsite) ||
+        !url
+      ));
   };
 
   const generateLink = () => {
@@ -217,6 +223,18 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             inputProps={{ maxLength: nameCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setName(event.target.value);
+            }}
+          />
+          <TextField
+            id="edit-displayEmail"
+            margin="dense"
+            label="Display Email"
+            fullWidth
+            variant="standard"
+            defaultValue={displayEmail}
+            inputProps={{ maxLength: emailCharacterLimit }}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setDisplayEmail(event.target.value);
             }}
           />
           <TextField
@@ -326,9 +344,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={loading}>
-        <DialogTitle>Hang tight, this takes a few seconds...</DialogTitle>
-      </Dialog>
+      <LoadingDialog isOpen={loading} />
     </div>
   );
 };

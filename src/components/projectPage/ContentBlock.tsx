@@ -38,9 +38,8 @@ const AddButton = styled(Button)({
 export default function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: ContentBlockProps) {
 
   const theme = useTheme();
-  const auth = useAuth();
   const [isHovering, setIsHovering] = useState(false);
-  const { project, setProjectChanges } = useContext(ProjectContext);
+  const { project, setProjectChanges, setSelectedTab, checkIsEdit } = useContext(ProjectContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
@@ -48,7 +47,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (auth.isAllowed(['admin'], project.members)) {
+    if (checkIsEdit()) {
       setIsHovering(true);
       // Change border to grey
       if (!isSmall && contentStackRef.current) {
@@ -71,10 +70,15 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   }
 
   const handleDeleteContentBlock = () => {
-    const content: TProject['content'] = JSON.parse(JSON.stringify(project.content))
-    content[tabIndex].tabContent.splice(blockIndex, 1);
+    const tabContent = project.content[tabIndex].tabContent
+    if (tabContent.length > 1) {
+      project.content[tabIndex].tabContent.splice(blockIndex, 1);
+    } else {
+      project.content.splice(tabIndex, 1); // Remove tab if this is the only block in it
+      setSelectedTab(project.content.length - 1)
+    }
     setProjectChanges({
-      ['content']: content
+      ['content']: project.content
     })
   }
 
@@ -245,11 +249,14 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           </Stack>
 
           {/* Add button (only shows if there are less than 5 blocks in tab) */}
-          {!isSmall && project.content[tabIndex].tabContent.length < 5 &&
+          {!isSmall && project.content[tabIndex].tabContent.length < 5 && tabIndex !== 0 &&
             <AddButton
               sx={{
                 visibility: isHovering ? 'visible' : 'hidden',
-                width: '100%'
+                width: '100%',
+                '&:hover': {
+                  backgroundColor: theme.customColors.DividerGrey
+                }
               }}
               color='editBtnGrey'
               onClick={handleAddContentBlock}

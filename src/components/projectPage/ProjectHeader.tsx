@@ -1,23 +1,28 @@
-import { useContext, useState } from 'react';
-import { Box, Stack, Typography, useTheme, Button, Chip, useMediaQuery } from '@mui/material'
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { Box, Stack, Typography, useTheme, Button, Chip, useMediaQuery, Switch } from '@mui/material'
 import { ProjectContext } from '../../routes/ProjectPage';
 import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';
 import EditButton from './EditButton';
 import EditNameDialog from './dialogs/EditNameDialog';
 import AdminDeleteBtn from './AdminDeleteBtn';
+import ThumbnailField from './Fields/ThumbnailField';
+
+
 
 interface ProjectHeaderProps {
   name: string
   blurb?: string
+  isEditMode: boolean
+  setIsEditMode: Dispatch<SetStateAction<boolean>>
 }
 
-export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
+export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }: ProjectHeaderProps) {
 
   const theme = useTheme();
   const auth = useAuth();
-  const { project, setProject } = useContext(ProjectContext);
-  const isScreenSmall = useMediaQuery(theme.breakpoints.down("md"));
+  const { project, checkIsEdit } = useContext(ProjectContext);
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   // Name states
   const [isHoverName, setIsHoverName] = useState(false);
@@ -45,7 +50,7 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
     // Only apply in desktop mode
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
     gap: 0,
 
     // Only apply in phone mode
@@ -65,17 +70,22 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
         setIsOpen={setIsNameDialogOpen}
         initialValue={name}
       />
+
       <Stack
         sx={headerStyle}
       >
+        {/* Project name and blurb */}
         <Box>
+
+          <ThumbnailField />
+
           <Stack
             id="project-name-field"
             flexDirection={'row'}
             alignItems={'center'}
             onMouseEnter={() => setIsHoverName(true)}
             onMouseLeave={() => setIsHoverName(false)}
-            mt={1}
+            mt={2}
           >
             <Typography
               variant="h1"
@@ -85,8 +95,8 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
             >
               {name}
             </Typography>
-            {!isScreenSmall &&
-              auth.isAllowed(['admin'], project.members) &&
+
+            {checkIsEdit() &&
               <EditButton
                 clickHandler={handleNameEdit}
                 isShow={isHoverName}
@@ -105,13 +115,26 @@ export default function ProjectHeader({ name, blurb }: ProjectHeaderProps) {
           </Typography>
         </Box>
 
-      <Stack
-      gap={2}
-      // alignItems={'end'}
-      >
-        <AdminDeleteBtn />
-        <LikeBtn />
-      </Stack>
+        {/* Edit mode toggle and project info */}
+        <Stack
+          gap={2}
+          width={'180px'}
+        >
+          {isDesktop &&
+            auth.isAllowed(['admin'], project.members) &&
+              <Stack flexDirection={'row'} gap={0} alignItems={'center'}>
+                <Typography variant="body1">Edit mode:</Typography>
+                <Switch
+                  checked={isEditMode}
+                  onChange={(e, checked) => setIsEditMode(checked)}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              </Stack>
+
+          }
+          <AdminDeleteBtn />
+          <LikeBtn />
+        </Stack>
       </Stack>
 
     </>

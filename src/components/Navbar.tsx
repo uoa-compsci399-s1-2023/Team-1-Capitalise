@@ -22,7 +22,8 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
-
+import validator from "validator";
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import {
   AppRegistration,
   Login,
@@ -41,7 +42,9 @@ const NoNavPages = [
   "/login",
   "/googleSuccessRedirect",
   "/googleFailure",
-];
+  "/ResetPassword",
+  "/changepassword"
+]
 
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
@@ -154,18 +157,19 @@ function ResponsiveAppBar() {
           >
             <SearchBar />
             {/* Check if User is logged in */}
-            {uCheck
-              ? [
-                  <Button
+            {uCheck && auth.user?.userType === "graduate" && [<Button
                     sx={{ padding: "0 25px" }}
                     key="upload"
                     variant="contained"
+                    disabled = {auth.user?.project ? true : false}
                     onClick={() => {
                       goToPage("upload");
                     }}
                   >
                     Upload
-                  </Button>,
+                  </Button>]}
+            {uCheck 
+              ? [
                   <IconButton
                     key="profilepic"
                     onClick={handleOpenUserMenu}
@@ -341,7 +345,21 @@ function ResponsiveAppBar() {
                   </MenuItem>
                   <Divider />
                 </Box>
+              
               )}
+
+              {uCheck && auth.user?.userType === "graduate" && [<MenuItem disabled = {auth.user?.project ? true : false}
+                    key="upload"
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate("/upload");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <UploadFileIcon fontSize="small" />
+                    </ListItemIcon>
+                    Upload Project
+                  </MenuItem>,]}
 
               {/*CHeck if isAdmin for dashboard*/}
 
