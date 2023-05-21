@@ -109,14 +109,13 @@ const DashboardOverview = ({
             </Paper>
           </Grid>
         </Grid>
-        <Box>
-          <Carousel
-            items={adminProjects}
-            backgroundColor={"theme.customColors.bgGrey"}
-            category={"Recently updated projects"}
-            display={{ xs: "none", md: "flex" }}
-          />
-        </Box>
+        <Carousel
+          items={adminProjects}
+          backgroundColor={"theme.customColors.bgGrey"}
+          category={"Recently updated projects"}
+          display={{ xs: "none", md: "flex" }}
+          maxWidth="1220px"
+        />
       </Box>
     </Stack>
   );
