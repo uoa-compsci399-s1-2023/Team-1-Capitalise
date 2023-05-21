@@ -6,15 +6,18 @@ import { addUserToProject } from '../../../api/addUserToProject'
 import TeamMember from '../TeamMember'
 import { removeUserFromProject } from '../../../api/removeUserFromProject'
 import { useAuth } from '../../../customHooks/useAuth'
+import LoadingDialog from './LoadingDialog'
+import { fetchUsers } from '../Fields/MembersField'
 
 
 interface TextBlockDialogProps {
   isDialogOpen: boolean
   setUserToDelete: React.Dispatch<SetStateAction<TUser | null>>
   user: TUser | null
+  setMembers: React.Dispatch<SetStateAction<TUser[]>>
 }
 
-export default function RemoveUserConfirmDialog({ isDialogOpen, setUserToDelete, user }: TextBlockDialogProps) {
+export default function RemoveUserConfirmDialog({ isDialogOpen, setUserToDelete, user, setMembers }: TextBlockDialogProps) {
 
   const [isLoading, setIsLoading] = useState(false);
   const { project, setProject } = useContext(ProjectContext);
@@ -31,11 +34,17 @@ export default function RemoveUserConfirmDialog({ isDialogOpen, setUserToDelete,
       removeUserFromProject(project._id, user._id, auth.getToken() as string)
         .then((resp) => {
           if (resp.ok) {
-            resp.json().then((data) => {setProject(data)});
+            return resp.json();
           } else {
             resp.text().then((err) => console.log(err));
           }
-        }).finally(() => {
+        }).then((data) => {
+          if (data) {
+            fetchUsers(data.members).then(users => setMembers(users))
+            // setProject(data);
+          }
+        })
+        .finally(() => {
           setIsLoading(false);
           setUserToDelete(null);
         })
@@ -43,34 +52,23 @@ export default function RemoveUserConfirmDialog({ isDialogOpen, setUserToDelete,
   }
 
   return (
-    <Dialog
-      open={isDialogOpen}
-      onClose={handleClose}
-      fullWidth
-      maxWidth='md'
-      PaperProps={{ sx: { p: 2 } }}
-    >
-      <DialogTitle>Are you sure you want to remove {user?.name} from {project.name}?</DialogTitle>
-
-      {isLoading ?
-        <Stack
-          width={'100%'}
-          height={'100%'}
-          alignItems={'center'}
-          justifyContent={'center'}
-        >
-          <CircularProgress color='spinnerColor' />
-        </Stack>
-        :
-        <>
-          <DialogActions>
-            <Button onClick={handleClose}>No</Button>
-            <Button onClick={handleSave}>Yes</Button>
-          </DialogActions>
-        </>
-      }
-
-    </Dialog >
-
+    isLoading ? 
+      <LoadingDialog isOpen={isLoading}/>
+      :
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleClose}
+        fullWidth
+        maxWidth='sm'
+        PaperProps={{ sx: { p: 2 } }}
+      >
+        <DialogContent>
+          <Typography sx={{wordBreak: 'break-all'}} variant='body1'>Are you sure you want to remove <strong>{user?.name}</strong> from <strong>{project.name}</strong>?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>No</Button>
+          <Button onClick={handleSave}>Yes</Button>
+        </DialogActions>
+      </Dialog >
   )
 }

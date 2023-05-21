@@ -8,11 +8,14 @@ import { removeUserFromProject } from '../../../api/removeUserFromProject'
 import { useAuth } from '../../../customHooks/useAuth'
 import { searchUsers } from '../../../api/searchUsers'
 import { getProject } from '../../../api/getProject'
+import { fetchUsers } from '../Fields/MembersField'
+import LoadingDialog from './LoadingDialog'
 
 interface TextBlockDialogProps {
   isDialogOpen: boolean
   setIsDialogOpen: React.Dispatch<SetStateAction<boolean>>
   initialMembers: TUser[]
+  setMembers: React.Dispatch<SetStateAction<TUser[]>>
 }
 
 interface AutocompleteOption {
@@ -20,7 +23,7 @@ interface AutocompleteOption {
   user: TUser;
 }
 
-export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initialMembers }: TextBlockDialogProps) {
+export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initialMembers, setMembers }: TextBlockDialogProps) {
 
   const { project, setProject, setProjectChanges } = useContext(ProjectContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -99,7 +102,7 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
     setIsLoading(true);
 
     const addDeleteUsers = async () => {
-      let latestProject = project
+      let latestProject: any = project
       for (let i = 0; i < newMembers.length; i++) {
         const resp = await addUserToProject(
           project._id,
@@ -125,7 +128,10 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
           console.log(await resp.text());
         }
       }
-      setProject(latestProject);
+
+      fetchUsers(latestProject.members)
+        .then(users => setMembers(users));
+      // setProject(latestProject);
       setIsLoading(false);
       setIsDialogOpen(false);
     }
@@ -153,120 +159,109 @@ export default function TeamMembersDialog({ isDialogOpen, setIsDialogOpen, initi
   }
 
   return (
-    <Dialog
-      open={isDialogOpen}
-      onClose={handleClose}
-      PaperProps={{
-        sx: {
-          p: 2
-        }
-      }}
-    >
-
-      <DialogTitle>Edit Team Members</DialogTitle>
-      {isLoading ?
-        <Stack
-          width={'100%'}
-          height={'200px'}
-          alignItems={'center'}
-          justifyContent={'center'}
-        >
-          <CircularProgress color='primary' />
-        </Stack>
-        :
-        <>
-          <DialogContent>
-            <Stack
-              width={'400px'}
-              minHeight={'300px'}
-            >
-              <Box
-                flex={1}
-                mb={2}
-                maxHeight={'70vh'}
-                overflow={'auto'}
+    isLoading ? 
+      <LoadingDialog isOpen={isLoading}/>
+      :
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            p: 2
+          }
+        }}
+      >
+        <DialogTitle>Edit Team Members</DialogTitle>
+          <>
+            <DialogContent>
+              <Stack
+                width={'400px'}
+                minHeight={'500px'}
               >
-                {currMembers.map((m, i) => (
-                  <TeamMember
-                    key={i}
-                    name={m.name}
-                    avatar={m.profilePicture}
-                    userId={m._id}
-                    isDeletable
-                    onDelete={() => handleUserRemove(m, i)}
-                  />
-                ))}
-              </Box>
+                <Box
+                  flex={1}
+                  mb={2}
+                  maxHeight={'70vh'}
+                  overflow={'auto'}
+                >
+                  {currMembers.map((m, i) => (
+                    <TeamMember
+                      key={i}
+                      name={m.name}
+                      avatar={m.profilePicture}
+                      userId={m._id}
+                      isDeletable={currMembers.length > 1} // Projects must have atleast 1 member
+                      onDelete={() => handleUserRemove(m, i)}
+                    />
+                  ))}
+                </Box>
 
-              <Autocomplete
-                popupIcon={null}
-                disablePortal
-                blurOnSelect
-                autoComplete
-                noOptionsText={'No results'}
-                // Don't show results already added
-                filterOptions={x => x.filter(
-                  o => !currMembers.some(e => e._id === o.user._id)
-                )}
-                loading={isResultsLoading}
-                // For controlled component
-                inputValue={inputValue}
-                onInputChange={(evt, value) => setInputValue(value)}
-                value={selectedOption}
-                onChange={(evt, option) => setSelectedOption(option)}
-                // No dropdown if theres no value entered.
-                componentsProps={{
-                  paper: {
-                    sx: {
-                      display: inputValue === '' ? 'none' : 'block'
+                <Autocomplete
+                  popupIcon={null}
+                  disablePortal
+                  blurOnSelect
+                  autoComplete
+                  noOptionsText={'No results'}
+                  // Don't show results already added
+                  filterOptions={x => x.filter(
+                    o => !currMembers.some(e => e._id === o.user._id)
+                  )}
+                  loading={isResultsLoading}
+                  // For controlled component
+                  inputValue={inputValue}
+                  onInputChange={(evt, value) => setInputValue(value)}
+                  value={selectedOption}
+                  onChange={(evt, option) => setSelectedOption(option)}
+                  // No dropdown if theres no value entered.
+                  componentsProps={{
+                    paper: {
+                      sx: {
+                        display: inputValue === '' ? 'none' : 'block'
+                      }
                     }
-                  }
-                }}
-                isOptionEqualToValue={(option, value) => option.user._id === value.user._id}
-                options={options}
-                sx={{ width: '100%' }}
-                renderOption={(props, option) => {
-                  return (
-                    <li {...props} key={option.user._id}>
-                      <TeamMember
-                        name={option.user.name}
-                        avatar={option.user.profilePicture}
-                        userId={option.user._id}
-                        isLink={false}
-                      />
-                    </li>
-                  );
-                }}
-                renderInput={(params) => (
-                  <TextField {...params}
-                    fullWidth
-                    hiddenLabel
-                    placeholder='Add users...'
-                    size='small'
-                    InputProps={{
-                      ...params.InputProps,
-                      endAdornment: (
-                        <React.Fragment>
-                          {isResultsLoading ? <CircularProgress color="primary" size={20} /> : null}
-                          {params.InputProps.endAdornment}
-                        </React.Fragment>
-                      ),
-                    }}
-                  />
-                )}
-              />
+                  }}
+                  isOptionEqualToValue={(option, value) => option.user._id === value.user._id}
+                  options={options}
+                  sx={{ width: '100%' }}
+                  renderOption={(props, option) => {
+                    return (
+                      <li {...props} key={option.user._id}>
+                        <TeamMember
+                          name={option.user.name}
+                          avatar={option.user.profilePicture}
+                          userId={option.user._id}
+                          isLink={false}
+                        />
+                      </li>
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params}
+                      fullWidth
+                      hiddenLabel
+                      placeholder='Add users...'
+                      size='small'
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <React.Fragment>
+                            {isResultsLoading ? <CircularProgress color="primary" size={20} /> : null}
+                            {params.InputProps.endAdornment}
+                          </React.Fragment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
 
-            </Stack>
-          </DialogContent>
+              </Stack>
+            </DialogContent>
 
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave}>Save</Button>
-          </DialogActions>
-        </>
-
-      }
-    </Dialog >
-
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleSave}>Save</Button>
+            </DialogActions>
+          </>
+      </Dialog >
   )
 }

@@ -10,6 +10,18 @@ import RemoveUserConfirmDialog from '../dialogs/RemoveUserConfirmDialog';
 import AddIcon from '@mui/icons-material/Add';
 import TeamMembersDialog from '../dialogs/TeamMembersDialog';
 
+export async function fetchUsers(members: string[] | {_id:string}[]) {
+  // Some endpoints are returning an object for members
+  if (typeof members[0] === 'object') {
+    members = members.map((m: any) => m._id);
+  }
+  const promises: Promise<TUser | undefined>[] = []
+  for (const mId of members) {
+    promises.push(getUser(mId as string));
+  }
+  const results = await Promise.all(promises)
+  return results.filter(e => e) as TUser[];
+}
 
 export default function MembersField() {
 
@@ -23,12 +35,9 @@ export default function MembersField() {
 
   // Fetch users everytime project state changes
   useEffect(() => {
-    const promises: Promise<TUser | undefined>[] = []
-    for (const mId of project.members) {
-      promises.push(getUser(mId));
+    if (project.members) {
+      fetchUsers(project.members).then((users) => setMembers(users));
     }
-    Promise.all(promises)
-      .then((results) => setMembers(results.filter(e => e) as TUser[])) // Remove nulls
   }, [project])
 
   const handleDelete = (user: TUser) => {
@@ -57,12 +66,14 @@ export default function MembersField() {
         isDialogOpen={isEditDialogOpen}
         setIsDialogOpen={setIsEditDialogOpen}
         initialMembers={members}
+        setMembers={setMembers}
       />
 
       <RemoveUserConfirmDialog
         isDialogOpen={!!userToDelete}
         setUserToDelete={setUserToDelete}
         user={userToDelete}
+        setMembers={setMembers}
       />
 
       <Typography
@@ -82,7 +93,7 @@ export default function MembersField() {
             name={m.name}
             avatar={m.profilePicture}
             userId={m._id}
-            isDeletable={checkIsEdit()}
+            isDeletable={checkIsEdit() && project.members.length > 1}
             onDelete={() => handleDelete(m)}
           />
         ))}

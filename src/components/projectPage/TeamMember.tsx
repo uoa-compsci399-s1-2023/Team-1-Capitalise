@@ -25,9 +25,10 @@ const Member = styled(Button)({
   justifyContent: "flex-start",
   // paddingLeft: "40px",
   color: 'black',
+  wordBreak: 'break-all'
 })
 
-export default function TeamMember({ name, avatar, userId, onDelete, isLink = true, isDeletable = false }: FieldProps) {
+export default function TeamMember({ name, avatar, userId, onDelete, isLink=true, isDeletable=false }: FieldProps) {
   
   const theme = useTheme();
   const auth = useAuth();
