@@ -236,6 +236,9 @@ const UserProfile = () => {
             >
               {user.name}
             </Typography>
+            <Typography style={{ wordBreak: "break-word" }}>
+              {user.displayEmail}
+            </Typography>
             <Stack direction={{ xs: "row", md: "column" }} spacing={1}>
               {user.links.map((link) => (
                 <Box key={link._id}>
