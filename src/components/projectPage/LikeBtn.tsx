@@ -74,14 +74,20 @@ export default function LikeBtn() {
           color='neutral'
           startIcon={<FavoriteIcon color='error' />}
           onClick={handleLike}
+          sx={{
+            width: '120px'
+          }}
         >
           {`Liked! (${project.likes})`}
         </Button>
         :
-        <Button 
+        <Button
           variant='contained'
           color='error'
           onClick={handleLike}
+          sx={{
+            width: '100px'
+          }}
         >
           {`Like (${project.likes})`}
         </Button>)
