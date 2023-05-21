@@ -239,7 +239,11 @@ const UserProfile = () => {
             <Typography style={{ wordBreak: "break-word" }}>
               {user.displayEmail}
             </Typography>
-            <Stack direction={{ xs: "row", md: "column" }} spacing={1}>
+            <Stack
+              paddingTop="10px"
+              direction={{ xs: "row", md: "column" }}
+              spacing={1}
+            >
               {user.links.map((link) => (
                 <Box key={link._id}>
                   <ExternalLinkBtn
