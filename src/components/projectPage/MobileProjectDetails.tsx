@@ -167,7 +167,7 @@ export default function ProjectDetailsAccordian() {
           id="panel3bh-header"
         >
           <Typography sx={{ width: '33%', flexShrink: 0 }}>
-            Team ({project.teamname.length}):
+            Team ({project.members.length}):
           </Typography>
           <Typography sx={{ color: 'text.secondary' }}>
             {project.teamname}
