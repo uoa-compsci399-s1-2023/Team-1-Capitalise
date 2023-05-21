@@ -39,7 +39,6 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 		<Stack
 			className='tab-btns'
 			flexDirection={'row'}
-			// justifyContent={'center'}
 			alignItems={'center'}
 			mb={2}
 			borderBottom={`2px solid ${theme.customColors.DividerGrey}`}
