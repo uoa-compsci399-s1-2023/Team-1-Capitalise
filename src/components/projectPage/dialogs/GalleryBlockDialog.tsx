@@ -1,12 +1,11 @@
-import React, { SetStateAction, useContext, useState, ChangeEvent } from 'react'
+import React, { SetStateAction, useContext, useState, ChangeEvent, useEffect } from 'react'
 import { TProject } from '../../../model/TProject'
 import { Dialog, DialogContent, DialogTitle, Grid, DialogActions, useTheme, Button, TextField, Box, Stack, OutlinedInput, Typography } from '@mui/material'
 import { ProjectContext } from '../../../routes/ProjectPage'
 import ImgThumbnail from '../ImgThumbnail'
-import DeleteIcon from '@mui/icons-material/Delete';
 import { addGalleryImgs } from '../../../api/addGalleryImg'
 import { deleteGalleryImgs } from '../../../api/deleteGalleryImgs'
-import CircularProgress from '@mui/material/CircularProgress';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 interface GalleryBlockDialogProps {
@@ -29,6 +28,12 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
   const [valueError, setValueError] = useState('');
   const [headingError, setErrorHeading] = useState('');
   const theme = useTheme();
+
+  useEffect(() => {
+    setImgUrls(initialUrls)
+    setImgsToDelete([])
+    setNewImgFiles([])
+  }, [isDialogOpen])
 
   const handleClose = () => {
     setIsDialogOpen(false);
@@ -160,20 +165,26 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
                 {/* File input */}
                 <OutlinedInput
                   type='file'
-                  inputProps={{ accept: "image/*" }}
                   onChange={(e) => handleFileUploaded(e as ChangeEvent<HTMLInputElement>, index)}
-                  sx={{ maxWidth: '300px' }}
+                  sx={{ 
+                    maxWidth: '300px',
+                   }}
+                  inputProps={{ 
+                    accept: "image/*",
+                  }}
                 />
                 {/* Delete file input */}
                 <Button
                   color='neutral'
                   sx={{
-                    ml: 2,
-                    height: '100%'
+                    ml: 1,
+                    p:  1,
+                    height: '100%',
+                    minWidth: 0
                   }}
                   onClick={() => handleRemoveFile(index)}
                 >
-                  <DeleteIcon />
+                  <ClearIcon />
                 </Button>
               </Box>
             ))

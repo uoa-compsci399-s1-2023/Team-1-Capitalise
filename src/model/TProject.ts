@@ -1,5 +1,6 @@
 import { TComment } from "./TComment";
 import { TContentTab } from "./TContentTab";
+import { TTag } from "./TTag";
 
 export type TProject = {
   _id: string;
@@ -29,7 +30,7 @@ export type TProject = {
   content: TContentTab[]
   likes: number;
   comments: string[]; // array of ids
-  tags: { name: string }[];
+  tags: TTag[]
   // badges: { value: "Peoples Choice" | "Top Excellence" | "Community Impact" }; // There should be an apostrophe in people's choice!
   badges: {
     _id: string

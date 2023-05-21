@@ -11,10 +11,10 @@ import { useAuth } from '../../../customHooks/useAuth';
 
 export default function TeamnameField() {
 
+  const { project, setProjectChanges, checkIsEdit } = useContext(ProjectContext)
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { project, setProjectChanges } = useContext(ProjectContext)
   const [value, setValue] = useState<string>(project.teamname);
   const [error, setError] = useState<string>('');
   const theme = useTheme();
@@ -22,9 +22,7 @@ export default function TeamnameField() {
 
 
   const handleMouseIn = () => {
-    if (auth.user && auth.isAllowed(['admin'], project.members)) {
-      setIsHovering(true);
-    }
+    setIsHovering(true);
   }
 
   const handleMouseOut = () => {
@@ -100,7 +98,7 @@ export default function TeamnameField() {
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Team name:</Typography>
         <Typography flex={1} fontWeight={300} variant="body1">{project.teamname}</Typography>
 
-        {auth.isAllowed(['admin'], project.members) &&
+        {checkIsEdit() &&
           <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
         }
       </Box>

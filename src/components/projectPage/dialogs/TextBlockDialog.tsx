@@ -9,7 +9,7 @@ interface TextBlockDialogProps {
   blockIndex: number
   isDialogOpen: boolean
   setIsDialogOpen: React.Dispatch<SetStateAction<boolean>>
-  initialValue: string
+  initialValue: string | undefined
 }
 
 export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, setIsDialogOpen, initialValue }: TextBlockDialogProps) {
@@ -22,7 +22,11 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
 
   // Make sure value is current each time dialog is opened.
   useEffect(() => {
-    setValue(initialValue)
+    if (initialValue) {
+      setValue(initialValue)
+    } else {
+      setValue('')
+    }
   }, [isDialogOpen])
 
   const handleClose = () => {
@@ -68,6 +72,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
       setProjectChanges({
         ['content']: content
       })
+      setValue('')
       setIsDialogOpen(false);
     }
   };

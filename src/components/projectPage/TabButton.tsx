@@ -21,7 +21,7 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
 
   const [isHover, setIsHover] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { project } = useContext(ProjectContext);
+  const { project, checkIsEdit } = useContext(ProjectContext);
   const auth = useAuth();
   const theme = useTheme();
 
@@ -38,6 +38,8 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
       />
       <Stack
         flexDirection={'row'}
+        alignItems={'center'}
+        // height={'100%'}
         gap={0}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
@@ -46,11 +48,15 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
         <Button
           variant='text'
           color='black'
-          onClick={() => setSelected(index)}>
+          onClick={() => setSelected(index)}
+        >
+  
+
           <Box
             borderBottom={isSelected ? `3px solid ${theme.palette.neutral.main}` : `3px solid transparent`}
             p={0.5}
             fontSize={16}
+            whiteSpace={'nowrap'}
           >
             {value}
           </Box>
@@ -58,11 +64,11 @@ export default function TabButton({ index, isSelected, value, setSelected }: Tab
 
         <Button
           sx={{
-            display: auth.isAllowed(['admin'], project.members) ? 'block' : 'none',
-            visibility: isHover ? 'visible' : 'hidden',
+            display: checkIsEdit() ? 'block' : 'none',
+            visibility: (isHover && index !== 0) ? 'visible' : 'hidden',
             height: "100%",
             minWidth: '0',
-            mr: 3,
+            mr: 2,
             ':hover': {
               backgroundColor: theme.customColors.DividerGrey
             }
