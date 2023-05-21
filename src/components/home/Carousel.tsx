@@ -9,6 +9,7 @@ interface Props {
   backgroundColor: string;
   category: string;
   display?: any;
+  maxWidth?: string;
 }
 
 const Carousel = ({
@@ -16,6 +17,7 @@ const Carousel = ({
   backgroundColor,
   category,
   display = "flex",
+  maxWidth = "1610px",
 }: Props) => {
   const slideRight = () => {
     const element = document.getElementById(category + "carousel");
@@ -40,7 +42,7 @@ const Carousel = ({
       justifyContent="center"
       margin="auto"
     >
-      <Stack padding="45px 0px">
+      <Stack padding="45px 0px" maxWidth={maxWidth}>
         <Box paddingLeft={{ xs: "20px", lg: "60px" }}>
           <Typography variant="h5">{category}</Typography>
         </Box>

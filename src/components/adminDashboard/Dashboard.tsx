@@ -14,6 +14,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../../customHooks/useAuth";
+import { ChromePicker, ColorResult } from "react-color";
 
 import { getCategories } from "../../api/getCategories";
 import { TCategory } from "../../model/TCategory";
@@ -55,7 +56,14 @@ const Dashboard = () => {
   const [newAwardImage, setNewAwardImage] = useState<File | undefined>();
   const [awardImageString, setAwardImageString] = useState("");
 
+  // check if image has been added
+  const [imageAdded, setImageAdded] = useState(false);
+
   const [validImage, setValidImage] = useState(true);
+
+  // set gradient colours
+  const [colour1, setColour1] = useState("#FFFFFF");
+  const [colour2, setColour2] = useState("#FFFFFF");
 
   const [heroBanners, setHeroBanners] = useState<string[]>([]);
   const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
@@ -105,7 +113,11 @@ const Dashboard = () => {
     // call the API to delete category
     const token = auth.getToken();
     if (token) {
-      if (window.confirm("Are you sure you want to delete this category?")) {
+      if (
+        window.confirm(
+          "This will permanently delete this category, are you sure?"
+        )
+      ) {
         deleteParameter(categoryId, token).then(() => {
           // we need to update the categories.
           const updatedCategories = categories.filter(
@@ -149,7 +161,11 @@ const Dashboard = () => {
     // call the API to  delete category
     const token = auth.getToken();
     if (token) {
-      if (window.confirm("Are you sure you want to delete this semester?")) {
+      if (
+        window.confirm(
+          "This will permanently delete this semester and the associated projects, are you sure?"
+        )
+      ) {
         deleteParameter(semesterId, token).then(() => {
           // we need to update the semesters.
           const updatedSemesters = semesters.filter(
@@ -175,19 +191,24 @@ const Dashboard = () => {
     }
   };
 
+  const handleColour1Change = (newColour: ColorResult) => {
+    setColour1(newColour.hex);
+  };
+
+  const handleColour2Change = (newColour: ColorResult) => {
+    setColour2(newColour.hex);
+  };
+
   const handleNewAwardImage = async () => {
     if (typeof newAwardImage !== "undefined") {
-      console.log("newAwardImage:", newAwardImage);
-      console.log("newAwardString:", awardImageString);
-
       let formData = new FormData();
-
       formData.append("award", newAwardImage);
       setLoading(true);
 
       const response = await uploadAwardImage(formData);
       setLoading(false);
       setAwardImageString(response);
+      setImageAdded(true);
     }
   };
 
@@ -200,14 +221,17 @@ const Dashboard = () => {
 
       console.log("Adding the award:", newAward);
       console.log("New award image:", awardImageString);
+      console.log("New gradient:", [colour1, colour2]);
+      const newGradient = [colour1, colour2];
 
-      addAward(newAward, "award", token, awardImageString)
+      addAward(newAward, "award", token, awardImageString, newGradient)
         // update the awards (need to create a TAward object based on response using the interface)
         .then((data) => {
           award._id = data._id;
           award.value = data.value;
           award.parameterType = data.parameterType;
           award.image = data.image;
+          award.gradient = data.gradient;
 
           setAwards([...awards, award]);
         });
@@ -218,13 +242,16 @@ const Dashboard = () => {
 
     // reset input field
     setNewAward("");
+    setImageAdded(false);
   };
 
   const handleDeleteAward = async (awardId: string, awardImage: string) => {
     // call the API to  delete award
     const token = auth.getToken();
     if (token) {
-      if (window.confirm("Are you sure you want to delete this award?")) {
+      if (
+        window.confirm("This will permanently delete this award, are you sure?")
+      ) {
         deleteParameter(awardId, token).then(() => {
           // we also need to delete the associated award image from s3 by grabbing the image name
           var last = awardImage.substring(
@@ -346,6 +373,7 @@ const Dashboard = () => {
               />
               <Button
                 variant="contained"
+                disabled={newCategory.length === 0}
                 color="primary"
                 onClick={handleAddCategory}
               >
@@ -412,6 +440,7 @@ const Dashboard = () => {
             />
             <Button
               variant="contained"
+              disabled={newSemester.length === 0}
               color="primary"
               onClick={handleAddSemester}
             >
@@ -477,10 +506,10 @@ const Dashboard = () => {
           </Box>
 
           <Typography paddingTop={5} variant="h6">
-            Create new award
+            Create a new award
           </Typography>
           <Typography paddingTop={5} variant="body1">
-            Add new award image
+            1) Add new award image
           </Typography>
           <Box
             width={{ xs: "300px", sm: "600px" }}
@@ -521,30 +550,69 @@ const Dashboard = () => {
             </Box>
           </Box>
           <Typography paddingTop={5} variant="body1">
-            Add new award name
+            2) Add new award name and pick a gradient
           </Typography>
           <Box
-            width={{ xs: "300px", sm: "600px" }}
+            width={{ xs: "400px", sm: "505px" }}
             component={"form"}
             display={"flex"}
             alignItems={"center"}
             gap={2}
+            paddingBottom={0}
           >
             <TextField
-              label="New award"
+              label="Name of new award"
               value={newAward}
               onChange={handleNewAward}
               variant="outlined"
               fullWidth
               margin="normal"
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddAward}
-            >
-              Submit
-            </Button>
+          </Box>
+
+          <Box
+            width={{ xs: "500px", sm: "550px" }}
+            component={"form"}
+            display={"flex"}
+            alignItems={"center"}
+            gap={2}
+            paddingBottom={5}
+          >
+            <Stack paddingTop={5}>
+              <ChromePicker
+                color={colour1}
+                onChange={(updatedColor1) =>
+                  setColour1(updatedColor1.hex.toUpperCase())
+                }
+              />
+
+              <Typography paddingTop={5} paddingLeft={5} variant="body2">
+                Colour 1: {colour1}
+              </Typography>
+            </Stack>
+
+            <Stack paddingLeft={3} paddingTop={5}>
+              <ChromePicker
+                color={colour2}
+                onChange={(updatedColor2) =>
+                  setColour2(updatedColor2.hex.toUpperCase())
+                }
+              />
+
+              <Typography paddingTop={5} paddingLeft={5} variant="body2">
+                Colour 2: {colour2}
+              </Typography>
+            </Stack>
+            <Box paddingLeft={3} paddingTop={25}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!imageAdded}
+                onClick={handleAddAward}
+              >
+                Submit
+              </Button>
+            </Box>
           </Box>
         </Box>
       ),

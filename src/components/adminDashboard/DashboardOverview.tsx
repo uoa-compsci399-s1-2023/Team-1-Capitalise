@@ -1,5 +1,12 @@
+import { useEffect, useState } from "react";
 import { Category, DateRange, EmojiEvents } from "@mui/icons-material";
-import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Box, Grid, Paper, Stack, Typography, useTheme } from "@mui/material";
+import Carousel from "../../components/home/Carousel";
+import ShowcaseCarousel from "../../components/home/ShowcaseCarousel";
+
+import { TProject } from "../../model/TProject";
+import { TFiltersState } from "../../app";
+import { getAdminProjects } from "../../api/getAdminProjects";
 
 interface Props {
   categoryCount: number;
@@ -12,10 +19,35 @@ const DashboardOverview = ({
   semesterCount,
   awardCount,
 }: Props) => {
+  const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
+  const carouselColours = [theme.customColors.bgGrey, "white"];
+
+  const [adminProjects, setAdminProjects] = useState<TProject[]>([]);
+  const [adminProjectSort, setAdminProjectSort] = useState("updatedAt");
+  const [adminProjectNum, setAdminProjectNum] = useState(10);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchAdminProjects = async () => {
+      try {
+        const response = await getAdminProjects(
+          adminProjectSort,
+          adminProjectNum
+        );
+        setAdminProjects(response.projects);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+    fetchAdminProjects();
+    setIsLoading(false);
+  }, []);
+
   return (
     <Stack height="100%">
       <Box padding="15px 24px 10px 24px" minHeight="10%" width="100%">
-        <Typography paddingTop={2} variant="h6">
+        <Typography paddingTop={2} variant="h5">
           Summary
         </Typography>
 
@@ -77,10 +109,13 @@ const DashboardOverview = ({
             </Paper>
           </Grid>
         </Grid>
-        <Typography paddingTop={10} variant="h6">
-          {/* Show newly created projects over a timeframe (maybe for the week??) */}
-          Recently created projects
-        </Typography>
+        <Carousel
+          items={adminProjects}
+          backgroundColor={"theme.customColors.bgGrey"}
+          category={"Recently updated projects"}
+          display={{ xs: "none", md: "flex" }}
+          maxWidth="1220px"
+        />
       </Box>
     </Stack>
   );
