@@ -69,8 +69,8 @@ const About = ({}) => {
     <Stack
       position="relative"
       padding="50px 0px"
-      gap="100px"
-      width="65%"
+      gap="80px"
+      width={{ xs: "80%", md: "65%", xl: "50%" }}
       margin="auto"
       minHeight="92vh"
     >
@@ -92,8 +92,12 @@ const About = ({}) => {
       {!editChecked &&
         aboutData.map((section) => (
           <Stack gap="10px" key={section._id + key}>
-            <Typography variant="h1">{section.title}</Typography>
-            <Typography variant="body1">{section.body}</Typography>
+            <Typography variant="h1" fontSize={{ xs: "24pt", lg: "28pt" }}>
+              {section.title}
+            </Typography>
+            <Typography variant="body1" fontSize="14pt">
+              {section.body}
+            </Typography>
           </Stack>
         ))}
 

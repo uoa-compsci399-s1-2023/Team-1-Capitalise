@@ -27,7 +27,7 @@ export default function ProjectsGrid({
               image={
                 typeof project.thumbnail != "undefined" ? project.thumbnail : ""
               }
-              teamname={project.teamname ? project.teamname : "teamname"}
+              teamname={project.teamname ? project.teamname : "‎"}
               category={project.category.value}
               likes={project.likes}
               badges={project.badges ? project.badges.value : "default"}
