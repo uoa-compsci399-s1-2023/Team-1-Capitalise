@@ -40,6 +40,7 @@ declare module "@mui/material/styles" {
     primaryDark: PaletteColorOptions;
     neutral: SimplePaletteColorOptions;
     black: PaletteColorOptions;
+    whiteButton: PaletteColorOptions;
     editBtnGrey: SimplePaletteColorOptions;
     githubBtn: PaletteColorOptions;
     linkedinBtn: PaletteColorOptions;
@@ -55,6 +56,7 @@ declare module "@mui/material/Button" {
     primaryDark: true;
     neutral: true;
     black: true;
+    whiteButton: true;
     editBtnGrey: true;
     githubBtn: true;
     linkedinBtn: true;
@@ -100,6 +102,11 @@ let theme = createTheme({
       light: "#0",
       dark: "#0",
       contrastText: "#0",
+    },
+    whiteButton: {
+      main: "#ffffff",
+      light: "#ffffff",
+      dark: "#ffffff",
     },
     editBtnGrey: {
       main: "#b7b7b7",
