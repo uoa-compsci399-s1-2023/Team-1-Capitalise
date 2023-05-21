@@ -561,7 +561,7 @@ const Dashboard = () => {
             paddingBottom={0}
           >
             <TextField
-              label="New award"
+              label="Name of new award"
               value={newAward}
               onChange={handleNewAward}
               variant="outlined"
