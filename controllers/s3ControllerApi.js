@@ -594,13 +594,7 @@ const uploadTabPoster = async(req, res) => {
             const posterUrl = URL + checkString(uploadParams.Key)
             urlKey.push(URL + checkString(uploadParams.Key))
     
-
-    const result = await singleUpdateToMongo(projectId, tabName, fieldName, urlKey)
-
-    if(result == null){
-        return res.status(404).send({project: null, msg: 'no tab exist with that name'})
-    }
-
+        
     return res.status(200).send(posterUrl)
     }
     catch(err){
