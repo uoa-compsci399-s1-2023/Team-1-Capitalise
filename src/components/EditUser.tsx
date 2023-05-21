@@ -34,6 +34,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
 
   const defaultURL = DefaultPFP;
   const [name, setName] = useState(user.name);
+  const [displayEmail, setDisplayEmail] = useState(user.displayEmail);
   const [bio, setBio] = useState(user.bio);
   const [profilePicture, setProfilePicture] = useState(user.profilePicture);
   const [profilePictureFile, setProfilePictureFile] = useState<
@@ -50,6 +51,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const auth = useAuth();
   const navigate = useNavigate();
   const nameCharacterLimit = 100;
+  const emailCharacterLimit = 320;
   const bioCharacterLimit = 2000;
   const linkCharacterLimit = 500;
   const maxProfileSizeMB = 4;
@@ -113,6 +115,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       email: user.email,
       bio: bio,
       links: links,
+      displayEmail: displayEmail,
     };
 
     patchUser(user._id, body, token).then(() => {
@@ -217,6 +220,18 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             inputProps={{ maxLength: nameCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setName(event.target.value);
+            }}
+          />
+          <TextField
+            id="edit-displayEmail"
+            margin="dense"
+            label="Display Email"
+            fullWidth
+            variant="standard"
+            defaultValue={displayEmail}
+            inputProps={{ maxLength: emailCharacterLimit }}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setDisplayEmail(event.target.value);
             }}
           />
           <TextField
