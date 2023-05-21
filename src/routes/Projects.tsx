@@ -41,6 +41,7 @@ const Projects = () => {
   useEffect(() => {
     setFilters({
       ...currFilters,
+      ["currPage"]: 1,
       ["projectsPerPage"]: numProjDisp,
     });
   }, [numProjDisp]);
