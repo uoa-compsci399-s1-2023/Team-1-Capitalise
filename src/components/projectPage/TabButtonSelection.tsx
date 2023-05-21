@@ -19,7 +19,8 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 	const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
 	const handleAddBtnClick = () => {
-		project.content.push({
+		const content = JSON.parse(JSON.stringify(project.content))
+		content.push({
 			tabName: 'New Tab',
 			tabContent: [
 				{
@@ -29,9 +30,9 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 			]
 		})
 		setProjectChanges({
-			'content': project.content
+			'content': content
 		})
-		setSelectedTab(project.content.length - 1)
+		setSelectedTab(content.length - 1)
 	}
 
 	return (

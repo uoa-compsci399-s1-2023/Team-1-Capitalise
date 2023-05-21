@@ -86,17 +86,17 @@ export default function ProjectBanner() {
             {!checkIsDefaultBanner() &&
               <Button
                 startIcon={<ClearIcon />}
-                color='black'
                 variant='outlined'
                 onClick={() => handleRemoveBanner()}
+                color='whiteButton'
               >
                 Remove
               </Button>}
             <Button
               startIcon={<EditIcon />}
-              color='black'
               variant='outlined'
               onClick={() => setIsDialogOpen(true)}
+              color='whiteButton'
             >
               Edit
             </Button>
