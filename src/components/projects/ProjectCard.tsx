@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
 import { useContext } from "react";
 import { AwardTypeContext } from "../../app";
-import { API_URL } from "../../api/config";
 import { incrementViews } from "../../api/incrementViews";
 
 interface Props {
@@ -84,9 +83,9 @@ const ProjectCard = ({
           },
         }}
       >
-        <CardActionArea 
-          component={Link} 
-          to={`../projects/${projectID}`} 
+        <CardActionArea
+          component={Link}
+          to={`../projects/${projectID}`}
           onClick={() => incrementViews(projectID)} // views are only counted if user clicks on card
         >
           <CardMedia
@@ -115,9 +114,18 @@ const ProjectCard = ({
           >
             <Box display="flex">
               {awardIcon && (
-                <Box paddingRight="10px">
-                  <img src={awardIcon} width="40px"></img>
-                </Box>
+                <Box
+                  display="flex"
+                  maxWidth="50px"
+                  height="50px"
+                  component="img"
+                  src={awardIcon}
+                  alt="award icon"
+                  referrerPolicy="no-referrer"
+                  paddingRight="10px"
+                  justifySelf="start"
+                  sx={{ objectFit: "contain" }}
+                ></Box>
               )}
               <Box display="grid">
                 <Typography
@@ -176,9 +184,9 @@ const ProjectCard = ({
                 paddingBottom="0.35em"
               >
                 <FavoriteIcon
-                  sx={{ 
+                  sx={{
                     color: theme.customColors.likes,
-                    fontSize: 16
+                    fontSize: 16,
                   }}
                   // fontSize="small"
                 />
