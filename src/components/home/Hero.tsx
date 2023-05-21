@@ -74,7 +74,7 @@ const Hero = () => {
           }
         }
         //delete in final
-        if (auth.user._id === "6432f8826cce2fc1706572d3") {
+        if (auth.user.name === "SuperSecretAnimations") {
           setLoggedInAdmin(1000);
         }
         //delete in final end
