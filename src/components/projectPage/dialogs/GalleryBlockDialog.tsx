@@ -102,7 +102,6 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
 
         // Then delete imgs
         for (let i = 0, len = imgsToDelete.length; i < len; i++) {
-          console.log(`deleting img ${imgsToDelete[i]}`)
           resp = await removeGalleryImg(project._id, tab.tabName, gallery._id, imgsToDelete[i]);
           const data = await resp.json()
           if (resp.ok) {
@@ -114,7 +113,6 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
 
         // Then upload images`)
         if (newImgFiles.length > 0) {
-          console.log(`adding ${newImgFiles.length} files`)
           const formData = new FormData()
           newImgFiles.forEach(file => formData.append('gallery', file));
           // Send files to backend
@@ -239,12 +237,12 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
                 variant='outlined'
                 onClick={handleFileAdded}
                 sx={{ mt: 2 }}
-                color='neutral'
+                color='black'
               >
                 Add file
               </Button>
               :
-              <Typography variant='subtitle1' color={theme.palette.neutral.main} mt={2}>Note: The maximum number of images is 5.</Typography>
+              <Typography variant='subtitle1' color={theme.palette.neutral.main} mt={2}>The maximum number of images is 5.</Typography>
             }
           </DialogContent>
 

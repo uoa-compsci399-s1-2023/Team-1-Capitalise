@@ -6,6 +6,7 @@ import { ProjectContext } from '../../../routes/ProjectPage';
 import { TProject } from '../../../model/TProject';
 import { TContentBlock } from '../../../model/TContentBlock';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 interface AddBlockDialogProps {
   isAddDialogOpen: boolean
@@ -19,10 +20,13 @@ function ContentButton({ children, handleClick }: { children: ReactNode, handleC
   const theme = useTheme();
 
   return (
-    <Grid 
-      item 
-      xs={3}
-    >
+    // <Grid
+    //   item
+    //   xs={3}
+    //   pl={0}
+    //   justifyContent={'center'}
+    //   alignItems={'center'}
+    // >
       <Button
         color='editBtnGrey'
         onClick={handleClick}
@@ -39,7 +43,7 @@ function ContentButton({ children, handleClick }: { children: ReactNode, handleC
 
         </Stack>
       </Button>
-    </Grid>
+    // </Grid>
   )
 
 }
@@ -48,15 +52,15 @@ function ContentButton({ children, handleClick }: { children: ReactNode, handleC
 export default function AddBlockDialog({ isAddDialogOpen, setIsAddDialogOpen, tabIndex, blockIndex }: AddBlockDialogProps) {
 
   const theme = useTheme();
-  const {project, setProjectChanges} = useContext(ProjectContext);
+  const { project, setProjectChanges } = useContext(ProjectContext);
 
   const handleClose = () => {
     setIsAddDialogOpen(false);
   }
 
   const handleBtnClick = (type: TContentBlock['type']) => {
-    const newContent: TProject['content'] = JSON.parse(JSON.stringify(project.content));
-    newContent[tabIndex].tabContent.splice(blockIndex+1, 0, {
+    const newContent = JSON.parse(JSON.stringify(project.content));
+    newContent[tabIndex].tabContent.splice(blockIndex + 1, 0, {
       type: type,
       value: []
     })
@@ -78,16 +82,23 @@ export default function AddBlockDialog({ isAddDialogOpen, setIsAddDialogOpen, ta
     >
       <DialogTitle>Add content</DialogTitle>
       <DialogContent>
+        {/* 
         <Grid 
-          container 
+          container
+          justifyContent={'center'}
+          alignItems={'center'}
           spacing={4}
           p={2}
-          columns={{ xs: 4, sm: 8, md: 12 }}
+          // columns={{ xs: 4, sm: 8, md: 12 }}
+        > */}
+        <Stack
+          justifyContent={'center'}
+          // alignItems={'center'}
+          flexDirection={'row'}
         >
-
           <ContentButton handleClick={() => handleBtnClick('text')}>
             <TextFormatIcon
-              sx={{ 
+              sx={{
                 fontSize: '150px',
                 height: '150px'
               }}
@@ -97,8 +108,8 @@ export default function AddBlockDialog({ isAddDialogOpen, setIsAddDialogOpen, ta
 
           <ContentButton handleClick={() => handleBtnClick('gallery')}>
             <CollectionsIcon
-              sx={{ 
-                fontSize: '125px', 
+              sx={{
+                fontSize: '125px',
                 height: '150px'
               }}
             />
@@ -107,15 +118,24 @@ export default function AddBlockDialog({ isAddDialogOpen, setIsAddDialogOpen, ta
 
           <ContentButton handleClick={() => handleBtnClick('video')}>
             <OndemandVideoIcon
-              sx={{ 
-                fontSize: '125px', 
+              sx={{
+                fontSize: '125px',
                 height: '150px'
               }}
             />
             <Typography color={'black'}>Video</Typography>
           </ContentButton>
 
-        </Grid>
+          <ContentButton handleClick={() => handleBtnClick('poster')}>
+            <PictureAsPdfIcon
+              sx={{
+                fontSize: '125px',
+                height: '150px'
+              }}
+            />
+            <Typography color={'black'}>PDF</Typography>
+          </ContentButton>
+        </Stack>
 
       </DialogContent>
     </Dialog >

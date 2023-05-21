@@ -1,5 +1,5 @@
 import React, { useState, FC, useContext, useRef, ReactNode, useEffect } from 'react'
-import { useMediaQuery, Box, Stack, Typography, useTheme, Button } from '@mui/material'
+import { useMediaQuery, Box, Stack, Typography, useTheme, Button, Link } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -13,6 +13,8 @@ import AddBlockDialog from './dialogs/AddBlockDialog';
 import VideoBlockDialog from './dialogs/VideoBlockDialog';
 import VideoPlayer from './VideoPlayer';
 import { removeGalleryImg } from '../../api/galleryApis';
+import EditPosterDialog from './dialogs/EditPosterDialog';
+import LinkIcon from '@mui/icons-material/Link';
 
 
 export interface ContentBlockProps {
@@ -44,7 +46,6 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
   const isSmall = useMediaQuery(theme.breakpoints.down("md"));
-
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (checkIsEdit()) {
@@ -89,7 +90,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
 
   if (subHeading) {
-    Heading = 
+    Heading =
       <Typography
         component='p'
         fontSize={20}
@@ -113,7 +114,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         :
         <Typography textAlign={'center'} color={theme.palette.neutral.main} variant='body1'>&lt;Empty text block&gt;</Typography>
       )
-      Dialog = 
+      Dialog =
         <TextBlockDialog
           setIsDialogOpen={setIsDialogOpen}
           isDialogOpen={isDialogOpen}
@@ -139,7 +140,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     case 'gallery':
       // Only render gallery if more than one image.
       if (value.length === 0) {
-        Content = 
+        Content =
           <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty gallery block&gt;</Typography>
 
       } else if (value.length === 1) {
@@ -147,7 +148,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       } else {
         Content = <MemoizedImageCarousel urls={value} />
       }
-      Dialog = 
+      Dialog =
         <GalleryBlockDialog
           setIsDialogOpen={setIsDialogOpen}
           isDialogOpen={isDialogOpen}
@@ -163,7 +164,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         :
         <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty video block&gt;</Typography>
 
-      Dialog = 
+      Dialog =
         <VideoBlockDialog
           setIsDialogOpen={setIsDialogOpen}
           isDialogOpen={isDialogOpen}
@@ -171,8 +172,31 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           blockIndex={blockIndex}
           initialValue={value[0]}
         />
-
       break;
+    case 'poster':
+      Content = value.length > 0 ?
+        <Box>
+          <Button
+            href={value[0]}
+            target={'_blank'}
+            color='neutral'
+            startIcon={value[0] && <LinkIcon fontSize='small' />}
+            sx={{
+              '&:hover': {
+                backgroundColor: theme.customColors.DividerGrey
+              }
+            }}
+          >
+            {value[1] || "no file uploaded"}
+          </Button>
+        </Box>
+        :
+        <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty PDF block&gt;</Typography>
+
+      Dialog =
+        <EditPosterDialog
+          {...{ tabIndex, blockIndex, isDialogOpen, setIsDialogOpen }}
+        />
   }
 
   return (
@@ -250,7 +274,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           </Stack>
 
           {/* Add button (only shows if there are less than 5 blocks in tab) */}
-          {!isSmall && project.content[tabIndex].tabContent.length < 5 && tabIndex !== 0 &&
+          {checkIsEdit() && project.content[tabIndex].tabContent.length < 5 && tabIndex !== 0 &&
             <AddButton
               sx={{
                 visibility: isHovering ? 'visible' : 'hidden',
