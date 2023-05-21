@@ -27,7 +27,7 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const constHandleImage = async (file: File) => {
-    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg)$/)) {
       setValidImage(false);
     } else {
       setValidImage(true);

@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { uploadProfilePicture } from "../api/uploadProfilePicture";
 import { deleteProfilePicture } from "../api/deleteProfilePicture";
 import { useAuth } from "../customHooks/useAuth";
-import DefaultPFP from "../assets/default_pfp.svg";
+import DefaultPFP from "../assets/DefaultPfp.svg";
 import LoadingDialog from "./projectPage/dialogs/LoadingDialog";
 
 interface Props {
@@ -143,8 +143,8 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       (url.startsWith("https://www." + urlWebsite) ||
         url.startsWith("https://" + urlWebsite) ||
         url.startsWith("http://" + urlWebsite) ||
-        !url
-      ));
+        !url)
+    );
   };
 
   const generateLink = () => {

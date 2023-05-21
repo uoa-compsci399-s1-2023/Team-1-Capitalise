@@ -181,7 +181,7 @@ const Dashboard = () => {
   };
 
   const constHandleImage = async (file: File) => {
-    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg)$/)) {
       setValidImage(false);
     } else {
       setValidImage(true);
@@ -273,13 +273,13 @@ const Dashboard = () => {
 
   const fetchHeroBanners = async () => {
     const respData = await getHeroBanners();
-    if (respData.length !== 0) {
+    if (respData) {
       setHeroBanners(respData);
     }
   };
   const fetchMobileHeroBanners = async () => {
     const respData = await getMobileHeroBanners();
-    if (respData.length !== 0) {
+    if (respData) {
       setMobileHeroBanners(respData);
     }
   };
@@ -528,11 +528,7 @@ const Dashboard = () => {
                 shrink: true,
               }}
               error={!validImage}
-              helperText={
-                !validImage
-                  ? "Select a valid image type"
-                  : "match the name of the file with the award name"
-              }
+              helperText={!validImage ? "Select a valid image type" : ""}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 if (event.target.files) {
                   constHandleImage(event.target.files[0]);
@@ -641,26 +637,17 @@ const Dashboard = () => {
 
   return (
     <Stack
-      direction={{ xs: "column", md: "row" }}
-      justifyContent={{ xs: "start", md: "center" }}
+      direction="column"
       spacing={0}
       minHeight="92vh"
-      margin="8vh 0vh auto"
+      margin="8vh auto 0vh auto"
       paddingTop="20px"
+      alignItems="center"
+      width={{ xs: "100%", md: "1150px" }}
     >
-      <Stack
-        display="flex"
-        direction="column"
-        alignItems="start"
-        width={{ xs: "100%", md: "305px" }}
-        padding="24px"
-      >
-        <Box display={{ xs: "flex", md: "block" }} width="100%">
-          <Box paddingLeft={{ xs: "24px", md: "0px" }}>
-            <Typography variant="h1">Welcome Admin</Typography>
-          </Box>
-        </Box>
-      </Stack>
+      <Box display="flex" alignSelf="start" justifySelf="start">
+        <Typography variant="h1">Welcome Admin</Typography>
+      </Box>
       <Box height="inherit" width={{ xs: "100%", md: "1150px" }}>
         <MyTabs tabs={dashboardTabs} />
       </Box>
