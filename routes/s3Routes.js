@@ -48,6 +48,7 @@ const {
     //Get the default banners and thumnails
     getDefaultBanners,
     getDefaultThumbnail,
+    uploadTabPoster,
 } = require('../controllers/s3ControllerApi')
 
 
@@ -122,7 +123,7 @@ router.post('/gallery/:projectId/:tabName' , projectPictureRoute.array('gallery'
 router.delete('/allGallery/:projectId/:tabName/:galleryId' ,  deleteGalleryS3) //WORKS
 
 //Adds images to a gallery and only accepts 4 uploads at a time. 
-router.patch('/uploadGallery/:projectId/:tabName/:galleryId' , projectPictureRoute.array('gallery', 4), uploadImageToGallery) //WORKS 
+router.patch('/uploadGallery/:projectId/:tabName/:galleryId' , projectPictureRoute.array('gallery', 5), uploadImageToGallery) //WORKS 
 
 
 //Deletes one image in gallery and removes the image from s3 and the url from other galleries
@@ -142,7 +143,7 @@ router.post('/image/:projectId/:tabName', projectPictureRoute.array('image', 5),
 router.post('/poster/:projectId/:tabName', projectPictureRoute.array('poster', 5), uploadTabSingle)
 router.post('/video/:projectId/:tabName', projectPictureRoute.array('video', 5), uploadTabSingle)
 
-
+router.post('/poster/:projectId/:tabName/:posterId', projectPictureRoute.single('poster'), uploadTabPoster)
 //Uploads a new gallery to a tab name
 router.post('/banner/:projectId',  projectPictureRoute.single('banner'), bannerUpload) 
 router.delete('/banner/:projectId',  bannerDelete) 

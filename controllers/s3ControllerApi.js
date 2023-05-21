@@ -70,7 +70,7 @@ const checkFileType = (fileType) => {
 
 //To upload to s3 bucket
 const s3Upload = async (params) => {
-    const result = await client.send(params)
+    await client.send(params)
 }
 
 //Deletes all images related objects in mongoDb
@@ -565,6 +565,51 @@ const uploadTabSingle = async(req, res) => {
 }
 
 
+const uploadTabPoster = async(req, res) => {
+    const {projectId, tabName} = req.params
+    if (!(await checkProject(projectId))) {
+        return res.status(404).send({ project: null, msg: 'no project exist' });
+    }
+    try{
+    const file = req.file
+    const urlKey = []
+    const fieldName = file.fieldname
+   
+        //Get the image type
+        const imageType = checkFileType(file.mimetype.split('/')[1])
+        //Get image name
+        const imageName = (file.originalname).split('.')[0] +` ${getDate()}`
+
+        //Create parameters to add to bucket
+        const uploadParams = {
+            Bucket: process.env.BUCKET,
+            //creates the path
+            Key: `capitaliseProjects/${projectId}/${tabName}/${fieldName}/${imageName}.${imageType}`,
+            Body: file.buffer,
+            ContentType: file.mimetype
+        }
+            //upload the image to respective folder
+            const uploadCommand = new PutObjectCommand(uploadParams)
+            await s3Upload(uploadCommand)
+            const posterUrl = URL + checkString(uploadParams.Key)
+            urlKey.push(URL + checkString(uploadParams.Key))
+    
+
+    const result = await singleUpdateToMongo(projectId, tabName, fieldName, urlKey)
+
+    if(result == null){
+        return res.status(404).send({project: null, msg: 'no tab exist with that name'})
+    }
+
+    return res.status(200).send(posterUrl)
+    }
+    catch(err){
+        return res.status(404).send({project: null, msg: "Upload failed. Try reuploading files"})
+    }
+    
+    //End closing bracket
+}
+
 
 
 
@@ -658,6 +703,8 @@ const addGalleryToMongoDb = async(projectId, tabName,  listOfUrls) => {
     .populate("category", "value -_id")
     .populate("badges", "value -_id")
     .populate("tags", "_id, name")
+
+    console.log(project.members)
     const tabIndex = project.content.findIndex(tab => tab.tabName == tabName)
 
     if(tabIndex == -1){
@@ -966,7 +1013,6 @@ const bannerUpload = async (req, res) => {
         const bannerURL = checkString(URL + params.Key)
         await Project.findByIdAndUpdate(projectId, { banner:  bannerURL})
         const project = await Project.findById(projectId)
-    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
@@ -1019,7 +1065,6 @@ const bannerDelete = async (req, res) => {
         await Project.findByIdAndUpdate(projectId, {banner: `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/banners/banner${bannerNumber}.png`})
 
         const project = await Project.findById(projectId)
-    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
@@ -1076,7 +1121,6 @@ const thumbnailUpload = async (req, res) => {
         const url = checkString(URL + params.Key)
         await Project.findByIdAndUpdate(projectId, {thumbnail: url})
         const project = await Project.findById(projectId)
-    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
@@ -1120,7 +1164,6 @@ const thumbnailDelete = async (req, res) => {
     try{
         await Project.findByIdAndUpdate(projectId, {thumbnail: process.env.DEFAULTTHUMBNAIL})
         const project = await Project.findById(projectId)
-    
         .populate("semester", "value -_id")
         .populate("category", "value -_id")
         .populate("badges", "value -_id")
@@ -1497,6 +1540,9 @@ const getDefaultThumbnail = async (req, res) => {
 }
 
 
+
+
+
 module.exports = {
     uploadUserProfilePicture,
     uploadGallery,
@@ -1523,4 +1569,5 @@ module.exports = {
     deleteMobileHeroBanner,
     getDefaultBanners,
     getDefaultThumbnail,
+    uploadTabPoster
 }
