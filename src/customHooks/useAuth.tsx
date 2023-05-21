@@ -19,6 +19,7 @@ type TAuthReturnType = {
   getToken: () => string | null; // For restricted api calls.
   getLatestUser: () => void;
   error: string; // Set with server message if signin or signout fails.
+  existError: string; //Check User registered
   success: string; //Set with server message if api succeeds.
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
   googleAuth: () => void;
@@ -31,6 +32,7 @@ function useProvideAuth(): TAuthReturnType {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [existError, setExistError] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -135,12 +137,14 @@ function useProvideAuth(): TAuthReturnType {
         "Content-Type": "application/json",
       },
       body: postBody,
-    }).then(resp => {
-      if (resp.ok) {
-        signin(newUser.email, newUser.password); // signin user if signup successful
+    }).then(resp => resp.json()).then((json) => {
+      if (json.fail) {
+        alert(json.fail)
       } else {
-        resp.text().then(err => setError(err));
+        alert('Check your email to activate your account!')
+        navigate('/login')
       }
+
     }).finally(() => setIsLoading(false));
   }
 
@@ -227,6 +231,7 @@ function useProvideAuth(): TAuthReturnType {
     getToken,
     getLatestUser,
     error,
+    existError,
     success,
     isLoading,
     googleAuth,

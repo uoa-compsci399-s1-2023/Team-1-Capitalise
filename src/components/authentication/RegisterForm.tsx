@@ -11,8 +11,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../../customHooks/useAuth';
 import Logo from "../../assets/Logo.svg";
 import { Alert, Divider, Fade } from '@mui/material';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import GoogleIcon from '@mui/icons-material/Google';
+import validator from 'validator';
 //Copyright bottom of page
 function Copyright(props: any) {
   return (
@@ -31,24 +32,19 @@ const theme = createTheme();
 
 //Sign Up Function
 export default function SignUp() {
+    // Reg Expressions for validation
+    
+    const spCh = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+    const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [emailErrorText, setEmailErrorText] = useState("");
+    const [passwordErrorText, setPasswordErrorText] = useState("");
+    const [name, setName] = useState("");
+    const [nameErrorText, setNameErrorText] = useState("");
+
   // Auth Provider
   const auth = useAuth();
-  useEffect(() => {
-    if (auth.error == 'Email already registered.') {
-      setEmailErrorText('Email is already registered. Please enter another one.');
-      auth.error = "";
-    }
-  })
-  // Reg Expressions for validation
-  const spCh = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
-  const emailF = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailErrorText, setEmailErrorText] = useState("");
-  const [passwordErrorText, setPasswordErrorText] = useState("");
-  const [name, setName] = useState("");
-  const [nameErrorText, setNameErrorText] = useState("");
- 
 
   //Validators
   const validateName = () => {
@@ -115,6 +111,7 @@ export default function SignUp() {
       const userToSignUp = {name: fn, email: em , password: pw}
       //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
+
       
     }
     
@@ -208,6 +205,7 @@ export default function SignUp() {
               sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
+    
             
             <Divider></Divider>
             <Button href="https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google" fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign up with Google</Button>
