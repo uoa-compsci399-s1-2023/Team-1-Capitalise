@@ -14,6 +14,7 @@ import { uploadProfilePicture } from "../api/uploadProfilePicture";
 import { deleteProfilePicture } from "../api/deleteProfilePicture";
 import { useAuth } from "../customHooks/useAuth";
 import DefaultPFP from "../assets/default_pfp.svg";
+import LoadingDialog from "./projectPage/dialogs/LoadingDialog";
 
 interface Props {
   open: boolean;
@@ -341,9 +342,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={loading}>
-        <DialogTitle>Hang tight, this takes a few seconds...</DialogTitle>
-      </Dialog>
+      <LoadingDialog isOpen={loading} />
     </div>
   );
 };

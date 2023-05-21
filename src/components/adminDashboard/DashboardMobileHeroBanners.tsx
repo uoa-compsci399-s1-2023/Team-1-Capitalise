@@ -2,8 +2,6 @@ import { useState } from "react";
 import {
   Box,
   Button,
-  Dialog,
-  DialogTitle,
   Stack,
   Table,
   TableBody,
@@ -18,6 +16,7 @@ import {
   deleteMobileHeroBanner,
   uploadMobileHeroBanner,
 } from "../../api/adminHeroBanner";
+import LoadingDialog from "../projectPage/dialogs/LoadingDialog";
 
 interface Props {
   mobileHeroBanners: string[];
@@ -167,9 +166,7 @@ const DashboardMobileHeroBanners = ({
           {"Note: if the change doesn't work try again for submit and delete"}
         </Typography>
       </Box>
-      <Dialog open={loading}>
-        <DialogTitle>Hang tight, this takes a few seconds...</DialogTitle>
-      </Dialog>
+      <LoadingDialog isOpen={loading} />
     </Stack>
   );
 };
