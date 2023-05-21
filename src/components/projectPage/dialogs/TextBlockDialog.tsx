@@ -22,11 +22,12 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
 
   // Make sure value is current each time dialog is opened.
   useEffect(() => {
-    if (initialValue) {
-      setValue(initialValue)
-    } else {
-      setValue('')
-    }
+    const value = project.content[tabIndex].tabContent[blockIndex].value
+    const subHeading = project.content[tabIndex].tabContent[blockIndex].subHeading
+    setValue(value[0] ? value[0] : '')
+    setSubHeading(subHeading || '')
+    setErrorHeading('')
+    setValueError('')
   }, [isDialogOpen])
 
   const handleClose = () => {
@@ -95,7 +96,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
           placeholder='Enter sub-heading...'
           variant='outlined'
           error={!!headingError}
-          helperText={headingError}
+          helperText={headingError || ' '}
           value={subHeading}
           onChange={handleSubHeadingChange}
           onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}} // Save if enter pressed
@@ -112,7 +113,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
           hiddenLabel
           variant='outlined'
           error={!!valueError}
-          helperText={valueError}
+          helperText={valueError || ' '}
           value={value}
           onChange={handleValueChange}
           onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}}

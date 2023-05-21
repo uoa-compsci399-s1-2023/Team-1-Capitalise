@@ -51,7 +51,7 @@ export default function TeamnameField() {
   };
 
   const handleSave = () => {
-    if (!error) {
+    if (!error && value) {
       setProjectChanges({
         ['teamname']: value
       })
@@ -95,8 +95,10 @@ export default function TeamnameField() {
         onMouseEnter={handleMouseIn}
         onMouseLeave={handleMouseOut}
       >
-        <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Team name:</Typography>
-        <Typography flex={1} fontWeight={300} variant="body1">{project.teamname}</Typography>
+        <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1" >Team name:</Typography>
+        <Typography flex={1} fontWeight={300} variant="body1" 
+          sx={{wordBreak: "break-all"}}
+        >{project.teamname}</Typography>
 
         {checkIsEdit() &&
           <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />

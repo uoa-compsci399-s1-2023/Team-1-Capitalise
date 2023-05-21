@@ -99,7 +99,14 @@ export default function CategoryField() {
         onMouseLeave={handleMouseOut}
       >
         <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Category:</Typography>
-        <Typography flex={1} fontWeight={300} variant="body1">{project.category.value}</Typography>
+        <Typography
+          flex={1}
+          fontWeight={300}
+          variant="body1"
+          sx={{wordBreak: "break-all"}}
+        >
+          {project.category.value}
+        </Typography>
 
         {checkIsEdit() &&
           <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />

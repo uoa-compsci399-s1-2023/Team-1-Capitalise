@@ -69,7 +69,6 @@ export default function ProjectPage() {
         }
       })
       .finally(() => setIsLoading(false));
-    console.log('mounted')
   }, [])
 
   // Sends changes to backend and releases lock.
@@ -132,25 +131,23 @@ export default function ProjectPage() {
         // setIsLoading
       }}
     >
-      {isLoading ?
-        <LoadingDialog
-          isOpen={isLoading}
-        />
-        :
+      <LoadingDialog
+        isOpen={isLoading}
+      />
+      {project.content &&
         <>
-          {/* Banner */}
-          <ProjectBanner />
-
+        {/* Banner */}
+        <ProjectBanner />
           {/* Everything else */}
           <Stack
             bgcolor={'white'}
             minHeight={'92vh'}
+            maxWidth={'1600px'}
+            mx={'auto'}
             sx={{
               pl: { md: 6, xs: 1 },
               pr: { md: 4, xs: 1 }
             }}
-            maxWidth={'1600px'}
-            mx={'auto'}
           >
             {/* Includes title, blurb, like button, etc */}
             <ProjectHeader
@@ -174,12 +171,11 @@ export default function ProjectPage() {
 
                 <TabButtonSelection {...{ selectedTab, setSelectedTab }} />
 
-                {/* {
-                  project.content.map(tab => (
-                    tab.tabContent.map((cb, index) => (
+                {
+                  project.content && project.content[selectedTab] ?
+                    project.content[selectedTab].tabContent.map((cb, index) => (
                       <ContentBlock
-                        key={cb._id}
-                        
+                        key={index}
                         {...{
                           ...cb,
                           ['tabIndex']: selectedTab,
@@ -187,23 +183,8 @@ export default function ProjectPage() {
                         }}
                       />
                     ))
-                  ))
-                } */}
-
-                {/* If content is not empty, otherwise show "no content msg" */}
-                {project.content[selectedTab] ?
-                  project.content[selectedTab].tabContent.map((cb, index) => (
-                    <ContentBlock
-                      key={index}
-                      {...{
-                        ...cb,
-                        ['tabIndex']: selectedTab,
-                        ['blockIndex']: index
-                      }}
-                    />
-                  ))
-                  :
-                  <Typography variant="body2" color="text.secondary">No content to display.</Typography>
+                    :
+                    <Typography variant="body2" color="text.secondary">No content to display.</Typography>
                 }
 
               </Stack>
