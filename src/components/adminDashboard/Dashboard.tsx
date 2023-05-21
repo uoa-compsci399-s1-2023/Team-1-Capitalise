@@ -113,7 +113,11 @@ const Dashboard = () => {
     // call the API to delete category
     const token = auth.getToken();
     if (token) {
-      if (window.confirm("Are you sure you want to delete this category?")) {
+      if (
+        window.confirm(
+          "This will permanently delete this category, are you sure?"
+        )
+      ) {
         deleteParameter(categoryId, token).then(() => {
           // we need to update the categories.
           const updatedCategories = categories.filter(
@@ -157,7 +161,11 @@ const Dashboard = () => {
     // call the API to  delete category
     const token = auth.getToken();
     if (token) {
-      if (window.confirm("Are you sure you want to delete this semester?")) {
+      if (
+        window.confirm(
+          "This will permanently delete this semester and the associated projects, are you sure?"
+        )
+      ) {
         deleteParameter(semesterId, token).then(() => {
           // we need to update the semesters.
           const updatedSemesters = semesters.filter(
@@ -241,7 +249,9 @@ const Dashboard = () => {
     // call the API to  delete award
     const token = auth.getToken();
     if (token) {
-      if (window.confirm("Are you sure you want to delete this award?")) {
+      if (
+        window.confirm("This will permanently delete this award, are you sure?")
+      ) {
         deleteParameter(awardId, token).then(() => {
           // we also need to delete the associated award image from s3 by grabbing the image name
           var last = awardImage.substring(
@@ -363,6 +373,7 @@ const Dashboard = () => {
               />
               <Button
                 variant="contained"
+                disabled={newCategory.length === 0}
                 color="primary"
                 onClick={handleAddCategory}
               >
@@ -429,6 +440,7 @@ const Dashboard = () => {
             />
             <Button
               variant="contained"
+              disabled={newSemester.length === 0}
               color="primary"
               onClick={handleAddSemester}
             >
