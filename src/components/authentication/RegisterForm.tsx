@@ -111,7 +111,7 @@ export default function SignUp() {
       const em = data.get('email') as string;
       const pw = data.get('password') as string;
       //Create object obeying SignUpProp Interface.
-      const userToSignUp = {name: fn, email: em , password: pw}
+      const userToSignUp = {name: fn, email: em.toLowerCase() , password: pw}
       //Pass object to authenticator provider to add user to database.
       auth.signup(userToSignUp);
 

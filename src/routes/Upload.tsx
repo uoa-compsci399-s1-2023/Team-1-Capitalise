@@ -243,11 +243,10 @@ export default function Upload() {
       if (numImages > 0) {
         addGallery(data._id, "Overview", imagesData);
       }
-    });
-    await delay(2000);
-      if(projectID.current) {
-        handleNext();
-      }
+    }).then(() => {
+      if(projectID.current) { console.log(projectID.current), handleNext();}
+    })
+   
     
     
   };
