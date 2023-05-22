@@ -194,7 +194,8 @@ export default function Upload() {
       imagesData.append("gallery", image);
   
     });
-    const newLinks = projectLinks.map(({ value, type }: { value: string, type: string }) => ({ value, type }));
+    const newLinks = projectLinks.filter(({ value }: { value: string }) => value !== '')
+    .map(({ value, type }: { value: string, type: string }) => ({ value, type }));
     projectLink.current = (newLinks);
     console.log(projectLink, 'UPLOADED')
   }

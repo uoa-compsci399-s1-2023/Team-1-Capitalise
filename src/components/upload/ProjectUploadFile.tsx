@@ -221,7 +221,7 @@ export default function ProjectUploadFileForm(
       const k = validateKaggle()
       const ds = validateDeployedWebsite();
       if (g && cp && n && sb && k && ds) {
-        await projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
+        projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
         if (window.confirm("Ready to submit?")) {
           console.log(projectLinks, "UPLOADFILEPROJECT")
           handleUpload();
