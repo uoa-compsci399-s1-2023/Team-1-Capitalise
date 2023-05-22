@@ -12,7 +12,7 @@ import { SearchContext } from "../app";
 const Projects = () => {
   const theme = useTheme();
   const { currFilters, setFilters } = useContext(SearchContext);
-  const [numProjDisp, setNumProjDisp] = useState(1);
+  const [numProjDisp, setNumProjDisp] = useState<number | null>(null);
 
   const handleResize = () => {
     let width = window.innerWidth;
@@ -30,8 +30,8 @@ const Projects = () => {
   };
   // Fetch available search parameters on initial render
   useEffect(() => {
-    handleResize();
     window.addEventListener("resize", handleResize);
+    handleResize();
     fetchCurrentParameters();
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -39,11 +39,13 @@ const Projects = () => {
   }, []);
 
   useEffect(() => {
-    setFilters({
-      ...currFilters,
-      ["currPage"]: 1,
-      ["projectsPerPage"]: numProjDisp,
-    });
+    if (numProjDisp) {
+      setFilters({
+        ...currFilters,
+        ["currPage"]: 1,
+        ["projectsPerPage"]: numProjDisp,
+      });
+    }
   }, [numProjDisp]);
 
   return (
