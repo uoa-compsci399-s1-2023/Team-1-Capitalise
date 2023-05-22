@@ -105,7 +105,6 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   // Switch block depending on content type
   switch (type) {
     case 'text':
-      console.log(value[0])
       Content = (value.length > 0 ?
         <Typography
           variant='body1'
@@ -191,7 +190,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
               }
             }}
           >
-            {value[1] || "no file uploaded"}
+            {value[0] ? value[1] : "no file uploaded"}
           </Button>
         </Box>
         :
