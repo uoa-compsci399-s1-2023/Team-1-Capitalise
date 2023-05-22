@@ -18,10 +18,12 @@ export default function ProjectTeamSelectionForm({teamToUpload, currentTeamInfor
     const t = String(data.get('teamName'));
     //Alphanumeric validation for teamname. Using Validator module.
     //Ignore Spaces and 's e.g The Best Team's Project is accepted.
-    if (isAlphanumeric(t,'en-US',{ignore: " '"})) { 
+    if (isAlphanumeric(t,'en-US',{ignore: ". '-={}[]/@!"})) { 
       setTeamName(t);
       teamToUpload(t);
+    } else if (t.length > 40) { 
       
+    
     } else {
       setTeamErrorText('Please enter a team name with only letters and numbers.')
     }
