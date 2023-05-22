@@ -121,12 +121,9 @@ export default function EditPosterDialog({ tabIndex, blockIndex, isDialogOpen, s
 	const handleSave = () => {
 		const existingFile = project.content[tabIndex].tabContent[blockIndex].value[0]
 		// User must upload a file if there is no existing file
-		if (linkText === '') {
+		if (!linkText) {
 			setLinkTextError('Please enter the text to show for the PDF link');
-		}
-
-		if (!linkTextError && !headingError && !fileError) {
-
+		} else if (!linkTextError && !headingError && !fileError) {
 			(async () => {
 				setIsLoading(true);
 				let latestProject = project
@@ -177,6 +174,7 @@ export default function EditPosterDialog({ tabIndex, blockIndex, isDialogOpen, s
 				setIsLoading(false);
 			})()
 		}
+
 	};
 
 

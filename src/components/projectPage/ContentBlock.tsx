@@ -108,6 +108,9 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       Content = (value.length > 0 ?
         <Typography
           variant='body1'
+          sx={{
+            whiteSpace: 'pre-wrap'
+          }}
         >
           {value[0]}
         </Typography>
@@ -187,7 +190,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
               }
             }}
           >
-            {value[1] || "no file uploaded"}
+            {value[0] ? value[1] : "no file uploaded"}
           </Button>
         </Box>
         :
