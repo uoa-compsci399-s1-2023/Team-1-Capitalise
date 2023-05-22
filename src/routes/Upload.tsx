@@ -244,7 +244,7 @@ export default function Upload() {
         addGallery(data._id, "Overview", imagesData);
       }
     }).then(() => {
-      if(projectID.current) { console.log(projectID.current), handleNext();}
+      if(projectID.current) { handleNext();}
     })
    
     

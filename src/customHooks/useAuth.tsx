@@ -126,6 +126,8 @@ function useProvideAuth(): TAuthReturnType {
 
   // Registers user given the required data from the above interface
   function signup(newUser: SignUpProps) {
+    setError('')
+    setSuccess('')
     const postBody = JSON.stringify({
       ...newUser,
       username: newUser.email
@@ -139,10 +141,9 @@ function useProvideAuth(): TAuthReturnType {
       body: postBody,
     }).then(resp => resp.json()).then((json) => {
       if (json.fail) {
-        alert(json.fail)
+        setError(json.fail);
       } else {
-        alert('Check your email to activate your account!')
-        navigate('/login')
+        setSuccess('Check your email to activate your account!')
       }
 
     }).finally(() => setIsLoading(false));
