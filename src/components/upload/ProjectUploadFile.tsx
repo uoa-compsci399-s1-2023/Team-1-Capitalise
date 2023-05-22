@@ -223,7 +223,7 @@ export default function ProjectUploadFileForm(
       if (g && cp && n && sb && k && ds) {
         projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
         if (window.confirm("Ready to submit?")) {
-          console.log(projectLinks, "UPLOADFILEPROJECT")
+          
           handleUpload();
         
         }

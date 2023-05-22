@@ -23,6 +23,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 
 
 import { useNavigate } from "react-router-dom";
+import validator from 'validator';
 
 
 //Sign In Function
@@ -61,8 +62,8 @@ function SignInSide() {
     if (!email) {
       setEmailErrorText("Please enter email.");
      
-    } else if (!emailF.test(email)) {
-      setEmailErrorText("Enter an email in the format of example@aucklanduni.ac.nz or example@gmail.com");
+    } else if (!validator.isEmail(email)) {
+      setEmailErrorText("Enter an appropriate email Format!");
      
     } else {
       setEmailErrorText("");
@@ -92,7 +93,7 @@ function SignInSide() {
       const logEmail = data.get('email') as string;
       const logPw = data.get('password') as string;
       // Pass Email and PW onto Auth Provider -> Sign In API
-      auth.signin(logEmail, logPw);
+      auth.signin(logEmail.toLowerCase(), logPw);
   
       
       }
