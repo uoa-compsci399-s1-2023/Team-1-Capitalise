@@ -158,12 +158,12 @@ function ResponsiveAppBar() {
             <SearchBar />
             {/* Check if User is logged in */}
             {uCheck &&
-              auth.user?.userType === "graduate" && [
+              auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
                 <Button
                   sx={{ padding: "0 25px" }}
                   key="upload"
                   variant="contained"
-                  disabled={auth.user?.project ? true : false}
+                  disabled={auth.user?.project && auth.user.userType != 'admin' ? true : false}
                   onClick={() => {
                     goToPage("upload");
                   }}
@@ -351,7 +351,7 @@ function ResponsiveAppBar() {
               )}
 
               {uCheck &&
-                auth.user?.userType === "graduate" && [
+                auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
                   <MenuItem
                     disabled={auth.user?.project ? true : false}
                     key="upload"
