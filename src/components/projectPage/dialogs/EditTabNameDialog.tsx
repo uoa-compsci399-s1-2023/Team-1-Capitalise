@@ -6,7 +6,8 @@ interface EditTabDialogProps {
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
   // initialValue: string
-  tabIndex: number
+  tabIndex?: number
+  mode?: 'edit' | 'create'
 }
 
 export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTabDialogProps) {
@@ -16,7 +17,9 @@ export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTab
   const [error, setError] = useState('');
   
   useEffect(()=> {
-    setValue(project.content[tabIndex].tabName);
+    if (tabIndex) {
+      setValue(project.content[tabIndex].tabName);
+    }
   }, [isOpen])
 
   const handleClose = () => {
@@ -26,20 +29,52 @@ export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTab
   const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = evt.target.value;
     setValue(value);
+    
+    const uniqueCheck = () => {
+      const tabNames = project.content.map(tab => tab.tabName)
+      const index = tabNames.indexOf(value);
+      if (index > -1 && index != tabIndex) {
+        return false;
+      }
+      return true;
+    }
+
+    const allowedRegex = /[^a-zA-Z0-9 ]/
     if (value.length > 30) {
       setError('Please keep tab names under 15 characters')
+    } else if (allowedRegex.test(value)) {
+      setError('Tab names can only contain letters and spaces')
+    } else if (!uniqueCheck()) {
+      setError('Tab names must be unique')
     } else {
       setError('')
     }
   }
 
   const handleSave = () => {
-    if (value && !error) {
-      project.content[tabIndex].tabName = value
-      setProjectChanges({
-        content: project.content
-      })
+    if (!value || error) {
+      setError(error || 'Tab names can\'t be blank')
+      return;
     }
+		const content = JSON.parse(JSON.stringify(project.content))
+    if (tabIndex === undefined) {
+      // Create new tab and add empty text block
+      content[content.length] = {
+        tabName: value,
+        tabContent: [
+          {
+            type: 'text',
+            value: []
+          }
+        ]
+      }
+    }
+    else {
+      content[tabIndex].tabName = value
+    }
+    setProjectChanges({
+      content: content
+    })
     setIsOpen(false);
   }
 
@@ -50,7 +85,7 @@ export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTab
       fullWidth
       maxWidth='sm'
     >
-      <DialogTitle>Edit Tab Name</DialogTitle>
+      <DialogTitle>{tabIndex === undefined ? "Create" : "Edit"} Tab Name</DialogTitle>
       <DialogContent>
         <FormControl error={!!error} fullWidth>
           <OutlinedInput
@@ -60,7 +95,7 @@ export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTab
             type='text'
             onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }} // Save if enter pressed
           />
-          <FormHelperText>{error}</FormHelperText>
+          <FormHelperText>{error || ' '}</FormHelperText>
         </FormControl>
       </DialogContent>
       <DialogActions>
