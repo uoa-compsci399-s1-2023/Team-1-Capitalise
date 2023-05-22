@@ -66,9 +66,12 @@ export default function SignUp() {
   const validateEmail = () => {
     if (!email) {
       setEmailErrorText("Please enter email.");
+    } else if (email.length > 254) {
+      setEmailErrorText('Email exceeded character limit of 254.')
+    
      
-    } else if (!emailF.test(email)) {
-      setEmailErrorText("Enter an email in the format of example@aucklanduni.ac.nz or example@domain.com");
+    } else if (!validator.isEmail(email)) {
+      setEmailErrorText("Enter a valid email. For example: .ac.nz, .com, .co.nz are commonly used and recommended.");
      
     } else {
       setEmailErrorText("");

@@ -175,7 +175,6 @@ export default function Upload() {
 
   const projectFileToUpload = (banner:any, images:any, thumbnail: any, projectLinks:any) => {
     // we want to check if these files are null or not.
-    console.log(projectLinks, 'Comign through from upload')
     if (banner == null) {
       isBannerEmpty = true;
     }
@@ -197,12 +196,10 @@ export default function Upload() {
     const newLinks = projectLinks.filter(({ value }: { value: string }) => value !== '')
     .map(({ value, type }: { value: string, type: string }) => ({ value, type }));
     projectLink.current = (newLinks);
-    console.log(projectLink, 'UPLOADED')
   }
   // the final call to create a Project
   const handleUpload = async () => {
     // API Call here!
-    console.log(projectLink, 'handleUpload links')
     let pL = projectLink.current
     // for now, maybe just pass the required fields to test?
     const newProject: TNewProject = {
