@@ -105,9 +105,13 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   // Switch block depending on content type
   switch (type) {
     case 'text':
+      console.log(value[0])
       Content = (value.length > 0 ?
         <Typography
           variant='body1'
+          sx={{
+            whiteSpace: 'pre-wrap'
+          }}
         >
           {value[0]}
         </Typography>

@@ -116,7 +116,7 @@ export default function TextBlockDialog({ tabIndex, blockIndex, isDialogOpen, se
           helperText={valueError || ' '}
           value={value}
           onChange={handleValueChange}
-          onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}}
+          // onKeyDown={(e) => {if (e.key === 'Enter') handleSave()}} // Doesn't allow entering multiple paragraphs
           fullWidth
           multiline
           sx={{ mt: 1, mb: 1 }}
