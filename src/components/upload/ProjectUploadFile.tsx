@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 
 
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
@@ -206,7 +207,13 @@ export default function ProjectUploadFileForm(
     return true;
   }
   }
-        
+  const validateGalleryImages = () => {
+    if(images.length < 1) {
+    alert('Please upload some images for the gallery.');
+  } else {
+    return true;
+  }
+  }
   
 
   const handleFileUpload = async (event: any) => {
@@ -220,6 +227,7 @@ export default function ProjectUploadFileForm(
       const sb = validateCodeSandbox();
       const k = validateKaggle()
       const ds = validateDeployedWebsite();
+      const imagesExist = validateGalleryImages();
       if (g && cp && n && sb && k && ds) {
         projectFileToUpload(bannerR.current, imagesR.current, thumbnailR.current, projectLinks);
         if (window.confirm("Ready to submit?")) {
@@ -284,7 +292,7 @@ export default function ProjectUploadFileForm(
               type="file"
               accept="image/*"
               id="projectImagesInput"
-          
+              required
               multiple
               style={{ display: "none" }}
               onChange={handleProjectImages}
@@ -315,6 +323,7 @@ export default function ProjectUploadFileForm(
             <input
               type="file"
               accept="image/*"
+              
               id="projectCardImageInput"
               style={{ display: "none" }}
               onChange={handleThumbnail}
