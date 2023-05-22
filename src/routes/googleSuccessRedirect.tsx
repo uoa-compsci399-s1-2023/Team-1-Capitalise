@@ -10,7 +10,7 @@ export default function GoogleSuccessRedirect() {
   const navigate = useNavigate();
   const auth = useAuth();
   const [loading, setLoading] = useState(true);
-  const [color, setColor] = useState("#22d55f");
+  const [color, setColor] = useState("#2196F3");
   useEffect(() => {
     setLoading(true)
     auth.googleAuth();
@@ -18,7 +18,7 @@ export default function GoogleSuccessRedirect() {
       navigate("/");
       setLoading(false);
 
-    }, 6000)
+    }, 2500)
   }, [])
   return (
     // Yathi - Added neg margin
