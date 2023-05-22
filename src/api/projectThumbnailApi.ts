@@ -18,8 +18,8 @@ export async function removeThumbnail(pId: string) {
 }
 
 
-export async function getDefaultThumbnail() {
-  const resp = fetch(`${S3_API_URL}/api/s3/defaultBanners`, {
+export async function getDefaultThumbnails() {
+  const resp = fetch(`${S3_API_URL}/api/s3/defaultThumbnails`, {
     method: "GET",
   });
   return resp;

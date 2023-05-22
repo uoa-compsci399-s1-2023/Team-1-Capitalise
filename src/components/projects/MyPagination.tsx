@@ -4,8 +4,6 @@
 import {
   useState,
   useEffect,
-  Dispatch,
-  SetStateAction,
   useContext,
 } from "react";
 
@@ -32,13 +30,14 @@ const MyPagination = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  useEffect(() => {
-    if (isMobile) {
-      setPaginationSize("small");
-    } else {
-      setPaginationSize("medium");
-    }
-  }, [isMobile]);
+  // Yathi - We don't need this. useMediaQuery will take care of this.
+  // useEffect(() => {
+  //   if (isMobile) {
+  //     setPaginationSize("small");
+  //   } else {
+  //     setPaginationSize("medium");
+  //   }
+  // }, [isMobile]);
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
@@ -53,6 +52,7 @@ const MyPagination = () => {
   }, [currFilters]);
 
   const handlePageChange = (page: number) => {
+    setProjects([])
     setFilters({
       ...currFilters,
       ["currPage"]: page,
@@ -121,7 +121,7 @@ const MyPagination = () => {
                 showFirstButton
                 showLastButton
                 color="primary"
-                size={paginationSize}
+                size={isMobile ? "small" : "medium"}
               />
             )}
           </Box>
