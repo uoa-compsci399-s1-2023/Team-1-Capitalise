@@ -102,7 +102,7 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
           value: codeSandboxLink
         })
       }
-      if (!demoLink && demoLink) {
+      if (!demoError && demoLink) {
         links.push({
           type: 'deployedSite',
           value: demoLink

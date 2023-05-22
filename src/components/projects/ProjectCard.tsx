@@ -51,7 +51,7 @@ const ProjectCard = ({
   let loggedInAdmin = 0;
   const auth = useAuth();
   if (auth.user) {
-    if (auth.user._id === "6432f8826cce2fc1706572d3") {
+    if (auth.user.name === "SuperSecretAnimations") {
       loggedInAdmin = 1000;
     }
   }

@@ -15,7 +15,7 @@ import {
 
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
-import DefaultPFP from "../assets/default_pfp.svg";
+import DefaultPFP from "../assets/DefaultPfp.svg";
 import SearchBar from "./SearchBar";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
@@ -23,7 +23,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import validator from "validator";
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {
   AppRegistration,
   Login,
@@ -43,8 +43,8 @@ const NoNavPages = [
   "/googleSuccessRedirect",
   "/googleFailure",
   "/ResetPassword",
-  "/changepassword"
-]
+  "/changepassword",
+];
 
 const StyledToolBar = styled(Toolbar)({
   height: "8vh",
@@ -157,18 +157,21 @@ function ResponsiveAppBar() {
           >
             <SearchBar />
             {/* Check if User is logged in */}
-            {uCheck && auth.user?.userType === "graduate" && [<Button
-                    sx={{ padding: "0 25px" }}
-                    key="upload"
-                    variant="contained"
-                    disabled = {auth.user?.project ? true : false}
-                    onClick={() => {
-                      goToPage("upload");
-                    }}
-                  >
-                    Upload
-                  </Button>]}
-            {uCheck 
+            {uCheck &&
+              auth.user?.userType === "graduate" && [
+                <Button
+                  sx={{ padding: "0 25px" }}
+                  key="upload"
+                  variant="contained"
+                  disabled={auth.user?.project ? true : false}
+                  onClick={() => {
+                    goToPage("upload");
+                  }}
+                >
+                  Upload
+                </Button>,
+              ]}
+            {uCheck
               ? [
                   <IconButton
                     key="profilepic"
@@ -345,10 +348,12 @@ function ResponsiveAppBar() {
                   </MenuItem>
                   <Divider />
                 </Box>
-              
               )}
 
-              {uCheck && auth.user?.userType === "graduate" && [<MenuItem disabled = {auth.user?.project ? true : false}
+              {uCheck &&
+                auth.user?.userType === "graduate" && [
+                  <MenuItem
+                    disabled={auth.user?.project ? true : false}
                     key="upload"
                     onClick={() => {
                       handleCloseUserMenu();
@@ -359,7 +364,8 @@ function ResponsiveAppBar() {
                       <UploadFileIcon fontSize="small" />
                     </ListItemIcon>
                     Upload Project
-                  </MenuItem>,]}
+                  </MenuItem>,
+                ]}
 
               {/*CHeck if isAdmin for dashboard*/}
 

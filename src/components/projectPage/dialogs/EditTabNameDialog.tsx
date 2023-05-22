@@ -26,7 +26,7 @@ export default function EditTabNameDialog({isOpen, setIsOpen, tabIndex}: EditTab
   const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = evt.target.value;
     setValue(value);
-    if (value.length > 15) {
+    if (value.length > 30) {
       setError('Please keep tab names under 15 characters')
     } else {
       setError('')

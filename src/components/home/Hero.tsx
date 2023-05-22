@@ -11,12 +11,14 @@ import { useAuth } from "../../customHooks/useAuth";
 import MuiCarousel from "react-material-ui-carousel";
 import { useEffect, useState } from "react";
 import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
+import DefaultHeroBanner from "../../assets/DefaultHeroBanner.svg";
+import DefaultMobileHeroBanner from "../../assets/DefaultMobileHeroBanner.svg";
 
 const Hero = () => {
   //delete this in final
   const [loggedInAdmin, setLoggedInAdmin] = useState(0);
-  const [heroBanners, setHeroBanners] = useState([]);
-  const [mobileHeroBanners, setMobileHeroBanners] = useState([]);
+  const [heroBanners, setHeroBanners] = useState<string[]>([]);
+  const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
   const [isHeroLoading, setHeroIsLoading] = useState(true);
   const [isMobileHeroLoading, setMobileHeroIsLoading] = useState(true);
   const [isStudent, setIsStudent] = useState(false);
@@ -33,12 +35,18 @@ const Hero = () => {
       if (respData.length !== 0) {
         setHeroBanners(respData);
         setHeroIsLoading(false);
+      } else {
+        setHeroBanners([DefaultHeroBanner]);
+        setHeroIsLoading(false);
       }
     };
     const fetchMobileHeroBanners = async () => {
       const respData = await getMobileHeroBanners();
       if (respData.length !== 0) {
         setMobileHeroBanners(respData);
+        setMobileHeroIsLoading(false);
+      } else {
+        setMobileHeroBanners([DefaultMobileHeroBanner]);
         setMobileHeroIsLoading(false);
       }
     };
@@ -66,7 +74,7 @@ const Hero = () => {
           }
         }
         //delete in final
-        if (auth.user._id === "6432f8826cce2fc1706572d3") {
+        if (auth.user.name === "SuperSecretAnimations") {
           setLoggedInAdmin(1000);
         }
         //delete in final end
@@ -216,7 +224,7 @@ const Hero = () => {
                       <Box paddingTop="20px">
                         <Link to={`../projects/${auth.user?.project}`}>
                           <Button variant="contained" color="primaryDark">
-                            Your Project
+                            {"Your Project"}
                           </Button>
                         </Link>
                       </Box>
@@ -225,7 +233,7 @@ const Hero = () => {
                       <Box paddingTop="20px">
                         <Link to="../upload">
                           <Button variant="contained" color="primaryDark">
-                            Upload
+                            {"Upload"}
                           </Button>
                         </Link>
                       </Box>
