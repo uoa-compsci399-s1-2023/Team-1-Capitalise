@@ -84,6 +84,15 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     })
   }
 
+  // Limits deleting first block in project.
+  const canDeleteBlock = () => {
+
+    if (tabIndex === 0 && blockIndex === 0) {
+      return false
+    }
+    return true
+  }
+
   let Content: ReactNode = <></>;
   let Heading: ReactNode = <></>;
   let Dialog: ReactNode = <></>;
@@ -261,7 +270,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
                 <EditButton
                   sx={{
-                    display: tabIndex === 0 ? 'none' : 'block',
+                    display: canDeleteBlock() ? 'block' : 'none',
                     visibility: isHovering ? 'visible' : 'hidden',
                     '&:hover': {
                       backgroundColor: theme.customColors.DividerGrey
@@ -277,7 +286,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           </Stack>
 
           {/* Add button (only shows if there are less than 5 blocks in tab) */}
-          {checkIsEdit() && project.content[tabIndex].tabContent.length < 5 && tabIndex !== 0 &&
+          {checkIsEdit() && project.content[tabIndex].tabContent.length < 5 &&
             <AddButton
               sx={{
                 visibility: isHovering ? 'visible' : 'hidden',
