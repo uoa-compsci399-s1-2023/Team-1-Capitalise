@@ -67,12 +67,15 @@ export default function ProjectUploadFileForm({
     },
     { value: "deployedSite", type: "deployedSite", label: "Deployed Site" },
   ];
-  const [githubLinkError, setgithubLinkError] = useState("");
-  const [codepenLinkError, setcodepenLinkError] = useState("");
-  const [codesandboxLinkError, setcodesandboxLinkError] = useState("");
-  const [kaggleLinkError, setkaggleLinkError] = useState("");
-  const [notionLinkError, setnotionLinkError] = useState("");
-  const [deployedSiteLinkError, setdeployedSiteLinkError] = useState("");
+  const [linkErrors, setLinkErrors] = useState<{ [key: string]: string }>({
+    github: "",
+    codepen: "",
+    notion: "",
+    codesandbox: "",
+    kaggle: "",
+    deployedSite: "",
+  });
+  const [galleryImageError, setGalleryImageError] = useState("");
   const [open, setOpen] = React.useState(false);
   const [banner, setBanner] = useState<File | undefined>();
   const [thumbnail, setThumbnail] = useState<File | undefined>();
@@ -121,12 +124,16 @@ export default function ProjectUploadFileForm({
   const handleProjectImages = (event: any) => {
     event.preventDefault();
     if (Array.from(event.target.files).length > 5) {
-      alert(`Only 5 files are allowed to upload.`);
-      return;
+      setGalleryImageError(`Only 5 files are allowed to upload. Please reupload 5 or less images!`);
+      
+    } else {
+      setGalleryImageError('');
+      setImages(Array.from(event.target.files));
+      imagesR.current = Array.from(event.target.files);
+      projectFileStore(undefined, imagesR.current, undefined);
+
     }
-    setImages(Array.from(event.target.files));
-    imagesR.current = Array.from(event.target.files);
-    projectFileStore(undefined, imagesR.current, undefined);
+    
   };
 
   const handleThumbnail = (event: any) => {
@@ -143,102 +150,42 @@ export default function ProjectUploadFileForm({
     handleBack();
   };
 
-  const validateGithub = () => {
-    if (projectLinks[0].type == "github") {
-      if (
-        !validator.matches(projectLinks[0].value, "https://github.com/") &&
-        !validator.isEmpty(projectLinks[0].value)
-      ) {
-        setgithubLinkError(
-          "Please make sure your link begins with https://github.com/..."
-        );
-      } else {
-        setgithubLinkError("");
-        return true;
-      }
-    }
-  };
-  const validateCodepen = () => {
-    if (projectLinks[1].type == "codepen") {
-      if (
-        !validator.matches(projectLinks[1].value, "https://codepen.io/") &&
-        !validator.isEmpty(projectLinks[1].value)
-      ) {
-        setcodepenLinkError(
-          "Please make sure your link begins with https://codepen.io/..."
-        );
-      } else {
-        setcodepenLinkError("");
-        return true;
-      }
-    }
-  };
-  const validateNotion = () => {
-    if (projectLinks[2].type == "notion") {
-      if (
-        !validator.matches(projectLinks[2].value, "https://notion.so/") &&
-        !validator.isEmpty(projectLinks[2].value)
-      ) {
-        setnotionLinkError(
-          "Please make sure your link begins with https://notion.so/..."
-        );
-      } else {
-        setnotionLinkError("");
-        return true;
-      }
-    }
-  };
-  const validateCodeSandbox = () => {
-    if (projectLinks[3].type == "codesandbox") {
-      if (
-        !validator.matches(projectLinks[3].value, "https://codesandbox.io") &&
-        !validator.isEmpty(projectLinks[3].value)
-      ) {
-        setcodesandboxLinkError(
-          "Please make sure your link begins with https://codesandbox.io/..."
-        );
-      } else {
-        setcodesandboxLinkError("");
-        return true;
-      }
-    }
-  };
-  const validateKaggle = () => {
-    if (
-      !validator.matches(projectLinks[4].value, "https://kaggle.com/") &&
-      !validator.isEmpty(projectLinks[4].value)
-    ) {
-      setkaggleLinkError(
-        "Please make sure your link begins with https://kaggle.com/..."
-      );
-    } else {
-      setkaggleLinkError("");
-      return true;
-    }
-  };
+  const validateLink = (linkType: string, linkValue: string) => {
+    const errorMessages: { [key: string]: string } = {
+      github: "Please make sure your link begins with https://github.com/...",
+      codepen: "Please make sure your link begins with https://codepen.io/...",
+      notion: "Please make sure your link begins with https://notion.so/...",
+      codesandbox:
+        "Please make sure your link begins with https://codesandbox.io/...",
+      kaggle: "Please make sure your link begins with https://kaggle.com/...",
+      deployedSite: "Please make sure your link is a website/URL.",
+    };
 
-  const validateDeployedWebsite = () => {
     if (
-      !validator.isURL(projectLinks[5].value) &&
-      !validator.isEmpty(projectLinks[5].value)
+      linkType &&
+      linkValue &&
+      !validator.matches(linkValue, `https://${linkType}.com/`)
     ) {
-      setdeployedSiteLinkError("Please make sure your link is a website/URL.");
-    } else {
-      setdeployedSiteLinkError("");
-      return true;
+      setLinkErrors((prevErrors) => ({
+        ...prevErrors,
+        [linkType]: errorMessages[linkType],
+      }));
+      return false;
     }
+
+    setLinkErrors((prevErrors) => ({
+      ...prevErrors,
+      [linkType]: "",
+    }));
+    return true;
   };
   const handleFileUpload = async (event: any) => {
     event.preventDefault();
     // handle file upload logic here
     if (projectLinks.length > 0) {
-      const g = validateGithub();
-      const cp = validateCodepen();
-      const n = validateNotion();
-      const sb = validateCodeSandbox();
-      const k = validateKaggle();
-      const ds = validateDeployedWebsite();
-      if (g && cp && n && sb && k && ds) {
+      const validations = projectLinks.map((option: any) =>
+        validateLink(option.type, option.value));
+      if (validations.every((isValid) => isValid)) {
         await projectFileToUpload(
           bannerR.current,
           imagesR.current,
@@ -321,7 +268,8 @@ export default function ProjectUploadFileForm({
             />
             <FileInputField
               disabled
-              helperText="Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"
+              error={!!galleryImageError}
+              helperText={galleryImageError ? galleryImageError : "Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"}
               value={
                 images.length
                   ? `The number of files uploaded: ${images.length}`
@@ -341,7 +289,7 @@ export default function ProjectUploadFileForm({
             </label>
           </Grid>
 
-          {/* Upload Images for Page */}
+          {/* Upload Project Card Image */}
           <Grid item>
             <Typography variant="subtitle2">
               Upload a Project Card image
@@ -390,10 +338,9 @@ export default function ProjectUploadFileForm({
                   fullWidth
                   label={option.label}
                   value={option.value}
-                  error={eval(`${option.type}` + `LinkError`)}
-                  helperText={
-                    eval(`${option.type}` + `LinkError`)
-                      ? eval(`${option.type}` + `LinkError`)
+                  error={!!linkErrors[option.type]}
+                  helperText={linkErrors[option.type]
+                      ? linkErrors[option.type]
                       : ""
                   }
                   onChange={(event) => handleLinkChange(event, index)}
