@@ -242,7 +242,10 @@ const deleteUserById = async (req, res) => {
     const { username, project } = user;
 
     if (project) {
-      await Project.findByIdAndUpdate(project, { $pull: { members: id } });
+      const myProj = await Project.findByIdAndUpdate(project, { $pull: { members: id } }, {new: true});
+      if (myProj.members.length === 0) {
+        await Project.findByIdAndDelete(myProj._id);
+      }
     }
 
     if (user.myComments) {
