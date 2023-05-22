@@ -151,8 +151,10 @@ function SignInSide() {
             <Typography component="h1" variant="h5" sx={{fontWeight: 500}}>
               Login
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} >
+            
+            <Box component="form" sx={{paddingLeft: 5, paddingRight: 5}} noValidate onSubmit={handleSubmit} >
               <TextField
+               
                 margin="normal"
                 required
                 fullWidth
