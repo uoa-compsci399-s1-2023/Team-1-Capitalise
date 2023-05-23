@@ -47,9 +47,6 @@ import DashboardMobileHeroBanners from "./DashboardMobileHeroBanners";
 const Dashboard = () => {
   const auth = useAuth();
 
-  // for the dialog pop-up
-  const [open, setOpen] = React.useState(false);
-
   // counts displayed in paper components of overview page.
   const [categoryCount, setCategoryCount] = useState(0);
   const [semesterCount, setSemesterCount] = useState(0);
@@ -80,12 +77,16 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // for the dialog pop-up
+  const [open, setOpen] = React.useState(false);
 
-  const handleClose = () => {
-    setOpen(false);
+  // need to set the id fields of the items we want to delete.
+  // sets the id of the category we want to delete
+  const [categoryDelete, setCategoryDelete] = useState("");
+
+  const setDeleteCategory = (categoryId: string) => {
+    setCategoryDelete(categoryId);
+    setOpen(true);
   };
 
   const handleNewCategory = (event: any) => {
@@ -141,7 +142,14 @@ const Dashboard = () => {
 
       // decrement the category count to reflect deletion.
       setCategoryCount(categoryCount - 1);
+
+      // close the dialog
+      setOpen(false);
     }
+  };
+
+  const cancelDelete = () => {
+    setOpen(false);
   };
 
   const handleAddSemester = async () => {
@@ -173,16 +181,22 @@ const Dashboard = () => {
     // call the API to  delete category
     const token = auth.getToken();
     if (token) {
-      deleteParameter(semesterId, token).then(() => {
-        // we need to update the semesters.
-        const updatedSemesters = semesters.filter(
-          (semester) => semester._id != semesterId
-        );
-        setSemesters(updatedSemesters);
-      });
+      if (
+        window.confirm(
+          "This will permanently delete this semester and the associated projects, are you sure?"
+        )
+      ) {
+        deleteParameter(semesterId, token).then(() => {
+          // we need to update the semesters.
+          const updatedSemesters = semesters.filter(
+            (semester) => semester._id != semesterId
+          );
+          setSemesters(updatedSemesters);
+        });
 
-      // decrement the category count to reflect deletion.
-      setSemesterCount(semesterCount - 1);
+        // decrement the category count to reflect deletion.
+        setSemesterCount(semesterCount - 1);
+      }
     }
   };
 
@@ -255,21 +269,25 @@ const Dashboard = () => {
     // call the API to  delete award
     const token = auth.getToken();
     if (token) {
-      deleteParameter(awardId, token).then(() => {
-        // we also need to delete the associated award image from s3 by grabbing the image name
-        var last = awardImage.substring(
-          awardImage.lastIndexOf("/") + 1,
-          awardImage.length
-        );
-        deleteAwardImage(last);
+      if (
+        window.confirm("This will permanently delete this award, are you sure?")
+      ) {
+        deleteParameter(awardId, token).then(() => {
+          // we also need to delete the associated award image from s3 by grabbing the image name
+          var last = awardImage.substring(
+            awardImage.lastIndexOf("/") + 1,
+            awardImage.length
+          );
+          deleteAwardImage(last);
 
-        // we need to update the awards display.
-        const updatedAwards = awards.filter((award) => award._id != awardId);
-        setAwards(updatedAwards);
-      });
+          // we need to update the awards display.
+          const updatedAwards = awards.filter((award) => award._id != awardId);
+          setAwards(updatedAwards);
+        });
 
-      // decrement the category count to reflect deletion.
-      setAwardCount(awardCount - 1);
+        // decrement the category count to reflect deletion.
+        setAwardCount(awardCount - 1);
+      }
     }
   };
 
@@ -344,61 +362,59 @@ const Dashboard = () => {
                           <Button
                             variant="contained"
                             color="error"
-                            onClick={handleClickOpen}
+                            onClick={() => setDeleteCategory(category._id)}
                           >
                             Delete
                           </Button>
-
-                          <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            aria-labelledby="category-alert-title"
-                            aria-describedby="category-alert-description"
-                          >
-                            <DialogTitle
-                              id="category-alert-title"
-                              sx={{
-                                paddingLeft: 5,
-                                paddingRight: 5,
-                                paddingTop: 5,
-                              }}
-                            >
-                              {"Are you sure you want to delete this category?"}
-                            </DialogTitle>
-                            <DialogContent
-                              sx={{ paddingLeft: 5, paddingRight: 5 }}
-                            >
-                              <DialogContentText id="category-alert-description">
-                                If you proceed, this action will permanently
-                                delete this category.
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions
-                              sx={{
-                                paddingLeft: 5,
-                                paddingRight: 5,
-                                paddingBottom: 5,
-                              }}
-                            >
-                              <Button onClick={handleClose}>Cancel</Button>
-                              <Button
-                                color="error"
-                                onClick={(event) => {
-                                  handleDeleteCategory(category._id);
-                                  handleClose();
-                                }}
-                                autoFocus
-                              >
-                                Delete
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TableContainer>
+
+              {/* delete confirmation dialog */}
+              <Dialog
+                open={open}
+                onClose={cancelDelete}
+                aria-labelledby="category-alert-title"
+                aria-describedby="category-alert-description"
+              >
+                <DialogTitle
+                  id="category-alert-title"
+                  sx={{
+                    paddingLeft: 5,
+                    paddingRight: 5,
+                    paddingTop: 5,
+                  }}
+                >
+                  {"Are you sure you want to delete this category?"}
+                </DialogTitle>
+                <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
+                  <DialogContentText id="category-alert-description">
+                    If you proceed, this action will permanently delete this
+                    category {categoryDelete}.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions
+                  sx={{
+                    paddingLeft: 5,
+                    paddingRight: 5,
+                    paddingBottom: 5,
+                  }}
+                >
+                  <Button onClick={cancelDelete}>Cancel</Button>
+                  <Button
+                    color="error"
+                    onClick={(event) => {
+                      handleDeleteCategory(categoryDelete);
+                    }}
+                    autoFocus
+                  >
+                    Delete
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </Box>
             <Typography paddingTop={5} variant="h6">
               Add category
@@ -456,54 +472,10 @@ const Dashboard = () => {
                         <Button
                           variant="contained"
                           color="error"
-                          onClick={handleClickOpen}
+                          onClick={() => handleDeleteSemester(semester._id)}
                         >
                           Delete
                         </Button>
-                        <Dialog
-                          open={open}
-                          onClose={handleClose}
-                          aria-labelledby="semester-alert-title"
-                          aria-describedby="semester-alert-description"
-                        >
-                          <DialogTitle
-                            id="semester-alert-title"
-                            sx={{
-                              paddingLeft: 5,
-                              paddingRight: 5,
-                              paddingTop: 5,
-                            }}
-                          >
-                            {"Are you sure you want to delete this semester?"}
-                          </DialogTitle>
-                          <DialogContent
-                            sx={{ paddingLeft: 5, paddingRight: 5 }}
-                          >
-                            <DialogContentText id="semester-alert-description">
-                              If you proceed, this action will permanently
-                              delete this semester.
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions
-                            sx={{
-                              paddingLeft: 5,
-                              paddingRight: 5,
-                              paddingBottom: 5,
-                            }}
-                          >
-                            <Button onClick={handleClose}>Cancel</Button>
-                            <Button
-                              color="error"
-                              onClick={(event) => {
-                                handleDeleteSemester(semester._id);
-                                handleClose();
-                              }}
-                              autoFocus
-                            >
-                              Delete
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -566,70 +538,28 @@ const Dashboard = () => {
                       <TableCell>
                         <Box
                           display="flex"
-                          maxWidth="50px"
+                          width="50px"
                           height="50px"
                           component="img"
                           src={award.image}
-                          alt="award icon"
-                          referrerPolicy="no-referrer"
-                          paddingRight="10px"
-                          justifySelf="start"
-                          sx={{ objectFit: "contain" }}
+                          alt="badge"
+                          alignSelf="center"
+                          sx={{
+                            objectFit: "cover",
+                            objectPosition: "bottom right",
+                          }}
                         />
                       </TableCell>
                       <TableCell>
                         <Button
                           variant="contained"
                           color="error"
-                          onClick={handleClickOpen}
+                          onClick={() =>
+                            handleDeleteAward(award._id, award.image)
+                          }
                         >
                           Delete
                         </Button>
-
-                        <Dialog
-                          open={open}
-                          onClose={handleClose}
-                          aria-labelledby="award-alert-title"
-                          aria-describedby="award-alert-description"
-                        >
-                          <DialogTitle
-                            id="award-alert-title"
-                            sx={{
-                              paddingLeft: 5,
-                              paddingRight: 5,
-                              paddingTop: 5,
-                            }}
-                          >
-                            {"Are you sure you want to delete this award?"}
-                          </DialogTitle>
-                          <DialogContent
-                            sx={{ paddingLeft: 5, paddingRight: 5 }}
-                          >
-                            <DialogContentText id="award-alert-description">
-                              If you proceed, this action will permanently
-                              delete this award.
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions
-                            sx={{
-                              paddingLeft: 5,
-                              paddingRight: 5,
-                              paddingBottom: 5,
-                            }}
-                          >
-                            <Button onClick={handleClose}>Cancel</Button>
-                            <Button
-                              color="error"
-                              onClick={(event) => {
-                                handleDeleteAward(award._id, award.image);
-                                handleClose();
-                              }}
-                              autoFocus
-                            >
-                              Delete
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
                       </TableCell>
                     </TableRow>
                   ))}
