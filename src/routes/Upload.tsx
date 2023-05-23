@@ -82,11 +82,17 @@ export default function Upload() {
   };
   const nav = useNavigate();
   const auth = useAuth();
+  const userTypeToCheck = auth.user?.userType;
   useEffect(() => {
-    if (!auth.user || auth.user.userType === "visitor" || auth.user.project) {
-      nav("/")
-    }
-  })
+    
+        if (!auth.user || userTypeToCheck === "visitor" || (auth.user.project && auth.user.userType != 'admin' )) {
+          nav("/")
+        }
+
+
+    
+  });
+
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
   useEffect(() => {
     const handleResize = () => {
@@ -244,7 +250,7 @@ export default function Upload() {
         addGallery(data._id, "Overview", imagesData);
       }
     }).then(() => {
-      if(projectID.current) { console.log(projectID.current), handleNext();}
+      if(projectID.current) { handleNext();}
     })
    
     
