@@ -43,7 +43,7 @@ const NoNavPages = [
   "/googleSuccessRedirect",
   "/googleFailure",
   "/ResetPassword",
-  "/changepassword",
+  "/changePassword",
 ];
 
 const StyledToolBar = styled(Toolbar)({
