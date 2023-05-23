@@ -198,7 +198,7 @@ export default function SignUp() {
             Sign Up
           </Button>
           {success && <Alert severity="success">
-          <AlertTitle>Successful.</AlertTitle>
+          <AlertTitle>Successfully signed up!</AlertTitle>
           <strong>Please check your email for a confirmation email to activate your account. </strong>
           </Alert>}
 

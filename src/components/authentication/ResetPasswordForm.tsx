@@ -19,10 +19,10 @@ export default function ResetPasswordForm() {
  useEffect(() => {
    if (auth.error === 'No account is associated with this email address.') {
      setEmailErrorText('No account is associated with this email address.');
-  
-     console.log(emailSuccessText);
+     auth.error = ''
    } else if (auth.success) {
      setEmailSuccessText(auth.success)
+     auth.success = ''
      
    }
  }, [auth.error, auth.success, email])
