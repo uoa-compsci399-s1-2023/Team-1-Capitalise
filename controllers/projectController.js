@@ -812,7 +812,7 @@ const searchProjects = async (req, res) => {
           sortQuery = { ["updatedAt"]: -1 };
         } else if (mySortRequest == "badges") {
           query.badges = {$ne: null};
-          sortQuery = { ["name"]: 1};
+          sortQuery = { ["badges name"]: 1};
         }
       } else {
         return res.status(400).send({ projects: null, msg: "invalid query" });
