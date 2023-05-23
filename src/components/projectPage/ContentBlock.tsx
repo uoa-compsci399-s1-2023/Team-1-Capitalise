@@ -131,10 +131,10 @@ function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: Content
     }
   }, [])
 
-  // useEffect(() => {
-  //   // Stop tracking width on unmount
-  //   return () => resizeObserver.disconnect();
-  // }, [])
+  useEffect(() => {
+    // Stop tracking width on unmount
+    return () => resizeObserver.disconnect();
+  }, [])
 
   let Content: ReactNode = <></>;
   let Heading: ReactNode = <></>;
