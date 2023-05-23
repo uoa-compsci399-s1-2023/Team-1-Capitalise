@@ -353,7 +353,7 @@ function ResponsiveAppBar() {
               {uCheck &&
                 auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
                   <MenuItem
-                    disabled={auth.user?.project ? true : false}
+                    disabled={auth.user?.project && !(auth.user?.userType == 'admin') ? true : false}
                     key="upload"
                     onClick={() => {
                       handleCloseUserMenu();
