@@ -28,16 +28,16 @@ export async function getProjectsSearch({
     let catQParam = `category=${encodeURIComponent(category.value)}&`;
     if (category._id == "0") catQParam = "";
 
-    let semQParam = encodeURIComponent(`semester=${encodeURIComponent(semester.value)}&`);
+    let semQParam = `semester=${encodeURIComponent(semester.value)}&`;
     if (semester._id == "0") semQParam = "";
 
-    let awardQParam = encodeURIComponent(`award=${encodeURIComponent(award.value)}&`);
+    let awardQParam = `award=${encodeURIComponent(award.value)}&`;
     if (award._id == "0") awardQParam = "";
 
-    let sortQParam = encodeURIComponent(`sortBy=${String(sortBy.qParam)}&`);
+    let sortQParam = `sortBy=${String(encodeURIComponent(sortBy.qParam))}&`;
 
     const startIndex = (currPage - 1) * projectsPerPage;
-    let pagesQParam = encodeURIComponent(`startIndex=${startIndex}&numProjects=${projectsPerPage}`);
+    let pagesQParam = `startIndex=${startIndex}&numProjects=${projectsPerPage}`;
 
     const response = await fetch(
       `${API_URL}/api/projects/search?${keywordQParam}${catQParam}${semQParam}${awardQParam}${sortQParam}${pagesQParam}`
