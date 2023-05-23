@@ -1,4 +1,6 @@
 import { useState } from "react";
+import * as React from "react";
+
 import {
   Box,
   Button,
@@ -11,6 +13,11 @@ import {
   TableRow,
   TextField,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import {
   deleteMobileHeroBanner,
@@ -27,9 +34,19 @@ const DashboardMobileHeroBanners = ({
   mobileHeroBanners,
   refreshBanners,
 }: Props) => {
+  // for the dialog pop-up
+  const [open, setOpen] = React.useState(false);
   const [validImage, setValidImage] = useState(true);
   const [heroBanner, setHeroBanner] = useState<File | undefined>();
   const [loading, setLoading] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const constHandleImage = async (file: File) => {
     if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg)$/)) {
@@ -53,15 +70,11 @@ const DashboardMobileHeroBanners = ({
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
-    if (window.confirm("Are you sure you want to delete this banner?")) {
-      setLoading(true);
-      deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(
-        () => {
-          refreshBanners();
-          setLoading(false);
-        }
-      );
-    }
+    setLoading(true);
+    deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() => {
+      refreshBanners();
+      setLoading(false);
+    });
   };
 
   return (
@@ -108,10 +121,56 @@ const DashboardMobileHeroBanners = ({
                           <Button
                             variant="contained"
                             color="error"
-                            onClick={() => handleDeleteHeroBanner(url)}
+                            onClick={handleClickOpen}
                           >
                             Delete
                           </Button>
+                          <Dialog
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="mobileHerobanner-alert-title"
+                            aria-describedby="mobileHerobanner-alert-description"
+                          >
+                            <DialogTitle
+                              id="mobileHerobanner-alert-title"
+                              sx={{
+                                paddingLeft: 5,
+                                paddingRight: 5,
+                                paddingTop: 5,
+                              }}
+                            >
+                              {
+                                "Are you sure you want to delete this mobile herobanner?"
+                              }
+                            </DialogTitle>
+                            <DialogContent
+                              sx={{ paddingLeft: 5, paddingRight: 5 }}
+                            >
+                              <DialogContentText id="mobileHerobanner-alert-description">
+                                If you proceed, this action will permanently
+                                delete this mobile herobanner.
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions
+                              sx={{
+                                paddingLeft: 5,
+                                paddingRight: 5,
+                                paddingBottom: 5,
+                              }}
+                            >
+                              <Button onClick={handleClose}>Cancel</Button>
+                              <Button
+                                color="error"
+                                onClick={(event) => {
+                                  handleDeleteHeroBanner(url);
+                                  handleClose();
+                                }}
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                         </Box>
                       </Stack>
                     </TableCell>

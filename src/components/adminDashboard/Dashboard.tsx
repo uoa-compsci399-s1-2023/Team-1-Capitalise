@@ -1,5 +1,3 @@
-// Dashboard
-
 import * as React from "react";
 
 import {
@@ -19,7 +17,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Backdrop,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -82,10 +79,6 @@ const Dashboard = () => {
   const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
 
   const [loading, setLoading] = useState(false);
-
-  const backdropStyles = {
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background color
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -359,8 +352,6 @@ const Dashboard = () => {
                           <Dialog
                             open={open}
                             onClose={handleClose}
-                            BackdropComponent={Backdrop}
-                            BackdropProps={{ style: backdropStyles }}
                             aria-labelledby="category-alert-title"
                             aria-describedby="category-alert-description"
                           >
