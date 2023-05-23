@@ -64,7 +64,7 @@ const options = [
   },
 ];
 
-interface TProjectInfo {
+export interface TProjectInfo {
   projN: string;
   categoryN: string;
   semesterN: string;

@@ -12,7 +12,14 @@ export async function searchUsers(
 ): Promise<Response> {
   
   const response = await fetch(
-    `${API_URL}/api/users/search?name=${keyword}&isAvailable=${isAvailable}&startIndex=${startIndex}&numUsers=${numUsers}&userRole=${userRole}`
+    // `${API_URL}/api/users/search?name=${keyword}&isAvailable=${isAvailable}&startIndex=${startIndex}&numUsers=${numUsers}&userRole=${userRole}`
+    `${API_URL}/api/users/search?` + new URLSearchParams({
+      name: keyword.trim(),
+      isAvailable: '' + isAvailable,
+      startIndex: '' + startIndex,
+      numUsers: '' + numUsers,
+      userRole: userRole
+    })
   );
   
   return response

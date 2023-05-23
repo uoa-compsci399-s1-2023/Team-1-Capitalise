@@ -209,7 +209,7 @@
 //   )
 // }
 
-import React, { useState, SetStateAction, useContext, createContext, useEffect } from 'react'
+import React, { useState, SetStateAction, useContext, createContext, useEffect, useRef, ReactNode, useCallback } from 'react'
 import ProjectDetails from '../components/projectPage/ProjectDetails';
 import ContentBlock, { ContentBlockProps } from '../components/projectPage/ContentBlock';
 import ProjectHeader from '../components/projectPage/ProjectHeader';
@@ -265,6 +265,9 @@ export default function ProjectPage() {
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
+
+  // const blockRef = useRef<HTMLDivElement>(null);
+
   // Sets inital project on mount
   useEffect(() => {
     setIsLoading(true)
@@ -280,6 +283,7 @@ export default function ProjectPage() {
         }
       })
       .finally(() => setIsLoading(false));
+
   }, [])
 
   // Sends changes to backend and releases lock.
@@ -291,10 +295,7 @@ export default function ProjectPage() {
       setIsLoading(true);
       patchProject(
         project._id,
-        {
-          ...projectChanges,
-          // ["isBeingEdited"]: false
-        },
+        {...projectChanges,},
         auth.getToken() as string,
       ).then(resp => {
         if (resp.ok) {
@@ -316,6 +317,26 @@ export default function ProjectPage() {
       })
     }
   }, [projectChanges]) // Will run anytime changes are set.
+
+
+  // // Tracks width of content block for gallery resizing
+  // useEffect(() => {
+  //   console.log(blockRef.current)
+  //   const resizeObserver = new ResizeObserver((event) => {
+  //     setBlockWidth(event[0].contentBoxSize[0].inlineSize);
+  //   });
+  //   if (blockRef.current) {
+  //     resizeObserver.observe(blockRef.current);
+  //   }
+  //   // stop tracking width on unmount
+  //   return function cleanup() {
+  //     resizeObserver.disconnect();
+  //   }
+  // }, [blockRef]);
+
+
+
+
 
   const checkIsEdit = () => {
     return (
@@ -347,8 +368,8 @@ export default function ProjectPage() {
       />
       {project.content &&
         <>
-        {/* Banner */}
-        <ProjectBanner />
+          {/* Banner */}
+          <ProjectBanner />
           {/* Everything else */}
           <Stack
             bgcolor={'white'}
@@ -378,7 +399,7 @@ export default function ProjectPage() {
               mt={2}>
 
               {/* Tab content */}
-              <Stack flex={1} alignItems={'center'} mr={1} mb={6}>
+              <Stack flex={1} alignItems={'center'} mr={1} mb={2}>
 
                 <TabButtonSelection {...{ selectedTab, setSelectedTab }} />
 
@@ -404,7 +425,7 @@ export default function ProjectPage() {
 
             {/* Comments Section */}
             {comments &&
-              <Box mt={10} width={'100%'}>
+              <Box mt={0} width={'100%'}>
                 <Comments comments={comments} projectId={projectId} />
               </Box>}
 
