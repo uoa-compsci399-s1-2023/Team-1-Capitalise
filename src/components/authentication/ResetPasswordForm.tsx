@@ -1,4 +1,4 @@
-import { Grid, Paper, Box, Typography, TextField, Button, Divider, ThemeProvider } from "@mui/material";
+import { Grid, Paper, Box, Typography, TextField, Button, Divider, ThemeProvider, Alert, AlertTitle } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../customHooks/useAuth";
@@ -19,11 +19,11 @@ export default function ResetPasswordForm() {
  useEffect(() => {
    if (auth.error === 'No account is associated with this email address.') {
      setEmailErrorText('No account is associated with this email address.');
+  
      console.log(emailSuccessText);
-   } 
-   if (auth.success) {
-     setEmailSuccessText(auth.success);
-     console.log(emailSuccessText + email);
+   } else if (auth.success) {
+     setEmailSuccessText(auth.success)
+     
    }
  }, [auth.error, auth.success, email])
 
@@ -99,7 +99,7 @@ export default function ResetPasswordForm() {
            <Typography component="h1" variant="h5" sx={{fontWeight: 500, mb: 5, mt: 5, color: '#42A5F5'}}>
              Reset Password
            </Typography>
-           <Box component="form" noValidate onSubmit={handleSubmit} >
+           <Box component="form" noValidate onSubmit={handleSubmit} sx={{mx: 10}} >
              <TextField
                margin="normal"
                required
@@ -108,24 +108,32 @@ export default function ResetPasswordForm() {
                label="Email Address"
                name="email"
                autoComplete="off"
-               color={emailSuccessText ? 'success' : 'primary'}
-               variant={emailSuccessText ? "filled" : 'standard'}
+              
                autoFocus
                value={email}
                error={!!emailErrorText}
-               helperText= {emailSuccessText ? emailSuccessText : emailErrorText ? emailErrorText : 'Do not forget your email either!'}
+               helperText= {'Do not forget your email either!'}
                onChange={e => setEmail(e.target.value)}
              />
       
              <Button
                type="submit"
                fullWidth
+               disabled={emailSuccessText ? true: false}
                variant="contained"
                sx={{ mt: 3, mb: 2 }}
              >
                Reset Password
              </Button>
-             
+              {emailSuccessText && <Alert severity="success">
+            <AlertTitle>Successful!</AlertTitle>
+            {emailSuccessText} 
+            </Alert>}
+            
+            {emailErrorText && <Alert severity="error">
+            <AlertTitle>Unsuccessful</AlertTitle>
+            {emailErrorText} 
+            </Alert>}
            </Box>
          </Box>
        </Grid>
