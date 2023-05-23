@@ -56,7 +56,7 @@ const options = [
     label: 'Deployed Site'},
 ];
 
-interface TProjectInfo {
+export interface TProjectInfo {
   projN: string;
   categoryN: string;
   semesterN: string;

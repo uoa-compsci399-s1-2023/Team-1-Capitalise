@@ -24,7 +24,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
   const auth = useAuth();
   const theme = useTheme();
 
-  // Edit members states
+  // Edit tags states
   const [currTags, setCurrTags] = useState<TTag[]>([]);
   const [tagsToAdd, setTagsToAdd] = useState<TTag[]>([]);
   const [tagsToRemove, setTagsToRemove] = useState<TTag[]>([]);
@@ -64,12 +64,13 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
         setTagsToAdd(tagsToAdd);
       }
       setSelectedOption(null);
-      setInputValue('')
+      // setInputValue('')
     }
   }, [selectedOption])
 
   // Fetches tags based on keyword
   // ...doesn't do search if keyword is empty string
+
   useEffect(() => {
     if (inputValue !== '') {
       setIsResultsLoading(true)
@@ -260,17 +261,17 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                 // Don't show results already added
                 filterOptions={(x, params) => {
                   const filtered: AutocompleteOption[] = x.filter(o => !currTags.some(e => e._id === o.tag._id));
-
                   const { inputValue } = params;
                   // Suggest the creation of a new value
-                  const isExisting = options.some((option) => inputValue === option.tag.name);
+                  
+                  const isExisting = options.some((option) => inputValue.trim().toLowerCase() === option.tag.name.toLowerCase());
+                  console.log(isExisting);
                   if (inputValue !== '' && !isExisting) {
                     filtered.push({
-                      label: `Add new tag "${inputValue}"`,
-                      tag: { _id: inputValue, name: inputValue },
+                      label: `Add new tag "${inputValue.trim()}"`,
+                      tag: { _id: inputValue.trim(), name: inputValue.trim() },
                     });
                   }
-
                   return filtered;
                 }}
                 loading={isResultsLoading}
@@ -299,7 +300,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                       style={{
                         fontWeight: option.tag._id === option.tag.name ? 450 : 400
                       }}
-
                     >
                       {option.label}
                     </li>
@@ -323,7 +323,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                   />
                 )}
               />
-
             </Stack>
           </DialogContent>
 

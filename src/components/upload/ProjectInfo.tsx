@@ -22,7 +22,10 @@ import { useState, useEffect, useRef } from "react";
 import { getSemesters } from "../../api/getSemesters";
 import { TSemester } from "../../model/TSemester";
 import { getCategories } from "../../api/getCategories";
-import { TCategory } from "../../model/TCategory";
+// import { TCategory } from "../../model/TCategory";
+// import { searchTags } from "../../api/tagAPIs";
+// import { TTag } from "../../model/TTag";
+import TagsField from "./TagsField";
 
 interface TProjectInfo {
   projN: string;
@@ -32,21 +35,16 @@ interface TProjectInfo {
   projectDescription: string | null;
 }
 
-
-
 export default function ProjectInfoForm(
-  {projectInfoToUpload, 
-  handleNext,
-  handleBack, 
-  projectInformation,
-
-
+  { projectInfoToUpload,
+    handleNext,
+    handleBack,
+    projectInformation,
   }: any,
 ) {
-  
- 
-  
-    //API Fetches for Semester and Category lists 
+
+
+  //API Fetches for Semester and Category lists 
   // Map the semesters to the MenuItems.
   const [semesterList, setSemesterList] = useState<JSX.Element[]>([]);
   useEffect(() => {
@@ -77,102 +75,103 @@ export default function ProjectInfoForm(
     })
   }, []);
 
-  
+
+
   //Project Name State
   const projectNA = useRef('');
-  
+
   const [projectNameErrorText, setProjectNameErrorText] = useState('');
-  
+
   //Project Description State 
   const projectDA = useRef('');
   const [projectDescErrorText, setProjectDescErrorText] = useState('');
-  
+
   //Semester States
   const [semester, setSemester] = React.useState(projectInformation.semesterN);
   const [semesterErrorText, setSemesterErrorText] = useState('');
-  
+
   //Category States
   const [category, setCategory] = React.useState(projectInformation.categoryN);
   const [categoryErrorText, setCategoryErrorText] = useState('');
-  
+
   //Tag states
-  const tagList : {name: string}[] = [];
-  const [selectedTags, setSelectedTags] = useState(projectInformation.tags);
+  // const tagList: { name: string }[] = [];
+  const [selectedTags, setSelectedTags] = useState<string[]>(projectInformation.tags);
 
   const [tagErrorText, setTagErrorText] = useState('');
-  if(projectInformation.projN) {
+  if (projectInformation.projN) {
     projectNA.current = projectInformation.projN;
   }
-  if(projectInformation.projectDescription) {
+  if (projectInformation.projectDescription) {
     projectDA.current = projectInformation.projectDescription;
   }
-  
-  const validateProjectName= (projectN: any) => { 
+
+  const validateProjectName = (projectN: any) => {
     //Project Name Validation 
-    if(validator.isEmpty(projectN)) {
+    if (validator.isEmpty(projectN)) {
       setProjectNameErrorText('Enter a project name.');
-    }else if(!validator.isAscii(projectN)) {
+    } else if (!validator.isAscii(projectN)) {
       setProjectNameErrorText('Enter a project name with only ASCII characters.');
-    }else if(projectN.length < 5) {
+    } else if (projectN.length < 5) {
       setProjectNameErrorText('Enter a project name longer than five characters.');
-    } else if (projectN.length > 100) { 
+    } else if (projectN.length > 100) {
       setProjectNameErrorText('Team name exceeded character limit.');
-      
+
     } else {
       setProjectNameErrorText('')
       return true
     }
   }
-  const validateProjectSemester= (sem: any) => { 
+  const validateProjectSemester = (sem: any) => {
     //Project Semester Validation 
-    if(validator.isEmpty(sem)) {
+    if (validator.isEmpty(sem)) {
       setSemesterErrorText('Pick your project semester.');
-    } else { 
+    } else {
       setSemesterErrorText('');
       return true;
     }
   }
-  const validateProjectCategory= (cat: any) => { 
+  const validateProjectCategory = (cat: any) => {
     //Project Category Validation 
-    if(validator.isEmpty(cat)) {
+    if (validator.isEmpty(cat)) {
       setCategoryErrorText('Pick a project category.');
-    } else { 
+    } else {
       setCategoryErrorText('');
       return true;
     }
-  } 
-  
-  const validateProjectTags= (selectedTags: any) => { 
+  }
+
+  const validateProjectTags = (selectedTags: any) => {
     //Project Tags Validation 
-    if(selectedTags.length > 0) {
+    if (selectedTags.length > 0) {
       let msgError = 'The following tags are invalid: ';
       for (const element of selectedTags) {
         //Check against a blacklist, inappropriate word list.
         if (nw.en.includes(element)) {
-          msgError += element + '(blacklisted)' + '';   
+          msgError += element + '(blacklisted)' + '';
         } else if (element > 50) {
-          msgError += element + '(max char)' + ' ';   
+          msgError += element + '(max char)' + ' ';
         }
-        
+
       }
       if (msgError != 'The following tags are invalid: ') {
         setTagErrorText(msgError);
       } else {
         return true;
       }
-    } else { 
+    } else {
       setTagErrorText('');
       return true;
     }
   }
-  const validateProjectDesc= (projectDesc: any) => { 
+  const validateProjectDesc = (projectDesc: any) => {
     //Project Description Validation 
-    if(!validator.isAscii(projectDesc)) {
+    if (!validator.isAscii(projectDesc)) {
       setProjectDescErrorText('Enter a project description with only ASCII characters.');
-      
+
     } else if (validator.isEmpty(projectDesc)) {
       setProjectDescErrorText('Enter a project description.');
-    } else { 
+    } else {
       setProjectDescErrorText('');
       return true;
     }
@@ -195,7 +194,7 @@ export default function ProjectInfoForm(
     event.preventDefault();
     setSemester(event.target.value);
   };
-  
+
   const handleNameChange = (event: any) => {
     event.preventDefault();
     projectNA.current = (event.target.value);
@@ -204,7 +203,7 @@ export default function ProjectInfoForm(
     event.preventDefault();
     projectDA.current = (event.target.value);
   }
-  
+
   //Submitting data on Next press to the main Upload parent component to store.
   const handleProjectUpload = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -221,7 +220,7 @@ export default function ProjectInfoForm(
     const okProjectCat = validateProjectCategory(cat);
     const okProjectDesc = validateProjectDesc(projDesc);
     const okProjectTags = validateProjectTags(selectedTags);
-    
+
     if (okProjectName && okProjectSem && okProjectCat && okProjectDesc && okProjectTags) {
       const infoSend: TProjectInfo = {
         projN: projectN,
@@ -233,11 +232,11 @@ export default function ProjectInfoForm(
 
       projectInfoToUpload(infoSend);
       handleNext();
-      
+
     }
   };
   const handleGoBack = () => {
-  
+
     const infoHold: TProjectInfo = {
       projN: projectNA.current,
       categoryN: category,
@@ -245,9 +244,10 @@ export default function ProjectInfoForm(
       tags: selectedTags,
       projectDescription: projectDA.current,
     };
-    
+
     projectInfoToUpload(infoHold);
-    handleBack();}
+    handleBack();
+  }
 
   return (
     <React.Fragment>
@@ -257,7 +257,7 @@ export default function ProjectInfoForm(
       <Box component="form" noValidate onSubmit={handleProjectUpload}>
         <Grid container spacing={2}>
           {/*Semester Selector*/}
-          <Grid item xs={12}sm={6} md={5}>
+          <Grid item xs={12} sm={6} md={5}>
             <FormControl sx={{ minWidth: 120 }} size="small">
               <InputLabel id="demo-select-small-label">Semester</InputLabel>
               <Select
@@ -265,13 +265,13 @@ export default function ProjectInfoForm(
                 id="select-semester"
                 value={semester}
                 label="Semester"
-                error= {!!semesterErrorText}
+                error={!!semesterErrorText}
                 onChange={handleSemesterChange}
               >
                 {semesterList}
               </Select>
               <FormHelperText>
-              {semesterErrorText ? semesterErrorText: '* When was this project completed?'}
+                {semesterErrorText ? semesterErrorText : '* When was this project completed?'}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -279,22 +279,22 @@ export default function ProjectInfoForm(
           {/*Category Selector*/}
 
           <Grid item xs={12} sm={6} md={5}>
-            <FormControl sx={{ minWidth: 120}} size="small">
+            <FormControl sx={{ minWidth: 120 }} size="small">
               <InputLabel id="demo-select-small-label2">Category</InputLabel>
               <Select
                 labelId="demo-select-small-label2"
                 id="select-category"
                 value={category}
-              
+
                 label="Category"
-                error= {!!categoryErrorText}
+                error={!!categoryErrorText}
                 onChange={handleCategoryChange}
-         
+
               >
                 {categories}
               </Select>
               <FormHelperText>
-                {categoryErrorText ? categoryErrorText: '* What does this project specialise in?'}
+                {categoryErrorText ? categoryErrorText : '* What does this project specialise in?'}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -306,7 +306,7 @@ export default function ProjectInfoForm(
               id="projectName"
               name="projectName"
               label="Project Name"
-              defaultValue={projectInformation.projN? projectInformation.projN : ''}
+              defaultValue={projectInformation.projN ? projectInformation.projN : ''}
               fullWidth
               onChange={handleNameChange}
               error={!!projectNameErrorText}
@@ -314,37 +314,87 @@ export default function ProjectInfoForm(
               variant="outlined"
             />
           </Grid>
-        
+
           <Grid item xs={12}>
-            <Autocomplete
-              multiple={true}
-              id="tags-filled"
-              defaultValue={projectInformation.tags}
-              options={tagList.map((option) => option.name)}
-              onChange={(event: any, newValue: any) => { 
-                setSelectedTags(newValue);
+
+            <TagsField 
+              {...{selectedTags, setSelectedTags, projectInformation, tagErrorText}}
+            />
+
+            {/* <Autocomplete
+              popupIcon={null}
+              disablePortal
+              blurOnSelect
+              autoComplete
+              multiple
+              noOptionsText={'No results'}
+              // Don't show results already added
+              filterOptions={(x, params) => {
+                const filtered: AutocompleteOption[] = x.filter(o => !currTags.some(e => e._id === o.tag._id));
+
+                const { inputValue } = params;
+                // Suggest the creation of a new value
+                const isExisting = options.some((option) => inputValue === option.tag.name);
+                if (inputValue !== '' && !isExisting) {
+                  filtered.push({
+                    label: `Add new tag "${inputValue}"`,
+                    tag: { _id: inputValue, name: inputValue },
+                  });
+                }
+
+                return filtered;
               }}
-              freeSolo
-              renderTags={(value: string[], getTagProps) =>
-                value.map((option: string, index: number) => (
-                  <Chip
-                    variant="outlined"
-                    label={option}
-                    {...getTagProps({ index })}
-                  />
-                ))
-              }
+              loading={isResultsLoading}
+              // For controlled component
+              inputValue={inputValue}
+              onInputChange={(evt, value) => setInputValue(value)}
+              value={selectedOption}
+              onChange={(evt, option) => setSelectedOption(option)}
+              // No dropdown if theres no value entered.
+              componentsProps={{
+                paper: {
+                  sx: {
+                    display: inputValue === '' ? 'none' : 'block'
+                  }
+                }
+              }}
+              isOptionEqualToValue={(option, value) => option.tag._id === value.tag._id}
+              options={options}
+              sx={{ width: '100%' }}
+              renderOption={(props, option) => {
+                return (
+                  <li
+                    {...props}
+                    key={option.tag._id}
+                    // Display add option in different colour
+                    style={{
+                      fontWeight: option.tag._id === option.tag.name ? 450 : 400
+                    }}
+
+                  >
+                    {option.label}
+                  </li>
+                );
+              }}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="Project Tags"
-                  error={!!tagErrorText}
-                  
-                  helperText={tagErrorText? tagErrorText : ''}
+                <TextField {...params}
+                  fullWidth
+                  hiddenLabel
+                  placeholder='Add tags...'
+                  size='small'
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <React.Fragment>
+                        {isResultsLoading ? <CircularProgress color="primary" size={20} /> : null}
+                        {params.InputProps.endAdornment}
+                      </React.Fragment>
+                    ),
+                  }}
                 />
               )}
-            />
+            /> */}
+
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -352,13 +402,13 @@ export default function ProjectInfoForm(
               id="projectDesc"
               name="projectDesc"
               label="Project Description"
-              defaultValue={projectInformation.projectDescription? projectInformation.projectDescription : ""}
+              defaultValue={projectInformation.projectDescription ? projectInformation.projectDescription : ""}
               fullWidth
               variant="outlined"
               multiline={true}
               rows={10}
               error={!!projectDescErrorText}
-              helperText={projectDescErrorText? projectDescErrorText : 'Enter a short description about your project'}
+              helperText={projectDescErrorText ? projectDescErrorText : 'Enter a short description about your project'}
               onChange={handleDescChange}
             />
           </Grid>
