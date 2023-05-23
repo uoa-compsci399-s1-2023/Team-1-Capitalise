@@ -264,9 +264,18 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                   const { inputValue } = params;
                   // Suggest the creation of a new value
                   
-                  const isExisting = options.some((option) => inputValue.trim().toLowerCase() === option.tag.name.toLowerCase());
-                  console.log(isExisting);
+                  // const isExisting = options.some((option) => inputValue.trim().toLowerCase() === option.tag.name.toLowerCase());
+                  const isExisting = options.some((option) => {
+                    const output = inputValue.trim().toLowerCase() === option.tag.name.toLowerCase();
+                    if (!output) {
+                      console.log(inputValue.trim().toLowerCase())
+                      console.log(option.tag.name.toLowerCase())
+                    }
+                    return output
+                  });
+
                   if (inputValue !== '' && !isExisting) {
+                    console.log(isExisting)
                     filtered.push({
                       label: `Add new tag "${inputValue.trim()}"`,
                       tag: { _id: inputValue.trim(), name: inputValue.trim() },

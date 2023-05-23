@@ -8,7 +8,7 @@ export async function searchTags(
 ): Promise<Response> {
   
   const response = await fetch(
-    `${API_URL}/api/tags/search?name=${encodeURIComponent(keyword)}&startIndex=${encodeURIComponent(startIndex)}`
+    `${API_URL}/api/tags/search?name=${encodeURIComponent(keyword.trim())}&startIndex=${encodeURIComponent(startIndex)}`
   );
   
   return response
