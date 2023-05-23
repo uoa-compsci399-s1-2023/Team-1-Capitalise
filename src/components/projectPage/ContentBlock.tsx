@@ -50,8 +50,6 @@ function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: Content
 
   // This is for responsive resizing of galleries
   const [blockWidth, setBlockWidth] = useState(800);
-  // console.log(blockWidth)
-
 
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -121,7 +119,6 @@ function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: Content
   // Tracks content block width
   const resizeObserver = new ResizeObserver((event) => {
     const width = event[0].contentBoxSize[0].inlineSize;
-    console.log("block width: " + width)
     setBlockWidth(width);
   });
 
