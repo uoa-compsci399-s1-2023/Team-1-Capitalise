@@ -16,10 +16,12 @@
   useEffect(() => {
     if (auth.success) {
       setPasswordSuccess(auth.success);
+      auth.success = ''
+      auth.error = ''
       nav('/')
     }
 
-    }, [auth.success]
+    }, [auth.success, auth.error]
 
   )
   // Reg Expressions for validation

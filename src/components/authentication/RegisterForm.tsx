@@ -37,13 +37,13 @@ export default function SignUp() {
   useEffect(() => {
     if (auth.success) {
 
-      console.log(auth.success, 'auth')
+    
       setSuccess(auth.success);
       auth.success = ''
 
     } else if (auth.error) {
 
-      setEmailErrorText(auth.error)
+
       auth.error = ''
    
     }
@@ -78,11 +78,13 @@ export default function SignUp() {
     }
   };
 
-  const validatePassword = () => {
-    if (!password) {
+  const validatePassword = (pw: string, cpw: string) => {
+    if (validator.isEmpty(pw)) {
       setPasswordErrorText("Please enter password.");
-    } else if (password.length < 5) {
+    } else if (pw.length < 5) {
       setPasswordErrorText("Please enter a password longer than 5 characters");
+    } else if (!(pw === cpw)){
+      setPasswordErrorText("Passwords do not match!")
     } else {
       setPasswordErrorText("");
       return true;
@@ -90,20 +92,21 @@ export default function SignUp() {
   };
 
   // Submit Function (What happens when you submit the form?)
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     //Retrieve validation booleans. Must keep this so all errors appear on the UI  at the same time
+    const data = new FormData(event.currentTarget);
+    //Get all form data and convert to string
+    const fn = data.get("fullName") as string;
+    const em = data.get("email") as string;
+    const pw = data.get("password") as string;
+    const cpw = data.get("confirmPassword") as string;
     const n = validateName();
-
     const e = validateEmail();
-    const p = validatePassword();
+    const p = validatePassword(pw, cpw);
     event.preventDefault();
     // Check if all are valid before submitting to server.
     if (n && e && p) {
-      const data = new FormData(event.currentTarget);
-      //Get all form data and convert to string
-      const fn = data.get("fullName") as string;
-      const em = data.get("email") as string;
-      const pw = data.get("password") as string;
+     
       //Create object obeying SignUpProp Interface.
       const userToSignUp = { name: fn, email: em.toLowerCase(), password: pw };
       //Pass object to authenticator provider to add user to database.
@@ -180,12 +183,26 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="off"
-                value={password}
+              
                 error={!!passwordErrorText}
                 helperText={passwordErrorText}
-                onChange={(e) => setPassword(e.target.value)}
+                
               />
             </Grid>
+            <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="off"
+                  error={!!passwordErrorText}
+                  helperText={passwordErrorText}
+                
+                />
+              </Grid>
           </Grid>
 
           <Button
