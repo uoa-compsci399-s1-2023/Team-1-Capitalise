@@ -30,30 +30,38 @@ const options = [
     value: 'gitHub',
     type: 'github',
     label: 'GitHub',
+    suffix: 'com'
   },
   {
     value: 'codePen',
     type: 'codepen',
     label: 'CodePen',
+    suffix: 'io'
   },
   {
     value: 'notion',
     type: 'notion',
     label: 'Notion',
+    suffix: 'so'
   },
   {
     value: 'codesandbox',
     type: 'codesandbox',
     label: 'CodeSandbox',
+    suffix: 'io'
   },
   {
     value: 'kaggle',
     type: 'kaggle',
     label: 'Kaggle',
+    suffix: 'com'
   },
-  { value: 'deployedSite',
+  { 
+    value: 'deployedSite',
     type: 'deployedSite', 
-    label: 'Deployed Site'},
+    label: 'Deployed Site',
+    suffix: ''
+  },
 ];
 
 interface TProjectInfo {
@@ -113,7 +121,7 @@ export default function Upload() {
 
   // array of Project attributes - Project Name, Project Semester, Project Category, Project Description
   const [projectInfo, setProjectInfo] = useState<TProjectInfo>(infoHold);
-  const [projectLinkTemp, setProjectLinkTemp] = useState(options.map((option) => ({ value: '', type: option.type, label: option.label })));
+  const [projectLinkTemp, setProjectLinkTemp] = useState(options.map((option) => ({ value: '', type: option.type, label: option.label, suffix: option.suffix})));
  
   let projectLink = useRef([]);
   let projectID = useRef('');

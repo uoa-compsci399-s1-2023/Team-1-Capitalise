@@ -34,28 +34,33 @@ export default function ProjectUploadFileForm({
       value: "gitHub",
       type: "github",
       label: "GitHub",
+      suffix: 'com',
     },
     {
       value: "codePen",
       type: "codepen",
       label: "CodePen",
+      suffix: "io",
     },
     {
       value: "notion",
       type: "notion",
       label: "Notion",
+      suffix: "so",
     },
     {
       value: "codesandbox",
       type: "codesandbox",
       label: "CodeSandbox",
+      suffix: "io",
     },
     {
       value: "kaggle",
       type: "kaggle",
       label: "Kaggle",
+      suffix: "com",
     },
-    { value: "deployedSite", type: "deployedSite", label: "Deployed Site" },
+    { value: "deployedSite", type: "deployedSite", label: "Deployed Site", suffix: "" },
   ];
   const [linkErrors, setLinkErrors] = useState<{ [key: string]: string }>({
     github: "",
@@ -75,9 +80,10 @@ export default function ProjectUploadFileForm({
       value: "",
       type: option.type,
       label: option.label,
+      suffix: option.suffix,
     }))
   );
-
+  console.log(projectLinks[0].suffix, 'hello')  
   let bannerR = useRef<File | undefined>();
   let thumbnailR = useRef<File | undefined>();
   let imagesR = useRef<File[]>([]);
@@ -139,8 +145,18 @@ export default function ProjectUploadFileForm({
 
     handleBack();
   };
+  const isUrlValid = (url: string, urlWebsite: string) => {
+    return (
+      !url.includes(" ") &&
+      (url.startsWith("https://www." + urlWebsite) ||
+        url.startsWith("https://" + urlWebsite) ||
+        url.startsWith("http://" + urlWebsite) ||
+        !url
+      ));
+  };
 
-  const validateLink = (linkType: string, linkValue: string) => {
+  const validateLink = (linkType: string, linkValue: string, linkSuffix: string) => {
+
     const errorMessages: { [key: string]: string } = {
       github: "Please make sure your link begins with https://github.com/...",
       codepen: "Please make sure your link begins with https://codepen.io/...",
@@ -148,21 +164,30 @@ export default function ProjectUploadFileForm({
       codesandbox:
         "Please make sure your link begins with https://codesandbox.io/...",
       kaggle: "Please make sure your link begins with https://kaggle.com/...",
-      deployedSite: "Please make sure your link is a website/URL.",
+      deployedSite: "Please make sure your link is a website/URL. Format: https://(sitename).(suffix)/",
     };
 
-    if (
-      linkType &&
-      linkValue &&
-      !validator.matches(linkValue, `https://${linkType}.com/`)
-    ) {
-      setLinkErrors((prevErrors) => ({
-        ...prevErrors,
-        [linkType]: errorMessages[linkType],
-      }));
-      return false;
+    if (linkType && linkValue)    
+    {
+  
+      if(linkType == "deployedSite") {
+        if(!isUrlValid(linkValue, "")) {
+          setLinkErrors((prevErrors) => ({
+            ...prevErrors,
+            [linkType]: errorMessages[linkType],
+          }));
+          return false;
+        }
+      } else if(!isUrlValid(linkValue, `${linkType}.${linkSuffix}/`)) {
+        setLinkErrors((prevErrors) => ({
+          ...prevErrors,
+          [linkType]: errorMessages[linkType],
+        }));
+        
+        return false;  
+      } 
+   
     }
-
     setLinkErrors((prevErrors) => ({
       ...prevErrors,
       [linkType]: "",
@@ -173,8 +198,14 @@ export default function ProjectUploadFileForm({
     event.preventDefault();
     // handle file upload logic here
     if (projectLinks.length > 0) {
-      const validations = projectLinks.map((option: any) =>
-        validateLink(option.type, option.value));
+      const validations = projectLinks.map((option: any) => {
+        console.log(option.suffix,'suffix')
+        validateLink(option.type, option.value, option.suffix)
+      
+      });
+        
+
+      
       if (validations.every((isValid) => isValid)) {
         await projectFileToUpload(
           bannerR.current,
