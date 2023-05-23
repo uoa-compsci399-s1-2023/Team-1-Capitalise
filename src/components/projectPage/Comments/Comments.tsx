@@ -76,22 +76,12 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     // }
   };
 
-  // set condition for admin being allowed to
-  const handleNotAllowed = () => {
-    if (auth.isAllowed(["admin"])) {
-      alert("allowed");
-    } else {
-      alert("not allowed");
-    }
-  };
-
   // only users who are the author of the comment OR are admin can delete comments.
-  // make use of the auth.isAllowed?
   // Yathi - Probably don't need to do another auth check as the delete button only renders for authorised users
   // ...and backend will also do another check.
   const deleteComment = async (commentId: string) => {
     const token = auth.getToken();
-    if (token)  {
+    if (token) {
       // Yathi - Need to replace with a mui modal.
       // if (window.confirm("Are you sure you want to remove comment?")) {
       fetch(`${API_URL}/api/projects/comment/${commentId}`, {

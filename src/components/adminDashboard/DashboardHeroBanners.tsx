@@ -1,4 +1,6 @@
 import { useState } from "react";
+import * as React from "react";
+
 import {
   Box,
   Button,
@@ -11,6 +13,11 @@ import {
   TableRow,
   TextField,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 
 import { deleteHeroBanner, uploadHeroBanner } from "../../api/adminHeroBanner";
@@ -22,9 +29,22 @@ interface Props {
 }
 
 const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
+  // for the dialog pop-up
+  const [open, setOpen] = React.useState(false);
+  const [heroBannerToDelete, setHeroBannerToDelete] = useState("");
+
   const [validImage, setValidImage] = useState(true);
   const [heroBanner, setHeroBanner] = useState<File | undefined>();
   const [loading, setLoading] = useState(false);
+
+  const setDeleteHeroBanner = (url: string) => {
+    setHeroBannerToDelete(url);
+    setOpen(true);
+  };
+
+  const cancelDelete = () => {
+    setOpen(false);
+  };
 
   const constHandleImage = async (file: File) => {
     if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg)$/)) {
@@ -48,13 +68,14 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
-    if (window.confirm("Are you sure you want to delete this banner?")) {
-      setLoading(true);
-      deleteHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() => {
-        refreshBanners();
-        setLoading(false);
-      });
-    }
+    setLoading(true);
+    deleteHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() => {
+      refreshBanners();
+      setLoading(false);
+
+      // close the dialog
+      setOpen(false);
+    });
   };
 
   return (
@@ -99,7 +120,7 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
                           <Button
                             variant="contained"
                             color="error"
-                            onClick={() => handleDeleteHeroBanner(url)}
+                            onClick={() => setDeleteHeroBanner(url)}
                           >
                             Delete
                           </Button>
@@ -111,6 +132,48 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
               </TableBody>
             </Table>
           </TableContainer>
+          {/* delete confirmation dialog */}
+          <Dialog
+            open={open}
+            onClose={cancelDelete}
+            aria-labelledby="heroBanner-alert-title"
+            aria-describedby="heroBanner-alert-description"
+          >
+            <DialogTitle
+              id="heroBanner-alert-title"
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 5,
+              }}
+            >
+              {"Are you sure you want to delete this heroBanner?"}
+            </DialogTitle>
+            <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
+              <DialogContentText id="heroBanner-alert-description">
+                If you proceed, this action will permanently delete this
+                herobanner.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingBottom: 5,
+              }}
+            >
+              <Button onClick={cancelDelete}>Cancel</Button>
+              <Button
+                color="error"
+                onClick={(event) => {
+                  handleDeleteHeroBanner(heroBannerToDelete);
+                }}
+                autoFocus
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
         <Typography paddingTop={5} variant="h6">
           Add new banner

@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import { useState } from "react";
 import {
   Box,
@@ -11,6 +13,11 @@ import {
   TableRow,
   TextField,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import {
   deleteMobileHeroBanner,
@@ -27,9 +34,22 @@ const DashboardMobileHeroBanners = ({
   mobileHeroBanners,
   refreshBanners,
 }: Props) => {
+  // for the dialog pop-up
+  const [open, setOpen] = React.useState(false);
+  const [mobileHeroBannerToDelete, setMobileHeroBannerToDelete] = useState("");
+
   const [validImage, setValidImage] = useState(true);
   const [heroBanner, setHeroBanner] = useState<File | undefined>();
   const [loading, setLoading] = useState(false);
+
+  const setDeleteMobileHeroBanner = (url: string) => {
+    setMobileHeroBannerToDelete(url);
+    setOpen(true);
+  };
+
+  const cancelDelete = () => {
+    setOpen(false);
+  };
 
   const constHandleImage = async (file: File) => {
     if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg)$/)) {
@@ -53,15 +73,14 @@ const DashboardMobileHeroBanners = ({
   };
 
   const handleDeleteHeroBanner = async (url: string) => {
-    if (window.confirm("Are you sure you want to delete this banner?")) {
-      setLoading(true);
-      deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(
-        () => {
-          refreshBanners();
-          setLoading(false);
-        }
-      );
-    }
+    setLoading(true);
+    deleteMobileHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() => {
+      refreshBanners();
+      setLoading(false);
+
+      // close the dialog
+      setOpen(false);
+    });
   };
 
   return (
@@ -108,7 +127,7 @@ const DashboardMobileHeroBanners = ({
                           <Button
                             variant="contained"
                             color="error"
-                            onClick={() => handleDeleteHeroBanner(url)}
+                            onClick={() => setDeleteMobileHeroBanner(url)}
                           >
                             Delete
                           </Button>
@@ -120,6 +139,48 @@ const DashboardMobileHeroBanners = ({
               </TableBody>
             </Table>
           </TableContainer>
+          {/* delete confirmation dialog */}
+          <Dialog
+            open={open}
+            onClose={cancelDelete}
+            aria-labelledby="mobileHeroBanner-alert-title"
+            aria-describedby="mobileHeroBanner-alert-description"
+          >
+            <DialogTitle
+              id="mobileHeroBanner-alert-title"
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 5,
+              }}
+            >
+              {"Are you sure you want to delete this mobile herobanner?"}
+            </DialogTitle>
+            <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
+              <DialogContentText id="mobileHeroBanner-alert-description">
+                If you proceed, this action will permanently delete this mobile
+                herobanner.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingBottom: 5,
+              }}
+            >
+              <Button onClick={cancelDelete}>Cancel</Button>
+              <Button
+                color="error"
+                onClick={(event) => {
+                  handleDeleteHeroBanner(mobileHeroBannerToDelete);
+                }}
+                autoFocus
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
         <Typography paddingTop={5} variant="h6">
           Add new banner
