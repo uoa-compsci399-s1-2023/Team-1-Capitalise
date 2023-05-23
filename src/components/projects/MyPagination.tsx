@@ -24,9 +24,9 @@ const MyPagination = () => {
   const [totalNumProjects, setTotalNumProjects] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const { currFilters, setFilters } = useContext(SearchContext);
-  const [paginationSize, setPaginationSize] = useState<"small" | "medium">(
-    "medium"
-  );
+  // const [paginationSize, setPaginationSize] = useState<"small" | "medium">(
+  //   "medium"
+  // );
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -76,6 +76,7 @@ const MyPagination = () => {
         minHeight="92vh"
         flexDirection="column"
         sx={{ ml: { xs: "0", md: "340px" } }}
+        px={2}
         paddingBottom="0px" // changed from 100
       >
         {/* Search section for mobile */}
@@ -92,7 +93,6 @@ const MyPagination = () => {
           <Typography
             my={4}
             variant="h1"
-            // component="h1"
             sx={{
               textAlign: { xs: "center", md: "left" },
             }}
@@ -114,7 +114,6 @@ const MyPagination = () => {
             {/* We will return the pagination component IF there are projects to display */}
             {checkProjects && (
               <MuiPagination
-                // count={Math.ceil(projects.length / projectsPerPage)}
                 count={totalPages}
                 page={currentPage}
                 onChange={(_, page) => handlePageChange(page)}
