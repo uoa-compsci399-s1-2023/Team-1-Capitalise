@@ -31,16 +31,18 @@ interface Props {
 const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
   // for the dialog pop-up
   const [open, setOpen] = React.useState(false);
+  const [heroBannerToDelete, setHeroBannerToDelete] = useState("");
 
   const [validImage, setValidImage] = useState(true);
   const [heroBanner, setHeroBanner] = useState<File | undefined>();
   const [loading, setLoading] = useState(false);
 
-  const handleClickOpen = () => {
+  const setDeleteHeroBanner = (url: string) => {
+    setHeroBannerToDelete(url);
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const cancelDelete = () => {
     setOpen(false);
   };
 
@@ -70,6 +72,9 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
     deleteHeroBanner(url.substring(url.lastIndexOf("/") + 1)).then(() => {
       refreshBanners();
       setLoading(false);
+
+      // close the dialog
+      setOpen(false);
     });
   };
 
@@ -115,57 +120,10 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
                           <Button
                             variant="contained"
                             color="error"
-                            onClick={handleClickOpen}
+                            onClick={() => setDeleteHeroBanner(url)}
                           >
                             Delete
                           </Button>
-
-                          <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            aria-labelledby="herobanner-alert-title"
-                            aria-describedby="herobanner-alert-description"
-                          >
-                            <DialogTitle
-                              id="herobanner-alert-title"
-                              sx={{
-                                paddingLeft: 5,
-                                paddingRight: 5,
-                                paddingTop: 5,
-                              }}
-                            >
-                              {
-                                "Are you sure you want to delete this herobanner?"
-                              }
-                            </DialogTitle>
-                            <DialogContent
-                              sx={{ paddingLeft: 5, paddingRight: 5 }}
-                            >
-                              <DialogContentText id="herobanner-alert-description">
-                                If you proceed, this action will permanently
-                                delete this herobanner.
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions
-                              sx={{
-                                paddingLeft: 5,
-                                paddingRight: 5,
-                                paddingBottom: 5,
-                              }}
-                            >
-                              <Button onClick={handleClose}>Cancel</Button>
-                              <Button
-                                color="error"
-                                onClick={(event) => {
-                                  handleDeleteHeroBanner(url);
-                                  handleClose();
-                                }}
-                                autoFocus
-                              >
-                                Delete
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
                         </Box>
                       </Stack>
                     </TableCell>
@@ -174,6 +132,48 @@ const DashboardHeroBanners = ({ heroBanners, refreshBanners }: Props) => {
               </TableBody>
             </Table>
           </TableContainer>
+          {/* delete confirmation dialog */}
+          <Dialog
+            open={open}
+            onClose={cancelDelete}
+            aria-labelledby="heroBanner-alert-title"
+            aria-describedby="heroBanner-alert-description"
+          >
+            <DialogTitle
+              id="heroBanner-alert-title"
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 5,
+              }}
+            >
+              {"Are you sure you want to delete this heroBanner?"}
+            </DialogTitle>
+            <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
+              <DialogContentText id="heroBanner-alert-description">
+                If you proceed, this action will permanently delete this
+                herobanner.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingBottom: 5,
+              }}
+            >
+              <Button onClick={cancelDelete}>Cancel</Button>
+              <Button
+                color="error"
+                onClick={(event) => {
+                  handleDeleteHeroBanner(heroBannerToDelete);
+                }}
+                autoFocus
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
         <Typography paddingTop={5} variant="h6">
           Add new banner
