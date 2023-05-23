@@ -19,20 +19,21 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 	const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
 	const handleAddBtnClick = () => {
-		const content = JSON.parse(JSON.stringify(project.content))
-		content.push({
-			tabName: 'New Tab',
-			tabContent: [
-				{
-					type: 'text',
-					value: []
-				}
-			]
-		})
-		setProjectChanges({
-			'content': content
-		})
-		setSelectedTab(content.length - 1)
+		// const content = JSON.parse(JSON.stringify(project.content))
+		// content.push({
+		// 	tabName: 'New Tab',
+		// 	tabContent: [
+		// 		{
+		// 			type: 'text',
+		// 			value: []
+		// 		}
+		// 	]
+		// })
+		// setProjectChanges({
+		// 	'content': content
+		// })
+		// setSelectedTab(content.length - 1)
+		setIsDialogOpen(true);
 	}
 
 	return (
@@ -51,6 +52,10 @@ export default function TabButtonSelection({ selectedTab, setSelectedTab }: TabB
 				mb: {md: 2, xs: 0}
 			}}
 		>
+			<EditTabNameDialog
+				isOpen={isDialogOpen}
+				setIsOpen={setIsDialogOpen}
+			/>
 			
 			{
 				project.content.map((tab, index) => (
