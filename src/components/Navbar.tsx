@@ -158,7 +158,7 @@ function ResponsiveAppBar() {
             <SearchBar />
             {/* Check if User is logged in */}
             {uCheck &&
-              auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
+              (auth.user?.userType === "graduate" || auth.user?.userType === "admin") && [
                 <Button
                   sx={{ padding: "0 25px" }}
                   key="upload"
