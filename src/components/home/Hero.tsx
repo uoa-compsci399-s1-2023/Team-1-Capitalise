@@ -176,7 +176,7 @@ const Hero = () => {
                     </Box>
                     <Box paddingTop="25px">
                       <Link to="../projects">
-                        <Button variant="contained" color="primaryDark">
+                        <Button variant="contained" sx={{backgroundColor: '#2979FF'}}>
                           {"Explore Projects"}
                         </Button>
                       </Link>
