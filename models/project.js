@@ -8,9 +8,6 @@ const { parameterSchema } = require("./parameter");
 Joi.objectId = require("joi-objectid")(Joi);
 
 function pickRandomBanner() {
-  for (let i = 0; i <= 10; i++) {
-    console.log((Date.now() % 7) + 1)
-  }
   return `https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/banners/banner${(Date.now() % 7) + 1}.png`;
 
 }
