@@ -84,6 +84,8 @@ const Dashboard = () => {
   // sets the id of the category we want to delete
   const [categoryDelete, setCategoryDelete] = useState("");
   const [semesterDelete, setSemesterDelete] = useState("");
+  const [awardDelete, setAwardDelete] = useState("");
+  const [awardDeleteImage, setAwardDeleteImage] = useState("");
 
   const setDeleteCategory = (categoryId: string) => {
     setCategoryDelete(categoryId);
@@ -91,6 +93,11 @@ const Dashboard = () => {
   };
   const setDeleteSemester = (semesterId: string) => {
     setSemesterDelete(semesterId);
+    setOpen(true);
+  };
+  const setDeleteAward = (awardId: string, awardImage: string) => {
+    setAwardDelete(awardId);
+    setAwardDeleteImage(awardImage);
     setOpen(true);
   };
 
@@ -271,25 +278,24 @@ const Dashboard = () => {
     // call the API to  delete award
     const token = auth.getToken();
     if (token) {
-      if (
-        window.confirm("This will permanently delete this award, are you sure?")
-      ) {
-        deleteParameter(awardId, token).then(() => {
-          // we also need to delete the associated award image from s3 by grabbing the image name
-          var last = awardImage.substring(
-            awardImage.lastIndexOf("/") + 1,
-            awardImage.length
-          );
-          deleteAwardImage(last);
+      deleteParameter(awardId, token).then(() => {
+        // we also need to delete the associated award image from s3 by grabbing the image name
+        var last = awardImage.substring(
+          awardImage.lastIndexOf("/") + 1,
+          awardImage.length
+        );
+        deleteAwardImage(last);
 
-          // we need to update the awards display.
-          const updatedAwards = awards.filter((award) => award._id != awardId);
-          setAwards(updatedAwards);
-        });
+        // we need to update the awards display.
+        const updatedAwards = awards.filter((award) => award._id != awardId);
+        setAwards(updatedAwards);
+      });
 
-        // decrement the category count to reflect deletion.
-        setAwardCount(awardCount - 1);
-      }
+      // decrement the category count to reflect deletion.
+      setAwardCount(awardCount - 1);
+
+      // close the dialog
+      setOpen(false);
     }
   };
 
@@ -395,7 +401,7 @@ const Dashboard = () => {
                 <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
                   <DialogContentText id="category-alert-description">
                     If you proceed, this action will permanently delete this
-                    category {categoryDelete}.
+                    category.
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions
@@ -504,7 +510,7 @@ const Dashboard = () => {
               <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
                 <DialogContentText id="semester-alert-description">
                   If you proceed, this action will permanently delete this
-                  semester {semesterDelete}.
+                  semester.
                 </DialogContentText>
               </DialogContent>
               <DialogActions
@@ -582,25 +588,22 @@ const Dashboard = () => {
                       <TableCell>
                         <Box
                           display="flex"
-                          width="50px"
+                          maxWidth="50px"
                           height="50px"
                           component="img"
                           src={award.image}
-                          alt="badge"
-                          alignSelf="center"
-                          sx={{
-                            objectFit: "cover",
-                            objectPosition: "bottom right",
-                          }}
+                          alt="award icon"
+                          referrerPolicy="no-referrer"
+                          paddingRight="10px"
+                          justifySelf="start"
+                          sx={{ objectFit: "contain" }}
                         />
                       </TableCell>
                       <TableCell>
                         <Button
                           variant="contained"
                           color="error"
-                          onClick={() =>
-                            handleDeleteAward(award._id, award.image)
-                          }
+                          onClick={() => setDeleteAward(award._id, award.image)}
                         >
                           Delete
                         </Button>
@@ -610,6 +613,48 @@ const Dashboard = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            {/* delete confirmation dialog */}
+            <Dialog
+              open={open}
+              onClose={cancelDelete}
+              aria-labelledby="award-alert-title"
+              aria-describedby="award-alert-description"
+            >
+              <DialogTitle
+                id="award-alert-title"
+                sx={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  paddingTop: 5,
+                }}
+              >
+                {"Are you sure you want to delete this award?"}
+              </DialogTitle>
+              <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
+                <DialogContentText id="award-alert-description">
+                  If you proceed, this action will permanently delete this
+                  award.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions
+                sx={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  paddingBottom: 5,
+                }}
+              >
+                <Button onClick={cancelDelete}>Cancel</Button>
+                <Button
+                  color="error"
+                  onClick={(event) => {
+                    handleDeleteAward(awardDelete, awardDeleteImage);
+                  }}
+                  autoFocus
+                >
+                  Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Box>
 
           <Typography paddingTop={5} variant="h6">
