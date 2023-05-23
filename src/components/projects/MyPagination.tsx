@@ -81,6 +81,7 @@ const MyPagination = () => {
             whiteSpace={searchOverflow ? "nowrap" : "unset"}
             sx={{
               textAlign: { xs: "center", md: "left" },
+              wordBreak: "break-all",
             }}
           >
             {currFilters.keywords
