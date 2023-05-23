@@ -198,15 +198,13 @@ export default function ProjectUploadFileForm({
     event.preventDefault();
     // handle file upload logic here
     if (projectLinks.length > 0) {
-      const validations = projectLinks.map((option: any) => {
-        console.log(option.suffix,'suffix')
-        validateLink(option.type, option.value, option.suffix)
-      
-      });
-        
+      const validations = projectLinks.map((option: any) => 
+        validateLink(option.type, option.value, option.suffix));
+    
 
       
       if (validations.every((isValid) => isValid)) {
+        console.log('yay')
         await projectFileToUpload(
           bannerR.current,
           imagesR.current,
