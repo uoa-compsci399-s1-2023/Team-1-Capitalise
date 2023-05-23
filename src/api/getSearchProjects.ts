@@ -22,22 +22,22 @@ export async function getProjectsSearch({
   };
 
   try {
-    let keywordQParam = `keyword=${keywords}&`;
+    let keywordQParam = `keyword=${encodeURIComponent(keywords.trim())}&`;
     if (keywords == "") keywordQParam = "";
 
-    let catQParam = `category=${category.value}&`;
+    let catQParam = `category=${encodeURIComponent(category.value)}&`;
     if (category._id == "0") catQParam = "";
 
-    let semQParam = `semester=${semester.value}&`;
+    let semQParam = encodeURIComponent(`semester=${encodeURIComponent(semester.value)}&`);
     if (semester._id == "0") semQParam = "";
 
-    let awardQParam = `award=${award.value}&`;
+    let awardQParam = encodeURIComponent(`award=${encodeURIComponent(award.value)}&`);
     if (award._id == "0") awardQParam = "";
 
-    let sortQParam = `sortBy=${String(sortBy.qParam)}&`;
+    let sortQParam = encodeURIComponent(`sortBy=${String(sortBy.qParam)}&`);
 
     const startIndex = (currPage - 1) * projectsPerPage;
-    let pagesQParam = `startIndex=${startIndex}&numProjects=${projectsPerPage}`;
+    let pagesQParam = encodeURIComponent(`startIndex=${startIndex}&numProjects=${projectsPerPage}`);
 
     const response = await fetch(
       `${API_URL}/api/projects/search?${keywordQParam}${catQParam}${semQParam}${awardQParam}${sortQParam}${pagesQParam}`
