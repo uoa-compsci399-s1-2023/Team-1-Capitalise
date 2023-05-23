@@ -83,9 +83,14 @@ const Dashboard = () => {
   // need to set the id fields of the items we want to delete.
   // sets the id of the category we want to delete
   const [categoryDelete, setCategoryDelete] = useState("");
+  const [semesterDelete, setSemesterDelete] = useState("");
 
   const setDeleteCategory = (categoryId: string) => {
     setCategoryDelete(categoryId);
+    setOpen(true);
+  };
+  const setDeleteSemester = (semesterId: string) => {
+    setSemesterDelete(semesterId);
     setOpen(true);
   };
 
@@ -181,22 +186,19 @@ const Dashboard = () => {
     // call the API to  delete category
     const token = auth.getToken();
     if (token) {
-      if (
-        window.confirm(
-          "This will permanently delete this semester and the associated projects, are you sure?"
-        )
-      ) {
-        deleteParameter(semesterId, token).then(() => {
-          // we need to update the semesters.
-          const updatedSemesters = semesters.filter(
-            (semester) => semester._id != semesterId
-          );
-          setSemesters(updatedSemesters);
-        });
+      deleteParameter(semesterId, token).then(() => {
+        // we need to update the semesters.
+        const updatedSemesters = semesters.filter(
+          (semester) => semester._id != semesterId
+        );
+        setSemesters(updatedSemesters);
+      });
 
-        // decrement the category count to reflect deletion.
-        setSemesterCount(semesterCount - 1);
-      }
+      // decrement the category count to reflect deletion.
+      setSemesterCount(semesterCount - 1);
+
+      // close the dialog
+      setOpen(false);
     }
   };
 
@@ -472,7 +474,7 @@ const Dashboard = () => {
                         <Button
                           variant="contained"
                           color="error"
-                          onClick={() => handleDeleteSemester(semester._id)}
+                          onClick={() => setDeleteSemester(semester._id)}
                         >
                           Delete
                         </Button>
@@ -482,6 +484,48 @@ const Dashboard = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            {/* delete confirmation dialog */}
+            <Dialog
+              open={open}
+              onClose={cancelDelete}
+              aria-labelledby="semester-alert-title"
+              aria-describedby="semester-alert-description"
+            >
+              <DialogTitle
+                id="semester-alert-title"
+                sx={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  paddingTop: 5,
+                }}
+              >
+                {"Are you sure you want to delete this semester?"}
+              </DialogTitle>
+              <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
+                <DialogContentText id="semester-alert-description">
+                  If you proceed, this action will permanently delete this
+                  semester {semesterDelete}.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions
+                sx={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  paddingBottom: 5,
+                }}
+              >
+                <Button onClick={cancelDelete}>Cancel</Button>
+                <Button
+                  color="error"
+                  onClick={(event) => {
+                    handleDeleteSemester(semesterDelete);
+                  }}
+                  autoFocus
+                >
+                  Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Box>
           <Typography paddingTop={5} variant="h6">
             Add semester
