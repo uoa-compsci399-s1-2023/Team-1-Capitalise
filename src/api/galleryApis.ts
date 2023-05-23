@@ -15,3 +15,11 @@ export async function removeGalleryImg(pId: string, tabName: string, galleryId: 
   })
   return resp
 }
+
+// https://l27nrectig.execute-api.ap-s outheast-2.amazonaws.com/dev/ api/s3/allGallery/{projectId}/{tabN ame}/{galleryId}
+export async function deleteGallery(pId: string, tabName: string, gId: string) {
+  const resp = fetch(`${S3_API_URL}/api/s3/allGallery/${pId}/${tabName}/${gId}`, {
+    method: 'DELETE',
+  })
+  return resp
+}

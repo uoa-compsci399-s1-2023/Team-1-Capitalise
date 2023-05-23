@@ -12,10 +12,10 @@ import AddIcon from '@mui/icons-material/Add';
 import AddBlockDialog from './dialogs/AddBlockDialog';
 import VideoBlockDialog from './dialogs/VideoBlockDialog';
 import VideoPlayer from './VideoPlayer';
-import { removeGalleryImg } from '../../api/galleryApis';
+import { deleteGallery, removeGalleryImg } from '../../api/galleryApis';
 import EditPosterDialog from './dialogs/EditPosterDialog';
 import LinkIcon from '@mui/icons-material/Link';
-
+import LoadingDialog from './dialogs/LoadingDialog';
 
 export interface ContentBlockProps {
   tabIndex: number
@@ -41,9 +41,10 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
   const theme = useTheme();
   const [isHovering, setIsHovering] = useState(false);
-  const { project, setProjectChanges, setSelectedTab, checkIsEdit } = useContext(ProjectContext);
+  const { project, setProjectChanges, setSelectedTab, checkIsEdit, setProject } = useContext(ProjectContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
   const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -72,21 +73,39 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
   const handleDeleteContentBlock = () => {
 
-    const tabContent = project.content[tabIndex].tabContent
-    if (tabContent.length > 1) {
-      project.content[tabIndex].tabContent.splice(blockIndex, 1);
-    } else {
-      project.content.splice(tabIndex, 1); // Remove tab if this is the only block in it
-      setSelectedTab(project.content.length - 1)
+    // If block is gallery, call s3 endpoint to delete galleries
+    if (type === 'gallery') {
+      const tab = project.content[tabIndex]
+      const gallery = tab.tabContent[blockIndex]
+      setIsLoading(true)
+      deleteGallery(project._id, tab.tabName, gallery._id)
+        .then(resp => {
+          if (resp.ok) {
+            return resp.json()
+          } else {
+            resp.text().then(err => console.log(err)); // log error and return undefined
+          }
+        }).then(data => data && setProject(data)) // Only set data if resp is 200
+        .finally(() => setIsLoading(false))
     }
-    setProjectChanges({
-      ['content']: project.content
-    })
+    // else patch project directly
+    else {
+      const tabContent = project.content[tabIndex].tabContent
+      if (tabContent.length > 1) {
+        project.content[tabIndex].tabContent.splice(blockIndex, 1);
+      } else {
+        project.content.splice(tabIndex, 1); // Remove tab if this is the only block in it
+        setSelectedTab(project.content.length - 1)
+      }
+      setProjectChanges({
+        ['content']: project.content
+      })
+    }
+
   }
 
   // Limits deleting first block in project.
   const canDeleteBlock = () => {
-
     if (tabIndex === 0 && blockIndex === 0) {
       return false
     }
@@ -213,6 +232,8 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
 
   return (
     <>
+      <LoadingDialog isOpen={isLoading} />
+
       {/* Dialog for editing content */}
       {Dialog}
 

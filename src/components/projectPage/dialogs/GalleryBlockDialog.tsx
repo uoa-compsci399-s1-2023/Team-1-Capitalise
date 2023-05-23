@@ -111,7 +111,7 @@ export default function GalleryBlockDialog({ tabIndex, blockIndex, isDialogOpen,
           }
         }
 
-        // Then upload images`)
+        // Then upload images
         if (newImgFiles.length > 0) {
           const formData = new FormData()
           newImgFiles.forEach(file => formData.append('gallery', file));
