@@ -1,15 +1,9 @@
-import { Autocomplete, TextField } from '@mui/material';
+import { CircularProgress, Autocomplete, TextField, Stack, Chip } from '@mui/material';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { searchTags } from '../../api/tagAPIs';
 import { TTag } from '../../model/TTag';
 import { TProjectInfo } from '../../routes/Upload';
-
-interface AutocompleteOption {
-  displayName: string;
-  tagName: string;
-  isSuggestion: boolean
-  // isSelected: boolean
-}
+import { AutocompleteOption } from '../projectPage/dialogs/EditTagsDialog';
 
 interface TagsFieldProps {
 	selectedTags: string[]
@@ -18,145 +12,151 @@ interface TagsFieldProps {
 	tagErrorText: string
 }
 
-export default function TagsField({selectedTags, setSelectedTags, projectInformation, tagErrorText}: TagsFieldProps) {
+// This is a copy paste from EditTagsDialog. It's a shitty way of doing things I know. 
+// We have to refactor this later so that both components use the same Autocomplete box. 
 
-	const [tagsInputValue, setTagsInputValue] = useState('');
-  const [isResultsLoading, setIsResultsLoading] = useState(false);
-  const [tagOptions, setTagOptions] = useState<AutocompleteOption[]>([])
-  const [selectedOptions, setSelectedOptions] = useState<AutocompleteOption[]>([])
-  
-	// useEffect(() => {
-	// 	// Set options to currently selected tags
-	// 	setTagOptions(selectedTags.map(st => (
-	// 		{
-	// 			displayName: st,
-	// 			tagName: st,
-	// 			isSuggestion: false,
-	// 			// isSelected: true
-	// 		}
-	// 	)))
-	// 	// setTagOptions([])
+export default function TagsField({ selectedTags, setSelectedTags, projectInformation, tagErrorText }: TagsFieldProps) {
 
-  //   if (tagsInputValue !== '') {
-  //     setIsResultsLoading(true)
-  //     searchTags(tagsInputValue.trim(), 0)
-  //       .then((resp) => {
-  //         if (resp.ok) {
-  //           resp.json().then((results: TTag[]) => {
-  //             const filteredResults = results.filter(result => {
-  //               return !selectedTags.includes(result.name);
-  //             }) // Only care about 5 results
-  //             filteredResults.splice(5)
-  //             // Create select option for each tag
-	// 						const searchOptions = filteredResults.map(result => (
-  //               {
-  //                 displayName: result.name,
-  //                 tagName: result.name,
-  //                 isSuggestion: false,
-  //                 // isSelected: false
-  //               }
-  //             ))
+	const [inputValue, setInputValue] = useState('');
+	const [isResultsLoading, setIsResultsLoading] = useState(false);
+	const [options, setOptions] = useState<AutocompleteOption[]>([]);
+	const [selectedOption, setSelectedOption] = useState<AutocompleteOption | null>(null);
 
-	// 						// concat search options and selected options
-  //             setTagOptions(tagOptions.concat(searchOptions));
-  //           })
-  //         }
-  //       }).finally(() => {
-  //         setIsResultsLoading(false);
-  //         if (!tagsInputValue) {
-  //           setTagOptions([]);
-  //         }
-  //       })
-  //   } else {
-  //     setTagOptions([]);
-  //   }
-  // }, [tagsInputValue])
-	
+	// Fetches tags based on keyword
+	// ...doesn't do search if keyword is empty string
+	useEffect(() => {
+		if (inputValue !== '') {
+			setIsResultsLoading(true)
+			searchTags(inputValue, 0)
+				.then((resp) => {
+					if (resp.ok) {
+						resp.json().then((results: TTag[]) => {
+							results.splice(5) // Only care about 5 results
+							setOptions(results.map((result: TTag) => (
+								{ label: result.name, tag: result }) // Create select option for each tag
+							))
+						})
+					}
+				}).finally(() => {
+					setIsResultsLoading(false);
+					if (!inputValue) {
+						setOptions([]);
+					}
+				})
+		} else {
+			setOptions([]);
+		}
+	}, [inputValue])
+
+	function handleTagRemove(tagName: string): void {
+		const index = selectedTags.indexOf(tagName);
+		selectedTags.splice(index, 1);
+		setSelectedTags(selectedTags.map(s => s));
+	}
+
+  const handleTagSelected = (selectedOption: AutocompleteOption | null) => {
+    if (selectedOption && !selectedTags.includes(selectedOption.tag.name)) {
+      selectedTags.push(selectedOption.tag.name)
+      setSelectedTags(selectedTags);
+      setInputValue('')
+    }
+  }
+
 	return (
-		// <Autocomplete
-		// 	multiple
-		// 	id="tags-filled"
-		// 	popupIcon={null}
-		// 	disablePortal
-		// 	autoComplete
-		// 	noOptionsText={'No results'}
-		// 	loading={isResultsLoading}
-		// 	// defaultValue={projectInformation.tags}
-		// 	options={tagOptions}
-		// 	// value={selectedOptions}
-		// 	getOptionLabel={(option) => option.tagName}
-		// 	isOptionEqualToValue={(option, value) => {
-		// 		const output = option.tagName === value.tagName
-		// 		// console.log(output)
-		// 		return true
-		// 	}}
-		// 	// Don't show suggestions if nothing is entered
-		// 	componentsProps={{
-		// 		paper: {
-		// 			sx: {
-		// 				display: tagsInputValue === '' ? 'none' : 'block'
-		// 			}
-		// 		}
-		// 	}}
-		// 	onInputChange={(e, v) => setTagsInputValue(v)}
-		// 	onChange={(event, value) => {
-		// 		console.log(value)
-		// 		// setSelectedTags(selectedOptions.map(o => o.tagName));
-		// 		tagOptions.push(value)
-		// 		setSelectedOptions(value)
-		// 	}}
-		// 	filterOptions={(options, params) => {
-		// 		// Remove tags already selected from options
-		// 		const filtered = options.filter(o => !selectedTags.includes(o.tagName));
-		// 		// const filtered = options
-		// 		const { inputValue } = params;
-		// 		// Suggest the creation of a new value if its not in the results
-		// 		const isExisting = options.some((option) => inputValue.toLowerCase().trim() === option.tagName.toLowerCase());
-		// 		if (inputValue !== '' && !isExisting) {
-		// 			filtered.splice(0, 0, {
-		// 				displayName: `Add new tag "${inputValue.trim()}"`,
-		// 				tagName: inputValue.trim(),
-		// 				isSuggestion: true
-		// 			});
-		// 		}
-		// 		return filtered;
-		// 	}}
+		<>
+			<Stack 
+				flexDirection={'row'} 
+				flexWrap={'wrap'}
+				sx={{
+					display: selectedTags.length > 0 ? 'flex' : 'none',
+					mb: 1
+				}}
+			>
+				{selectedTags.map(tagName => {
+					return <Chip
+						key={tagName}
+						size='medium'
+						label={tagName}
+						onDelete={() => handleTagRemove(tagName)}
+						sx={{
+							m: 0.5
+						}}
+					/>
+				})}
+			</Stack>
 
-		// 	// freeSolo
-		// 	// renderTags={(selectedOptions, getTagProps) =>
-		// 	//   selectedOptions.map((option, index) => (
-		// 	//     <Chip
-		// 	//       variant="outlined"
-		// 	//       label={option}
-		// 	//       {...getTagProps({ index })}
-		// 	//     />
-		// 	//   ))
-		// 	// }
-		// 	renderInput={(params) => (
-		// 		<TextField
-		// 			{...params}
-		// 			variant="outlined"
-		// 			label="Project Tags"
-		// 			error={!!tagErrorText}
-		// 			helperText={tagErrorText ? tagErrorText : ''}
-		// 		/>
-		// 	)}
-		// 	renderOption={(props, option) => {
-		// 		return (
-		// 			<li
-		// 				{...props}
-		// 				key={option.tagName}
-		// 				// Display add option in different colour
-		// 				style={{
-		// 					fontWeight: option.isSuggestion ? 450 : 400
-		// 				}}
-		// 			>
-		// 				{option.displayName}
-		// 			</li>
-		// 		);
-		// 	}}
-
-		// />
-		null
+			<Autocomplete
+				popupIcon={null}
+				disablePortal
+				blurOnSelect
+				autoComplete
+				noOptionsText={'No results'}
+				// Don't show results already added
+				filterOptions={(x, params) => {
+					const { inputValue } = params;
+					// Suggest the creation of a new value
+					const isExisting = options.some((option) => inputValue.trim().toLowerCase() === option.tag.name.toLowerCase());
+					if (inputValue !== '' && !isExisting) {
+						x.push({
+							label: `Add new tag "${inputValue.trim()}"`,
+							tag: { _id: inputValue.trim(), name: inputValue.trim() },
+							isNew: true
+						});
+					}
+					const filtered: AutocompleteOption[] = x.filter(o => !selectedTags.some(st => st.toLowerCase() === o.tag.name.toLowerCase()));
+					return filtered;
+				}}
+				loading={isResultsLoading}
+				// For controlled component
+				inputValue={inputValue}
+				onInputChange={(evt, value) => setInputValue(value)}
+				value={selectedOption}
+				onChange={(evt, option) => handleTagSelected(option)}
+				// No dropdown if theres no value entered.
+				componentsProps={{
+					paper: {
+						sx: {
+							display: inputValue === '' ? 'none' : 'block'
+						}
+					}
+				}}
+				isOptionEqualToValue={(option, value) => option.tag._id === value.tag._id}
+				options={options}
+				sx={{ width: '100%' }}
+				renderOption={(props, option) => {
+					return (
+						<li
+							{...props}
+							key={option.tag._id}
+							// Display add option in different colour
+							style={{
+								fontWeight: option.tag._id === option.tag.name ? 450 : 400
+							}}
+						>
+							{option.label}
+						</li>
+					);
+				}}
+				renderInput={(params) => (
+					<TextField {...params}
+						error={!!tagErrorText}
+						helperText={tagErrorText}
+						fullWidth
+						hiddenLabel
+						placeholder='Add tags...'
+						size='small'
+						InputProps={{
+							...params.InputProps,
+							endAdornment: (
+								<React.Fragment>
+									{isResultsLoading ? <CircularProgress color="primary" size={20} /> : null}
+									{params.InputProps.endAdornment}
+								</React.Fragment>
+							),
+						}}
+					/>
+				)}
+			/>
+		</>
 	)
 }

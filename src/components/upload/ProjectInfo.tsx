@@ -43,6 +43,29 @@ export default function ProjectInfoForm(
   }: any,
 ) {
 
+    //Project Name State
+    const projectNA = useRef('');
+
+    const [projectNameErrorText, setProjectNameErrorText] = useState('');
+  
+    //Project Description State 
+    const projectDA = useRef('');
+    const [projectDescErrorText, setProjectDescErrorText] = useState('');
+  
+    //Semester States
+    const [semester, setSemester] = React.useState(projectInformation.semesterN);
+    const [semesterErrorText, setSemesterErrorText] = useState('');
+  
+    //Category States
+    const [category, setCategory] = React.useState(projectInformation.categoryN);
+    const [categoryErrorText, setCategoryErrorText] = useState('');
+  
+    //Tag states
+    // const tagList: { name: string }[] = [];
+    const [selectedTags, setSelectedTags] = useState<string[]>(projectInformation.tags);
+  
+    const [tagErrorText, setTagErrorText] = useState('');
+
 
   //API Fetches for Semester and Category lists 
   // Map the semesters to the MenuItems.
@@ -77,28 +100,8 @@ export default function ProjectInfoForm(
 
 
 
-  //Project Name State
-  const projectNA = useRef('');
 
-  const [projectNameErrorText, setProjectNameErrorText] = useState('');
 
-  //Project Description State 
-  const projectDA = useRef('');
-  const [projectDescErrorText, setProjectDescErrorText] = useState('');
-
-  //Semester States
-  const [semester, setSemester] = React.useState(projectInformation.semesterN);
-  const [semesterErrorText, setSemesterErrorText] = useState('');
-
-  //Category States
-  const [category, setCategory] = React.useState(projectInformation.categoryN);
-  const [categoryErrorText, setCategoryErrorText] = useState('');
-
-  //Tag states
-  // const tagList: { name: string }[] = [];
-  const [selectedTags, setSelectedTags] = useState<string[]>(projectInformation.tags);
-
-  const [tagErrorText, setTagErrorText] = useState('');
   if (projectInformation.projN) {
     projectNA.current = projectInformation.projN;
   }
@@ -315,10 +318,14 @@ export default function ProjectInfoForm(
             />
           </Grid>
 
+          {/* <Grid item xs={12}>
+
+          </Grid> */}
+
           <Grid item xs={12}>
 
-            <TagsField 
-              {...{selectedTags, setSelectedTags, projectInformation, tagErrorText}}
+            <TagsField
+              {...{ selectedTags, setSelectedTags, projectInformation, tagErrorText }}
             />
 
             {/* <Autocomplete
