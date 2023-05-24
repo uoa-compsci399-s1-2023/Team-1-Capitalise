@@ -266,7 +266,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }
             inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setGithub(event.target.value);
+              setGithub(event.target.value.toLowerCase());
             }}
           />
           <TextField
@@ -284,7 +284,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }
             inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setLinkedin(event.target.value);
+              setLinkedin(event.target.value.toLowerCase());
             }}
           />
           <TextField
@@ -300,7 +300,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }
             inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setDeployedSite(event.target.value);
+              setDeployedSite(event.target.value.toLowerCase());
             }}
           />
         </DialogContent>
