@@ -68,7 +68,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       //callbackURL: "http://localhost:3000/api/auth/google/callback",
       callbackURL:
-        "https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google/callback",
+        "https://7pc6mt8mh6.execute-api.ap-southeast-2.amazonaws.com/beta/api/auth/google/callback",
       passReqToCallback: true,
     },
     async function (request, accessToken, refreshToken, profile, done) {
