@@ -421,7 +421,7 @@ const sendPasswordResetNodemailer = (name, email, passwordResetToken) => {
       subject: "Capitalise.space - Reset your password",
       html: `<h2>Hey, ${name}!</h2>
       <p>Please reset your password by clicking on the following link:</p>
-      <a href=http://localhost:8080/changePassword?passwordResetToken=${passwordResetToken}>Click here to reset your password</a>
+      <a href=https://www.capitalise.space/changePassword?passwordResetToken=${passwordResetToken}>Click here to reset your password</a>
       <p>Note that this confirmation link will expire in 24 hours.</p>
       </div>`,
     })
