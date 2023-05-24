@@ -87,6 +87,7 @@ const userSchema = new mongoose.Schema({
   },
   confirmationCode: {
     type: String,
+    unique: true
   },
   passwordResetToken: {
     type: String,
