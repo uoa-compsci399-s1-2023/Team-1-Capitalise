@@ -15,8 +15,8 @@ import { useEffect, useRef, useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../api/config";
 //Copyright bottom of page
-
 
 //Sign Up Function
 export default function SignUp() {
@@ -30,24 +30,19 @@ export default function SignUp() {
   const [passwordErrorText, setPasswordErrorText] = useState("");
   const [name, setName] = useState("");
   const [nameErrorText, setNameErrorText] = useState("");
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState("");
   // Auth Provider
   const auth = useAuth();
-  const delay = (ms: number | undefined) => new Promise(res => setTimeout(res, ms));
+  const delay = (ms: number | undefined) =>
+    new Promise((res) => setTimeout(res, ms));
   useEffect(() => {
     if (auth.success) {
-
-    
       setSuccess(auth.success);
-      auth.success = ''
-
+      auth.success = "";
     } else if (auth.error) {
-
-
-      auth.error = ''
-   
+      auth.error = "";
     }
-  }, [auth.error, auth.success])
+  }, [auth.error, auth.success]);
 
   //Validators
   const validateName = () => {
@@ -83,8 +78,8 @@ export default function SignUp() {
       setPasswordErrorText("Please enter password.");
     } else if (pw.length < 5) {
       setPasswordErrorText("Please enter a password longer than 5 characters");
-    } else if (!(pw === cpw)){
-      setPasswordErrorText("Passwords do not match!")
+    } else if (!(pw === cpw)) {
+      setPasswordErrorText("Passwords do not match!");
     } else {
       setPasswordErrorText("");
       return true;
@@ -106,14 +101,10 @@ export default function SignUp() {
     event.preventDefault();
     // Check if all are valid before submitting to server.
     if (n && e && p) {
-     
       //Create object obeying SignUpProp Interface.
       const userToSignUp = { name: fn, email: em.toLowerCase(), password: pw };
       //Pass object to authenticator provider to add user to database.
-      auth.signup(userToSignUp)
-
-      
-
+      auth.signup(userToSignUp);
     }
   };
   //Error Handler
@@ -123,7 +114,6 @@ export default function SignUp() {
       <CssBaseline />
       <Box
         sx={{
-
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -183,26 +173,23 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="off"
-              
                 error={!!passwordErrorText}
                 helperText={passwordErrorText}
-                
               />
             </Grid>
             <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="confirmPassword"
-                  autoComplete="off"
-                  error={!!passwordErrorText}
-                  helperText={passwordErrorText}
-                
-                />
-              </Grid>
+              <TextField
+                required
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                autoComplete="off"
+                error={!!passwordErrorText}
+                helperText={passwordErrorText}
+              />
+            </Grid>
           </Grid>
 
           <Button
@@ -214,21 +201,25 @@ export default function SignUp() {
           >
             Sign Up
           </Button>
-          {success && <Alert severity="success">
-          <AlertTitle>Successfully signed up!</AlertTitle>
-          <strong>Please check your email for a confirmation email to activate your account. </strong>
-          </Alert>}
+          {success && (
+            <Alert severity="success">
+              <AlertTitle>Successfully signed up!</AlertTitle>
+              <strong>
+                Please check your email for a confirmation email to activate
+                your account.{" "}
+              </strong>
+            </Alert>
+          )}
 
           <Divider></Divider>
           <Button
-            href="https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google"
+            href={`${API_URL}/api/auth/google`}
             fullWidth
-            disabled={success? true: false}
+            disabled={success ? true : false}
             variant="outlined"
             startIcon={<GoogleIcon />}
             sx={{ mt: 3, mb: 2 }}
           >
-
             Sign up with Google
           </Button>
           <Grid sx={{ mb: 2 }} container justifyContent="center">
@@ -241,8 +232,5 @@ export default function SignUp() {
         </Box>
       </Box>
     </Container>
-
   );
 }
-
-
