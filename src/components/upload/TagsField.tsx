@@ -90,6 +90,7 @@ export default function TagsField({ selectedTags, setSelectedTags, projectInform
 				disablePortal
 				blurOnSelect
 				autoComplete
+				
 				noOptionsText={'No results'}
 				// Don't show results already added
 				filterOptions={(x, params) => {
@@ -140,11 +141,11 @@ export default function TagsField({ selectedTags, setSelectedTags, projectInform
 				renderInput={(params) => (
 					<TextField {...params}
 						error={!!tagErrorText}
-						helperText={tagErrorText}
+						helperText={tagErrorText ? tagErrorText : 'Add Tags for Students, Employers and Visitors to easily find your project!'}
 						fullWidth
 						hiddenLabel
 						placeholder='Add tags...'
-						size='small'
+						size='medium'
 						InputProps={{
 							...params.InputProps,
 							endAdornment: (
