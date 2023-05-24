@@ -76,17 +76,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
     // }
   };
 
-  // set condition for admin being allowed to
-  const handleNotAllowed = () => {
-    if (auth.isAllowed(["admin"])) {
-      alert("allowed");
-    } else {
-      alert("not allowed");
-    }
-  };
-
   // only users who are the author of the comment OR are admin can delete comments.
-  // make use of the auth.isAllowed?
   // Yathi - Probably don't need to do another auth check as the delete button only renders for authorised users
   // ...and backend will also do another check.
   const deleteComment = async (commentId: string) => {
@@ -117,7 +107,7 @@ const Comments: React.FC<CommentsProps> = ({ comments, projectId }) => {
   };
 
   return (
-    <div className="comments" style={{ width: "100%", marginLeft: "20px" }}>
+    <div className="comments" style={{ margin: "0 20px" }}>
       {/* Yathi - Changed variant from body1 to h4 and made component h2 */}
       <Typography
         variant="h4"

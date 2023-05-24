@@ -6,17 +6,19 @@ import { FormControl, OutlinedInput, InputLabel, FormHelperText } from '@mui/mat
 import EditIcon from '@mui/icons-material/Edit';
 import { ProjectContext } from '../../../routes/ProjectPage';
 import EditButton from '../EditButton';
+import { useAuth } from '../../../customHooks/useAuth';
 
 
 export default function TeamnameField() {
 
+  const { project, setProjectChanges, checkIsEdit } = useContext(ProjectContext)
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { project, setProjectChanges } = useContext(ProjectContext)
   const [value, setValue] = useState<string>(project.teamname);
   const [error, setError] = useState<string>('');
   const theme = useTheme();
+  const auth = useAuth();
 
 
   const handleMouseIn = () => {
@@ -30,6 +32,7 @@ export default function TeamnameField() {
   const handleOpen = () => {
     setValue(project.teamname);
     setIsOpen(true);
+    setIsHovering(false);
   }
 
   // Team name can't be more than 30 characters
@@ -48,7 +51,7 @@ export default function TeamnameField() {
   };
 
   const handleSave = () => {
-    if (!error) {
+    if (!error && value) {
       setProjectChanges({
         ['teamname']: value
       })
@@ -64,7 +67,7 @@ export default function TeamnameField() {
         fullWidth
         maxWidth='sm'
       >
-        <DialogTitle>Edit team name</DialogTitle>
+        <DialogTitle>Edit Team Name</DialogTitle>
         <DialogContent>
           <FormControl error={!!error} fullWidth>
             <OutlinedInput
@@ -92,10 +95,14 @@ export default function TeamnameField() {
         onMouseEnter={handleMouseIn}
         onMouseLeave={handleMouseOut}
       >
-        <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Team name:</Typography>
-        <Typography flex={1} fontWeight={300} variant="body1">{project.teamname}</Typography>
+        <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1" >Team name:</Typography>
+        <Typography flex={1} fontWeight={300} variant="body1" 
+          sx={{wordBreak: "break-all"}}
+        >{project.teamname}</Typography>
 
-        <EditButton clickHandler={handleOpen} isShow={isHovering}/>
+        {checkIsEdit() &&
+          <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
+        }
       </Box>
     </>
   )

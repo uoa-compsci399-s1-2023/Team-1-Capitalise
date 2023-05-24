@@ -1,25 +1,46 @@
-import { Box, Stack, Typography, useTheme, Button, Chip } from '@mui/material'
-
-import { likeProject } from '../../api/likeProject';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { Box, Stack, Typography, useTheme, Button, Chip, useMediaQuery, Switch } from '@mui/material'
 import { ProjectContext } from '../../routes/ProjectPage';
-import { useContext } from 'react';
 import { useAuth } from '../../customHooks/useAuth';
 import LikeBtn from './LikeBtn';
+import EditButton from './EditButton';
+import EditNameDialog from './dialogs/EditNameDialog';
+import AdminDeleteBtn from './AdminDeleteBtn';
+import ThumbnailField from './Fields/ThumbnailField';
+
+
 
 interface ProjectHeaderProps {
   name: string
   blurb?: string
-  likes: number
+  isEditMode: boolean
+  setIsEditMode: Dispatch<SetStateAction<boolean>>
 }
 
-export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps) {
+export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }: ProjectHeaderProps) {
 
   const theme = useTheme();
-  const { project, setProject } = useContext(ProjectContext);
   const auth = useAuth();
+  const { project, checkIsEdit } = useContext(ProjectContext);
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
-  const isSmall = theme.breakpoints.down("md");
+  // Name states
+  const [isHoverName, setIsHoverName] = useState(false);
+  const [isNameDialogOpen, setIsNameDialogOpen] = useState(false);
 
+  // Blurb states
+  const [isHoverBlurb, setIsHoverBlurb] = useState(false);
+  const [isBlurbDialogOpen, setIsBlurbDialogOpen] = useState(false);
+
+
+  const handleNameEdit = () => {
+    setIsNameDialogOpen(true);
+    setIsHoverName(false);
+  }
+
+  const handleBlurbEdit = () => {
+
+  }
 
   const headerStyle = {
     padding: '0 20px',
@@ -29,36 +50,61 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
     // Only apply in desktop mode
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
     gap: 0,
 
     // Only apply in phone mode
-    [isSmall]: {
+    [theme.breakpoints.down("md")]: {
       flexDirection: 'column',
       justifyContent: 'normal',
       alignItems: 'start',
       gap: 3,
       mb: 2
     }
-
   }
 
   return (
     <>
-      <Stack
+      <EditNameDialog
+        isOpen={isNameDialogOpen}
+        setIsOpen={setIsNameDialogOpen}
+        initialValue={name}
+      />
 
+      <Stack
         sx={headerStyle}
       >
+        {/* Project name and blurb */}
         <Box>
-          <Typography
-            variant="h1"
-            color="initial"
-            mt={1}
-            fontWeight={600}
-            alignSelf={'center'}
+
+          <ThumbnailField />
+
+          <Stack
+            id="project-name-field"
+            flexDirection={'row'}
+            alignItems={'center'}
+            onMouseEnter={() => setIsHoverName(true)}
+            onMouseLeave={() => setIsHoverName(false)}
+            mt={2}
           >
-            {name}
-          </Typography>
+            <Typography
+              variant="h1"
+              color="black"
+              fontWeight={600}
+              alignSelf={'center'}
+            >
+              {name}
+            </Typography>
+
+            {checkIsEdit() &&
+              <EditButton
+                clickHandler={handleNameEdit}
+                isShow={isHoverName}
+                fontSize='medium'
+              />
+            }
+          </Stack>
+
           <Typography
             component='p'
             variant='body2'
@@ -69,17 +115,26 @@ export default function ProjectHeader({ name, blurb, likes }: ProjectHeaderProps
           </Typography>
         </Box>
 
-        { <LikeBtn /> }
+        {/* Edit mode toggle and project info */}
+        <Stack
+          gap={2}
+          width={'180px'}
+        >
+          {isDesktop &&
+            auth.isAllowed(['admin'], project.members) &&
+              <Stack flexDirection={'row'} gap={0} alignItems={'center'}>
+                <Typography variant="body1">Edit mode:</Typography>
+                <Switch
+                  checked={isEditMode}
+                  onChange={(e, checked) => setIsEditMode(checked)}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              </Stack>
 
-          {/* Design change, no more comment button */}
-          {/* <Button
-            variant='outlined'
-            color='neutral'
-            startIcon={<ChatOutlinedIcon />}
-          >
-            Comment
-          </Button> */}
-
+          }
+          <AdminDeleteBtn />
+          <LikeBtn />
+        </Stack>
       </Stack>
 
     </>

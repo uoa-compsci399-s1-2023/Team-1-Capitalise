@@ -20,4 +20,5 @@ export type TUser = {
     // | "notion"
     // | "kaggle";
   }[];
+  displayEmail: string;
 };

@@ -1,9 +1,9 @@
 
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // import { SearchProps } from '../projects/MyPagination';
-import { SearchContext } from '../../app';
+import { SearchContext, TFiltersState } from '../../app';
 import { TAvailParameters } from './AvailableParams'
 
 
@@ -29,6 +29,29 @@ export default function FilterButton({ name, label, options }: FilterChipProps) 
   const { currFilters, setFilters } = React.useContext(SearchContext);
 
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    let selectedOption = ''
+    
+    switch(name) {
+      case 'category':
+        selectedOption = currFilters.category.value
+        break;
+      case 'award':
+        selectedOption = currFilters.award.value
+        break;
+      case 'sortBy':
+        selectedOption = currFilters.sortBy.value
+        break;
+      case 'semester':
+        selectedOption = currFilters.semester.value
+    }
+
+    if (selectedOption) {
+      const index = options.findIndex(o => o.value === selectedOption)
+      setSelectedIndex(index);
+    }
+  }, [currFilters])
 
   const handleClickButton = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

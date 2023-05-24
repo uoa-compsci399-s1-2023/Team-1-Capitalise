@@ -1,6 +1,6 @@
 import React, { useRef, useContext, useState, useEffect } from 'react'
 
-import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select } from '@mui/material';
+import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select, useMediaQuery } from '@mui/material';
 import { styled, Button, Typography, useTheme, Box } from '@mui/material'
 import { FormControl, MenuItem, InputLabel, SelectChangeEvent } from '@mui/material'
 import { ProjectContext } from '../../../routes/ProjectPage';
@@ -9,25 +9,22 @@ import EditButton from '../EditButton';
 import { TProject } from '../../../model/TProject';
 import { TProjectPost } from '../../../model/TPostProject';
 import { searchFilterParams, TAvailParameters, fetchCurrentParameters } from "../../search/AvailableParams";
+import { useAuth } from '../../../customHooks/useAuth';
 
 
 export default function CategoryField() {
 
-  const { project, setProjectChanges } = useContext(ProjectContext) // Project context
+  const { project, setProjectChanges, checkIsEdit } = useContext(ProjectContext) // Project context
 
   const [isHovering, setIsHovering] = useState(false); // For showing edit button
   const [isOpen, setIsOpen] = React.useState(false); // For opening dialog box
   const [value, setValue] = useState<string>(''); // For onchange input validation
   const theme = useTheme();
-  // const searchParams = useSearchParams();
+  const auth = useAuth();
 
-  useEffect( () => {
+  useEffect(() => {
     fetchCurrentParameters()
-  },[])
-
-  // useEffect(() => {
-  //   setValue(project.category.value);
-  // }, [project])
+  }, [])
 
   const handleMouseIn = () => {
     setIsHovering(true);
@@ -38,6 +35,7 @@ export default function CategoryField() {
   }
 
   const handleOpen = () => {
+    setIsHovering(false);
     setValue(project.category.value);
     setIsOpen(true);
   }
@@ -46,7 +44,7 @@ export default function CategoryField() {
     setValue(e.target.value);
   }
 
-  const handleClose = (evt: React.SyntheticEvent, reason: string='') => {
+  const handleClose = (evt: React.SyntheticEvent, reason: string = '') => {
     if (reason && reason === 'backdropClick') {
       return;
     }
@@ -63,13 +61,12 @@ export default function CategoryField() {
   return (
     <>
       <Dialog
-        keepMounted
         open={isOpen}
         onClose={handleClose}
         fullWidth
         maxWidth='sm'
       >
-        <DialogTitle>Edit category</DialogTitle>
+        <DialogTitle>Edit Category</DialogTitle>
         <DialogContent>
           <FormControl fullWidth>
             <Select
@@ -101,10 +98,19 @@ export default function CategoryField() {
         onMouseEnter={handleMouseIn}
         onMouseLeave={handleMouseOut}
       >
-        <Typography fontWeight={400} minWidth={'100px'}  mr={1} variant="body1">Category:</Typography>
-        <Typography flex={1} fontWeight={300} variant="body1">{project.category.value}</Typography>
+        <Typography fontWeight={400} minWidth={'100px'} mr={1} variant="body1">Category:</Typography>
+        <Typography
+          flex={1}
+          fontWeight={300}
+          variant="body1"
+          sx={{wordBreak: "break-all"}}
+        >
+          {project.category.value}
+        </Typography>
 
-        { <EditButton clickHandler={handleOpen} isShow={isHovering} /> }
+        {checkIsEdit() &&
+          <EditButton clickHandler={handleOpen} isShow={isHovering} fontSize='small' />
+        }
       </Box>
     </>
   )

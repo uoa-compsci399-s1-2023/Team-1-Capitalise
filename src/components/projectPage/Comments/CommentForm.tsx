@@ -18,26 +18,14 @@ const CommentForm = ({ handleSubmit, submitLabel }: CommentFormProps) => {
   };
 
   return (
-    // <Box sx={{ width: 600 }}>
-    //   <form onSubmit={onSubmit}>
-    //     <textarea
-    //       className="comment-form-textarea"
-    //       value={text}
-    //       onChange={(e) => setText(e.target.value)}
-    //     />
-
-    //     <button className="comment-form-button" disabled={isTextAreaDisabled}>
-    //       {submitLabel}
-    //     </button>
-    //   </form>
-    // </Box>
-
     // Added styles to make it consistent with mui
-    <Box
-      width={{ xs: "90%", sm: "400px", md: "500px", lg: "600px" }}
-      component={"form"}
-      display={"flex"}
-      alignItems={"center"}
+    <Box 
+      sx={{ 
+        width: {md: "600px", xs: '100%'}, 
+      }}
+      component={'form'}
+      display={'flex'}
+      alignItems={'center'}
       gap={2}
     >
       <TextField

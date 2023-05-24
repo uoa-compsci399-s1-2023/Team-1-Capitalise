@@ -11,7 +11,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../customHooks/useAuth";
 import { useContext } from "react";
 import { AwardTypeContext } from "../../app";
 
@@ -46,16 +45,6 @@ const ShowcaseProjectCard = ({
   let awardText = "";
   let awardIcon = null;
 
-  //delete in final build
-  let loggedInAdmin = 0;
-  const auth = useAuth();
-  if (auth.user) {
-    if (auth.user._id === "6432f8826cce2fc1706572d3") {
-      loggedInAdmin = 1000;
-    }
-  }
-  //delete end
-
   const setBadge = (badges: string) => {
     if (badges !== "default") {
       for (const awardType of awardTypes) {
@@ -71,7 +60,7 @@ const ShowcaseProjectCard = ({
   setBadge(badges);
 
   return (
-    <Fade in={true} timeout={loggedInAdmin}>
+    <Fade in={true} timeout={1000}>
       <Card
         sx={{
           minWidth: 500,
@@ -107,9 +96,17 @@ const ShowcaseProjectCard = ({
           >
             <Box display="flex">
               {awardIcon && (
-                <Box paddingRight="10px">
-                  <img src={awardIcon} width="60px"></img>
-                </Box>
+                <Box
+                  width="70px"
+                  height="70px"
+                  component="img"
+                  src={awardIcon}
+                  alt="award icon"
+                  referrerPolicy="no-referrer"
+                  paddingRight="10px"
+                  justifySelf="center"
+                  sx={{ objectFit: "contain" }}
+                ></Box>
               )}
               <Box display="grid">
                 <Typography

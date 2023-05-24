@@ -11,12 +11,12 @@ import { useAuth } from "../../customHooks/useAuth";
 import MuiCarousel from "react-material-ui-carousel";
 import { useEffect, useState } from "react";
 import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
+import DefaultHeroBanner from "../../assets/DefaultHeroBanner.svg";
+import DefaultMobileHeroBanner from "../../assets/DefaultMobileHeroBanner.svg";
 
 const Hero = () => {
-  //delete this in final
-  const [loggedInAdmin, setLoggedInAdmin] = useState(0);
-  const [heroBanners, setHeroBanners] = useState([]);
-  const [mobileHeroBanners, setMobileHeroBanners] = useState([]);
+  const [heroBanners, setHeroBanners] = useState<string[]>([]);
+  const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
   const [isHeroLoading, setHeroIsLoading] = useState(true);
   const [isMobileHeroLoading, setMobileHeroIsLoading] = useState(true);
   const [isStudent, setIsStudent] = useState(false);
@@ -33,12 +33,18 @@ const Hero = () => {
       if (respData.length !== 0) {
         setHeroBanners(respData);
         setHeroIsLoading(false);
+      } else {
+        setHeroBanners([DefaultHeroBanner]);
+        setHeroIsLoading(false);
       }
     };
     const fetchMobileHeroBanners = async () => {
       const respData = await getMobileHeroBanners();
       if (respData.length !== 0) {
         setMobileHeroBanners(respData);
+        setMobileHeroIsLoading(false);
+      } else {
+        setMobileHeroBanners([DefaultMobileHeroBanner]);
         setMobileHeroIsLoading(false);
       }
     };
@@ -59,17 +65,12 @@ const Hero = () => {
   useEffect(() => {
     const checkAuth = () => {
       if (auth.user) {
-        if (auth.user.userType == "graduate" || auth.user.userType == "admin") {
+        if (auth.user.userType == "graduate") {
           setIsStudent(true);
           if (auth.user.project) {
             setHasProject(true);
           }
         }
-        //delete in final
-        if (auth.user._id === "6432f8826cce2fc1706572d3") {
-          setLoggedInAdmin(1000);
-        }
-        //delete in final end
       } else {
         setIsStudent(false);
         setHasProject(false);
@@ -97,7 +98,7 @@ const Hero = () => {
               src={banner}
               alt="hero"
               alignSelf="center"
-              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
+              sx={{ objectFit: "cover", objectPosition: "center" }}
               key={i}
             ></Box>
           ))}
@@ -120,7 +121,7 @@ const Hero = () => {
               src={banner}
               alt="hero"
               alignSelf="center"
-              sx={{ objectFit: "cover", objectPosition: "bottom center" }}
+              sx={{ objectFit: "cover", objectPosition: "center" }}
               key={i}
             ></Box>
           ))}
@@ -128,13 +129,19 @@ const Hero = () => {
       )}
       {!isMobileHeroLoading && !isHeroLoading && (
         <Box>
-          <Slide in={true} timeout={loggedInAdmin}>
+          <Slide in={true} timeout={1000}>
             <Box
               width={{ xs: "100%", sm: "85%", md: "53%" }}
               position="absolute"
               zIndex={1}
               top={0}
-              padding={{ xs: 4, md: 5, lg: 7, xl: 10 }}
+              left={{ md: "40px", lg: "56px", xl: "80px" }}
+              padding={{
+                xs: 4,
+                md: "40px 40px 40px 0px",
+                lg: "56px 56px 56px 0px",
+                xl: "80px 80px 80px 0px",
+              }}
             >
               <Box>
                 {!isStudent && (
@@ -162,7 +169,10 @@ const Hero = () => {
                     </Box>
                     <Box paddingTop="25px">
                       <Link to="../projects">
-                        <Button variant="contained" color="primaryDark">
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#2979FF" }}
+                        >
                           {"Explore Projects"}
                         </Button>
                       </Link>
@@ -210,7 +220,7 @@ const Hero = () => {
                       <Box paddingTop="20px">
                         <Link to={`../projects/${auth.user?.project}`}>
                           <Button variant="contained" color="primaryDark">
-                            Your Project
+                            {"Your Project"}
                           </Button>
                         </Link>
                       </Box>
@@ -219,7 +229,7 @@ const Hero = () => {
                       <Box paddingTop="20px">
                         <Link to="../upload">
                           <Button variant="contained" color="primaryDark">
-                            Upload
+                            {"Upload"}
                           </Button>
                         </Link>
                       </Box>

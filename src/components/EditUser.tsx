@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { uploadProfilePicture } from "../api/uploadProfilePicture";
 import { deleteProfilePicture } from "../api/deleteProfilePicture";
 import { useAuth } from "../customHooks/useAuth";
+import DefaultPFP from "../assets/DefaultPfp.svg";
+import LoadingDialog from "./projectPage/dialogs/LoadingDialog";
 
 interface Props {
   open: boolean;
@@ -30,9 +32,10 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
     }
     return "";
   };
-  const defaultURL =
-    "https://capitalise-projects30934-staging.s3.ap-southeast-2.amazonaws.com/capitaliseAssets/default_pfp.svg";
+
+  const defaultURL = DefaultPFP;
   const [name, setName] = useState(user.name);
+  const [displayEmail, setDisplayEmail] = useState(user.displayEmail);
   const [bio, setBio] = useState(user.bio);
   const [profilePicture, setProfilePicture] = useState(user.profilePicture);
   const [profilePictureFile, setProfilePictureFile] = useState<
@@ -44,12 +47,15 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const [deployedSite, setDeployedSite] = useState(getLink("deployedSite"));
   const [openDelete, setOpenDelete] = useState(false);
   const [validImage, setValidImage] = useState(true);
+  const [validImageErrorMessage, setValidImageErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
-  const nameCharacterLimit = 500;
+  const nameCharacterLimit = 100;
+  const emailCharacterLimit = 320;
   const bioCharacterLimit = 2000;
   const linkCharacterLimit = 500;
+  const maxProfileSizeMB = 4;
 
   let links: any[] = [];
 
@@ -88,6 +94,13 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   const constHandleImage = async (file: File) => {
     if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
       setProfilePicture(user.profilePicture);
+      setValidImageErrorMessage("Select a valid image type");
+      setValidImage(false);
+    } else if (file.size / (1024 * 1024) > maxProfileSizeMB) {
+      setProfilePicture(user.profilePicture);
+      setValidImageErrorMessage(
+        `File is too big. Must be less than ${maxProfileSizeMB}MB`
+      );
       setValidImage(false);
     } else {
       setProfilePicture(URL.createObjectURL(file));
@@ -103,6 +116,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
       email: user.email,
       bio: bio,
       links: links,
+      displayEmail: displayEmail,
     };
 
     patchUser(user._id, body, token).then(() => {
@@ -122,12 +136,14 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
     setLoading(true);
   };
 
+  // Helper for link validation
   const isUrlValid = (url: string, urlWebsite: string) => {
     return (
-      url.startsWith("https://www." + urlWebsite) ||
-      url.startsWith("https://" + urlWebsite) ||
-      url.startsWith("http://" + urlWebsite) ||
-      !url
+      !url.includes(" ") &&
+      (url.startsWith("https://www." + urlWebsite) ||
+        url.startsWith("https://" + urlWebsite) ||
+        url.startsWith("http://" + urlWebsite) ||
+        !url)
     );
   };
 
@@ -178,6 +194,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 </Button>
               </Stack>
               <TextField
+                id="edit-profile"
                 label="Change profile picture"
                 type="file"
                 fullWidth
@@ -187,7 +204,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                 }}
                 variant="outlined"
                 error={!validImage}
-                helperText={!validImage ? "Select a valid image type" : ""}
+                helperText={!validImage ? validImageErrorMessage : ""}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   if (event.target.files) {
                     constHandleImage(event.target.files[0]);
@@ -197,6 +214,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             </Stack>
           </Box>
           <TextField
+            id="edit-name"
             margin="dense"
             label="Name"
             fullWidth
@@ -208,6 +226,19 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }}
           />
           <TextField
+            id="edit-displayEmail"
+            margin="dense"
+            label="Display Email"
+            fullWidth
+            variant="standard"
+            defaultValue={displayEmail}
+            inputProps={{ maxLength: emailCharacterLimit }}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setDisplayEmail(event.target.value);
+            }}
+          />
+          <TextField
+            id="edit-bio"
             multiline
             margin="dense"
             label="Bio"
@@ -222,7 +253,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="github"
+            id="edit-github"
             label="GitHub link"
             fullWidth
             variant="standard"
@@ -240,7 +271,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="linkedin"
+            id="edit-linkedin"
             label="LinkedIn link"
             fullWidth
             variant="standard"
@@ -258,7 +289,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           />
           <TextField
             margin="dense"
-            id="deployedSite"
+            id="edit-deployedSite"
             label="Website link"
             fullWidth
             variant="standard"
@@ -313,9 +344,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={loading}>
-        <DialogTitle>Hang tight, this takes a few seconds...</DialogTitle>
-      </Dialog>
+      <LoadingDialog isOpen={loading} />
     </div>
   );
 };

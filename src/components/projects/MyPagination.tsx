@@ -1,13 +1,7 @@
 // Yathi - margin on top of projects box to clear fixed position header.
 // Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
 
-import {
-  useState,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-  useContext,
-} from "react";
+import { useState, useEffect, useContext } from "react";
 
 // Components
 import { Box, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
@@ -24,46 +18,11 @@ import { SearchContext } from "../../app";
 const MyPagination = () => {
   const [projects, setProjects] = useState<TProject[]>([]);
   const [totalNumProjects, setTotalNumProjects] = useState(0);
-  const [gridWidth, setGridWidth] = useState("0px");
   const [isLoading, setIsLoading] = useState(true);
   const { currFilters, setFilters } = useContext(SearchContext);
-  const [paginationSize, setPaginationSize] = useState<"small" | "medium">(
-    "medium"
-  );
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const handleResize = () => {
-    let width = window.innerWidth;
-    if (width > 2140) {
-      setGridWidth("1800px");
-    } else if (width < 2140 && width > 1770) {
-      setGridWidth("1430px");
-    } else if (width < 1770 && width > 1400) {
-      setGridWidth("1060px");
-    } else if (width < 1400 && width > 1040) {
-      setGridWidth("690px");
-    } else if (width < 1040) {
-      setGridWidth("320px");
-    }
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isMobile) {
-      setPaginationSize("small");
-    } else {
-      setPaginationSize("medium");
-    }
-  }, [isMobile]);
+  const searchOverflow = useMediaQuery("(min-width:1062px)");
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
@@ -78,6 +37,7 @@ const MyPagination = () => {
   }, [currFilters]);
 
   const handlePageChange = (page: number) => {
+    setProjects([]);
     setFilters({
       ...currFilters,
       ["currPage"]: page,
@@ -101,22 +61,27 @@ const MyPagination = () => {
         minHeight="92vh"
         flexDirection="column"
         sx={{ ml: { xs: "0", md: "340px" } }}
+        px={2}
         paddingBottom="0px" // changed from 100
       >
         {/* Search section for mobile */}
         <MobileSearchFilters />
 
         <Box
-          marginLeft="auto"
-          marginRight="auto"
-          width={{ xs: "100%", md: gridWidth }}
+          display="grid"
+          gridTemplateColumns={{ xs: "", md: "repeat(auto-fill, 320px)" }}
+          flexDirection="row"
+          flexWrap="wrap"
+          gap="50px"
+          justifyContent="center"
         >
           <Typography
             my={4}
             variant="h1"
-            // component="h1"
+            whiteSpace={searchOverflow ? "nowrap" : "unset"}
             sx={{
               textAlign: { xs: "center", md: "left" },
+              wordBreak: "break-all",
             }}
           >
             {currFilters.keywords
@@ -136,14 +101,13 @@ const MyPagination = () => {
             {/* We will return the pagination component IF there are projects to display */}
             {checkProjects && (
               <MuiPagination
-                // count={Math.ceil(projects.length / projectsPerPage)}
                 count={totalPages}
                 page={currentPage}
                 onChange={(_, page) => handlePageChange(page)}
                 showFirstButton
                 showLastButton
                 color="primary"
-                size={paginationSize}
+                size={isMobile ? "small" : "medium"}
               />
             )}
           </Box>

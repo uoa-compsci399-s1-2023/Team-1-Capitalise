@@ -20,10 +20,10 @@ import Logo from "../../assets/Logo.svg";
 import { useAuth } from '../../customHooks/useAuth';
 import { Divider } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-//Theme
-const theme = createTheme();
+
 
 import { useNavigate } from "react-router-dom";
+import validator from 'validator';
 
 
 //Sign In Function
@@ -62,8 +62,8 @@ function SignInSide() {
     if (!email) {
       setEmailErrorText("Please enter email.");
      
-    } else if (!emailF.test(email)) {
-      setEmailErrorText("Enter an email in the format of example@aucklanduni.ac.nz or example@gmail.com");
+    } else if (!validator.isEmail(email)) {
+      setEmailErrorText("Enter an appropriate email Format!");
      
     } else {
       setEmailErrorText("");
@@ -93,7 +93,7 @@ function SignInSide() {
       const logEmail = data.get('email') as string;
       const logPw = data.get('password') as string;
       // Pass Email and PW onto Auth Provider -> Sign In API
-      auth.signin(logEmail, logPw);
+      auth.signin(logEmail.toLowerCase(), logPw);
   
       
       }
@@ -103,7 +103,6 @@ function SignInSide() {
     
 
   return (
-    <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -124,34 +123,38 @@ function SignInSide() {
           <Box
             
             sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              
+                minHeight: '100vh',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent:'center'
             }}
           >
-            <Box sx={{mb: 3, mt: "11vh"}}>
-            <Box
-              padding="0 30px"
-              component="img"
-              src={Logo}
-              alt="logo"
-              sx={{
-                width: "300px",
-                height: "auto",
-                flexGrow: 1,
-                display: { xs: "flex", md: "flex" },
-              }}
-            ></Box>
             
+            <Box sx={{mb: 3}}>
+            <Link href="/">
+              <Box
+                padding="0 30px"
+                component="img"
+                src={Logo}
+                alt="logo"
+                sx={{
+                  width: "300px",
+                  height: "auto",
+                  flexGrow: 1,
+                  display: { xs: "flex", md: "flex" },
+                }}
+              ></Box>
+            </Link>
             </Box>
+            
             <Typography component="h1" variant="h5" sx={{fontWeight: 500}}>
               Login
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} >
+            
+            <Box component="form" sx={{paddingLeft: 5, paddingRight: 5}} noValidate onSubmit={handleSubmit} >
               <TextField
+               
                 margin="normal"
                 required
                 fullWidth
@@ -196,19 +199,25 @@ function SignInSide() {
               direction="column"
               justifyContent="flex-end"
               alignItems="center">
+                <Grid item>
+                  <Link href="/ResetPassword" underline="hover" variant="body2">
+                    {"Forgot password?"}
+                  </Link>
+                </Grid>
                 
                 <Grid item>
                   <Link href="/register" underline="hover" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
+                
 
               </Grid>
             </Box>
           </Box>
         </Grid>
       </Grid>
-    </ThemeProvider>
+
   );
 }
 

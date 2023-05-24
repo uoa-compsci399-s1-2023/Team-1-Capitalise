@@ -83,9 +83,7 @@ const UserProfile = () => {
                 category={project.category.value}
                 likes={project.likes}
                 badges={
-                  typeof project.badges != "undefined"
-                    ? project.badges.value
-                    : ""
+                  project.badges ? project.badges.value : "" // Yathi - Updated to fix null error
                 }
                 projectID={project._id}
               ></ProjectCard>
@@ -234,11 +232,18 @@ const UserProfile = () => {
             <Typography
               width="100%"
               variant="h6"
-              style={{ wordBreak: "break-all" }}
+              style={{ wordBreak: "break-word" }}
             >
               {user.name}
             </Typography>
-            <Stack direction={{ xs: "row", md: "column" }} spacing={1}>
+            <Typography style={{ wordBreak: "break-word" }}>
+              {user.displayEmail}
+            </Typography>
+            <Stack
+              paddingTop="10px"
+              direction={{ xs: "row", md: "column" }}
+              spacing={1}
+            >
               {user.links.map((link) => (
                 <Box key={link._id}>
                   <ExternalLinkBtn

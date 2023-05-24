@@ -20,11 +20,14 @@ import ProjectPage from "./routes/ProjectPage";
 import Navbar from "./components/Navbar";
 import UserProfile from "./routes/UserProfile";
 import { AuthProvider } from "./customHooks/useAuth";
+import AdminDashboard from "./routes/AdminDashboard";
 import GoogleSuccessRedirect from "./routes/googleSuccessRedirect";
 import GoogleFailure from "./routes/googleFailure";
 import Upload from "./routes/Upload";
 import { getAwardTypes } from "./api/getAwardTypes";
 import { TAward } from "./model/TAward";
+import ResetPassword from "./routes/ResetPassword";
+import ChangePassword from "./routes/ChangePassword";
 
 export type TFiltersState = {
   keywords: string;
@@ -40,6 +43,7 @@ export type TFiltersState = {
 interface TSearchContext {
   currFilters: TFiltersState;
   setFilters: React.Dispatch<SetStateAction<TFiltersState>>;
+  getDefaultFilters: () => TFiltersState
 }
 
 export const SearchContext = createContext<TSearchContext>(
@@ -48,11 +52,13 @@ export const SearchContext = createContext<TSearchContext>(
 
 const initialProjectsPerPage = () => {
   let width = window.innerWidth;
-  if (width > 2140) {
+  if (width >= 2510) {
+    return 18;
+  } else if (width < 2510 && width >= 2140) {
     return 15;
-  } else if (width < 2140 && width > 1770) {
+  } else if (width < 2140 && width >= 1770) {
     return 12;
-  } else if (width < 1770 && width > 1400) {
+  } else if (width < 1770 && width >= 1400) {
     return 9;
   } else if (width < 1400) {
     return 6;
@@ -95,7 +101,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AwardTypeContext.Provider value={awardTypes}>
-          <SearchContext.Provider value={{ currFilters, setFilters }}>
+          <SearchContext.Provider value={{ currFilters, setFilters, getDefaultFilters }}>
             <ThemeProvider theme={customTheme1}>
               <Navbar />
               <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey}>
@@ -110,12 +116,12 @@ export default function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/user/:userID" element={<UserProfile />} />
                   <Route path="/Register" element={<Registration />} />
-                  <Route
-                    path="/googleSuccessRedirect"
-                    element={<GoogleSuccessRedirect />}
-                  />
+                  <Route path="/ResetPassword" element={<ResetPassword />} />
+                  <Route path="/ChangePassword" element={<ChangePassword />} />
+                  <Route path="/googleSuccessRedirect" element={<GoogleSuccessRedirect />}/>
                   <Route path="/googleFailure" element={<GoogleFailure />} />
                   <Route path="/upload" element={<Upload />} />
+                  <Route path="/adminDashboard" element={<AdminDashboard />} />
                 </Routes>
               </Box>
             </ThemeProvider>

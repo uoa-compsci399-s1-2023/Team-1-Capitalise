@@ -19,14 +19,20 @@ type TAuthReturnType = {
   getToken: () => string | null; // For restricted api calls.
   getLatestUser: () => void;
   error: string; // Set with server message if signin or signout fails.
+  existError: string; //Check User registered
+  success: string; //Set with server message if api succeeds.
   isLoading: boolean; // True while async calls are happening. Could be used to display loading animation while logging in, etc.
   googleAuth: () => void;
+  resetPassword: (email: any) => void;
+  changePassword: (password: any) => void;
 };
 
 function useProvideAuth(): TAuthReturnType {
   const [user, setUser] = useState<TUser | null>(null);
   const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [existError, setExistError] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -120,6 +126,8 @@ function useProvideAuth(): TAuthReturnType {
 
   // Registers user given the required data from the above interface
   function signup(newUser: SignUpProps) {
+    setError('')
+    setSuccess('')
     const postBody = JSON.stringify({
       ...newUser,
       username: newUser.email
@@ -131,12 +139,13 @@ function useProvideAuth(): TAuthReturnType {
         "Content-Type": "application/json",
       },
       body: postBody,
-    }).then(resp => {
-      if (resp.ok) {
-        signin(newUser.email, newUser.password); // signin user if signup successful
+    }).then(resp => resp.json()).then((json) => {
+      if (json.fail) {
+        setError(json.fail);
       } else {
-        resp.text().then(err => setError(err));
+        setSuccess('Check your email to activate your account!')
       }
+
     }).finally(() => setIsLoading(false));
   }
 
@@ -153,6 +162,43 @@ function useProvideAuth(): TAuthReturnType {
       navigate('/login')
     }
   }
+  //Reset Password API
+  function resetPassword(email: any) {
+    setError('');
+    setSuccess('');
+    //make the reset call
+    fetch(`${API_URL}/api/users/sendResetPasswordEmail`, {
+      method: "POST",
+      body: JSON.stringify(email),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.success) {
+          setSuccess(json.success);
+        } else {
+          setError(json.fail);
+        }
+      });
+  }
+  //Change Password once User has accepted email.
+  function changePassword(newPassword: any) {
+    fetch("https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/users/resetPassword", {
+      method: "POST",
+      body: JSON.stringify(newPassword),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+          setSuccess(json.success)
+      });
+
+  }
+  
 
   // Returns the currently saved token.
   // Useful for api calls that need authorisation.
@@ -165,14 +211,12 @@ function useProvideAuth(): TAuthReturnType {
     allowedRoles?: TUser['userType'][],
     allowedIds?: string[] | null) 
     {
-    if (!user) {
+      if (user && allowedRoles && allowedRoles.includes(user.userType)) {
+        return true;
+      } else if (user && allowedIds && allowedIds.includes(user._id)) {
+        return true
+      }
       return false;
-    } else if (allowedIds && !allowedIds.includes(user._id)) {
-      return false;
-    } else if (allowedRoles && !allowedRoles.includes(user.userType)) {
-      return false;
-    }
-    return true
   }
 
   return {
@@ -185,8 +229,12 @@ function useProvideAuth(): TAuthReturnType {
     getToken,
     getLatestUser,
     error,
+    existError,
+    success,
     isLoading,
-    googleAuth
+    googleAuth,
+    resetPassword,
+    changePassword
   };
 }
 

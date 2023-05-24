@@ -11,9 +11,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../customHooks/useAuth";
 import { useContext } from "react";
 import { AwardTypeContext } from "../../app";
+import { incrementViews } from "../../api/incrementViews";
 
 interface Props {
   title: string;
@@ -46,16 +46,6 @@ const ProjectCard = ({
   let awardText = "";
   let awardIcon = null;
 
-  //delete in final build
-  let loggedInAdmin = 0;
-  const auth = useAuth();
-  if (auth.user) {
-    if (auth.user._id === "6432f8826cce2fc1706572d3") {
-      loggedInAdmin = 1000;
-    }
-  }
-  //delete end
-
   const setBadge = (badges: string) => {
     if (badges !== "default") {
       for (const awardType of awardTypes) {
@@ -71,7 +61,7 @@ const ProjectCard = ({
   setBadge(badges);
 
   return (
-    <Fade in={true} timeout={loggedInAdmin}>
+    <Fade in={true} timeout={1000}>
       <Card
         sx={{
           minWidth: 320,
@@ -82,7 +72,11 @@ const ProjectCard = ({
           },
         }}
       >
-        <CardActionArea component={Link} to={`../projects/${projectID}`}>
+        <CardActionArea
+          component={Link}
+          to={`../projects/${projectID}`}
+          onClick={() => incrementViews(projectID)} // views are only counted if user clicks on card
+        >
           <CardMedia
             component="img"
             alt="error loading image"
@@ -109,9 +103,18 @@ const ProjectCard = ({
           >
             <Box display="flex">
               {awardIcon && (
-                <Box paddingRight="10px">
-                  <img src={awardIcon} width="40px"></img>
-                </Box>
+                <Box
+                  display="flex"
+                  maxWidth="50px"
+                  height="50px"
+                  component="img"
+                  src={awardIcon}
+                  alt="award icon"
+                  referrerPolicy="no-referrer"
+                  paddingRight="10px"
+                  justifySelf="start"
+                  sx={{ objectFit: "contain" }}
+                ></Box>
               )}
               <Box display="grid">
                 <Typography
@@ -170,13 +173,16 @@ const ProjectCard = ({
                 paddingBottom="0.35em"
               >
                 <FavoriteIcon
-                  sx={{ color: theme.customColors.likes }}
-                  fontSize="small"
+                  sx={{
+                    color: theme.customColors.likes,
+                    fontSize: 16,
+                  }}
+                  // fontSize="small"
                 />
                 <Typography
                   variant="body2"
                   color={theme.customColors.likes}
-                  fontSize="1.25em"
+                  fontSize="16px" // Yathi - the default size is too big
                   lineHeight={1}
                 >
                   {likes}
