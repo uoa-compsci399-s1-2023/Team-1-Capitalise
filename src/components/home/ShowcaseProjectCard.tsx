@@ -11,7 +11,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Fade from "@mui/material/Fade";
 import DefaultProjectImage from "../../assets/DefaultProjectImage.svg";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../customHooks/useAuth";
 import { useContext } from "react";
 import { AwardTypeContext } from "../../app";
 
@@ -46,16 +45,6 @@ const ShowcaseProjectCard = ({
   let awardText = "";
   let awardIcon = null;
 
-  //delete in final build
-  let loggedInAdmin = 0;
-  const auth = useAuth();
-  if (auth.user) {
-    if (auth.user.name === "SuperSecretAnimations") {
-      loggedInAdmin = 1000;
-    }
-  }
-  //delete end
-
   const setBadge = (badges: string) => {
     if (badges !== "default") {
       for (const awardType of awardTypes) {
@@ -71,7 +60,7 @@ const ShowcaseProjectCard = ({
   setBadge(badges);
 
   return (
-    <Fade in={true} timeout={loggedInAdmin}>
+    <Fade in={true} timeout={1000}>
       <Card
         sx={{
           minWidth: 500,
