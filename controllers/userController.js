@@ -77,7 +77,7 @@ const getUserById = async (req, res) => {
 const postUser = async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
-    return res.status(400).send({fail: error.details[0].message});
+    return res.status(400).send({ fail: error.details[0].message });
   }
   try {
     let user = await User.findOne({ email: req.body.email });
@@ -140,7 +140,7 @@ const postUser = async (req, res) => {
       await project.save();
     }
 
-    user = await user.save();    
+    user = await user.save();
     res.status(201).send(user);
     sendConfirmationEmail(user.name, user.email, user.confirmationCode);
   } catch (ex) {
@@ -163,23 +163,25 @@ const postGoogleUser = async (profile) => {
       myUserType = "graduate";
     }
 
-    // Create user object
-    const user = new User({
+    user = new User({
       name: profile.name,
       email: profile.email,
       username: profile.email,
-      //Grab the full profile pic in Full HD
       profilePicture: profile.picture.substring(0, profile.picture.length - 6),
-      likedProjects: [],
-      myComments: [],
       userType: myUserType,
       isGoogleCreated: true,
+      status: "Active",
+      confirmationCode: jwt.sign(
+        { email: profile.email },
+        process.env.JWT_PRIVATE_KEY
+      ),
     });
 
+    user = await user.save();
     // Save user and return
-    return await user.save();
+    return user;
   } catch (ex) {
-    res.status(500).send(`Internal Server Error: ${ex}`);
+    return `Internal Server Error: ${ex}`;
   }
 };
 
@@ -241,7 +243,11 @@ const deleteUserById = async (req, res) => {
     const { username, project } = user;
 
     if (project) {
-      const myProj = await Project.findByIdAndUpdate(project, { $pull: { members: id } }, {new: true});
+      const myProj = await Project.findByIdAndUpdate(
+        project,
+        { $pull: { members: id } },
+        { new: true }
+      );
       if (myProj.members.length === 0) {
         await Project.findByIdAndDelete(myProj._id);
       }
@@ -421,7 +427,7 @@ const sendPasswordResetNodemailer = (name, email, passwordResetToken) => {
       subject: "Capitalise.space - Reset your password",
       html: `<h2>Hey, ${name}!</h2>
       <p>Please reset your password by clicking on the following link:</p>
-      <a href=http://localhost:8080/changePassword?passwordResetToken=${passwordResetToken}>Click here to reset your password</a>
+      <a href=https://www.capitalise.space/changePassword?passwordResetToken=${passwordResetToken}>Click here to reset your password</a>
       <p>Note that this confirmation link will expire in 24 hours.</p>
       </div>`,
     })
