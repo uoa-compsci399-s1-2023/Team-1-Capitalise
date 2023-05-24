@@ -1,5 +1,12 @@
 import React from "react";
-import { Button, SvgIcon, Box, useMediaQuery, useTheme, Stack } from "@mui/material";
+import {
+  Button,
+  SvgIcon,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Stack,
+} from "@mui/material";
 import LaunchOutlinedIcon from "@mui/icons-material/LaunchOutlined";
 import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
 import { TProject } from "../../model/TProject";
@@ -53,7 +60,6 @@ function LinkBtn({
   textColor,
   variant,
 }: LinkBtnProps) {
-
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -66,14 +72,12 @@ function LinkBtn({
       {...{ color }}
       startIcon={!isSmall && startIcon}
       onClick={handleClick}
-      endIcon={
-        !isSmall && <LaunchOutlinedIcon />
-      }
+      endIcon={!isSmall && <LaunchOutlinedIcon />}
       variant={variant}
       sx={{
         fontWeight: 400,
         minWidth: "28px",
-        width: { xs: 'fit-content', md: 180 },
+        width: { xs: "fit-content", md: 180 },
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -81,10 +85,7 @@ function LinkBtn({
         color: textColor, // Text color
       }}
     >
-      <Stack
-        width={'100%'}
-        alignContent={'center'}
-      >
+      <Stack width={"100%"} alignContent={"center"}>
         {!isSmall && text}
         {isSmall && startIcon}
       </Stack>
@@ -131,7 +132,7 @@ export default function ExternalLinkBtn({ type, value }: TProject["links"][0]) {
       buttonProps = {
         startIcon: <AspectRatioIcon />,
         color: "neutral",
-        text: "Demo",
+        text: "Website",
         textColor: "#",
         link: value,
         variant: "outlined",
