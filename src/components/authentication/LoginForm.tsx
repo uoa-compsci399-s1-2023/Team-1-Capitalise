@@ -18,7 +18,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LoginBg from "../../assets/loginbg.svg";
 import Logo from "../../assets/Logo.svg";
 import { useAuth } from "../../customHooks/useAuth";
-import { Divider } from "@mui/material";
+import { Alert, AlertTitle, Divider } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 
 import { useNavigate } from "react-router-dom";
@@ -49,11 +49,19 @@ function SignInSide() {
   // Validation Checks - are the given inputs appropriate?
 
   useEffect(() => {
-    if (auth.error === "Invalid username or password.") {
-      setEmailErrorText("Incorrect Username/Email or Password");
+    if (auth.error) {
+      setEmailErrorText(auth.error);
       setPasswordErrorText(" ");
+      auth.error = ''
+      auth.success = ''
+    } else if (auth.success) {
+      setEmailErrorText('');
+      setPasswordErrorText("");
+      auth.error = ''
+      auth.success = ''
     }
-  }, [auth.error]);
+  
+  }, [auth.error, auth.success]);
 
   const validateEmail = () => {
     if (!email) {
@@ -156,7 +164,6 @@ function SignInSide() {
               autoFocus
               value={email}
               error={!!emailErrorText}
-              helperText={emailErrorText}
               onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
@@ -170,7 +177,6 @@ function SignInSide() {
               autoComplete="off"
               value={password}
               error={!!passwordErrorText}
-              helperText={passwordErrorText}
               onChange={(e) => setPassword(e.target.value)}
             />
 
@@ -182,6 +188,14 @@ function SignInSide() {
             >
               Sign In
             </Button>
+            {emailErrorText && (
+            <Alert severity="error">
+
+              <strong>
+                {emailErrorText}
+              </strong>
+            </Alert>)}
+
 
             <Divider></Divider>
             <Button
@@ -191,7 +205,6 @@ function SignInSide() {
               startIcon={<GoogleIcon />}
               sx={{ mt: 3, mb: 2 }}
             >
-              {" "}
               Sign In with Google
             </Button>
 
