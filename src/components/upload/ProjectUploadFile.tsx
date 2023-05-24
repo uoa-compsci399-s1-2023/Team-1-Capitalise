@@ -2,7 +2,7 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-
+import HelpIcon from '@mui/icons-material/Help';
 import {
   Box,
   Button,
@@ -11,6 +11,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
+  Tooltip,
   styled,
 } from "@mui/material";
 import validator from "validator";
@@ -238,6 +240,11 @@ export default function ProjectUploadFileForm({
           <Grid item>
             <Typography variant="subtitle2" gutterBottom>
               Upload a Project Banner
+              <Tooltip title="Optional and Modifiable - features on top of your project page.">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -258,7 +265,8 @@ export default function ProjectUploadFileForm({
                   : ""
               }
               fullWidth
-              helperText="*This features at the top of your project page!"
+              helperText={<>This features at the top of your project page!
+              </>}
             />
           </Grid>
           <Grid item xs={12}>
@@ -274,6 +282,11 @@ export default function ProjectUploadFileForm({
           <Grid item>
             <Typography variant="subtitle2">
               Upload any Project images for your Gallery
+              <Tooltip title="Optional & Modifiable - provide an interactive gallery of project photos">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -288,7 +301,7 @@ export default function ProjectUploadFileForm({
             <FileInputField
               disabled
               error={!!galleryImageError}
-              helperText={galleryImageError ? galleryImageError : "Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"}
+              helperText={galleryImageError ? galleryImageError : <>Accepts .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff</>}
               value={
                 images.length
                   ? `The number of files uploaded: ${images.length}`
@@ -312,7 +325,13 @@ export default function ProjectUploadFileForm({
           <Grid item>
             <Typography variant="subtitle2">
               Upload a Project Card image
+              <Tooltip title="Optional & Modifiable - features on top of project card.">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
+            
           </Grid>
           <Grid item xs={12}>
             <input
@@ -332,7 +351,7 @@ export default function ProjectUploadFileForm({
                   : ""
               }
               fullWidth
-              helperText="Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"
+              helperText={<>Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff </>}
             />
           </Grid>
           <Grid item xs={12}>
@@ -347,6 +366,11 @@ export default function ProjectUploadFileForm({
           <Grid item xs={12} sx={{ marginTop: 5 }}>
             <Typography variant="subtitle2" gutterBottom>
               Project Links
+              <Tooltip title="Optional - provide links that helps visitors and employers learn more about your project">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
 
             {projectLinks.map((option: any, index: any) => (
