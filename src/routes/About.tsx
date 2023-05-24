@@ -96,10 +96,20 @@ const About = ({}) => {
       {!editChecked &&
         aboutData.map((section) => (
           <Stack gap="10px" key={section._id + key}>
-            <Typography variant="h1" fontSize={{ xs: "24pt", lg: "28pt" }}>
+            <Typography
+              variant="h1"
+              fontSize={{ xs: "24pt", lg: "28pt" }}
+              sx={{ wordBreak: "break-word" }}
+              whiteSpace="pre-line"
+            >
               {section.title}
             </Typography>
-            <Typography variant="body1" fontSize="14pt">
+            <Typography
+              variant="body1"
+              fontSize="14pt"
+              sx={{ wordBreak: "break-word" }}
+              whiteSpace="pre-line"
+            >
               {section.body}
             </Typography>
           </Stack>
