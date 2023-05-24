@@ -2,7 +2,7 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-
+import HelpIcon from '@mui/icons-material/Help';
 import {
   Box,
   Button,
@@ -11,6 +11,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
+  Tooltip,
   styled,
 } from "@mui/material";
 import validator from "validator";
@@ -34,28 +36,33 @@ export default function ProjectUploadFileForm({
       value: "gitHub",
       type: "github",
       label: "GitHub",
+      suffix: 'com',
     },
     {
       value: "codePen",
       type: "codepen",
       label: "CodePen",
+      suffix: "io",
     },
     {
       value: "notion",
       type: "notion",
       label: "Notion",
+      suffix: "so",
     },
     {
       value: "codesandbox",
       type: "codesandbox",
       label: "CodeSandbox",
+      suffix: "io",
     },
     {
       value: "kaggle",
       type: "kaggle",
       label: "Kaggle",
+      suffix: "com",
     },
-    { value: "deployedSite", type: "deployedSite", label: "Deployed Site" },
+    { value: "deployedSite", type: "deployedSite", label: "Deployed Site", suffix: "" },
   ];
   const [linkErrors, setLinkErrors] = useState<{ [key: string]: string }>({
     github: "",
@@ -75,9 +82,10 @@ export default function ProjectUploadFileForm({
       value: "",
       type: option.type,
       label: option.label,
+      suffix: option.suffix,
     }))
   );
-
+  console.log(projectLinks[0].suffix, 'hello')  
   let bannerR = useRef<File | undefined>();
   let thumbnailR = useRef<File | undefined>();
   let imagesR = useRef<File[]>([]);
@@ -139,8 +147,18 @@ export default function ProjectUploadFileForm({
 
     handleBack();
   };
+  const isUrlValid = (url: string, urlWebsite: string) => {
+    return (
+      !url.includes(" ") &&
+      (url.startsWith("https://www." + urlWebsite) ||
+        url.startsWith("https://" + urlWebsite) ||
+        url.startsWith("http://" + urlWebsite) ||
+        !url
+      ));
+  };
 
-  const validateLink = (linkType: string, linkValue: string) => {
+  const validateLink = (linkType: string, linkValue: string, linkSuffix: string) => {
+
     const errorMessages: { [key: string]: string } = {
       github: "Please make sure your link begins with https://github.com/...",
       codepen: "Please make sure your link begins with https://codepen.io/...",
@@ -148,21 +166,30 @@ export default function ProjectUploadFileForm({
       codesandbox:
         "Please make sure your link begins with https://codesandbox.io/...",
       kaggle: "Please make sure your link begins with https://kaggle.com/...",
-      deployedSite: "Please make sure your link is a website/URL.",
+      deployedSite: "Please make sure your link is a website/URL. Format: https://(sitename).(suffix)/",
     };
 
-    if (
-      linkType &&
-      linkValue &&
-      !validator.matches(linkValue, `https://${linkType}.com/`)
-    ) {
-      setLinkErrors((prevErrors) => ({
-        ...prevErrors,
-        [linkType]: errorMessages[linkType],
-      }));
-      return false;
+    if (linkType && linkValue)    
+    {
+  
+      if(linkType == "deployedSite") {
+        if(!isUrlValid(linkValue, "")) {
+          setLinkErrors((prevErrors) => ({
+            ...prevErrors,
+            [linkType]: errorMessages[linkType],
+          }));
+          return false;
+        }
+      } else if(!isUrlValid(linkValue, `${linkType}.${linkSuffix}/`)) {
+        setLinkErrors((prevErrors) => ({
+          ...prevErrors,
+          [linkType]: errorMessages[linkType],
+        }));
+        
+        return false;  
+      } 
+   
     }
-
     setLinkErrors((prevErrors) => ({
       ...prevErrors,
       [linkType]: "",
@@ -173,9 +200,13 @@ export default function ProjectUploadFileForm({
     event.preventDefault();
     // handle file upload logic here
     if (projectLinks.length > 0) {
-      const validations = projectLinks.map((option: any) =>
-        validateLink(option.type, option.value));
+      const validations = projectLinks.map((option: any) => 
+        validateLink(option.type, option.value, option.suffix));
+    
+
+      
       if (validations.every((isValid) => isValid)) {
+        console.log('yay')
         await projectFileToUpload(
           bannerR.current,
           imagesR.current,
@@ -209,6 +240,11 @@ export default function ProjectUploadFileForm({
           <Grid item>
             <Typography variant="subtitle2" gutterBottom>
               Upload a Project Banner
+              <Tooltip title="Optional and Modifiable - features on top of your project page.">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -229,7 +265,8 @@ export default function ProjectUploadFileForm({
                   : ""
               }
               fullWidth
-              helperText="*This features at the top of your project page!"
+              helperText={<>This features at the top of your project page!
+              </>}
             />
           </Grid>
           <Grid item xs={12}>
@@ -245,6 +282,11 @@ export default function ProjectUploadFileForm({
           <Grid item>
             <Typography variant="subtitle2">
               Upload any Project images for your Gallery
+              <Tooltip title="Optional & Modifiable - provide an interactive gallery of project photos">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -259,7 +301,7 @@ export default function ProjectUploadFileForm({
             <FileInputField
               disabled
               error={!!galleryImageError}
-              helperText={galleryImageError ? galleryImageError : "Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"}
+              helperText={galleryImageError ? galleryImageError : <>Accepts .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff</>}
               value={
                 images.length
                   ? `The number of files uploaded: ${images.length}`
@@ -283,7 +325,13 @@ export default function ProjectUploadFileForm({
           <Grid item>
             <Typography variant="subtitle2">
               Upload a Project Card image
+              <Tooltip title="Optional & Modifiable - features on top of project card.">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
+            
           </Grid>
           <Grid item xs={12}>
             <input
@@ -303,7 +351,7 @@ export default function ProjectUploadFileForm({
                   : ""
               }
               fullWidth
-              helperText="Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff"
+              helperText={<>Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff </>}
             />
           </Grid>
           <Grid item xs={12}>
@@ -318,6 +366,11 @@ export default function ProjectUploadFileForm({
           <Grid item xs={12} sx={{ marginTop: 5 }}>
             <Typography variant="subtitle2" gutterBottom>
               Project Links
+              <Tooltip title="Optional - provide links that helps visitors and employers learn more about your project">
+            <IconButton>
+              <HelpIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
             </Typography>
 
             {projectLinks.map((option: any, index: any) => (

@@ -1,11 +1,7 @@
 // Yathi - margin on top of projects box to clear fixed position header.
 // Also made min height of box 92vh so that it covers entire screen even if there are no projects to show.
 
-import {
-  useState,
-  useEffect,
-  useContext,
-} from "react";
+import { useState, useEffect, useContext } from "react";
 
 // Components
 import { Box, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
@@ -24,20 +20,9 @@ const MyPagination = () => {
   const [totalNumProjects, setTotalNumProjects] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const { currFilters, setFilters } = useContext(SearchContext);
-  // const [paginationSize, setPaginationSize] = useState<"small" | "medium">(
-  //   "medium"
-  // );
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  // Yathi - We don't need this. useMediaQuery will take care of this.
-  // useEffect(() => {
-  //   if (isMobile) {
-  //     setPaginationSize("small");
-  //   } else {
-  //     setPaginationSize("medium");
-  //   }
-  // }, [isMobile]);
+  const searchOverflow = useMediaQuery("(min-width:1062px)");
 
   // Fetch required number of projects based on given parameters
   useEffect(() => {
@@ -52,7 +37,7 @@ const MyPagination = () => {
   }, [currFilters]);
 
   const handlePageChange = (page: number) => {
-    setProjects([])
+    setProjects([]);
     setFilters({
       ...currFilters,
       ["currPage"]: page,
@@ -93,8 +78,10 @@ const MyPagination = () => {
           <Typography
             my={4}
             variant="h1"
+            whiteSpace={searchOverflow ? "nowrap" : "unset"}
             sx={{
               textAlign: { xs: "center", md: "left" },
+              wordBreak: "break-all",
             }}
           >
             {currFilters.keywords

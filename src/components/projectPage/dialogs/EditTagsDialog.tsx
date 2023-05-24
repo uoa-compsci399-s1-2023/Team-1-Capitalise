@@ -13,9 +13,10 @@ interface EditTagsDialog {
   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-interface AutocompleteOption {
+export interface AutocompleteOption {
   label: string;
   tag: TTag;
+  isNew?: boolean;
 }
 
 export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTagsDialog) {
@@ -24,7 +25,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
   const auth = useAuth();
   const theme = useTheme();
 
-  // Edit members states
+  // Edit tags states
   const [currTags, setCurrTags] = useState<TTag[]>([]);
   const [tagsToAdd, setTagsToAdd] = useState<TTag[]>([]);
   const [tagsToRemove, setTagsToRemove] = useState<TTag[]>([]);
@@ -33,8 +34,9 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
   // Combo box states
   const [options, setOptions] = useState<AutocompleteOption[]>([])
   const [selectedOption, setSelectedOption] = useState<AutocompleteOption | null>(null);
-  const [inputValue, setInputValue] = useState('');
   const [isResultsLoading, setIsResultsLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+
 
   // Resets all member states everytime dialog opens
   useEffect(() => {
@@ -49,29 +51,12 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
 
   // Adds selected tag to current tags list
   useEffect(() => {
-    if (selectedOption) {
-      // Set the currently displayed tags
-      currTags.push(selectedOption.tag)
-      setCurrTags(currTags);
-
-      const tag = selectedOption.tag;
-      // if name is same as Id then its a new tag 
-      if (tag._id === tag.name) {
-        tagsToCreate.push(tag)
-        setTagsToCreate(tagsToCreate);
-      } else {
-        tagsToAdd.push(tag);
-        setTagsToAdd(tagsToAdd);
-      }
-      setSelectedOption(null);
-      setInputValue('')
-    }
   }, [selectedOption])
 
   // Fetches tags based on keyword
   // ...doesn't do search if keyword is empty string
   useEffect(() => {
-    if (inputValue !== '') {
+    if (inputValue !== '' && !selectedOption) {
       setIsResultsLoading(true)
       searchTags(inputValue, 0)
         .then((resp) => {
@@ -93,6 +78,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
       setOptions([]);
     }
   }, [inputValue])
+
 
 
   const handleClose = () => {
@@ -162,7 +148,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
       //     console.log(await resp.text());
       //   }
       // }
-      
+
       setProject(latestProject)
       setIsDialogOpen(false);
       setIsLoading(false);
@@ -210,6 +196,26 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
     }
   }
 
+  const handleTagSelected = (selectedOption: AutocompleteOption | null) => {
+    if (selectedOption && !currTags.includes(selectedOption.tag)) {
+      // Set the currently displayed tags
+      currTags.push(selectedOption.tag)
+      setCurrTags(currTags);
+
+      const tag = selectedOption.tag;
+      // if name is same has Id then its a new tag 
+      if (selectedOption.isNew) {
+        tagsToCreate.push(tag)
+        setTagsToCreate(tagsToCreate);
+      } else {
+        tagsToAdd.push(tag);
+        setTagsToAdd(tagsToAdd);
+      }
+      // setSelectedOption(null);
+      setInputValue('')
+    }
+  }
+
   return (
     <Dialog
       open={isDialogOpen}
@@ -224,7 +230,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
       <DialogTitle>Edit Tags</DialogTitle>
 
       {isLoading ?
-        <LoadingDialog isOpen={isLoading}/>
+        <LoadingDialog isOpen={isLoading} />
         :
         <>
           <DialogContent>
@@ -259,18 +265,17 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                 noOptionsText={'No results'}
                 // Don't show results already added
                 filterOptions={(x, params) => {
-                  const filtered: AutocompleteOption[] = x.filter(o => !currTags.some(e => e._id === o.tag._id));
-
                   const { inputValue } = params;
                   // Suggest the creation of a new value
-                  const isExisting = options.some((option) => inputValue === option.tag.name);
+                  const isExisting = options.some((option) => inputValue.trim().toLowerCase() === option.tag.name.toLowerCase());
                   if (inputValue !== '' && !isExisting) {
-                    filtered.push({
-                      label: `Add new tag "${inputValue}"`,
-                      tag: { _id: inputValue, name: inputValue },
+                    x.push({
+                      label: `Add new tag "${inputValue.trim()}"`,
+                      tag: { _id: inputValue.trim(), name: inputValue.trim() },
+                      isNew: true
                     });
                   }
-
+                  const filtered: AutocompleteOption[] = x.filter(o => !currTags.some(e => e._id === o.tag._id));
                   return filtered;
                 }}
                 loading={isResultsLoading}
@@ -278,7 +283,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                 inputValue={inputValue}
                 onInputChange={(evt, value) => setInputValue(value)}
                 value={selectedOption}
-                onChange={(evt, option) => setSelectedOption(option)}
+                onChange={(evt, option) => handleTagSelected(option)}
                 // No dropdown if theres no value entered.
                 componentsProps={{
                   paper: {
@@ -299,7 +304,6 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                       style={{
                         fontWeight: option.tag._id === option.tag.name ? 450 : 400
                       }}
-
                     >
                       {option.label}
                     </li>
@@ -323,6 +327,7 @@ export default function EditTagsDialog({ isDialogOpen, setIsDialogOpen }: EditTa
                   />
                 )}
               />
+
 
             </Stack>
           </DialogContent>

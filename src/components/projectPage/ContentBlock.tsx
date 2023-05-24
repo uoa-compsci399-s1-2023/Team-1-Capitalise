@@ -1,4 +1,4 @@
-import React, { useState, FC, useContext, useRef, ReactNode, useEffect } from 'react'
+import React, { useState, FC, useContext, useRef, ReactNode, useEffect, ForwardedRef, useCallback } from 'react'
 import { useMediaQuery, Box, Stack, Typography, useTheme, Button, Link } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import EditIcon from '@mui/icons-material/Edit';
@@ -37,7 +37,7 @@ const AddButton = styled(Button)({
   flex: '1',
 })
 
-export default function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: ContentBlockProps) {
+function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: ContentBlockProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const theme = useTheme();
   const [isHovering, setIsHovering] = useState(false);
@@ -47,6 +47,10 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
   const [isLoading, setIsLoading] = useState(false);
   const contentStackRef = useRef<HTMLDivElement>(null);
   const isSmall = useMediaQuery(theme.breakpoints.down("md"));
+
+  // This is for responsive resizing of galleries
+  const [blockWidth, setBlockWidth] = useState(800);
+
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (checkIsEdit()) {
@@ -112,6 +116,23 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     return true
   }
 
+  // Tracks content block width
+  const resizeObserver = new ResizeObserver((event) => {
+    const width = event[0].contentBoxSize[0].inlineSize;
+    setBlockWidth(width);
+  });
+
+  const blockRef = useCallback((node: HTMLDivElement) => {
+    if (node) {
+      resizeObserver.observe(node);
+    }
+  }, [])
+
+  useEffect(() => {
+    // Stop tracking width on unmount
+    return () => resizeObserver.disconnect();
+  }, [])
+
   let Content: ReactNode = <></>;
   let Heading: ReactNode = <></>;
   let Dialog: ReactNode = <></>;
@@ -175,9 +196,13 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
           <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty gallery block&gt;</Typography>
 
       } else if (value.length === 1) {
-        Content = <Image url={value[0]} />
+        Content = <Image 
+        parentWidth={blockWidth} 
+        url={value[0]} />
       } else {
-        Content = <MemoizedImageCarousel urls={value} />
+        Content = <MemoizedImageCarousel 
+        parentWidth={blockWidth} urls={value} 
+        />
       }
       Dialog =
         <GalleryBlockDialog
@@ -191,7 +216,7 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
       break;
     case 'video':
       Content = value.length > 0 ?
-        <VideoPlayer url={value[0]} />
+        <VideoPlayer url={value[0]} parentWidth={blockWidth} />
         :
         <Typography textAlign={'center'} color={'text.secondary'} variant='body1'>&lt;Empty video block&gt;</Typography>
 
@@ -259,15 +284,19 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
         <Stack>
           {/* Row stack */}
           <Stack flexDirection={'row'}
+            // width={'100%'}
             sx={{
               padding: {
-                xs: '40px 20px',
+                xs: '20px 20px',
                 md: '40px 0 40px 40px'
               }
             }}
           >
             {/* Content and heading */}
-            <Stack width={'100%'}>
+            <Stack 
+              ref={blockRef} 
+              width={'100%'}
+            >
               {Heading}
               {Content}
             </Stack>
@@ -328,3 +357,5 @@ export default function ContentBlock({ type, value, subHeading, tabIndex, blockI
     </>
   )
 }
+
+export default ContentBlock;

@@ -15,8 +15,6 @@ import DefaultHeroBanner from "../../assets/DefaultHeroBanner.svg";
 import DefaultMobileHeroBanner from "../../assets/DefaultMobileHeroBanner.svg";
 
 const Hero = () => {
-  //delete this in final
-  const [loggedInAdmin, setLoggedInAdmin] = useState(0);
   const [heroBanners, setHeroBanners] = useState<string[]>([]);
   const [mobileHeroBanners, setMobileHeroBanners] = useState<string[]>([]);
   const [isHeroLoading, setHeroIsLoading] = useState(true);
@@ -73,11 +71,6 @@ const Hero = () => {
             setHasProject(true);
           }
         }
-        //delete in final
-        if (auth.user.name === "SuperSecretAnimations") {
-          setLoggedInAdmin(1000);
-        }
-        //delete in final end
       } else {
         setIsStudent(false);
         setHasProject(false);
@@ -136,7 +129,7 @@ const Hero = () => {
       )}
       {!isMobileHeroLoading && !isHeroLoading && (
         <Box>
-          <Slide in={true} timeout={loggedInAdmin}>
+          <Slide in={true} timeout={1000}>
             <Box
               width={{ xs: "100%", sm: "85%", md: "53%" }}
               position="absolute"
@@ -176,7 +169,10 @@ const Hero = () => {
                     </Box>
                     <Box paddingTop="25px">
                       <Link to="../projects">
-                        <Button variant="contained" sx={{backgroundColor: '#2979FF'}}>
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "#2979FF" }}
+                        >
                           {"Explore Projects"}
                         </Button>
                       </Link>

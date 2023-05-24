@@ -31,7 +31,7 @@ import {
   AdminPanelSettings,
 } from "@mui/icons-material";
 import { useAuth } from "../customHooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //Navigation Tabs
 const pages = ["About", "Projects"];
@@ -82,7 +82,9 @@ function ResponsiveAppBar() {
   //Functionality for opening/closing sidebar
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  
 
+  
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -158,7 +160,7 @@ function ResponsiveAppBar() {
             <SearchBar />
             {/* Check if User is logged in */}
             {uCheck &&
-              auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
+              (auth.user?.userType === "graduate" || auth.user?.userType === "admin") && [
                 <Button
                   sx={{ padding: "0 25px" }}
                   key="upload"
@@ -351,7 +353,7 @@ function ResponsiveAppBar() {
               )}
 
               {uCheck &&
-                auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
+                (auth.user?.userType === "graduate" || auth.user?.userType === "admin") && [
                   <MenuItem
                     disabled={auth.user?.project && !(auth.user?.userType == 'admin') ? true : false}
                     key="upload"
