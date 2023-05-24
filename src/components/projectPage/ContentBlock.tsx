@@ -358,4 +358,4 @@ function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: Content
   )
 }
 
-export default React.forwardRef(ContentBlock);
+export default ContentBlock;
