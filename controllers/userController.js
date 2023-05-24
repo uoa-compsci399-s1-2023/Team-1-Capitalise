@@ -172,6 +172,7 @@ const postGoogleUser = async (profile) => {
       profilePicture: profile.picture.substring(0, profile.picture.length - 6),
       likedProjects: [],
       myComments: [],
+      status: "Active",
       userType: myUserType,
       isGoogleCreated: true,
     });
