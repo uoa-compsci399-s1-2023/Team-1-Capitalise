@@ -110,6 +110,10 @@ const postUser = async (req, res) => {
 
     const password = await bcrypt.hash(req.body.password, 10);
 
+    if (!req.body.status) {
+      req.body.status = "Pending"
+    }
+
     user = new User({
       name: req.body.name,
       email: req.body.email,
@@ -122,6 +126,7 @@ const postUser = async (req, res) => {
       likedProjects: [],
       myComments: [],
       userType: myUserType,
+      status: req.body.status,
       isGoogleCreated: false,
       displayEmail: req.body.displayEmail,
       skills: req.body.skills,

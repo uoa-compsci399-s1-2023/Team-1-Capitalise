@@ -126,6 +126,7 @@ function validateUser(User) {
     likedProjects: Joi.array(),
     myComments: Joi.array(),
     isGoogleCreated: Joi.boolean(),
+    status: Joi.string().valid("Active", "Pending"),
     links: Joi.array().items(
       Joi.object({
         type: Joi.string()

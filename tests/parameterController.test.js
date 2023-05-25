@@ -8,6 +8,16 @@ const dotenv = require("dotenv").config();
 
 const deleteObjects = [];
 
+const adminSignin = {
+  username: process.env.USERADMIN,
+  password: process.env.USERADMINPASSWORD,
+};
+
+const getToken = async (signIn) => {
+  const token = await request(app).post("/api/auth").send(signIn);
+  return token.text;
+};
+
 afterAll(async () => {
   await Promise.all(deleteObjects);
 });
@@ -68,9 +78,10 @@ describe("FETCH all parameters", () => {
 
 describe("POST categories", () => {
   it("Sends a 201 response if a category is created", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "Robotics",
         parameterType: "category",
@@ -86,9 +97,10 @@ describe("POST categories", () => {
       });
   });
   it("Capitalises all words in the value parameter", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "cloud computing",
         parameterType: "category",
@@ -107,9 +119,10 @@ describe("POST categories", () => {
 
 describe("POST semesters", () => {
   it("Sends a 201 response if a semester is created", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "S2 2098",
         parameterType: "semester",
@@ -125,9 +138,10 @@ describe("POST semesters", () => {
       });
   });
   it("Capitalises the S in Semester of the value of the semester", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "s1 2099",
         parameterType: "semester",
@@ -143,9 +157,10 @@ describe("POST semesters", () => {
       });
   });
   it("Prevents creating semesters of any format other than SX 20YY", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "Semester 2 2021",
         parameterType: "semester",
@@ -162,9 +177,10 @@ describe("POST semesters", () => {
 
 describe("POST awards", () => {
   it("Sends a 201 response if an award is created", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "Deka Award",
         parameterType: "award",
@@ -180,9 +196,10 @@ describe("POST awards", () => {
       });
   });
   it("Capitalises all words in the value parameter", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "aWS award",
         parameterType: "award",
@@ -201,11 +218,12 @@ describe("POST awards", () => {
 
 describe("DELETE parameters", () => {
   it("Sends a 200 response if a parameter is succesfully deleted", async () => {
+    const xToken = await getToken(adminSignin);
     let awardId = "";
     let awardValue = "";
     await request(app)
       .post("/api/parameters")
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .send({
         value: "Deka Award 2",
         parameterType: "award",
@@ -220,7 +238,7 @@ describe("DELETE parameters", () => {
       });
     await request(app)
       .delete(`/api/parameters/${awardId}`)
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .set("x-auth-token", xToken)
       .expect(200)
       .then(async (response) => {
         // Check the response
@@ -228,9 +246,10 @@ describe("DELETE parameters", () => {
       });
   });
   it("Sends a 400 response if an admin attempts to delete the category Miscellaneous", async () => {
+    const xToken = await getToken(adminSignin);
     await request(app)
-      .delete(`/api/parameters/645f15c6709ff2247f0d3921`)
-      .set("x-auth-token", process.env.ANDREWTOKEN)
+      .delete(`/api/parameters/6469fb6825419de4ff3e505b`)
+      .set("x-auth-token", xToken)
       .expect(400)
       .then((response) => {
         expect(response.body.fail).toBe(
