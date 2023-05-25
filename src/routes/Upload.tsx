@@ -259,9 +259,7 @@ export default function Upload() {
       }
     }).then(() => {
       if(projectID.current) { handleNext();}
-    })
-   
-    
+    }).finally(() => auth.getLatestUser())
     
   };
 

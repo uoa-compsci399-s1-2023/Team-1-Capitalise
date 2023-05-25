@@ -41,7 +41,6 @@ const UserProfile = () => {
       opacity: "50`%",
     },
   });
-
   const userTabs = [
     {
       label: "Overview",
@@ -52,41 +51,49 @@ const UserProfile = () => {
             <Typography variant="h6">Bio</Typography>
             {typeof user != "undefined" && (
               <CustomScroll
-                minHeight="50px"
+                minHeight="75px"
                 maxHeight={{ xs: "200px", md: "220px", xl: "300px" }}
                 overflow="scroll"
               >
+                {!user.bio && (
+                  <Typography variant="body1" color="grey">
+                    {"It's empty in here..."}
+                  </Typography>
+                )}
                 <Typography
                   sx={{ wordBreak: "break-word" }}
                   whiteSpace="pre-line"
                 >
-                  {typeof user.bio != "undefined" ? user.bio : ""}
+                  {user.bio}
                 </Typography>
               </CustomScroll>
             )}
           </Box>
-          <Divider />
-          {typeof project != "undefined" && (
-            <Box padding="10px 24px 24px 24px">
-              <Typography variant="h6" paddingBottom="10px">
-                Project
-              </Typography>
-              <ProjectCard
-                title={project.name}
-                semester={project.semester.value}
-                image={
-                  typeof project.thumbnail != "undefined"
-                    ? project.thumbnail
-                    : ""
-                }
-                teamname={project.teamname ? project.teamname : "teamname"}
-                category={project.category.value}
-                likes={project.likes}
-                badges={
-                  project.badges ? project.badges.value : "" // Yathi - Updated to fix null error
-                }
-                projectID={project._id}
-              ></ProjectCard>
+
+          {project && (
+            <Box>
+              <Divider />
+              <Box padding="10px 24px 24px 24px">
+                <Typography variant="h6" paddingBottom="10px">
+                  {"Project"}
+                </Typography>
+                <ProjectCard
+                  title={project.name}
+                  semester={project.semester.value}
+                  image={
+                    typeof project.thumbnail != "undefined"
+                      ? project.thumbnail
+                      : ""
+                  }
+                  teamname={project.teamname ? project.teamname : "teamname"}
+                  category={project.category.value}
+                  likes={project.likes}
+                  badges={
+                    project.badges ? project.badges.value : "" // Yathi - Updated to fix null error
+                  }
+                  projectID={project._id}
+                ></ProjectCard>
+              </Box>
             </Box>
           )}
         </Stack>
@@ -98,6 +105,11 @@ const UserProfile = () => {
       Component: (
         <Box height="100%" padding="5px 24px 10px 24px">
           <Typography variant="h6">Likes</Typography>
+          {likedProjects.length === 0 && (
+            <Typography variant="body1" color="grey">
+              {"It's empty in here..."}
+            </Typography>
+          )}
           <ProjectsGrid projects={likedProjects} justifyContent="start" />
         </Box>
       ),
@@ -108,6 +120,11 @@ const UserProfile = () => {
       Component: (
         <Box height="100%" padding="5px 24px 10px 24px">
           <Typography variant="h6">Comments</Typography>
+          {comments.length === 0 && (
+            <Typography variant="body1" color="grey">
+              {"It's empty in here..."}
+            </Typography>
+          )}
           {comments.map((comment) => (
             <MyComment
               key={comment._id}
@@ -210,12 +227,12 @@ const UserProfile = () => {
         display="flex"
         direction="column"
         alignItems="start"
-        width={{ xs: "100%", md: "305px" }}
+        width={{ xs: "100%", md: "350px" }}
         padding={{ xs: "0px 24px", md: "24px" }}
       >
         <Box display={{ xs: "flex", md: "block" }} width="100%">
           <Box
-            width={{ xs: "25%", md: "90%" }}
+            width={{ xs: "25%", md: "100%" }}
             component="img"
             src={user.profilePicture}
             alt="user profile"
@@ -223,7 +240,8 @@ const UserProfile = () => {
             borderRadius="50%"
             alignSelf="center"
             sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-          ></Box>
+            paddingBottom="10px"
+          />
           <Box paddingLeft={{ xs: "24px", md: "0px" }}>
             <Typography>
               {user.userType.charAt(0).toUpperCase() +
@@ -261,7 +279,7 @@ const UserProfile = () => {
                   variant="outlined"
                   sx={{ width: "180px" }}
                 >
-                  Edit Profile
+                  {"Edit Profile"}
                 </Button>
                 <EditUser
                   open={open}

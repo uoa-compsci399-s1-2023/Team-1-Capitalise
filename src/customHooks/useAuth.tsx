@@ -97,10 +97,13 @@ function useProvideAuth(): TAuthReturnType {
       .then(resp => {
         if (!resp.ok) {
           // Set login error
-          resp.text().then(err => {setError(err); setIsLoading(false)} );
+          
+          resp.text().then(err => {setError(err); setIsLoading(false);} );
+       
         } else {
           // Otherwise save token and signin.
           resp.text().then(token => {
+            setSuccess('Successful.')
             localStorage.setItem('jwtToken', token);
             getLatestUser();
           })

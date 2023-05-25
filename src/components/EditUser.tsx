@@ -79,7 +79,9 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
 
   const handleDelete = () => {
     if (auth.user) {
-      if (auth.user.userType !== "admin") {
+      if (auth.user.userType == "admin" && auth.user._id === user._id) {
+        auth.signout();
+      } else if (auth.user.userType !== "admin") {
         auth.signout();
       }
     }
@@ -190,7 +192,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
                   color="error"
                   onClick={handleDeleteProfilePicture}
                 >
-                  Delete Profile Picuture
+                  {"Delete Profile Picuture"}
                 </Button>
               </Stack>
               <TextField
@@ -266,7 +268,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }
             inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setGithub(event.target.value);
+              setGithub(event.target.value.toLowerCase());
             }}
           />
           <TextField
@@ -284,7 +286,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }
             inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setLinkedin(event.target.value);
+              setLinkedin(event.target.value.toLowerCase());
             }}
           />
           <TextField
@@ -300,7 +302,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             }
             inputProps={{ maxLength: linkCharacterLimit }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setDeployedSite(event.target.value);
+              setDeployedSite(event.target.value.toLowerCase());
             }}
           />
         </DialogContent>
@@ -313,7 +315,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
               color="error"
               onClick={handleDeleteOpen}
             >
-              Delete
+              {"Delete"}
             </Button>
           </Box>
           <Box paddingRight="16px">
@@ -329,8 +331,9 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
         <DialogTitle>{"Are you sure?"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Deleting your profile is irreversible and all your data will be
-            lost, are you sure?
+            {
+              "Deleting your profile is irreversible and all your data will be lost, are you sure?"
+            }
           </DialogContentText>
         </DialogContent>
         <DialogActions

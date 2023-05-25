@@ -36,11 +36,14 @@ export default function SignUp() {
   const delay = (ms: number | undefined) =>
     new Promise((res) => setTimeout(res, ms));
   useEffect(() => {
+    if (auth.error) {
+      setEmailErrorText(auth.error);
+      auth.error = "";
+  
+    } else
     if (auth.success) {
       setSuccess(auth.success);
       auth.success = "";
-    } else if (auth.error) {
-      auth.error = "";
     }
   }, [auth.error, auth.success]);
 
@@ -119,16 +122,18 @@ export default function SignUp() {
           alignItems: "center",
         }}
       >
-        <Box
-          component="img"
-          src={Logo}
-          alt="logo"
-          sx={{
-            width: "300px",
-            flexGrow: 1,
-            display: { xs: "flex", md: "flex" },
-          }}
-        ></Box>
+        <Link href='/'>
+          <Box
+            component="img"
+            src={Logo}
+            alt="logo"
+            sx={{
+              width: "300px",
+              flexGrow: 1,
+              display: { xs: "flex", md: "flex" },
+            }}
+          ></Box>
+        </Link>
         <Typography sx={{ fontWeight: "700" }} component="h1" variant="h6">
           Register
         </Typography>
@@ -159,8 +164,7 @@ export default function SignUp() {
                 name="email"
                 autoComplete="off"
                 value={email}
-                error={!!emailErrorText}
-                helperText={emailErrorText}
+                error={!!emailErrorText}              
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Grid>
@@ -204,13 +208,23 @@ export default function SignUp() {
           {success && (
             <Alert severity="success">
               <AlertTitle>Successfully signed up!</AlertTitle>
-              <strong>
+              
                 Please check your email for a confirmation email to activate
-                your account.{" "}
-              </strong>
+                your account.
+              
             </Alert>
           )}
+          {emailErrorText && (
+            <Alert severity="error">
+              <AlertTitle>Something went wrong!</AlertTitle>
+              
+                {emailErrorText}
+              
+            </Alert>
+          
 
+          )}
+      
           <Divider></Divider>
           <Button
             href={`${API_URL}/api/auth/google`}
