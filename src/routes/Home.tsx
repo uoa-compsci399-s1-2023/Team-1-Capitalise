@@ -81,7 +81,13 @@ function Home() {
           <Carousel
             items={awardShowcase}
             backgroundColor={"white"}
-            category={"S1 2023 Capstone Winners"}
+            category={
+              awardShowcase[0]
+                ? `Semester ${awardShowcase[0].semester.value.substring(
+                    1
+                  )} Capstone Winners`
+                : ""
+            }
             display={{ xs: "flex", md: "none" }}
           />
         </Box>
