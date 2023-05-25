@@ -227,12 +227,12 @@ const UserProfile = () => {
         display="flex"
         direction="column"
         alignItems="start"
-        width={{ xs: "100%", md: "305px" }}
+        width={{ xs: "100%", md: "350px" }}
         padding={{ xs: "0px 24px", md: "24px" }}
       >
         <Box display={{ xs: "flex", md: "block" }} width="100%">
           <Box
-            width={{ xs: "25%", md: "90%" }}
+            width={{ xs: "25%", md: "100%" }}
             component="img"
             src={user.profilePicture}
             alt="user profile"
@@ -240,7 +240,8 @@ const UserProfile = () => {
             borderRadius="50%"
             alignSelf="center"
             sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-          ></Box>
+            paddingBottom="10px"
+          />
           <Box paddingLeft={{ xs: "24px", md: "0px" }}>
             <Typography>
               {user.userType.charAt(0).toUpperCase() +
