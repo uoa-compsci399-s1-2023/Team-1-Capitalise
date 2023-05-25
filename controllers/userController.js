@@ -111,7 +111,7 @@ const postUser = async (req, res) => {
     const password = await bcrypt.hash(req.body.password, 10);
 
     if (!req.body.status) {
-      req.body.status = "Active"
+      req.body.status = "Pending"
     }
 
     user = new User({
@@ -147,7 +147,7 @@ const postUser = async (req, res) => {
 
     user = await user.save();
     res.status(201).send(user);
-    //sendConfirmationEmail(user.name, user.email, user.confirmationCode);
+    sendConfirmationEmail(user.name, user.email, user.confirmationCode);
   } catch (ex) {
     res.status(500).send(`Internal Server Error: ${ex}`);
   }
