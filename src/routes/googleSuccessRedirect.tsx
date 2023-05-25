@@ -39,7 +39,7 @@ export default function GoogleSuccessRedirect() {
         </Grid>
         <Grid item >
           {/* Yathi - Need to change colour to match our theme */}
-          <Typography fontWeight={500} color={"#22d55f"} sx={{ mt: 6 }}>Successfully linked with Google! Redirecting back to Homepage...</Typography>
+          <Typography fontWeight={500} color={color} sx={{ mt: 6 }}>Successfully activated your new account. Redirecting back to homepage...</Typography>
         </Grid>
       </Grid>
     </div>
