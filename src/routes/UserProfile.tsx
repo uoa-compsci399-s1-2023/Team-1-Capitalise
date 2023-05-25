@@ -240,9 +240,11 @@ const UserProfile = () => {
             borderRadius="50%"
             alignSelf="center"
             sx={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-            paddingBottom="10px"
           />
-          <Box paddingLeft={{ xs: "24px", md: "0px" }}>
+          <Box
+            paddingLeft={{ xs: "24px", md: "0px" }}
+            paddingTop={{ xs: "0px", md: "10px" }}
+          >
             <Typography>
               {user.userType.charAt(0).toUpperCase() +
                 user.userType.slice(1).toLowerCase()}
