@@ -44,6 +44,8 @@ import { getHeroBanners, getMobileHeroBanners } from "../../api/getHeroBanners";
 import DashboardHeroBanners from "./DashboardHeroBanners";
 import DashboardMobileHeroBanners from "./DashboardMobileHeroBanners";
 
+import validator from "validator";
+
 const Dashboard = () => {
   const auth = useAuth();
 
@@ -54,14 +56,19 @@ const Dashboard = () => {
 
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [newCategory, setNewCategory] = useState("");
+  const [isValidCategory, setIsValidCategory] = useState(true);
+  const [categoryNameErrorText, setCategoryNameErrorText] = useState("");
 
   const [semesters, setSemesters] = useState<TSemester[]>([]);
   const [newSemester, setNewSemester] = useState("");
+  const [isValidSemester, setIsValidSemester] = useState(true);
 
   const [awards, setAwards] = useState<TAward[]>([]);
   const [newAward, setNewAward] = useState("");
   const [newAwardImage, setNewAwardImage] = useState<File | undefined>();
   const [awardImageString, setAwardImageString] = useState("");
+  const [isValidAward, setIsValidAward] = useState(true);
+  const [awardNameErrorText, setAwardNameErrorText] = useState("");
 
   // check if image has been added
   const [imageAdded, setImageAdded] = useState(false);
@@ -105,8 +112,44 @@ const Dashboard = () => {
     setNewCategory(event.target.value);
   };
 
+  const validateSemesterName = (semesterN: any): boolean => {
+    // semester name validation
+    const pattern = /^S[1-2]\s20\d{2}$/;
+    return pattern.test(semesterN);
+  };
+
   const handleNewSemester = (event: any) => {
     setNewSemester(event.target.value);
+  };
+
+  const validateCategoryName = (categoryN: any) => {
+    // category name validation
+    if (validator.isEmpty(categoryN)) {
+      setCategoryNameErrorText("Enter a category name.");
+    } else if (!validator.isAscii(categoryN)) {
+      setCategoryNameErrorText(
+        "Enter a category name with only ASCII characters."
+      );
+    } else if (categoryN.length < 5) {
+      setCategoryNameErrorText(
+        "Enter a category name longer than five characters."
+      );
+    } else if (categoryN.length > 100) {
+      setCategoryNameErrorText("Team name exceeded character limit.");
+    } else {
+      setCategoryNameErrorText("");
+      return true;
+    }
+  };
+
+  const validateAwardName = (awardN: any) => {
+    // award name validation
+    if (validator.isEmpty(awardN)) {
+      setAwardNameErrorText("Enter an award name");
+    } else {
+      setAwardNameErrorText("");
+      return true;
+    }
   };
 
   const handleNewAward = (event: any) => {
@@ -115,29 +158,33 @@ const Dashboard = () => {
 
   const handleAddCategory = async () => {
     // call the API to  add category
-    console.log(newCategory);
     const token = auth.getToken();
     if (token) {
-      const category = {} as TCategory;
+      if (validateCategoryName(newCategory)) {
+        setIsValidCategory(true);
+        const category = {} as TCategory;
 
-      console.log("Adding the category:", newCategory);
+        console.log("Adding the category:", newCategory);
 
-      addParameter(newCategory, "category", token)
-        // update the categories (need to create a TCategory object based on response using the interface)
-        .then((data) => {
-          category._id = data._id;
-          category.value = data.value;
-          category.parameterType = data.parameterType;
+        addParameter(newCategory, "category", token)
+          // update the categories (need to create a TCategory object based on response using the interface)
+          .then((data) => {
+            category._id = data._id;
+            category.value = data.value;
+            category.parameterType = data.parameterType;
 
-          setCategories([...categories, category]);
-        });
+            setCategories([...categories, category]);
+          });
+        // increment the category count to reflect addition
+        setCategoryCount(categoryCount + 1);
+
+        // reset input field
+        setNewCategory("");
+      } else {
+        console.log("invalid category name", newCategory);
+        setIsValidCategory(false);
+      }
     }
-
-    // increment the category count to reflect addition
-    setCategoryCount(categoryCount + 1);
-
-    // reset input field
-    setNewCategory("");
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
@@ -166,27 +213,33 @@ const Dashboard = () => {
 
   const handleAddSemester = async () => {
     // call the API to add semester
-    console.log(newSemester);
     const token = auth.getToken();
     if (token) {
-      const semester = {} as TSemester;
+      if (validateSemesterName(newSemester)) {
+        setIsValidSemester(true);
 
-      console.log("Adding the semester:", newSemester);
+        const semester = {} as TSemester;
 
-      addParameter(newSemester, "semester", token).then((data) => {
-        semester._id = data._id;
-        semester.value = data.value;
-        semester.parameterType = data.parameterType;
+        console.log("Adding the semester:", newSemester);
 
-        setSemesters([...semesters, semester]);
-      });
+        addParameter(newSemester, "semester", token).then((data) => {
+          semester._id = data._id;
+          semester.value = data.value;
+          semester.parameterType = data.parameterType;
+
+          setSemesters([...semesters, semester]);
+        });
+
+        // increment the semester count to reflect addition
+        setSemesterCount(semesterCount + 1);
+
+        // reset input field
+        setNewSemester("");
+      } else {
+        console.log("invalid semester name", newSemester);
+        setIsValidSemester(false);
+      }
     }
-
-    // increment the semester count to reflect addition
-    setSemesterCount(semesterCount + 1);
-
-    // reset input field
-    setNewSemester("");
   };
 
   const handleDeleteSemester = async (semesterId: string) => {
@@ -243,35 +296,39 @@ const Dashboard = () => {
 
   const handleAddAward = async () => {
     // call the API to  add award
-    console.log(newAward);
     const token = auth.getToken();
     if (token) {
-      const award = {} as TAward;
+      if (validateAwardName(newAward)) {
+        setIsValidAward(true);
+        const award = {} as TAward;
 
-      console.log("Adding the award:", newAward);
-      console.log("New award image:", awardImageString);
-      console.log("New gradient:", [colour1, colour2]);
-      const newGradient = [colour1, colour2];
+        console.log("Adding the award:", newAward);
+        console.log("New award image:", awardImageString);
+        console.log("New gradient:", [colour1, colour2]);
+        const newGradient = [colour1, colour2];
 
-      addAward(newAward, "award", token, awardImageString, newGradient)
-        // update the awards (need to create a TAward object based on response using the interface)
-        .then((data) => {
-          award._id = data._id;
-          award.value = data.value;
-          award.parameterType = data.parameterType;
-          award.image = data.image;
-          award.gradient = data.gradient;
+        addAward(newAward, "award", token, awardImageString, newGradient)
+          // update the awards (need to create a TAward object based on response using the interface)
+          .then((data) => {
+            award._id = data._id;
+            award.value = data.value;
+            award.parameterType = data.parameterType;
+            award.image = data.image;
+            award.gradient = data.gradient;
 
-          setAwards([...awards, award]);
-        });
+            setAwards([...awards, award]);
+          });
+        // increment the award count to reflect addition
+        setAwardCount(awardCount + 1);
+
+        // reset input field
+        setNewAward("");
+        setImageAdded(false);
+      } else {
+        console.log("invalid award name", newAward);
+        setIsValidAward(false);
+      }
     }
-
-    // increment the award count to reflect addition
-    setAwardCount(awardCount + 1);
-
-    // reset input field
-    setNewAward("");
-    setImageAdded(false);
   };
 
   const handleDeleteAward = async (awardId: string, awardImage: string) => {
@@ -441,6 +498,8 @@ const Dashboard = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                error={!!categoryNameErrorText}
+                helperText={categoryNameErrorText ? categoryNameErrorText : ""}
               />
               <Button
                 variant="contained"
@@ -550,6 +609,12 @@ const Dashboard = () => {
               variant="outlined"
               fullWidth
               margin="normal"
+              error={!isValidSemester}
+              helperText={
+                !isValidSemester
+                  ? "Please enter a valid semester."
+                  : "Semester name should be in form SX 20YY"
+              }
             />
             <Button
               variant="contained"
@@ -715,6 +780,8 @@ const Dashboard = () => {
               variant="outlined"
               fullWidth
               margin="normal"
+              error={!!awardNameErrorText}
+              helperText={awardNameErrorText ? awardNameErrorText : ""}
             />
           </Box>
 
