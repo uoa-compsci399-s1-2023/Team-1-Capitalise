@@ -45,6 +45,20 @@ async function deleteComments(commentId) {
   }
 }
 
+async function removeLikes(projectId) {
+  try {
+    await Project.findByIdAndUpdate(
+      projectId,
+      {
+        $inc: { likes: -1 },
+      },
+      { new: true }
+    );
+  } catch (ex) {
+    res.status(500).send(`Internal Server Error: ${ex}`);
+  }
+}
+
 // Gets all users and sorts by name
 const getAllUsers = async (req, res) => {
   // Added populate method to dynamically fetch information of project document!
@@ -111,7 +125,7 @@ const postUser = async (req, res) => {
     const password = await bcrypt.hash(req.body.password, 10);
 
     if (!req.body.status) {
-      req.body.status = "Pending"
+      req.body.status = "Pending";
     }
 
     user = new User({
@@ -260,6 +274,10 @@ const deleteUserById = async (req, res) => {
 
     if (user.myComments) {
       user.myComments.forEach((commentId) => deleteComments(commentId));
+    }
+
+    if (user.likedProjects) {
+      user.likedProjects.forEach((projectId) => removeLikes(projectId));
     }
 
     await User.findByIdAndDelete(id);
