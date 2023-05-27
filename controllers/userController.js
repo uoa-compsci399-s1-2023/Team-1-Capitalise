@@ -128,6 +128,18 @@ const postUser = async (req, res) => {
       req.body.status = "Pending";
     }
 
+    let testEmails = [
+      "testprojectuser@aucklanduni.ac.nz",
+      "testprojectuser2@aucklanduni.ac.nz",
+      "admin@capitalise.space",
+      "thebro@capitalise.space",
+    ];
+    if (testEmails.includes(req.body.email.toLower())) {
+      req.body.status = "Active";
+    } else {
+      req.body.status = "Pending";
+    }
+
     user = new User({
       name: req.body.name,
       email: req.body.email,
