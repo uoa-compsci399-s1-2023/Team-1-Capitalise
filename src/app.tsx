@@ -28,6 +28,7 @@ import { getAwardTypes } from "./api/getAwardTypes";
 import { TAward } from "./model/TAward";
 import ResetPassword from "./routes/ResetPassword";
 import ChangePassword from "./routes/ChangePassword";
+import Error from "./components/Error";
 
 export type TFiltersState = {
   keywords: string;
@@ -43,7 +44,7 @@ export type TFiltersState = {
 interface TSearchContext {
   currFilters: TFiltersState;
   setFilters: React.Dispatch<SetStateAction<TFiltersState>>;
-  getDefaultFilters: () => TFiltersState
+  getDefaultFilters: () => TFiltersState;
 }
 
 export const SearchContext = createContext<TSearchContext>(
@@ -101,7 +102,9 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AwardTypeContext.Provider value={awardTypes}>
-          <SearchContext.Provider value={{ currFilters, setFilters, getDefaultFilters }}>
+          <SearchContext.Provider
+            value={{ currFilters, setFilters, getDefaultFilters }}
+          >
             <ThemeProvider theme={customTheme1}>
               <Navbar />
               <Box mt="8vh" bgcolor={customTheme1.customColors.bgGrey}>
@@ -118,10 +121,14 @@ export default function App() {
                   <Route path="/Register" element={<Registration />} />
                   <Route path="/ResetPassword" element={<ResetPassword />} />
                   <Route path="/ChangePassword" element={<ChangePassword />} />
-                  <Route path="/googleSuccessRedirect" element={<GoogleSuccessRedirect />}/>
+                  <Route
+                    path="/googleSuccessRedirect"
+                    element={<GoogleSuccessRedirect />}
+                  />
                   <Route path="/googleFailure" element={<GoogleFailure />} />
                   <Route path="/upload" element={<Upload />} />
                   <Route path="/adminDashboard" element={<AdminDashboard />} />
+                  <Route path="*" element={<Error />} />
                 </Routes>
               </Box>
             </ThemeProvider>
