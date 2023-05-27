@@ -133,8 +133,12 @@ const postUser = async (req, res) => {
       "testprojectuser2@aucklanduni.ac.nz",
       "admin@capitalise.space",
       "thebro@capitalise.space",
+      "testprojectvisitor@gmail.com",
+      "projectuser@aucklanduni.ac.nz",
+      "projectuser2@aucklanduni.ac.nz",
+      "projectvisitor@gmail.com",
     ];
-    if (testEmails.includes(req.body.email.toLower())) {
+    if (testEmails.includes(req.body.email.toLowerCase())) {
       req.body.status = "Active";
     } else {
       req.body.status = "Pending";

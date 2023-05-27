@@ -18,6 +18,7 @@ const authenticateUser = async (req, res) => {
   let user = "";
   //Check if a user exists with the same username specified in the request.
   if (req.body.email) {
+    console.log(req.body.email)
     user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(401).send("Invalid email or password.");
   } else if (req.body.username) {

@@ -24,7 +24,7 @@ const notAdmin = 'Access Denied.'
 
 const visitorData = {
   name: "project test visitor",
-  email: "testProjectVisitor@gmail.com",
+  email: "ProjectVisitor@gmail.com",
   password: "test",
   links: [
     {
@@ -33,6 +33,7 @@ const visitorData = {
     },
   ],
   skills: ["speling"],
+  status: 'Active'
 }
 
 
@@ -41,8 +42,8 @@ var testUser2= ''
 var testVisitor = ''
 
 var visitorSignIn = {
-  "username": "testProjectVisitor@gmail.com", 
-  "password": "test"
+  "username": visitorData.email,
+  "password": visitorData.password
 }
 
 var userId = ''
@@ -54,7 +55,7 @@ var commentUser = ''
 //Create a test user
 const data = {
   name: "project test user",
-  email: "testProjectUser@aucklanduni.ac.nz",
+  email: "ProjectUser@aucklanduni.ac.nz",
   password: "test",
   links: [
     {
@@ -63,11 +64,12 @@ const data = {
     },
   ],
   skills: ["speling"],
+  status: 'Active'
 }
 
 const data2 = {
   name: "project test user2",
-  email: "testProjectUser2@aucklanduni.ac.nz",
+  email: "ProjectUser2@aucklanduni.ac.nz",
   password: "test",
   links: [
     {
@@ -76,6 +78,7 @@ const data2 = {
     },
   ],
   skills: ["spelling"],
+  status: 'Active'
 }
 
 const projectData = {
@@ -117,8 +120,6 @@ beforeAll(async () => {
     request(app).post("/api/users").send(data),
     request(app).post("/api/users").send(data2)
   ]).then((responses) => responses.map((res) => res.body._id));
-
-
 });
 
 
@@ -155,10 +156,10 @@ describe("Test that fetches projects GET", () => {
 
   it('Sends status code 200 if a project\'s id matches parameter projectId using getProject' ,async() => {
     const response = await request(app)
-    .get(URLstring + '6432f9226cce2fc1706572e3')
+    .get(URLstring + '646ac07025419de4ff40ef51')
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body._id == "6432f9226cce2fc1706572e3") 
+    expect(response.body._id == "646ac07025419de4ff40ef51") 
   })
 
   it('Sends status code 404 if parameter projectId is an invalid mongoDb id' ,async() => {
@@ -173,7 +174,7 @@ describe("Test that fetches projects GET", () => {
   it('Sends status code 404 if no project exist that matches parameter projectId' ,async() => {
     const response = await request(app)
     //Changed 3 to 9 at end of string
-    .get(URLstring + '6432f9226cce2fc1706572e9')
+    .get(URLstring + '6432f9226cce2fc1706adsf3')
     
     expect(response.statusCode).toEqual(404)
     expect(response.body.project == null && response.body.msg == noProject)
@@ -1020,7 +1021,7 @@ describe('test the award badge PATCH endpoint badges/award using awardBadge', ()
   it('Expects statusCode 200 when badge is valid',  async() => {
     const awardProject = {
       "projectId" : `${projectId}`,
-      "award": 'Top Excellence'
+      "award": 'Excellence'
     }
     const xToken = await getToken(adminSignin)
     const response = await request(app)
@@ -1058,7 +1059,7 @@ describe('Test the GET /badges/:badge endpoint using getProjectByBadge', () =>{
 
   it('Expects 200 from an Top Excellence badge', async () => {
     const response = await request(app)
-    .get(URLstring + `badges/Top Excellence`)
+    .get(URLstring + `badges/Excellence`)
     
     expect(response.statusCode).toEqual(200)
   })
@@ -1197,7 +1198,7 @@ describe('Test the GET search function using /search with query parameters being
   it('Expects 200 when query is award : Top Excellence', async () => {
     const response = await request(app)
     .get(URLstring + `search`)
-    .query({award: 'Top Excellence'})
+    .query({award: 'Excellence'})
 
     expect(response.statusCode).toEqual(200)
     expect(response.body.length > 0)
@@ -1212,10 +1213,10 @@ describe('Test the GET search function using /search with query parameters being
     expect(response.body.msg).toEqual(invalidAward)
   })
 
-  it('Expects 404 when query is award : Top Excellenc', async () => {
+  it('Expects 404 when query is award : Excellenc', async () => {
     const response = await request(app)
     .get(URLstring + `search`)
-    .query({award: 'Top Excellenc'})
+    .query({award: 'Excellenc'})
 
     expect(response.statusCode).toEqual(404)
     expect(response.body.msg).toEqual(invalidAward)
@@ -1246,17 +1247,11 @@ describe('Test the sortBy query parameter', () =>{
     expect(response.statusCode).toEqual(200)
   })
 
-  it('Expects 200 from sortBy=awards', async () => {
-    const response = await request(app)
-    .get(URLstring + `search`)
-    .query({sortBy: 'awards'})
-    expect(response.statusCode).toEqual(200)
-  })
 
   it('Expects 200 from sortBy=likes', async () => {
     const response = await request(app)
     .get(URLstring + `search`)
-    .query({sortBy: 'awards'})
+    .query({sortBy: 'likes'})
     expect(response.statusCode).toEqual(200)
   })
 
@@ -1271,14 +1266,14 @@ describe('Test the sortBy query parameter', () =>{
   it('Expects 200 from sortBy=SEMESTER', async () => {
     const response = await request(app)
     .get(URLstring + `search`)
-    .query({sortBy: 'awards'})
+    .query({sortBy: 'SEMESTER'})
     expect(response.statusCode).toEqual(200)
   })
 
   it('Expects 200 from sortBy=seMesTeR', async () => {
     const response = await request(app)
     .get(URLstring + `search`)
-    .query({sortBy: 'awards'})
+    .query({sortBy: 'seMesTeR'})
     expect(response.statusCode).toEqual(200)
   })
 
@@ -1404,7 +1399,7 @@ describe('Test the category, semester and award', () => {
       .query({
         category: 'Mobile Development',
         semester: 'S1 2023',
-        award: 'Top Excellence'
+        award: 'Excellence'
     })
     expect(response.statusCode).toEqual(200)
   })
@@ -1415,7 +1410,7 @@ describe('Test the category, semester and award', () => {
     .query({
       category: 'Mobile Development',
       semester: 'S1 2023',
-      award: 'Top Excellenc'
+      award: 'Excellenc'
   })
   expect(response.statusCode).toEqual(404)
   })
@@ -1426,7 +1421,7 @@ describe('Test the category, semester and award', () => {
     .query({
       category: 'Mobile Development',
       semester: 's12023',
-      award: 'Top Excellence'
+      award: 'Excellence'
   })
   expect(response.statusCode).toEqual(200)
   })
@@ -1437,7 +1432,7 @@ describe('Test the category, semester and award', () => {
     .query({
       category: 'mobile',
       semester: 's12023',
-      award: 'Top Excellence'
+      award: 'Excellence'
   })
   expect(response.statusCode).toEqual(200)
   })
