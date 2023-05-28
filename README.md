@@ -13,7 +13,7 @@ Frontend Team:
 
 Backend Team:
 - Lucas Eng - Backend and Cloud Engineer
-- Andrew Liu - Backend and Cloud Engineer
+- Andrew Loh - Backend and Cloud Engineer
 
 
 
