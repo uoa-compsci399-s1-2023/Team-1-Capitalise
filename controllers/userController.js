@@ -137,6 +137,9 @@ const postUser = async (req, res) => {
       "projectuser@aucklanduni.ac.nz",
       "projectuser2@aucklanduni.ac.nz",
       "projectvisitor@gmail.com",
+      "tagtestvisitor@gmail.com",
+      "tagtestuser@aucklanduni.ac.nz"
+      
     ];
     if (testEmails.includes(req.body.email.toLowerCase())) {
       req.body.status = "Active";

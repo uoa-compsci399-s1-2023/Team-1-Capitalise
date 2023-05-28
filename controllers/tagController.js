@@ -97,7 +97,7 @@ const postNewTagAddToProject = async (req, res) => {
 
   //Check if there is a projectId given
   if (!(await checkProject(projectId) )) {
-    return res.status(404).send({ project: null, msg: 'No project found' });
+    return res.status(404).send({ project: null, msg: 'no project found' });
   }
 
   let newTag = new Tag({
@@ -109,7 +109,6 @@ const postNewTagAddToProject = async (req, res) => {
   newTag.projects.push({ _id: projectId });
   newTag.mentions += 1;
   await Project.findByIdAndUpdate(projectId, { $push: { tags: { _id: newTag._id } } })
-
   
   newTag = await newTag.save();
   const project = await Project.findById(projectId)
@@ -143,7 +142,7 @@ const searchTag = async (req, res) => {
       })
 
 
-    return res.send(tags);
+    return res.status(200).send(tags);
 
   } catch (error) {
     return res.status(500).send({ error: "Server error" });

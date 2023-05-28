@@ -25,11 +25,11 @@ router.get('/search', searchTag)
 //Gets tag via tagName
 router.get('/:tagName', getTagByNameOrId)
 
-
 //Add new tag to tags in mongoDb
 router.post('/:tagName', [auth, graduate], postNewTag)
 
 //Post a new tag which requires a project to have that tag
+//Do i really need this
 router.post('/:tagName/:projectId', [auth, graduate], postNewTagAddToProject)
 
 //Patch add a tag to a project
