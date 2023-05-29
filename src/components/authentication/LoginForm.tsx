@@ -152,7 +152,16 @@ function SignInSide() {
               Login
             </Typography>
             
-            <Box component="form" sx={{paddingLeft: 5, paddingRight: 5}} noValidate onSubmit={handleSubmit} >
+            <Box 
+              component="form" 
+              noValidate 
+              onSubmit={handleSubmit} 
+              sx={{
+                paddingLeft: 5, 
+                paddingRight: 5,
+                width: '100%'
+              }} 
+            >
               <TextField
                
                 margin="normal"
@@ -165,7 +174,7 @@ function SignInSide() {
                 autoFocus
                 value={email}
                 error={!!emailErrorText}
-                helperText= {emailErrorText}
+                helperText= {emailErrorText || ""}
                 onChange={e => setEmail(e.target.value)}
               />
               <TextField
@@ -179,7 +188,7 @@ function SignInSide() {
                 autoComplete="off"
                 value={password}
                 error={!!passwordErrorText}
-                helperText={passwordErrorText}
+                helperText={passwordErrorText || ""}
                 onChange={e => setPassword(e.target.value)}
               />
               
