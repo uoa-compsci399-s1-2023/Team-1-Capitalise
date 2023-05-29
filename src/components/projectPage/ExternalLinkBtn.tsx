@@ -5,6 +5,7 @@ import SquareOutlinedIcon from "@mui/icons-material/SquareOutlined";
 import { TProject } from "../../model/TProject";
 import { ButtonProps } from "@mui/material";
 import AspectRatioIcon from "@mui/icons-material/AspectRatio";
+import { notionSvg, kaggleSvg } from "./btn svgs/btnSvgs";
 
 const githubIcon = (
   <SvgIcon viewBox="0 0 98 96" color="inherit">
@@ -132,11 +133,31 @@ export default function ExternalLinkBtn({ type, value }: TProject["links"][0]) {
         startIcon: <AspectRatioIcon />,
         color: "neutral",
         text: "Demo",
-        textColor: "#",
+        textColor: "black",
         link: value,
         variant: "outlined",
       };
       break;
+      case "kaggle":
+        buttonProps = {
+          startIcon: kaggleSvg,
+          color: "kaggleBtn",
+          text: "Kaggle",
+          textColor: "white",
+          link: value,
+          variant: "contained",
+        };
+        break;
+      case "notion":
+        buttonProps = {
+          startIcon: notionSvg,
+          color: "kaggleBtn",
+          text: "Demo",
+          textColor: "black",
+          link: value,
+          variant: "outlined",
+        };
+        break;
   }
 
   return <LinkBtn {...buttonProps} />;

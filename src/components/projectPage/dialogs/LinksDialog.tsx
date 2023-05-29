@@ -13,18 +13,26 @@ interface LinksDialogProps {
 export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDialogProps) {
 
   const { project, setProjectChanges } = useContext(ProjectContext);
+
   const [githubLink, setGithubLink] = useState<TProject['links'][0]['value'] | ''>('');
   const [githubError, setGithubError] = useState<string>('');
+
   const [codeSandboxLink, setCodeSandboxLink] = useState<TProject['links'][0]['value'] | ''>('');
   const [codeSandboxError, setCodeSandboxError] = useState<string>('');
+
   const [demoLink, setDemoLink] = useState<TProject['links'][0]['value'] | ''>('');
   const [demoError, setDemoError] = useState<string>('');
+
+  const [kaggleLink, setKaggleLink] = useState<TProject['links'][0]['value'] | ''>('');
+  const [kaggleError, setKaggleError] = useState<string>('');
 
   useEffect(() => {
     const initialLinks = project.links
     const github = initialLinks.find(link => link.type === 'github');
     const codeSandbox = initialLinks.find(link => link.type === 'codesandbox');
     const demo = initialLinks.find(link => link.type === 'deployedSite');
+    const kaggle = initialLinks.find(link => link.type === 'kaggle');
+    const notion = initialLinks.find(link => link.type === 'notion');
     if (github) {
       setGithubLink(github.value)
     }
@@ -34,9 +42,13 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
     if (demo) {
       setDemoLink(demo.value)
     }
+    if (kaggle) {
+      setKaggleLink(kaggle.value)
+    }
     setGithubError('')
     setCodeSandboxError('')
     setDemoError('')
+    setKaggleError('')
   }, [isDialogOpen])
 
   const handleClose = () => {
@@ -81,11 +93,19 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
           setDemoError('')
         }
         break;
+      case 'kaggle':
+        setKaggleLink(value);
+        if (value && !isUrlValid(value, "kaggle.com/")) {
+          setKaggleError('Please enter a vaild Kaggle link. (Don\'t forget the https!)')
+        } else {
+          setKaggleError('')
+        }
+        break;
     }
   }
 
   const handleSave = () => {
-    if (!githubError && !codeSandboxError && !demoError) {
+    if (!githubError && !codeSandboxError && !demoError && !kaggleError) {
 
       // Get current content, and change the required block value.
       const links: TProjectPost['links'] = []
@@ -106,6 +126,12 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
         links.push({
           type: 'deployedSite',
           value: demoLink
+        })
+      }
+      if (!kaggleError && kaggleLink) {
+        links.push({
+          type: 'kaggle',
+          value: kaggleLink
         })
       }
 
@@ -170,6 +196,21 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
           fullWidth
           sx={{ my: 1 }}
         />
+
+        <TextField
+          label="Kaggle"
+          id='kaggle-link-edit'
+          // placeholder='Deployed artefact link'
+          variant='outlined'
+          error={!!kaggleError}
+          helperText={kaggleError || ' '}
+          value={kaggleLink}
+          onChange={(e) => handleChange(e, 'kaggle')}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }} // Save if enter pressed
+          fullWidth
+          sx={{ my: 1 }}
+        />
+
       </DialogContent>
 
       <DialogActions>
