@@ -119,6 +119,7 @@ export default function ProjectHeader({ name, blurb, isEditMode, setIsEditMode }
         <Stack
           gap={2}
           width={'180px'}
+          mt={2}
         >
           {isDesktop &&
             auth.isAllowed(['admin'], project.members) &&
