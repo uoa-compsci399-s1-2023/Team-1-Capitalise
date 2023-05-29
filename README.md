@@ -1,27 +1,31 @@
-## Project Title
+# Capitalise
 
+![](/markdown/TeamName.svg)
 
-## Project Information
+![](/markdown/Team.svg)
 
+We are formed of 6 Computer Science graduates who have taken papers such as CS235, CS335, CS351, and CS345. We have demonstrated the skills gained from these courses to bring to you Capitalise.space.
 
-## Technologies Used
+Frontend Team:
 
+- Yathi Kimbadi - Frontend Developer
+- Albert Lin - Full Stack Developer
+- Rachel Wu - Frontend and UI/UX Developer
+- Daniel Quach - Frontend and UI/UX Developer
 
-## Installation Instructions
+Backend Team:
 
+- Lucas Eng - Backend and Cloud Engineer
+- Andrew Loh - Backend and Cloud Engineer
 
-### Configuration
+![](/markdown/ProjectInformation.svg)
 
-## Usage Examples
+![](/markdown/Technologies.svg)
 
-## Deployment
+![](/markdown/Installation.svg)
 
-## Future Plans
+![](/markdown/DeploymentUsage.svg)
 
+![](/markdown/FuturePlans.svg)
 
-## Acknowledgements
-
-
-
-
-
+![](/markdown/Acknowledgements.svg)
