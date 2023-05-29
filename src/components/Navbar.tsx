@@ -66,6 +66,8 @@ const AuthButton = styled(Button)({
   padding: "0 25px",
 });
 
+
+
 {
   /*Navigation Bar*/
 }
@@ -82,6 +84,16 @@ function ResponsiveAppBar() {
   //Functionality for opening/closing sidebar
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const checkAllowedToUpload = () => {
+    if (auth.isAllowed(['admin'])) {
+      return true;
+    } else if (!auth.user?.project) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -157,13 +169,12 @@ function ResponsiveAppBar() {
           >
             <SearchBar />
             {/* Check if User is logged in */}
-            {uCheck &&
-              auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
+            {auth.isAllowed(['admin', 'graduate']) && [
                 <Button
                   sx={{ padding: "0 25px" }}
                   key="upload"
                   variant="contained"
-                  disabled={auth.user?.project && auth.user.userType != 'admin' ? true : false}
+                  disabled={!checkAllowedToUpload()}
                   onClick={() => {
                     goToPage("upload");
                   }}
@@ -351,9 +362,9 @@ function ResponsiveAppBar() {
               )}
 
               {uCheck &&
-                auth.user?.userType === "graduate" || auth.user?.userType === "admin" && [
+                auth.isAllowed(['admin', 'graduate']) && [
                   <MenuItem
-                    disabled={auth.user?.project ? true : false}
+                    disabled={!checkAllowedToUpload()}
                     key="upload"
                     onClick={() => {
                       handleCloseUserMenu();

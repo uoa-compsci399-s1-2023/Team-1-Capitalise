@@ -11,9 +11,6 @@ import TagsField from './Fields/TagsField'
 import AwardBadge from './AwardBadge'
 import { ProjectContext } from '../../routes/ProjectPage'
 
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
-
 export default function ProjectDetails() {
 
   const theme = useTheme()

@@ -41,8 +41,8 @@ export default function RemoveUserConfirmDialog({ isDialogOpen, setUserToDelete,
         }).then((data) => {
           if (data) {
             fetchUsers(data.members).then(users => setMembers(users))
-            // setProject(data);
           }
+          auth.getLatestUser(); // So that the upload button is enabled if user removes themselves.
         })
         .finally(() => {
           setIsLoading(false);

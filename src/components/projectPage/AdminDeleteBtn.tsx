@@ -19,11 +19,13 @@ export default function AdminDeleteButton() {
   const navigate = useNavigate();
   // const isScreenSmall = useMediaQuery(theme.breakpoints.down('md'));
 
+  // Not just for admins, project members can delete now as well.
   const adminDeleteProject = async () => {
     const token = auth.getToken();
     if (token) {
-      if (window.confirm("Are you sure you want to remove this project?")) {
-        fetch(`${API_URL}/api/projects/${project._id}`, {
+      const confirmDelete = window.confirm("Are you sure you want to remove this project?");
+      if (confirmDelete) {
+        return fetch(`${API_URL}/api/projects/${project._id}`, {
           method: "DELETE",
           headers: {
             Accept: "application/json",
@@ -33,9 +35,12 @@ export default function AdminDeleteButton() {
           body: JSON.stringify({
             projectId: project._id,
           }),
-        }).then(() => {
-          // we need to redirect admin back to projects page upon project delete.
-          navigate("/projects");
+        }).then((resp) => {
+          if (resp && resp.ok) {
+            auth.getLatestUser(); // To reenable upload btn if graduate
+            // we need to redirect admin back to projects page upon project delete.
+            navigate("/projects");
+          }
         });
       }
     }
