@@ -121,7 +121,6 @@ function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: Content
   // Tracks content block width
   const resizeObserver = new ResizeObserver((event) => {
     const width = event[0].contentBoxSize[0].inlineSize;
-    console.log("block width: " + width)
     setBlockWidth(width);
   });
 
