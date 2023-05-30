@@ -671,7 +671,7 @@ const removeUserFromProject = async (req, res) => {
 const deleteProject = async (req, res) => {
   try {
     const { projectId } = req.params;
-
+    const currentId = req.user._id
     if (!(await checkProject(projectId))) {
       return res.status(404).send({ project: null, msg: "No project found" });
     }
@@ -679,13 +679,17 @@ const deleteProject = async (req, res) => {
     const project = await Project.findById({ _id: projectId });
     //differenet Id type from db id
 
-    const members = await project.members;
+    const projectMembers = project.members;
     //Check if user is not part of the project and user is not admin
-    if(!members.includes(req.user._id) && req.user.userType != 'admin'){
-      return res.status(403).send({project: null, msg:'You are not part of this project'})
+    const userIsMember = projectMembers.includes(currentId);
+
+    if (!userIsMember && req.user.userType !== "admin") {
+      return res
+        .status(403)
+        .send({ project: null, msg: "You are not part of this project" });
     }
     
-    members.forEach(async (id) => {
+    projectMembers.forEach(async (id) => {
       //Need to properly check and test this method
       const user = await User.findByIdAndUpdate(id, { project: null });
     });
