@@ -113,9 +113,7 @@ export default function ProjectInfoForm({
         "Enter a project name with only ASCII characters."
       );
     } else if (projectN.length < 1) {
-      setProjectNameErrorText(
-        "Enter a project name longer than one characters."
-      );
+      setProjectNameErrorText("Project name cannot be empty.");
     } else if (projectN.length > 100) {
       setProjectNameErrorText("Team name exceeded character limit.");
     } else {
