@@ -94,7 +94,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   };
 
   const constHandleImage = async (file: File) => {
-    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|webp|gif)$/)) {
       setProfilePicture(user.profilePicture);
       setValidImageErrorMessage("Select a valid image type");
       setValidImage(false);
