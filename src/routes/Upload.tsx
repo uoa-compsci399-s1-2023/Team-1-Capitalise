@@ -242,9 +242,9 @@ export default function Upload() {
       newProject,
       auth.getToken() as string
     ).then((data) => {
+
+      auth.getLatestUser();
       projectID.current = data._id;
-
-
       // need to perform file validation checks to check if images are null.
       if (!isBannerEmpty) {
         postBanner(data._id, bannerData);
@@ -252,15 +252,13 @@ export default function Upload() {
       if (!isThumbnailEmpty) {
         postThumbnail(data._id, thumbnailData);
       } 
-        
       //instead of postTab, need to use addGallery.
       if (numImages > 0) {
         addGallery(data._id, "Overview", imagesData);
       }
     }).then(() => {
-      if(projectID.current) { handleNext();}
-    }).finally(() => auth.getLatestUser())
-    
+      if (projectID.current) { handleNext();}
+    })
   };
 
   // this acts as a Navigator for each of upload pages rendered.

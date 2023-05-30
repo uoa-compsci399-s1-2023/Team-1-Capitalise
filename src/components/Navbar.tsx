@@ -24,6 +24,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import validator from "validator";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import ArtTrackIcon from '@mui/icons-material/ArtTrack';
 import {
   AppRegistration,
   Login,
@@ -66,6 +67,8 @@ const AuthButton = styled(Button)({
   padding: "0 25px",
 });
 
+
+
 {
   /*Navigation Bar*/
 }
@@ -84,7 +87,16 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   
 
-  
+  const checkAllowedToUpload = () => {
+    if (auth.isAllowed(['admin'])) {
+      return true;
+    } else if (auth.isAllowed(['graduate']) && !auth.user?.project) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -159,54 +171,53 @@ function ResponsiveAppBar() {
           >
             <SearchBar />
             {/* Check if User is logged in */}
-            {uCheck &&
-              (auth.user?.userType === "graduate" || auth.user?.userType === "admin") && [
-                <Button
-                  sx={{ padding: "0 25px" }}
-                  key="upload"
-                  variant="contained"
-                  disabled={auth.user?.project && auth.user.userType != 'admin' ? true : false}
-                  onClick={() => {
-                    goToPage("upload");
-                  }}
-                >
-                  Upload
-                </Button>,
-              ]}
+            {auth.isAllowed(['admin', 'graduate']) && [
+              <Button
+                sx={{ padding: "0 25px" }}
+                key="upload"
+                variant="contained"
+                disabled={!checkAllowedToUpload()}
+                onClick={() => {
+                  goToPage("upload");
+                }}
+              >
+                Upload
+              </Button>,
+            ]}
             {uCheck
               ? [
-                  <IconButton
-                    key="profilepic"
-                    onClick={handleOpenUserMenu}
-                    sx={{ p: 0 }}
-                  >
-                    <Avatar alt="Logged In" src={auth.user?.profilePicture}>
-                      {" "}
-                      <img referrerPolicy="no-referrer" />
-                    </Avatar>
-                  </IconButton>,
-                ]
-              : [
-                  <AuthButton
-                    key="login"
-                    onClick={() => {
-                      goToPage("login");
-                    }}
-                    variant="outlined"
-                  >
-                    Log In
-                  </AuthButton>,
-                  <AuthButton
-                    key="register"
-                    onClick={() => {
-                      goToPage("register");
-                    }}
-                    variant="contained"
-                  >
+                <IconButton
+                  key="profilepic"
+                  onClick={handleOpenUserMenu}
+                  sx={{ p: 0 }}
+                >
+                  <Avatar alt="Logged In" src={auth.user?.profilePicture}>
                     {" "}
-                    Sign Up{" "}
-                  </AuthButton>,
-                ]}
+                    <img referrerPolicy="no-referrer" />
+                  </Avatar>
+                </IconButton>,
+              ]
+              : [
+                <AuthButton
+                  key="login"
+                  onClick={() => {
+                    goToPage("login");
+                  }}
+                  variant="outlined"
+                >
+                  Log In
+                </AuthButton>,
+                <AuthButton
+                  key="register"
+                  onClick={() => {
+                    goToPage("register");
+                  }}
+                  variant="contained"
+                >
+                  {" "}
+                  Sign Up{" "}
+                </AuthButton>,
+              ]}
           </Box>
 
           {/*This is the side bar for mobile*/}
@@ -352,22 +363,40 @@ function ResponsiveAppBar() {
                 </Box>
               )}
 
-              {uCheck &&
-                (auth.user?.userType === "graduate" || auth.user?.userType === "admin") && [
-                  <MenuItem
-                    disabled={auth.user?.project && !(auth.user?.userType == 'admin') ? true : false}
-                    key="upload"
-                    onClick={() => {
-                      handleCloseUserMenu();
-                      navigate("/upload");
-                    }}
-                  >
-                    <ListItemIcon>
-                      <UploadFileIcon fontSize="small" />
-                    </ListItemIcon>
-                    Upload Project
-                  </MenuItem>,
-                ]}
+              
+              {auth.user?.project ?
+              // If user has proj show proj btn
+                <MenuItem
+                key="my project"
+                onClick={() => {
+                  console.log(auth.user)
+                  handleCloseUserMenu();
+                  auth.getLatestUser();
+                  navigate("/projects/" + auth.user?.project._id);
+                }}
+              >
+                <ListItemIcon>
+                  <ArtTrackIcon fontSize="small" />
+                </ListItemIcon>
+                My Project
+              </MenuItem>
+              :
+              // Show upload btn if allowed user logged in
+              uCheck && auth.isAllowed(['graduate', 'admin']) &&
+                <MenuItem
+                  disabled={!checkAllowedToUpload()}
+                  key="upload"
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    navigate("/upload");
+                  }}
+                >
+                  <ListItemIcon>
+                    <UploadFileIcon fontSize="small" />
+                  </ListItemIcon>
+                  Upload Project
+                </MenuItem>
+              }
 
               {/*CHeck if isAdmin for dashboard*/}
 
@@ -390,48 +419,48 @@ function ResponsiveAppBar() {
               {/*Display settings based on login status*/}
               {uCheck
                 ? [
-                    <MenuItem
-                      key="logout"
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        auth.signout();
-                        navigate("/");
-                      }}
-                    >
-                      <ListItemIcon>
-                        <Logout fontSize="small" />
-                      </ListItemIcon>
-                      Log Out
-                    </MenuItem>,
-                  ]
+                  <MenuItem
+                    key="logout"
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      auth.signout();
+                      navigate("/");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Log Out
+                  </MenuItem>,
+                ]
                 : //Or display guest (not logged in details)
 
-                  [
-                    <MenuItem
-                      key="register2"
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        navigate("register");
-                      }}
-                    >
-                      <ListItemIcon>
-                        <AppRegistration fontSize="small" />
-                      </ListItemIcon>
-                      Register
-                    </MenuItem>,
-                    <MenuItem
-                      key="login2"
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        goToPage("login");
-                      }}
-                    >
-                      <ListItemIcon>
-                        <Login fontSize="small" />
-                      </ListItemIcon>
-                      Login
-                    </MenuItem>,
-                  ]}
+                [
+                  <MenuItem
+                    key="register2"
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate("register");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <AppRegistration fontSize="small" />
+                    </ListItemIcon>
+                    Register
+                  </MenuItem>,
+                  <MenuItem
+                    key="login2"
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      goToPage("login");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <Login fontSize="small" />
+                    </ListItemIcon>
+                    Login
+                  </MenuItem>,
+                ]}
               {/*End of Check condition*/}
             </Menu>
           </Box>

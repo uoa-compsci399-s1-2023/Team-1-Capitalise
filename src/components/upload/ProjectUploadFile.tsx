@@ -89,7 +89,6 @@ export default function ProjectUploadFileForm({
       suffix: option.suffix,
     }))
   );
-  console.log(projectLinks[0].suffix, "hello");
   let bannerR = useRef<File | undefined>();
   let thumbnailR = useRef<File | undefined>();
   let imagesR = useRef<File[]>([]);
@@ -209,7 +208,6 @@ export default function ProjectUploadFileForm({
       );
 
       if (validations.every((isValid) => isValid)) {
-        console.log("yay");
         await projectFileToUpload(
           bannerR.current,
           imagesR.current,

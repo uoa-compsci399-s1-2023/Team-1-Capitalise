@@ -13,30 +13,57 @@ interface LinksDialogProps {
 export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDialogProps) {
 
   const { project, setProjectChanges } = useContext(ProjectContext);
+
   const [githubLink, setGithubLink] = useState<TProject['links'][0]['value'] | ''>('');
   const [githubError, setGithubError] = useState<string>('');
+
   const [codeSandboxLink, setCodeSandboxLink] = useState<TProject['links'][0]['value'] | ''>('');
   const [codeSandboxError, setCodeSandboxError] = useState<string>('');
+
   const [demoLink, setDemoLink] = useState<TProject['links'][0]['value'] | ''>('');
   const [demoError, setDemoError] = useState<string>('');
+
+  const [kaggleLink, setKaggleLink] = useState<TProject['links'][0]['value'] | ''>('');
+  const [kaggleError, setKaggleError] = useState<string>('');
+
+  const [codePenLink, setCodePenLink] = useState<TProject['links'][0]['value'] | ''>('');
+  const [codePenError, setCodePenError] = useState<string>('');
+
+  const [notionLink, setNotionLink] = useState<TProject['links'][0]['value'] | ''>('');
+  const [notionError, setNotionError] = useState<string>('');
 
   useEffect(() => {
     const initialLinks = project.links
     const github = initialLinks.find(link => link.type === 'github');
     const codeSandbox = initialLinks.find(link => link.type === 'codesandbox');
     const demo = initialLinks.find(link => link.type === 'deployedSite');
+    const kaggle = initialLinks.find(link => link.type === 'kaggle');
+    const notion = initialLinks.find(link => link.type === 'notion');
+    const codepen = initialLinks.find(link => link.type === 'codepen');
     if (github) {
       setGithubLink(github.value)
     }
     if (codeSandbox) {
-      setCodeSandboxLink(codeSandbox.value)
+      setCodeSandboxLink(codeSandbox.value) 
     }
     if (demo) {
       setDemoLink(demo.value)
     }
+    if (kaggle) {
+      setKaggleLink(kaggle.value)
+    }
+    if (notion) {
+      setNotionLink(notion.value)
+    }
+    if (codepen) {
+      setCodePenLink(codepen.value)
+    }
     setGithubError('')
     setCodeSandboxError('')
     setDemoError('')
+    setKaggleError('')
+    setNotionError('')
+    setCodePenError('')
   }, [isDialogOpen])
 
   const handleClose = () => {
@@ -81,15 +108,45 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
           setDemoError('')
         }
         break;
+      case 'kaggle':
+        setKaggleLink(value);
+        if (value && !isUrlValid(value, "kaggle.com/")) {
+          setKaggleError('Please enter a vaild Kaggle link. (Don\'t forget the https!)')
+        } else {
+          setKaggleError('')
+        }
+        break;
+      case 'notion':
+        setNotionLink(value);
+        if (value && !isUrlValid(value, "notion.so/")) {
+          setNotionError('Please enter a vaild notion link. (Don\'t forget the https!)')
+        } else {
+          setNotionError('')
+        }
+        break;
+      case 'codepen':
+        setCodePenLink(value);
+        if (value && !isUrlValid(value, "codepen.io/")) {
+          setCodePenError('Please enter a vaild codepen link. (Don\'t forget the https!)')
+        } else {
+          setCodePenError('')
+        }
+        break;
     }
   }
 
   const handleSave = () => {
-    if (!githubError && !codeSandboxError && !demoError) {
+    if (!githubError && !codeSandboxError && !demoError && !kaggleError) {
 
       // Get current content, and change the required block value.
       const links: TProjectPost['links'] = []
 
+      if (!demoError && demoLink) {
+        links.push({
+          type: 'deployedSite',
+          value: demoLink
+        })
+      }
       if (!githubError && githubLink) {
         links.push({
           type: 'github',
@@ -102,10 +159,22 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
           value: codeSandboxLink
         })
       }
-      if (!demoError && demoLink) {
+      if (!kaggleError && kaggleLink) {
         links.push({
-          type: 'deployedSite',
-          value: demoLink
+          type: 'kaggle',
+          value: kaggleLink
+        })
+      }
+      if (!codePenError && codePenLink) {
+        links.push({
+          type: 'codepen',
+          value: codePenLink
+        })
+      }
+      if (!notionError && notionLink) {
+        links.push({
+          type: 'notion',
+          value: notionLink
         })
       }
 
@@ -170,6 +239,49 @@ export default function LinksDialog({ isDialogOpen, setIsDialogOpen }: LinksDial
           fullWidth
           sx={{ my: 1 }}
         />
+
+        <TextField
+          label="Kaggle"
+          id='kaggle-link-edit'
+          // placeholder='Deployed artefact link'
+          variant='outlined'
+          error={!!kaggleError}
+          helperText={kaggleError || ' '}
+          value={kaggleLink}
+          onChange={(e) => handleChange(e, 'kaggle')}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }} // Save if enter pressed
+          fullWidth
+          sx={{ my: 1 }}
+        />
+
+        <TextField
+          label="notion"
+          id='notion-link-edit'
+          // placeholder='Deployed artefact link'
+          variant='outlined'
+          error={!!notionError}
+          helperText={notionError || ' '}
+          value={notionLink}
+          onChange={(e) => handleChange(e, 'notion')}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }} // Save if enter pressed
+          fullWidth
+          sx={{ my: 1 }}
+        />
+
+        <TextField
+          label="codepen"
+          id='codepen-link-edit'
+          // placeholder='Deployed artefact link'
+          variant='outlined'
+          error={!!codePenError}
+          helperText={codePenError || ' '}
+          value={codePenLink}
+          onChange={(e) => handleChange(e, 'codepen')}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }} // Save if enter pressed
+          fullWidth
+          sx={{ my: 1 }}
+        />
+
       </DialogContent>
 
       <DialogActions>

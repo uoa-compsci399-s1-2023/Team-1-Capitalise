@@ -35,52 +35,51 @@ interface TProjectInfo {
   projectDescription: string | null;
 }
 
-export default function ProjectInfoForm(
-  { projectInfoToUpload,
-    handleNext,
-    handleBack,
-    projectInformation,
-  }: any,
-) {
+export default function ProjectInfoForm({
+  projectInfoToUpload,
+  handleNext,
+  handleBack,
+  projectInformation,
+}: any) {
+  //Project Name State
+  const projectNA = useRef("");
 
-    //Project Name State
-    const projectNA = useRef('');
+  const [projectNameErrorText, setProjectNameErrorText] = useState("");
 
-    const [projectNameErrorText, setProjectNameErrorText] = useState('');
-  
-    //Project Description State 
-    const projectDA = useRef('');
-    const [projectDescErrorText, setProjectDescErrorText] = useState('');
-  
-    //Semester States
-    const [semester, setSemester] = React.useState(projectInformation.semesterN);
-    const [semesterErrorText, setSemesterErrorText] = useState('');
-  
-    //Category States
-    const [category, setCategory] = React.useState(projectInformation.categoryN);
-    const [categoryErrorText, setCategoryErrorText] = useState('');
-  
-    //Tag states
-    // const tagList: { name: string }[] = [];
-    const [selectedTags, setSelectedTags] = useState<string[]>(projectInformation.tags);
-  
-    const [tagErrorText, setTagErrorText] = useState('');
+  //Project Description State
+  const projectDA = useRef("");
+  const [projectDescErrorText, setProjectDescErrorText] = useState("");
 
+  //Semester States
+  const [semester, setSemester] = React.useState(projectInformation.semesterN);
+  const [semesterErrorText, setSemesterErrorText] = useState("");
 
-  //API Fetches for Semester and Category lists 
+  //Category States
+  const [category, setCategory] = React.useState(projectInformation.categoryN);
+  const [categoryErrorText, setCategoryErrorText] = useState("");
+
+  //Tag states
+  // const tagList: { name: string }[] = [];
+  const [selectedTags, setSelectedTags] = useState<string[]>(
+    projectInformation.tags
+  );
+
+  const [tagErrorText, setTagErrorText] = useState("");
+
+  //API Fetches for Semester and Category lists
   // Map the semesters to the MenuItems.
   const [semesterList, setSemesterList] = useState<JSX.Element[]>([]);
   useEffect(() => {
     // grab the semesters from the API
     const fetchSemesters = getSemesters().then((data) => {
       // Map the semesters to the MenuItem components
-      const semesterList = data.map(semester => (
+      const semesterList = data.map((semester) => (
         <MenuItem key={semester._id} value={semester.value}>
           {semester.value}
         </MenuItem>
       ));
       setSemesterList(semesterList);
-    })
+    });
   }, []);
 
   // Map the categories to the MenuItems.
@@ -89,18 +88,14 @@ export default function ProjectInfoForm(
     // grab the categories from the API
     const fetchCategories = getCategories().then((data) => {
       // Map the categories to the MenuItem components
-      const categories = data.map(category => (
+      const categories = data.map((category) => (
         <MenuItem key={category._id} value={category.value}>
           {category.value}
         </MenuItem>
       ));
       setCategories(categories);
-    })
+    });
   }, []);
-
-
-
-
 
   if (projectInformation.projN) {
     projectNA.current = projectInformation.projN;
@@ -110,77 +105,76 @@ export default function ProjectInfoForm(
   }
 
   const validateProjectName = (projectN: any) => {
-    //Project Name Validation 
+    //Project Name Validation
     if (validator.isEmpty(projectN)) {
-      setProjectNameErrorText('Enter a project name.');
+      setProjectNameErrorText("Enter a project name.");
     } else if (!validator.isAscii(projectN)) {
-      setProjectNameErrorText('Enter a project name with only ASCII characters.');
-    } else if (projectN.length < 5) {
-      setProjectNameErrorText('Enter a project name longer than five characters.');
+      setProjectNameErrorText(
+        "Enter a project name with only ASCII characters."
+      );
+    } else if (projectN.length < 1) {
+      setProjectNameErrorText("Project name cannot be empty.");
     } else if (projectN.length > 100) {
-      setProjectNameErrorText('Team name exceeded character limit.');
-
+      setProjectNameErrorText("Team name exceeded character limit.");
     } else {
-      setProjectNameErrorText('')
-      return true
+      setProjectNameErrorText("");
+      return true;
     }
-  }
+  };
   const validateProjectSemester = (sem: any) => {
-    //Project Semester Validation 
+    //Project Semester Validation
     if (validator.isEmpty(sem)) {
-      setSemesterErrorText('Pick your project semester.');
+      setSemesterErrorText("Pick your project semester.");
     } else {
-      setSemesterErrorText('');
+      setSemesterErrorText("");
       return true;
     }
-  }
+  };
   const validateProjectCategory = (cat: any) => {
-    //Project Category Validation 
+    //Project Category Validation
     if (validator.isEmpty(cat)) {
-      setCategoryErrorText('Pick a project category.');
+      setCategoryErrorText("Pick a project category.");
     } else {
-      setCategoryErrorText('');
+      setCategoryErrorText("");
       return true;
     }
-  }
+  };
 
   const validateProjectTags = (selectedTags: any) => {
-    //Project Tags Validation 
+    //Project Tags Validation
     if (selectedTags.length > 0) {
-      let msgError = 'The following tags are invalid: ';
+      let msgError = "The following tags are invalid: ";
       for (const element of selectedTags) {
         //Check against a blacklist, inappropriate word list.
         if (nw.en.includes(element)) {
-          msgError += element + '(blacklisted)' + '';
+          msgError += element + "(blacklisted)" + "";
         } else if (element > 50) {
-          msgError += element + '(max char)' + ' ';
+          msgError += element + "(max char)" + " ";
         }
-
       }
-      if (msgError != 'The following tags are invalid: ') {
+      if (msgError != "The following tags are invalid: ") {
         setTagErrorText(msgError);
       } else {
         return true;
       }
     } else {
-      setTagErrorText('');
+      setTagErrorText("");
       return true;
     }
-  }
+  };
   const validateProjectDesc = (projectDesc: any) => {
-    //Project Description Validation 
+    //Project Description Validation
     if (!validator.isAscii(projectDesc)) {
-      setProjectDescErrorText('Enter a project description with only ASCII characters.');
-
+      setProjectDescErrorText(
+        "Enter a project description with only ASCII characters."
+      );
     } else if (validator.isEmpty(projectDesc)) {
-      setProjectDescErrorText('Enter a project description.');
+      setProjectDescErrorText("Enter a project description.");
     } else {
-      setProjectDescErrorText('');
+      setProjectDescErrorText("");
       return true;
     }
-  }
-
-
+  };
 
   //Setting Category State on Change
   const handleCategoryChange = (event: SelectChangeEvent) => {
@@ -200,12 +194,12 @@ export default function ProjectInfoForm(
 
   const handleNameChange = (event: any) => {
     event.preventDefault();
-    projectNA.current = (event.target.value);
-  }
+    projectNA.current = event.target.value;
+  };
   const handleDescChange = (event: any) => {
     event.preventDefault();
-    projectDA.current = (event.target.value);
-  }
+    projectDA.current = event.target.value;
+  };
 
   //Submitting data on Next press to the main Upload parent component to store.
   const handleProjectUpload = (event: React.FormEvent<HTMLFormElement>) => {
@@ -224,7 +218,13 @@ export default function ProjectInfoForm(
     const okProjectDesc = validateProjectDesc(projDesc);
     const okProjectTags = validateProjectTags(selectedTags);
 
-    if (okProjectName && okProjectSem && okProjectCat && okProjectDesc && okProjectTags) {
+    if (
+      okProjectName &&
+      okProjectSem &&
+      okProjectCat &&
+      okProjectDesc &&
+      okProjectTags
+    ) {
       const infoSend: TProjectInfo = {
         projN: projectN,
         categoryN: cat,
@@ -235,11 +235,9 @@ export default function ProjectInfoForm(
 
       projectInfoToUpload(infoSend);
       handleNext();
-
     }
   };
   const handleGoBack = () => {
-
     const infoHold: TProjectInfo = {
       projN: projectNA.current,
       categoryN: category,
@@ -250,7 +248,7 @@ export default function ProjectInfoForm(
 
     projectInfoToUpload(infoHold);
     handleBack();
-  }
+  };
 
   return (
     <React.Fragment>
@@ -274,7 +272,9 @@ export default function ProjectInfoForm(
                 {semesterList}
               </Select>
               <FormHelperText>
-                {semesterErrorText ? semesterErrorText : '* When was this project completed?'}
+                {semesterErrorText
+                  ? semesterErrorText
+                  : "* When was this project completed?"}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -288,16 +288,16 @@ export default function ProjectInfoForm(
                 labelId="demo-select-small-label2"
                 id="select-category"
                 value={category}
-
                 label="Category"
                 error={!!categoryErrorText}
                 onChange={handleCategoryChange}
-
               >
                 {categories}
               </Select>
               <FormHelperText>
-                {categoryErrorText ? categoryErrorText : '* What does this project specialise in?'}
+                {categoryErrorText
+                  ? categoryErrorText
+                  : "* What does this project specialise in?"}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -309,11 +309,13 @@ export default function ProjectInfoForm(
               id="projectName"
               name="projectName"
               label="Project Name"
-              defaultValue={projectInformation.projN ? projectInformation.projN : ''}
+              defaultValue={
+                projectInformation.projN ? projectInformation.projN : ""
+              }
               fullWidth
               onChange={handleNameChange}
               error={!!projectNameErrorText}
-              helperText={projectNameErrorText ? projectNameErrorText : ''}
+              helperText={projectNameErrorText ? projectNameErrorText : ""}
               variant="outlined"
             />
           </Grid>
@@ -323,9 +325,13 @@ export default function ProjectInfoForm(
           </Grid> */}
 
           <Grid item xs={12}>
-
             <TagsField
-              {...{ selectedTags, setSelectedTags, projectInformation, tagErrorText }}
+              {...{
+                selectedTags,
+                setSelectedTags,
+                projectInformation,
+                tagErrorText,
+              }}
             />
 
             {/* <Autocomplete
@@ -401,7 +407,6 @@ export default function ProjectInfoForm(
                 />
               )}
             /> */}
-
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -409,13 +414,21 @@ export default function ProjectInfoForm(
               id="projectDesc"
               name="projectDesc"
               label="Project Description"
-              defaultValue={projectInformation.projectDescription ? projectInformation.projectDescription : ""}
+              defaultValue={
+                projectInformation.projectDescription
+                  ? projectInformation.projectDescription
+                  : ""
+              }
               fullWidth
               variant="outlined"
               multiline={true}
               rows={10}
               error={!!projectDescErrorText}
-              helperText={projectDescErrorText ? projectDescErrorText : 'Enter a short description about your project'}
+              helperText={
+                projectDescErrorText
+                  ? projectDescErrorText
+                  : "Enter a short description about your project"
+              }
               onChange={handleDescChange}
             />
           </Grid>

@@ -119,7 +119,14 @@ function useProvideAuth(): TAuthReturnType {
       getUserPromise(savedToken)
         .then((resp) => {
           if (resp.ok) {
-            resp.json().then((jsonData) => setUser(jsonData));
+            resp.json().then((jsonData) => {
+              // Accounting for inconsistent backend response
+              const proj = jsonData.project
+              if (proj && typeof proj === "string") {
+                jsonData.project = {_id: proj, name: "unknown"}
+              }
+              setUser(jsonData);
+            });
           } else {
             resp.text().then(err => setError(err))
           }

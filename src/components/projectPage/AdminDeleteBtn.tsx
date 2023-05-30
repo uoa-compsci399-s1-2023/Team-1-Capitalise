@@ -2,10 +2,6 @@ import React, { useContext } from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import {
   Button,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,8 +10,6 @@ import {
 } from "@mui/material";
 import { ProjectContext } from "../../routes/ProjectPage";
 import { useAuth } from "../../customHooks/useAuth";
-import { styled } from "@mui/material/styles";
-import pluralize from "pluralize";
 
 import { useNavigate } from "react-router-dom";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -24,17 +18,16 @@ import { API_URL } from "../../api/config";
 export default function AdminDeleteButton() {
   const auth = useAuth();
   const { project, setProject, checkIsEdit } = useContext(ProjectContext);
-  const theme = useTheme();
   const navigate = useNavigate();
   // const isScreenSmall = useMediaQuery(theme.breakpoints.down('md'));
 
   // for dialog pop-up
   const [open, setOpen] = React.useState(false);
-
+  // Not just for admins, project members can delete now as well.
   const adminDeleteProject = async () => {
     const token = auth.getToken();
     if (token) {
-      fetch(`${API_URL}/api/projects/${project._id}`, {
+      return fetch(`${API_URL}/api/projects/${project._id}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -44,9 +37,12 @@ export default function AdminDeleteButton() {
         body: JSON.stringify({
           projectId: project._id,
         }),
-      }).then(() => {
-        // we need to redirect admin back to projects page upon project delete.
-        navigate("/projects");
+      }).then((resp) => {
+        if (resp && resp.ok) {
+          auth.getLatestUser(); // To reenable upload btn if graduate
+          // we need to redirect admin back to projects page upon project delete.
+          navigate("/projects");
+        }
       });
     }
   };

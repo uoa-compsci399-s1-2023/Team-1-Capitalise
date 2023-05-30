@@ -94,7 +94,7 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
   };
 
   const constHandleImage = async (file: File) => {
-    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.name.toLowerCase().match(/\.(jpg|jpeg|png|webp|gif)$/)) {
       setProfilePicture(user.profilePicture);
       setValidImageErrorMessage("Select a valid image type");
       setValidImage(false);
@@ -257,6 +257,8 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             margin="dense"
             id="edit-github"
             label="GitHub link"
+            autoComplete="off"
+            autoCorrect="off"
             fullWidth
             variant="standard"
             defaultValue={github}
@@ -275,6 +277,8 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             margin="dense"
             id="edit-linkedin"
             label="LinkedIn link"
+            autoComplete="off"
+            autoCorrect="off"
             fullWidth
             variant="standard"
             defaultValue={linkedin}
@@ -293,6 +297,8 @@ const EditUser = ({ open, handleClose, user, token }: Props) => {
             margin="dense"
             id="edit-deployedSite"
             label="Website link"
+            autoComplete="off"
+            autoCorrect="off"
             fullWidth
             variant="standard"
             defaultValue={deployedSite}
