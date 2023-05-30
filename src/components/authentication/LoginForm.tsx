@@ -141,75 +141,65 @@ function SignInSide() {
                 }}
               ></Box>
             </Link>
-          </Box>
-
-          <Typography component="h1" variant="h5" sx={{ fontWeight: 500 }}>
-            Login
-          </Typography>
-
-          <Box
-            component="form"
-            sx={{ paddingLeft: 5, paddingRight: 5 }}
-            noValidate
-            onSubmit={handleSubmit}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="off"
-              autoFocus
-              value={email}
-              error={!!emailErrorText}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="off"
-              value={password}
-              error={!!passwordErrorText}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+            </Box>
+            
+            <Typography component="h1" variant="h5" sx={{fontWeight: 500}}>
+              Login
+            </Typography>
+            
+            <Box 
+              component="form" 
+              noValidate 
+              onSubmit={handleSubmit} 
+              sx={{
+                paddingLeft: 5, 
+                paddingRight: 5,
+                width: '100%'
+              }} 
             >
-              Sign In
-            </Button>
-            {emailErrorText && (
-            <Alert severity="error">
+              <TextField
+               
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="off"
+                autoFocus
+                value={email}
+                error={!!emailErrorText}
+                helperText= {emailErrorText || ""}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="off"
+                value={password}
+                error={!!passwordErrorText}
+                helperText={passwordErrorText || ""}
+                onChange={e => setPassword(e.target.value)}
+              />
+              
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              
+              <Divider></Divider>
+              <Button href="https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google" fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign In with Google</Button>
 
-              <strong>
-                {emailErrorText}
-              </strong>
-            </Alert>)}
-
-
-            <Divider></Divider>
-            <Button
-              href={`${API_URL}/api/auth/google`}
-              fullWidth
-              variant="outlined"
-              startIcon={<GoogleIcon />}
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In with Google
-            </Button>
-
-            <Grid
-              container
+              <Grid container 
               direction="column"
               justifyContent="flex-end"
               alignItems="center"

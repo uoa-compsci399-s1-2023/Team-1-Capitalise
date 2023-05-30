@@ -30,24 +30,30 @@ export default function AdminDeleteButton() {
 
   // for dialog pop-up
   const [open, setOpen] = React.useState(false);
-
+  // Not just for admins, project members can delete now as well.
   const adminDeleteProject = async () => {
     const token = auth.getToken();
     if (token) {
-      fetch(`${API_URL}/api/projects/${project._id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "x-auth-token": token,
-        },
-        body: JSON.stringify({
-          projectId: project._id,
-        }),
-      }).then(() => {
-        // we need to redirect admin back to projects page upon project delete.
-        navigate("/projects");
-      });
+      const confirmDelete = window.confirm("Are you sure you want to remove this project?");
+      if (confirmDelete) {
+        return fetch(`${API_URL}/api/projects/${project._id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+          body: JSON.stringify({
+            projectId: project._id,
+          }),
+        }).then((resp) => {
+          if (resp && resp.ok) {
+            auth.getLatestUser(); // To reenable upload btn if graduate
+            // we need to redirect admin back to projects page upon project delete.
+            navigate("/projects");
+          }
+        });
+      }
     }
   };
 

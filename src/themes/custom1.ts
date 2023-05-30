@@ -43,6 +43,7 @@ declare module "@mui/material/styles" {
     whiteButton: PaletteColorOptions;
     editBtnGrey: SimplePaletteColorOptions;
     githubBtn: PaletteColorOptions;
+    kaggleBtn: PaletteColorOptions;
     linkedinBtn: PaletteColorOptions;
     spinnerColor: SimplePaletteColorOptions;
   }
@@ -59,6 +60,7 @@ declare module "@mui/material/Button" {
     whiteButton: true;
     editBtnGrey: true;
     githubBtn: true;
+    kaggleBtn: true;
     linkedinBtn: true;
     spinnerColor: true;
   }
@@ -116,6 +118,9 @@ let theme = createTheme({
     },
     linkedinBtn: {
       main: "#007EBB",
+    },
+    kaggleBtn: {
+      main: "#20beff"
     },
     spinnerColor: {
       main: "#f7f7f7"
