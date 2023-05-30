@@ -74,7 +74,7 @@ router.patch("/:projectId", [auth, graduate], updateProjectById);
 router.patch("/addUser/:id/:userid", [auth, graduate], addUserToProject);
 
 //Delete the project. Will carry out general authorization first, before admin authorization.
-router.delete("/:projectId", [auth, admin], deleteProject);
+router.delete("/:projectId", [auth, graduate], deleteProject);
 
 //Adds a badge to a project
 router.patch("/badges/award", [auth, admin], awardBadge);
