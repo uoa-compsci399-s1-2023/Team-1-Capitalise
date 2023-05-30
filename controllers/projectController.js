@@ -15,7 +15,8 @@ const getAllProjects = async (req, res) => {
     .populate("category", "value -_id")
     .populate("badges", "value")
     .populate("tags", "name")
-    .sort("name");
+    .collation({ locale: "en", strength: 2 })
+    .sort({ name: 1 }); 
   return res.status(200).send(projects);
 };
 
