@@ -52,6 +52,34 @@ Backend Technologies:
 
 ![](/markdown/FuturePlans.svg)
 
+- A super secret feature ~ codename: WAM
+  - Watch out for this
+  
+- Further refactoring/optimization of logic
+
+- Remove API gateway interaction with S3. Make client post directly to S3
+  - This will allow remove the size limit on files 
+  
+- Dark mode
+  - Easy on the eyes
+ 
+- A search user function/feature
+  - This will allow anyone to find any user via the search bar
+ 
+- An admin view/edit user function
+  - This will allow an admin to view all users from the admin dashboard
+  
+- A project share function
+  - Similar to the share function commonly found on social media
+  
+- Client projects page where students can view the list of projects they can choose from during the beginning of the current semester
+  - This will then update to show what projects are in development and what teams are implementing them
+  
+- A system that allows students to form teams and then add their top 3-5 projects they would like to do
+
+- Clickable summary boxes for an admin that navigates to the header name e.g Categories
+
+
 ![](/markdown/Acknowledgements.svg)
 
 Special thanks to the AWS team at the University of Auckland
