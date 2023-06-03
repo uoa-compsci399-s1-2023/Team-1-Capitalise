@@ -83,7 +83,7 @@ Now simply run `npm run dev` || `nodemon index.js`
 
 ![](/markdown/DeploymentUsage.svg)
 
-- Home Page
+- Home Page. This is what everyone sees when they first vist out website [Capitalise](https://www.capitalise.space/)
 ![](/markdown/DeploymentImages/homepage.png)
 ![](/markdown/DeploymentImages/homepage2.png)
 
@@ -98,10 +98,10 @@ Now simply run `npm run dev` || `nodemon index.js`
 - What a uploaded project looks like if you are not part of it
 ![](/markdown/DeploymentImages/projectDefault.png)
 
-- What a uploaded project looks like if you are part of it
+- What a uploaded project looks like if you are part of it. Notice the edit button
 ![](/markdown/DeploymentImages/projectEdit.png)
 
-- A User profile
+- A User profile for registered users
 ![](/markdown/DeploymentImages/userProfile.png)
 
 - Customization to your own profile
