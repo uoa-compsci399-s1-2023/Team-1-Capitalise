@@ -23,7 +23,7 @@ We are formed of 6 Computer Science graduates who have taken papers such as CS23
 Capitalise is a one-stop shop where students can upload their capstone projects for the world to see, and employers can view them conveniently without reading through hundreds of lines of code. 
 
 Our team used [Jira Software](https://www.atlassian.com/software/jira) as our project management tool. Additionaly we kept track of our client and group meetings through a shared google drive
-
+![](/markdown/roadmap.svg)
 
 
 ![](/markdown/Technologies.svg)
