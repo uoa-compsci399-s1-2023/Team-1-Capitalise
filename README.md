@@ -1,4 +1,4 @@
-****# Capitalise
+# Capitalise
 
 ![](/markdown/TeamName.svg)
 
@@ -88,7 +88,7 @@ Now simply run `npm run dev` || `nodemon index.js`
 ![](/markdown/DeploymentImages/homepage2.png)
 
 - Ability anyone to search and filter projects
-![](/markdown/DeploymentImages/searchFunction.png)
+![](/markdown/DeploymentImages/searchFUnction.png)
 
 - Students can upload a project
 ![](/markdown/DeploymentImages/uploadProject1.png)
@@ -112,6 +112,8 @@ Now simply run `npm run dev` || `nodemon index.js`
 
 - Customizable admin features 
 ![](/markdown/DeploymentImages/adminUploadAward.png)
+
+![](/markdown/FuturePlans.svg)
 
 - **A super secret feature ~ codename: WAM**
   - Watch out for this
