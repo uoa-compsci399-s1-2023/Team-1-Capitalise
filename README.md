@@ -9,7 +9,7 @@ We are formed of 6 Computer Science graduates who have taken papers such as CS23
 **Frontend Team:**
 
 - Yathi Kimbadi - Frontend Developer
-- Albert Lin - Full Stack Developer
+- Albert Lin - Frontend Developer
 - Rachel Wu - Frontend and UI/UX Developer
 - Daniel Quach - Frontend and UI/UX Developer
 
@@ -19,6 +19,9 @@ We are formed of 6 Computer Science graduates who have taken papers such as CS23
 - Andrew Loh - Backend and Cloud Engineer
 
 ![](/markdown/ProjectInformation.svg)
+
+Capitalise is a one-stop shop where students can upload their capstone projects for the world to see, and employers can view them conveniently without reading through hundreds of lines of code. 
+
 
 ![](/markdown/Technologies.svg)
 
