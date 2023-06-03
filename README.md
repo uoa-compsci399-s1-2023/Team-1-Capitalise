@@ -88,8 +88,7 @@ Now simply run `npm run dev` || `nodemon index.js`
 ![](/markdown/DeploymentImages/homepage2.png)
 
 - Ability anyone to search and filter projects
-![](/markdown/DeploymentImages/searchFUnction.png)
-![](/markdown/DeploymentImages/filterFunction.png)
+
 
 - Students can upload a project
 ![](/markdown/DeploymentImages/uploadProject1.png)
