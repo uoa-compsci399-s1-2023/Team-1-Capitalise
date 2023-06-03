@@ -22,6 +22,30 @@ Backend Team:
 
 ![](/markdown/Technologies.svg)
 
+Hosting Technologies:
+
+- [AWS EC2](https://aws.amazon.com/ec2/) (Default backend)
+- [AWS Lambda](https://aws.amazon.com/lambda/) (Serverless backend / relegated backend)
+- [AWS Amplify](https://aws.amazon.com/amplify/) (Frontend)
+
+Frontend Technologies:
+
+- [React](https://react.dev/) v18.2.0
+- [Vite](https://vitejs.dev/) v4.2.1
+- [Mui](https://mui.com/) v5.11.16
+- [TypeScript](https://www.typescriptlang.org/) v4.9.5
+
+Backend Technologies:
+
+- JavaScript
+  - [Nodejs](https://nodejs.org/en) v20.0.0
+  - [Express.js](https://expressjs.com/) v4.18.2
+- [Google OAuth 2.0](https://developers.google.com/identity/protocols/oauth2)
+- [MongoDB](https://www.mongodb.com/)
+- [AWS API Gateway](https://aws.amazon.com/api-gateway/)
+- [AWS S3](https://aws.amazon.com/s3/)
+
+
 ![](/markdown/Installation.svg)
 
 ![](/markdown/DeploymentUsage.svg)
@@ -29,3 +53,10 @@ Backend Team:
 ![](/markdown/FuturePlans.svg)
 
 ![](/markdown/Acknowledgements.svg)
+
+Special thanks to the AWS team at the University of Auckland
+  - Craig Barton
+  - Ruskin
+  - Nicolle Loh
+  - Mahek Nangia
+
