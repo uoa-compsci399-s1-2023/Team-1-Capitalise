@@ -64,8 +64,8 @@ Now that all the require modules are installed create a .env file in the /backen
 | ------------- | ------------- |
 | MONGO_URL | URL of a mongoDb  |
 | JWT_PRIVATE_KEY  | JWT key to encrypt data  |
-| ACCESSKEY  | AWS IAM Access key |
-| SECRETKEY  | AWS IAM Secret key |
+| ACCESSKEY  | AWS IAM Access key with s3 permissions|
+| SECRETKEY  | AWS IAM Secret key with s3 permissions|
 | BUCKET  | S3 bucket name  |
 | REGION  | S3 region |
 | GOOGLE_CLIENT_ID  | Google Oauth ID|
