@@ -1,6 +1,6 @@
 # Capitalise
 
-![](/markdown/TeamName.svg)
+![/markdown/TeamName.svg](https://www.capitalise.space/)
 
 ![](/markdown/Team.svg)
 
