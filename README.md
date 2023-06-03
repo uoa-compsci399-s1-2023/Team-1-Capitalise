@@ -78,6 +78,10 @@ Now that all the require modules are installed create a .env file in the /backen
 | NODEMAILERPASS  | email password |
 | REDIRECT_API  | API gateway redirect |
 
+If working locally simplay add `PORT=3000` to the .env file
+
+Now run `npm run dev` || `nodemon index.js`
+The server should be accessible via Postman
 
 ![](/markdown/DeploymentUsage.svg)
 
