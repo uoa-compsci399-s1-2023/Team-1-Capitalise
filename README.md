@@ -62,10 +62,23 @@ Now that all the require modules are installed create a .env file in the /backen
 
 |      Name     |  Description  |
 | ------------- | ------------- |
-| MONGO_URL | url of a mongoDb  |
-| JWT_PRIVATE_KEY  | string of text to encrypt data  |
-| JWT_PRIVATE_KEY  | string of text to encrypt data  |
+| MONGO_URL | URL of a mongoDb  |
+| JWT_PRIVATE_KEY  | JWT key to encrypt data  |
+| ACCESSKEY  | AWS IAM Access key |
+| SECRETKEY  | AWS IAM Secret key |
+| BUCKET  | S3 bucket name  |
+| REGION  | S3 region |
+| GOOGLE_CLIENT_ID  | Google Oauth ID|
+| GOOGLE_CLIENT_SECRET  | Google Oauth Secret|
+| DEFAULTPROFILEPICTURE  | default url of a user profile picture |
+| DEFAULTTHUMBNAIL  | default thumbnail of a project|
+| NODEMAILEREMAIL  | confimation email of our project|
+| NODEMAILERPASS  | email password |
+| REDIRECT_API  | API gateway redirect |
 
+For local development add `PORT=3000` to the .env file
+
+Now simply run `npm run dev` || `nodemon index.js`
 
 ![](/markdown/DeploymentUsage.svg)
 
