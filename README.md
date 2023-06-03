@@ -6,14 +6,14 @@
 
 We are formed of 6 Computer Science graduates who have taken papers such as CS235, CS335, CS351, and CS345. We have demonstrated the skills gained from these courses to bring to you Capitalise.space.
 
-Frontend Team:
+**Frontend Team:**
 
 - Yathi Kimbadi - Frontend Developer
 - Albert Lin - Full Stack Developer
 - Rachel Wu - Frontend and UI/UX Developer
 - Daniel Quach - Frontend and UI/UX Developer
 
-Backend Team:
+**Backend Team:**
 
 - Lucas Eng - Backend and Cloud Engineer
 - Andrew Loh - Backend and Cloud Engineer
@@ -22,20 +22,20 @@ Backend Team:
 
 ![](/markdown/Technologies.svg)
 
-Hosting Technologies:
+**Hosting Technologies:**
 
 - [AWS EC2](https://aws.amazon.com/ec2/) (Default backend)
 - [AWS Lambda](https://aws.amazon.com/lambda/) (Serverless backend / relegated backend)
 - [AWS Amplify](https://aws.amazon.com/amplify/) (Frontend)
 
-Frontend Technologies:
+**Frontend Technologies:**
 
 - [React](https://react.dev/) v18.2.0
 - [Vite](https://vitejs.dev/) v4.2.1
 - [Mui](https://mui.com/) v5.11.16
 - [TypeScript](https://www.typescriptlang.org/) v4.9.5
 
-Backend Technologies:
+**Backend Technologies:**
 
 - JavaScript
   - [Nodejs](https://nodejs.org/en) v20.0.0
@@ -52,37 +52,39 @@ Backend Technologies:
 
 ![](/markdown/FuturePlans.svg)
 
-- A super secret feature ~ codename: WAM
+- **A super secret feature ~ codename: WAM**
   - Watch out for this
   
-- Further refactoring/optimization of logic
+- **Further refactoring/optimization of logic**
 
-- Remove API gateway interaction with S3. Make client post directly to S3
+- **Remove API gateway interaction with S3. Make client post directly to S3**
   - This will allow remove the size limit on files 
   
-- Dark mode
+- **Dark mode**
   - Easy on the eyes
  
-- A search user function/feature
+- **A search user function/feature**
   - This will allow anyone to find any user via the search bar
  
-- An admin view/edit user function
+- **An admin view/edit user function**
   - This will allow an admin to view all users from the admin dashboard
   
-- A project share function
+- **A project share function**
   - Similar to the share function commonly found on social media
   
-- Client projects page where students can view the list of projects they can choose from during the beginning of the current semester
+- **Client projects page where students can view the list of projects they can choose from during the beginning of the current semester**
   - This will then update to show what projects are in development and what teams are implementing them
   
-- A system that allows students to form teams and then add their top 3-5 projects they would like to do
-
-- Clickable summary boxes for an admin that navigates to the header name e.g Categories
+- **A system that allows students to form teams and then add their top 3-5 projects they would like to do**
+ 
+  
+- **Clickable summary boxes for an admin that navigates to the header name e.g Categories**
+  - This will make navigation easier and uphold the principle of big box means clickable
 
 
 ![](/markdown/Acknowledgements.svg)
 
-Special thanks to the AWS team at the University of Auckland
+**Special thanks to the AWS team at the University of Auckland**
   - Craig Barton
   - Ruskin
   - Nicolle Loh
