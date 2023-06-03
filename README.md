@@ -51,6 +51,22 @@ Capitalise is a one-stop shop where students can upload their capstone projects 
 
 ![](/markdown/Installation.svg)
 
+**Backend Installation**
+Simply clone our repository using 
+```
+git clone https://github.com/uoa-compsci399-s1-2023/project-team-1
+cd backend
+npm install
+```
+Now that all the require modules are installed create a .env file in the /backend directory and add these variables
+
+|      Name     |  Description  |
+| ------------- | ------------- |
+| MONGO_URL | url of a mongoDb  |
+| JWT_PRIVATE_KEY  | string of text to encrypt data  |
+| JWT_PRIVATE_KEY  | string of text to encrypt data  |
+
+
 ![](/markdown/DeploymentUsage.svg)
 
 ![](/markdown/FuturePlans.svg)
