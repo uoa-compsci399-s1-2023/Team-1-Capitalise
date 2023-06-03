@@ -83,7 +83,36 @@ Now simply run `npm run dev` || `nodemon index.js`
 
 ![](/markdown/DeploymentUsage.svg)
 
-![](/markdown/FuturePlans.svg)
+- Home Page
+![](/markdown/DeploymentImages/homepage.png)
+![](/markdown/DeploymentImages/homepage2.png)
+
+- Ability anyone to search and filter projects
+![](/markdown/DeploymentImages/searchFUnction.png)
+![](/markdown/DeploymentImages/filterFunction.png)
+
+- Students can upload a project
+![](/markdown/DeploymentImages/uploadProject1.png)
+![](/markdown/DeploymentImages/uploadProject2.png)
+![](/markdown/DeploymentImages/uploadProject3.png)
+
+- What a uploaded project looks like if you are not part of it
+![](/markdown/DeploymentImages/projectDefault.png)
+
+- What a uploaded project looks like if you are part of it
+![](/markdown/DeploymentImages/projectEditMode.png)
+
+- A User profile
+![](/markdown/DeploymentImages/userProfile.png)
+
+- Customization to your own profile
+![](/markdown/DeploymentImages/userProfile2.png)
+
+- An Admin dashboard
+![](/markdown/DeploymentImages/adminDashboard.png)
+
+- Customizable admin features 
+![](/markdown/DeploymentImages/adminUploadAward.png)
 
 - **A super secret feature ~ codename: WAM**
   - Watch out for this
