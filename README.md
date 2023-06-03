@@ -62,14 +62,56 @@ Now that all the require modules are installed create a .env file in the /backen
 
 |      Name     |  Description  |
 | ------------- | ------------- |
-| MONGO_URL | url of a mongoDb  |
-| JWT_PRIVATE_KEY  | string of text to encrypt data  |
-| JWT_PRIVATE_KEY  | string of text to encrypt data  |
+| MONGO_URL | URL of a mongoDb  |
+| JWT_PRIVATE_KEY  | JWT key to encrypt data  |
+| SECRET  | JWT Token  |
+| ACCESSKEY  | AWS IAM Access key with s3 permissions|
+| SECRETKEY  | AWS IAM Secret key with s3 permissions|
+| BUCKET  | S3 bucket name  |
+| REGION  | S3 region |
+| GOOGLE_CLIENT_ID  | Google Oauth ID|
+| GOOGLE_CLIENT_SECRET  | Google Oauth Secret|
+| DEFAULTPROFILEPICTURE  | default url of a user profile picture |
+| DEFAULTTHUMBNAIL  | default thumbnail of a project|
+| NODEMAILEREMAIL  | confimation email of our project|
+| NODEMAILERPASS  | email password |
+| REDIRECT_API  | API gateway redirect |
 
+For local development add `PORT=3000` to the .env file
+
+Now simply run `npm run dev` || `nodemon index.js`
 
 ![](/markdown/DeploymentUsage.svg)
 
-![](/markdown/FuturePlans.svg)
+- Home Page
+![](/markdown/DeploymentImages/homepage.png)
+![](/markdown/DeploymentImages/homepage2.png)
+
+- Ability anyone to search and filter projects
+
+
+- Students can upload a project
+![](/markdown/DeploymentImages/uploadProject1.png)
+![](/markdown/DeploymentImages/uploadProject2.png)
+![](/markdown/DeploymentImages/uploadProject3.png)
+
+- What a uploaded project looks like if you are not part of it
+![](/markdown/DeploymentImages/projectDefault.png)
+
+- What a uploaded project looks like if you are part of it
+![](/markdown/DeploymentImages/projectEditMode.png)
+
+- A User profile
+![](/markdown/DeploymentImages/userProfile.png)
+
+- Customization to your own profile
+![](/markdown/DeploymentImages/userProfile2.png)
+
+- An Admin dashboard
+![](/markdown/DeploymentImages/adminDashboard.png)
+
+- Customizable admin features 
+![](/markdown/DeploymentImages/adminUploadAward.png)
 
 - **A super secret feature ~ codename: WAM**
   - Watch out for this
