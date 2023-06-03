@@ -88,7 +88,7 @@ Now simply run `npm run dev` || `nodemon index.js`
 ![](/markdown/DeploymentImages/homepage2.png)
 
 - Ability anyone to search and filter projects
-
+![](/markdown/DeploymentImages/searchFunction.png)
 
 - Students can upload a project
 ![](/markdown/DeploymentImages/uploadProject1.png)
@@ -99,7 +99,7 @@ Now simply run `npm run dev` || `nodemon index.js`
 ![](/markdown/DeploymentImages/projectDefault.png)
 
 - What a uploaded project looks like if you are part of it
-![](/markdown/DeploymentImages/projectEditMode.png)
+![](/markdown/DeploymentImages/projectEdit.png)
 
 - A User profile
 ![](/markdown/DeploymentImages/userProfile.png)
