@@ -31,7 +31,7 @@ const getTagByNameOrId = async(req, res) => {
         })
         }
     catch(err){
-        console.log('Not an id, but ok')
+        //console.log('Not an id, but ok')
     }
 
     //if not by id check if its name

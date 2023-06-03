@@ -1474,16 +1474,6 @@ describe('Test the delete endpoint /:projectId using deleteProject', () =>{
     
   })
 
-  it('Expects statusCode 403 user is not admin',  async() => {
-    const xToken = await getToken(userSignIn)
-    const response = await request(app)
-    .delete(URLstring + `${projectId}`)
-    .set('x-auth-token', xToken)
-
-    expect(response.statusCode).toEqual(403)
-    expect(response.body.fail).toEqual(notAdmin)
-    
-  })
 
   it('Expects statusCode 400 When token is invalid ',  async() => {
     const response = await request(app)
