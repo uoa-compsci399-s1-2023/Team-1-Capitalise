@@ -83,6 +83,21 @@ If working locally simply add `PORT=3000` to the .env file
 Now run `npm run dev` || `nodemon index.js`
 The server should be accessible via Postman
 
+**Frontend Installation**
+Simply clone the repository and navigate to the client folder
+
+```
+git clone https://github.com/uoa-compsci399-s1-2023/project-team-1
+cd client
+npm install
+```
+Now all the required dependencies are installed simply run 
+
+```
+npm run dev
+```
+
+
 ![](/markdown/DeploymentUsage.svg)
 
 - Home Page. This is what everyone sees when they first vist out website [Capitalise](https://www.capitalise.space/)
