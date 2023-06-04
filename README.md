@@ -84,6 +84,7 @@ Now run `npm run dev` || `nodemon index.js`
 The server should be accessible via Postman
 
 **Frontend Installation**
+
 Simply clone the repository and navigate to the client folder
 
 ```
