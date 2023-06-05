@@ -50,7 +50,7 @@ Our team used [Jira Software](https://www.atlassian.com/software/jira) as our pr
 - [AWS API Gateway](https://aws.amazon.com/api-gateway/)
 - [AWS S3](https://aws.amazon.com/s3/)
 
-This a list of the main technologies used, for a full list of dependencies check the package.json in the servver and client folder.
+This a list of the main technologies used, for a full list of dependencies check the package.json in the server and client folder.
 
 ![](/markdown/Installation.svg)
 
