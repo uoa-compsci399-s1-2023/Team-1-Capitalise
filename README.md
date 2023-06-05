@@ -107,6 +107,7 @@ Then:
 npm run preview
 ```
 To view the build
+
 ![](/markdown/DeploymentUsage.svg)
 
 - Home Page. This is what everyone sees when they first vist out website [Capitalise](https://www.capitalise.space/)
