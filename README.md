@@ -50,11 +50,12 @@ Our team used [Jira Software](https://www.atlassian.com/software/jira) as our pr
 - [AWS API Gateway](https://aws.amazon.com/api-gateway/)
 - [AWS S3](https://aws.amazon.com/s3/)
 
+This a list of the main technologies used, for a full list of dependencies check the package.json in the servver and client folder.
 
 ![](/markdown/Installation.svg)
 
 **Backend Installation**
-Simply clone our repository using 
+Simply clone our repository in a terminal, make sure you have node.js and git installed on your computer
 ```
 git clone https://github.com/uoa-compsci399-s1-2023/project-team-1
 cd backend
@@ -92,13 +93,20 @@ git clone https://github.com/uoa-compsci399-s1-2023/project-team-1
 cd client
 npm install
 ```
-Now all the required dependencies are installed simply run 
+For running an development environment enter in the terminal
 
 ```
 npm run dev
 ```
-
-
+For a build enter:
+```
+npm run build
+```
+Then:
+```
+npm run preview
+```
+To view the build
 ![](/markdown/DeploymentUsage.svg)
 
 - Home Page. This is what everyone sees when they first vist out website [Capitalise](https://www.capitalise.space/)
