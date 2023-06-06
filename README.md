@@ -101,9 +101,13 @@ An API Gateway api would need to be created.
 Simply navigate to [AWS API Gateway](https://ap-southeast-2.console.aws.amazon.com/apigateway/main/apis?region=ap-southeast-2) (Changing the region if you wish)
 Then create a proxy endpoint that handles any HTTP request method
 
+Deploy the api and then go to the options => Integration Response
+
+Open the dropdown arrow add x-auth-token to Access-Control-Allow-Headers
+
 ![](/markdown/proxy.png)
 
-Deploy the api and copy the a _invoke api_ url
+Deploy the api and copy the a _invoke api_ url (found in stages on the left hand menu)
 
 Paste the API_URL found in config.ts file
 
