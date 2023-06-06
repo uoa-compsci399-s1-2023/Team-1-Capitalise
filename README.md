@@ -86,6 +86,8 @@ The server should be accessible via Postman
 
 **Frontend Installation**
 
+
+
 Simply clone the repository and navigate to the client folder
 
 ```
@@ -93,6 +95,20 @@ git clone https://github.com/uoa-compsci399-s1-2023/project-team-1
 cd client
 npm install
 ```
+Since we our endpoints only accepts request from the domain https://www.capitalise.space/.
+An API Gateway api would need to be created.
+
+Simply navigate to [AWS API Gateway](https://ap-southeast-2.console.aws.amazon.com/apigateway/main/apis?region=ap-southeast-2) (Changing the region if you wish)
+Then create a proxy endpoint that handles any HTTP request method
+
+![](/markdown/proxy.png)
+
+Deploy the api and copy the a _invoke api_ url
+
+Paste the API_URL found in config.ts file
+
+![](/markdown/newURL.png)
+
 For running an development environment enter in the terminal
 
 ```
