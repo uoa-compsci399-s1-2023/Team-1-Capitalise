@@ -100,27 +100,27 @@ Since our endpoints only accepts request from the domain https://www.capitalise.
 
 We would either create AN AWS API Gateway (more fun) API OR use the backend localhost (easier)
 
-AWS API Gateway API
+- AWS API Gateway API
 
-  Simply navigate to [AWS API Gateway](https://ap-southeast-2.console.aws.amazon.com/apigateway/main/apis?region=ap-southeast-2) (Changing the region if you wish)
+  - Simply navigate to [AWS API Gateway](https://ap-southeast-2.console.aws.amazon.com/apigateway/main/apis?region=ap-southeast-2) (Changing the region if you wish)
 
-  Create A REST API, then create a proxy endpoint that handles any HTTP request method
+  - Create A REST API, then create a proxy endpoint that handles any HTTP request method
 
-  Deploy the api and then go to the options => Integration Response
+  - Deploy the api and then go to the options => Integration Response
 
-  Open the dropdown arrow add x-auth-token to Access-Control-Allow-Headers
+  - Open the dropdown arrow add x-auth-token to Access-Control-Allow-Headers
 
   ![](/markdown/proxy.png)
 
-  Deploy the api and copy the a _invoke api_ url (found in stages on the left hand menu)
+  - Deploy the api and copy the a _invoke api_ url (found in stages on the left hand menu)
 
-  Paste the API_URL found in config.ts file
+  - Paste the API_URL found in config.ts file
 
   ![](/markdown/newURL.png)
 
-Localhost
+- Localhost
 
-  Simply change the API_URL variable in the config.ts file to match the localhost URL when running the backend server on localhost. (Assuming the backend works for you)
+  - Simply change the API_URL variable in the config.ts file to match the localhost URL when running the backend server on localhost. (Assuming the backend works for you)
 
 For running an development environment enter in the terminal
 
