@@ -95,12 +95,16 @@ git clone https://github.com/uoa-compsci399-s1-2023/project-team-1
 cd client
 npm install
 ```
+
 Since our endpoints only accepts request from the domain https://www.capitalise.space/
 
-An AWS API Gateway api would need to be created.
+We would either create AN AWS API Gateway (more fun) api || use the backend localhost (easier)
+
+**AWS API Gateway API **
 
 Simply navigate to [AWS API Gateway](https://ap-southeast-2.console.aws.amazon.com/apigateway/main/apis?region=ap-southeast-2) (Changing the region if you wish)
-Then create a proxy endpoint that handles any HTTP request method
+
+Create A REST API, then create a proxy endpoint that handles any HTTP request method
 
 Deploy the api and then go to the options => Integration Response
 
@@ -113,6 +117,10 @@ Deploy the api and copy the a _invoke api_ url (found in stages on the left hand
 Paste the API_URL found in config.ts file
 
 ![](/markdown/newURL.png)
+
+**Localhost**
+
+Simply change the API_URL variable in the config.ts file to match the localhost URL when running the backend server on localhost. (Assuming the backend works for you)
 
 For running an development environment enter in the terminal
 
