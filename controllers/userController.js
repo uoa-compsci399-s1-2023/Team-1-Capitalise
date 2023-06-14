@@ -122,6 +122,12 @@ const postUser = async (req, res) => {
       myUserType = "graduate";
     }
 
+    if (myUserType == "visitor") {
+      return res.status(400).json({
+        fail: "Visitor account creations have been disabled for now.",
+      });
+    }
+
     const password = await bcrypt.hash(req.body.password, 10);
 
     if (!req.body.status) {
@@ -138,8 +144,7 @@ const postUser = async (req, res) => {
       "projectuser2@aucklanduni.ac.nz",
       "projectvisitor@gmail.com",
       "tagtestvisitor@gmail.com",
-      "tagtestuser@aucklanduni.ac.nz"
-      
+      "tagtestuser@aucklanduni.ac.nz",
     ];
     if (testEmails.includes(req.body.email.toLowerCase())) {
       req.body.status = "Active";
@@ -199,6 +204,12 @@ const postGoogleUser = async (profile) => {
       myUserType = "visitor";
     } else {
       myUserType = "graduate";
+    }
+
+    if (myUserType == "visitor") {
+      return res.status(400).json({
+        fail: "Visitor account creations have been disabled for now.",
+      });
     }
 
     user = new User({
