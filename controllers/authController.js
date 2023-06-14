@@ -18,7 +18,7 @@ const authenticateUser = async (req, res) => {
   let user = "";
   //Check if a user exists with the same username specified in the request.
   if (req.body.email) {
-    console.log(req.body.email)
+    console.log(req.body.email);
     user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(401).send("Invalid email or password.");
   } else if (req.body.username) {
@@ -68,8 +68,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       //callbackURL: "http://localhost:3000/api/auth/google/callback",
-      callbackURL:
-        `${process.env.REDIRECT_API}/api/auth/google/callback`,
+      callbackURL: `${process.env.REDIRECT_API}/api/auth/google/callback`,
       passReqToCallback: true,
     },
     async function (request, accessToken, refreshToken, profile, done) {
@@ -100,7 +99,9 @@ const googleOAuth = async (req, res) => {
 //Endpoint which is called once callback has occured. Provides a JSON Web Token in the response header. Session is destroyed, so can only be called once.
 const protected2 = async (req, res) => {
   let user = await User.findOne({ email: req.user.email });
-  if (!user) return res.status(400).send("Error: No user provided!");
+  //if (!user) return res.status(400).send("Error: No user provided!");
+  if (!user)
+    return res.status(400).redirect(`//www.capitalise.space/user/novisitors`);
   const token = user.generateAuthToken();
   res.redirect(`//www.capitalise.space/googleSuccessRedirect?token=${token}`);
   req.session.destroy();
