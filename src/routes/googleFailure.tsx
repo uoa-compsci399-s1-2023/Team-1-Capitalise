@@ -35,7 +35,7 @@ export default function GoogleFailure() {
                     data-testid="loader" />
             </Grid>
             <Grid item >
-                <Typography fontWeight={500} color={"#ff1507"} sx={{m: 6 }}>Unable to link with Google account. Redirecting back to Homepage...</Typography>
+                <Typography fontWeight={500} color={"#ff1507"} sx={{m: 6 }}>Unable to link with Google account.</Typography>
             </Grid>
         </Grid>
        </>
