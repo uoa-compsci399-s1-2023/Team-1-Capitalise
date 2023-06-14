@@ -10,12 +10,13 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useAuth } from "../../customHooks/useAuth";
 import Logo from "../../assets/Logo.svg";
-import { Alert, AlertTitle, Divider, Fade } from "@mui/material";
+import { Alert, AlertTitle, Divider, Fade, IconButton, Tooltip } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../api/config";
+
 //Copyright bottom of page
 
 //Sign Up Function
@@ -163,6 +164,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="off"
+                helperText="Capstone Students: Use @aucklanduni.ac.nz email"
                 value={email}
                 error={!!emailErrorText}              
                 onChange={(e) => setEmail(e.target.value)}

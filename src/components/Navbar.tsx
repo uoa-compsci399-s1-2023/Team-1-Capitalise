@@ -119,6 +119,7 @@ function ResponsiveAppBar() {
 
   // App bar
   if (NoNavPages.includes(window.location.pathname)) {
+    console.log(window.location.pathname);
     return null;
   }
   return (

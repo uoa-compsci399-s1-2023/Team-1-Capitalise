@@ -152,9 +152,8 @@ function SignInSide() {
               noValidate 
               onSubmit={handleSubmit} 
               sx={{
-                paddingLeft: 5, 
-                paddingRight: 5,
-                width: '100%'
+                mt: 1,
+                mx: 5, 
               }} 
             >
               <TextField
