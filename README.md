@@ -7,7 +7,7 @@ We are formed of 6 Computer Science graduates who have taken papers such as CS23
 
 **Frontend Team:**
 
-- Yathi Kimbadi - Frontend Developer
+- Yathi Kidamdi - Frontend Developer
 - Albert Lin - Frontend Developer
 - Rachel Wu - Frontend and UI/UX Designer
 - Daniel Quach - Frontend and UI/UX Designer
