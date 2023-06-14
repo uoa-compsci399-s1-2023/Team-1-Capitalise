@@ -124,7 +124,7 @@ const postUser = async (req, res) => {
 
     if (myUserType == "visitor") {
       return res.status(400).json({
-        fail: "Visitor account creations have been disabled for now.",
+        fail: "Visitor account creations have been temporarily disabled! Please create an account using your aucklanduni.ac.nz email.",
       });
     }
 
