@@ -10,12 +10,13 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useAuth } from "../../customHooks/useAuth";
 import Logo from "../../assets/Logo.svg";
-import { Alert, AlertTitle, Divider, Fade } from "@mui/material";
+import { Alert, AlertTitle, Divider, Fade, IconButton, Tooltip } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../api/config";
+
 //Copyright bottom of page
 
 //Sign Up Function
@@ -36,11 +37,14 @@ export default function SignUp() {
   const delay = (ms: number | undefined) =>
     new Promise((res) => setTimeout(res, ms));
   useEffect(() => {
+    if (auth.error) {
+      setEmailErrorText(auth.error);
+      auth.error = "";
+  
+    } else
     if (auth.success) {
       setSuccess(auth.success);
       auth.success = "";
-    } else if (auth.error) {
-      auth.error = "";
     }
   }, [auth.error, auth.success]);
 
@@ -119,16 +123,18 @@ export default function SignUp() {
           alignItems: "center",
         }}
       >
-        <Box
-          component="img"
-          src={Logo}
-          alt="logo"
-          sx={{
-            width: "300px",
-            flexGrow: 1,
-            display: { xs: "flex", md: "flex" },
-          }}
-        ></Box>
+        <Link href='/'>
+          <Box
+            component="img"
+            src={Logo}
+            alt="logo"
+            sx={{
+              width: "300px",
+              flexGrow: 1,
+              display: { xs: "flex", md: "flex" },
+            }}
+          ></Box>
+        </Link>
         <Typography sx={{ fontWeight: "700" }} component="h1" variant="h6">
           Register
         </Typography>
@@ -158,9 +164,9 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="off"
+                helperText="Capstone Students: Use @aucklanduni.ac.nz email"
                 value={email}
-                error={!!emailErrorText}
-                helperText={emailErrorText}
+                error={!!emailErrorText}              
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Grid>
@@ -204,13 +210,23 @@ export default function SignUp() {
           {success && (
             <Alert severity="success">
               <AlertTitle>Successfully signed up!</AlertTitle>
-              <strong>
+              
                 Please check your email for a confirmation email to activate
-                your account.{" "}
-              </strong>
+                your account.
+              
             </Alert>
           )}
+          {emailErrorText && (
+            <Alert severity="error">
+              <AlertTitle>Something went wrong!</AlertTitle>
+              
+                {emailErrorText}
+              
+            </Alert>
+          
 
+          )}
+      
           <Divider></Divider>
           <Button
             href={`${API_URL}/api/auth/google`}

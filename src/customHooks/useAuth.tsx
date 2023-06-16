@@ -97,10 +97,13 @@ function useProvideAuth(): TAuthReturnType {
       .then(resp => {
         if (!resp.ok) {
           // Set login error
-          resp.text().then(err => {setError(err); setIsLoading(false)} );
+          
+          resp.text().then(err => {setError(err); setIsLoading(false);} );
+       
         } else {
           // Otherwise save token and signin.
           resp.text().then(token => {
+            setSuccess('Successful.')
             localStorage.setItem('jwtToken', token);
             getLatestUser();
           })
@@ -116,7 +119,14 @@ function useProvideAuth(): TAuthReturnType {
       getUserPromise(savedToken)
         .then((resp) => {
           if (resp.ok) {
-            resp.json().then((jsonData) => setUser(jsonData));
+            resp.json().then((jsonData) => {
+              // Accounting for inconsistent backend response
+              const proj = jsonData.project
+              if (proj && typeof proj === "string") {
+                jsonData.project = {_id: proj, name: "unknown"}
+              }
+              setUser(jsonData);
+            });
           } else {
             resp.text().then(err => setError(err))
           }

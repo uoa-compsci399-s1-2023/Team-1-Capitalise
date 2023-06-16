@@ -2,7 +2,7 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 import {
   Box,
   Button,
@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import validator from "validator";
 import { useRef, useState } from "react";
-
 
 const FileInputField = styled(TextField)({
   minWidth: 200,
@@ -36,7 +35,7 @@ export default function ProjectUploadFileForm({
       value: "gitHub",
       type: "github",
       label: "GitHub",
-      suffix: 'com',
+      suffix: "com",
     },
     {
       value: "codePen",
@@ -62,7 +61,12 @@ export default function ProjectUploadFileForm({
       label: "Kaggle",
       suffix: "com",
     },
-    { value: "deployedSite", type: "deployedSite", label: "Deployed Site", suffix: "" },
+    {
+      value: "deployedSite",
+      type: "deployedSite",
+      label: "Deployed Site",
+      suffix: "",
+    },
   ];
   const [linkErrors, setLinkErrors] = useState<{ [key: string]: string }>({
     github: "",
@@ -85,7 +89,6 @@ export default function ProjectUploadFileForm({
       suffix: option.suffix,
     }))
   );
-  console.log(projectLinks[0].suffix, 'hello')  
   let bannerR = useRef<File | undefined>();
   let thumbnailR = useRef<File | undefined>();
   let imagesR = useRef<File[]>([]);
@@ -122,16 +125,15 @@ export default function ProjectUploadFileForm({
   const handleProjectImages = (event: any) => {
     event.preventDefault();
     if (Array.from(event.target.files).length > 5) {
-      setGalleryImageError(`Only 5 files are allowed to upload. Please reupload 5 or less images!`);
-      
+      setGalleryImageError(
+        `Only 5 files are allowed to upload. Please reupload 5 or less images!`
+      );
     } else {
-      setGalleryImageError('');
+      setGalleryImageError("");
       setImages(Array.from(event.target.files));
       imagesR.current = Array.from(event.target.files);
       projectFileStore(undefined, imagesR.current, undefined);
-
     }
-    
   };
 
   const handleThumbnail = (event: any) => {
@@ -153,12 +155,15 @@ export default function ProjectUploadFileForm({
       (url.startsWith("https://www." + urlWebsite) ||
         url.startsWith("https://" + urlWebsite) ||
         url.startsWith("http://" + urlWebsite) ||
-        !url
-      ));
+        !url)
+    );
   };
 
-  const validateLink = (linkType: string, linkValue: string, linkSuffix: string) => {
-
+  const validateLink = (
+    linkType: string,
+    linkValue: string,
+    linkSuffix: string
+  ) => {
     const errorMessages: { [key: string]: string } = {
       github: "Please make sure your link begins with https://github.com/...",
       codepen: "Please make sure your link begins with https://codepen.io/...",
@@ -166,29 +171,27 @@ export default function ProjectUploadFileForm({
       codesandbox:
         "Please make sure your link begins with https://codesandbox.io/...",
       kaggle: "Please make sure your link begins with https://kaggle.com/...",
-      deployedSite: "Please make sure your link is a website/URL. Format: https://(sitename).(suffix)/",
+      deployedSite:
+        "Please make sure your link is a website/URL. Format: https://(sitename).(suffix)/",
     };
 
-    if (linkType && linkValue)    
-    {
-  
-      if(linkType == "deployedSite") {
-        if(!isUrlValid(linkValue, "")) {
+    if (linkType && linkValue) {
+      if (linkType == "deployedSite") {
+        if (!isUrlValid(linkValue, "")) {
           setLinkErrors((prevErrors) => ({
             ...prevErrors,
             [linkType]: errorMessages[linkType],
           }));
           return false;
         }
-      } else if(!isUrlValid(linkValue, `${linkType}.${linkSuffix}/`)) {
+      } else if (!isUrlValid(linkValue, `${linkType}.${linkSuffix}/`)) {
         setLinkErrors((prevErrors) => ({
           ...prevErrors,
           [linkType]: errorMessages[linkType],
         }));
-        
-        return false;  
-      } 
-   
+
+        return false;
+      }
     }
     setLinkErrors((prevErrors) => ({
       ...prevErrors,
@@ -200,23 +203,19 @@ export default function ProjectUploadFileForm({
     event.preventDefault();
     // handle file upload logic here
     if (projectLinks.length > 0) {
-      const validations = projectLinks.map((option: any) => 
-        validateLink(option.type, option.value, option.suffix));
-    
+      const validations = projectLinks.map((option: any) =>
+        validateLink(option.type, option.value, option.suffix)
+      );
 
-      
       if (validations.every((isValid) => isValid)) {
-        console.log('yay')
         await projectFileToUpload(
           bannerR.current,
           imagesR.current,
           thumbnailR.current,
           projectLinks
         );
-        
-        
+
         await handleUpload();
-    
       }
     }
   };
@@ -241,10 +240,10 @@ export default function ProjectUploadFileForm({
             <Typography variant="subtitle2" gutterBottom>
               Upload a Project Banner
               <Tooltip title="Optional and Modifiable - features on top of your project page.">
-            <IconButton>
-              <HelpIcon fontSize="small"/>
-            </IconButton>
-          </Tooltip>
+                <IconButton>
+                  <HelpIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -265,8 +264,7 @@ export default function ProjectUploadFileForm({
                   : ""
               }
               fullWidth
-              helperText={<>This features at the top of your project page!
-              </>}
+              helperText={<>This features at the top of your project page!</>}
             />
           </Grid>
           <Grid item xs={12}>
@@ -283,10 +281,10 @@ export default function ProjectUploadFileForm({
             <Typography variant="subtitle2">
               Upload any Project images for your Gallery
               <Tooltip title="Optional & Modifiable - provide an interactive gallery of project photos">
-            <IconButton>
-              <HelpIcon fontSize="small"/>
-            </IconButton>
-          </Tooltip>
+                <IconButton>
+                  <HelpIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -301,7 +299,13 @@ export default function ProjectUploadFileForm({
             <FileInputField
               disabled
               error={!!galleryImageError}
-              helperText={galleryImageError ? galleryImageError : <>Accepts .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff</>}
+              helperText={
+                galleryImageError ? (
+                  galleryImageError
+                ) : (
+                  <>Accepts .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff</>
+                )
+              }
               value={
                 images.length
                   ? `The number of files uploaded: ${images.length}`
@@ -324,14 +328,13 @@ export default function ProjectUploadFileForm({
           {/* Upload Project Card Image */}
           <Grid item>
             <Typography variant="subtitle2">
-              Upload a Project Card image
+              Upload a Project Thumbnail
               <Tooltip title="Optional & Modifiable - features on top of project card.">
-            <IconButton>
-              <HelpIcon fontSize="small"/>
-            </IconButton>
-          </Tooltip>
+                <IconButton>
+                  <HelpIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Typography>
-            
           </Grid>
           <Grid item xs={12}>
             <input
@@ -351,7 +354,9 @@ export default function ProjectUploadFileForm({
                   : ""
               }
               fullWidth
-              helperText={<>Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff </>}
+              helperText={
+                <>Accepts: .jpg,.jpeg,.png,.svg,.gif,.bmp,.ico,.tiff </>
+              }
             />
           </Grid>
           <Grid item xs={12}>
@@ -367,10 +372,10 @@ export default function ProjectUploadFileForm({
             <Typography variant="subtitle2" gutterBottom>
               Project Links
               <Tooltip title="Optional - provide links that helps visitors and employers learn more about your project">
-            <IconButton>
-              <HelpIcon fontSize="small"/>
-            </IconButton>
-          </Tooltip>
+                <IconButton>
+                  <HelpIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Typography>
 
             {projectLinks.map((option: any, index: any) => (
@@ -382,9 +387,8 @@ export default function ProjectUploadFileForm({
                   label={option.label}
                   value={option.value}
                   error={!!linkErrors[option.type]}
-                  helperText={linkErrors[option.type]
-                      ? linkErrors[option.type]
-                      : ""
+                  helperText={
+                    linkErrors[option.type] ? linkErrors[option.type] : ""
                   }
                   onChange={(event) => handleLinkChange(event, index)}
                 />
@@ -401,7 +405,11 @@ export default function ProjectUploadFileForm({
           >
             Back
           </Button>
-          <Button variant="contained" onClick={handleClickOpen} sx={{ mt: 3, ml: 1 }}>
+          <Button
+            variant="contained"
+            onClick={handleClickOpen}
+            sx={{ mt: 3, ml: 1 }}
+          >
             Next
           </Button>
 
@@ -410,30 +418,35 @@ export default function ProjectUploadFileForm({
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
-          
           >
-            <DialogTitle id="alert-dialog-title" sx={{paddingLeft: 5, paddingRight: 5, paddingTop: 5}}>
+            <DialogTitle
+              id="alert-dialog-title"
+              sx={{ paddingLeft: 5, paddingRight: 5, paddingTop: 5 }}
+            >
               {"Are you ready to submit your project?"}
             </DialogTitle>
-            <DialogContent sx={{paddingLeft: 5, paddingRight: 5}}>
-              <DialogContentText id="alert-dialog-description" >
-                The information you have inputted will be used to create a project page. You will be redirected to the page
-                shortly after submitting.
+            <DialogContent sx={{ paddingLeft: 5, paddingRight: 5 }}>
+              <DialogContentText id="alert-dialog-description">
+                The information you have inputted will be used to create a
+                project page. You will be redirected to the page shortly after
+                submitting.
               </DialogContentText>
             </DialogContent>
-            <DialogActions sx={{paddingLeft: 5, paddingRight: 5, paddingBottom: 5}}>
+            <DialogActions
+              sx={{ paddingLeft: 5, paddingRight: 5, paddingBottom: 5 }}
+            >
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={(event) => {
-                handleFileUpload(event); 
-                handleClose();
+              <Button
+                onClick={(event) => {
+                  handleFileUpload(event);
+                  handleClose();
                 }}
-                autoFocus>
+                autoFocus
+              >
                 Submit
               </Button>
             </DialogActions>
           </Dialog>
-
-
         </Box>
       </Box>
     </React.Fragment>

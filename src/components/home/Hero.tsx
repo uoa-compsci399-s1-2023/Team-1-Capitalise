@@ -218,7 +218,7 @@ const Hero = () => {
                     </Box>
                     {hasProject && (
                       <Box paddingTop="20px">
-                        <Link to={`../projects/${auth.user?.project}`}>
+                        <Link to={`../projects/${auth.user?.project._id}`}>
                           <Button variant="contained" color="primaryDark">
                             {"Your Project"}
                           </Button>

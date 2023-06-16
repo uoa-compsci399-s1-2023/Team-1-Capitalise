@@ -15,7 +15,7 @@ export default function GoogleFailure() {
         setTimeout(() => {
             setLoading(false)
             navigate("/")
-        }, 6000)
+        }, 3000)
     },[])
     return (
 
@@ -23,7 +23,7 @@ export default function GoogleFailure() {
         <Grid container direction="column" display="flex"
                 justifyContent="center"
                 alignItems="center"
-                minHeight="100vh"sx={{ height: '100vh' }}>
+                minHeight="100vh"sx={{ height: '100vh',  marginTop: '-8vh'}}>
             <Grid item >
                 
             
@@ -35,7 +35,7 @@ export default function GoogleFailure() {
                     data-testid="loader" />
             </Grid>
             <Grid item >
-                <Typography fontWeight={500} color={"#ff1507"} sx={{mt: 6 }}>Unable to link with Google account. Redirecting back to Homepage...</Typography>
+                <Typography fontWeight={500} color={"#ff1507"} sx={{m: 5}}>Unable to link with Google account.</Typography>
             </Grid>
         </Grid>
        </>
