@@ -78,9 +78,9 @@ function ContentBlock({ type, value, subHeading, tabIndex, blockIndex }: Content
   const handleDeleteContentBlock = () => {
 
     // If block is gallery, call s3 endpoint to delete galleries
-    if (type === 'gallery') {
-      const tab = project.content[tabIndex]
-      const gallery = tab.tabContent[blockIndex]
+    const tab = project.content[tabIndex]
+    const gallery = tab.tabContent[blockIndex]
+    if (type === 'gallery' && gallery.value.length > 0) {
       setIsLoading(true)
       deleteGallery(project._id, tab.tabName, gallery._id)
         .then(resp => {
