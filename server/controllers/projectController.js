@@ -1018,7 +1018,7 @@ const getCommentsByProjectId = async (req, res) => {
       path: "comments",
       populate: {
         path: "user",
-        select: "name email username profilePicture",
+        select: "name username profilePicture",
       },
     });
 
