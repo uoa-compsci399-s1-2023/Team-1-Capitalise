@@ -128,6 +128,13 @@ export default function App() {
                   <Route path="/googleFailure" element={<GoogleFailure />} />
                   <Route path="/upload" element={<Upload />} />
                   <Route path="/adminDashboard" element={<AdminDashboard />} />
+                  <Route
+                    path="/encapsulate"
+                    Component={() => {
+                      window.location.href = "https://compsci399.com";
+                      return null;
+                    }}
+                  />
                   <Route path="*" element={<Error />} />
                 </Routes>
               </Box>
