@@ -195,7 +195,7 @@ function useProvideAuth(): TAuthReturnType {
   }
   //Change Password once User has accepted email.
   function changePassword(newPassword: any) {
-    fetch("https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/users/resetPassword", {
+    fetch("https://7pc6mt8mh6.execute-api.ap-southeast-2.amazonaws.com/beta/api/users/resetPassword", {
       method: "POST",
       body: JSON.stringify(newPassword),
       headers: {
