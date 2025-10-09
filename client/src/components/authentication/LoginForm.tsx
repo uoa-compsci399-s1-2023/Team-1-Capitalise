@@ -197,7 +197,7 @@ function SignInSide() {
               </Button>
               
               <Divider></Divider>
-              <Button href="https://bh71phacjb.execute-api.ap-southeast-2.amazonaws.com/api/auth/google" fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign In with Google</Button>
+              <Button href="https://7pc6mt8mh6.execute-api.ap-southeast-2.amazonaws.com/beta/api/auth/google" fullWidth variant="outlined" startIcon={<GoogleIcon/>} sx={{mt: 3, mb: 2}}> Sign In with Google</Button>
 
               <Grid container 
               direction="column"
